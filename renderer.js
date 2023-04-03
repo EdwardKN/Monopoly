@@ -6,6 +6,8 @@ c.imageSmoothingEnabled = false;
 
 var board;
 
+var rotation = 1;
+
 const drawScale = 2;
 
 var images = {
@@ -191,45 +193,51 @@ class BoardPiece{
                 this.y = 128+this.n*64;
             }
         }
-
-        if(side === 2 && this.n === 8 || side === 2 && this.n === 6){
-            this.img = img[1];
+        
+        this.setImg = function(){
+            this.side = (side+rotation)%4
+            this.img = img[0];
+            if(this.side === 2 && this.n === 8 || this.side === 2 && this.n === 6){
+                this.img = img[1];
+            }
+            if(this.side === 2 && this.n === 0 || this.side === 2 && this.n === 1 || this.side === 2 && this.n === 3){
+                this.img = img[2];
+            }
+            if(this.side === 1 && this.n === 8 || this.side === 1 && this.n === 6 || this.side === 1 && this.n === 5){
+                this.img = img[3];
+            }
+            if(this.side === 1 && this.n === 0 || this.side === 1 && this.n === 1 || this.side === 1 && this.n === 3){
+                this.img = img[4];
+            }
+            if(this.side === 0 && this.n === 0 || this.side === 0 && this.n === 2 || this.side === 0 && this.n === 3){
+                this.img = img[5];
+            }
+            if(this.side === 0 && this.n === 8 || this.side === 0 && this.n === 6 || this.side === 0 && this.n === 5){
+                this.img = img[6];
+            }
+            if(this.side === 3 && this.n === 0 || this.side === 3 && this.n === 1 || this.side === 3 && this.n === 3){
+                this.img = img[7];
+            }
+            if(this.side === 3 && this.n === 8 || this.side === 3 && this.n === 6){
+                this.img = img[8];
+            }
         }
-        if(side === 2 && this.n === 0 || side === 2 && this.n === 1 || side === 2 && this.n === 3){
-            this.img = img[2];
-        }
-        if(side === 1 && this.n === 8 || side === 1 && this.n === 6 || side === 1 && this.n === 5){
-            this.img = img[3];
-        }
-        if(side === 1 && this.n === 0 || side === 1 && this.n === 1 || side === 1 && this.n === 3){
-            this.img = img[4];
-        }
-        if(side === 0 && this.n === 0 || side === 0 && this.n === 2 || side === 0 && this.n === 3){
-            this.img = img[5];
-        }
-        if(side === 0 && this.n === 8 || side === 0 && this.n === 6 || side === 0 && this.n === 5){
-            this.img = img[6];
-        }
-        if(side === 3 && this.n === 0 || side === 3 && this.n === 1 || side === 3 && this.n === 3){
-            this.img = img[7];
-        }
-        if(side === 3 && this.n === 8 || side === 3 && this.n === 6){
-            this.img = img[8];
-        }        
+                
         this.update = function () {
+            this.setImg();
             let mouseSquareX = (to_grid_coordinate(mouse.x-416*drawScale,mouse.y).x/64) 
             let mouseSquareY = (to_grid_coordinate(mouse.x-416*drawScale,mouse.y).y/64)
-            if(this.x/64*drawScale > mouseSquareX-1*drawScale && this.x/64*drawScale < mouseSquareX && this.side === 0 && this.n !== 9 && mouseSquareY >= 0*drawScale && mouseSquareY < 2*drawScale
-            ||this.x/64*drawScale > mouseSquareX-2*drawScale && this.x/64*drawScale < mouseSquareX && this.side === 0 && this.n === 9 && mouseSquareY >= 0*drawScale && mouseSquareY < 2*drawScale
+            if(this.x/64*drawScale > mouseSquareX-1*drawScale && this.x/64*drawScale < mouseSquareX && side === 0 && this.n !== 9 && mouseSquareY >= 0*drawScale && mouseSquareY < 2*drawScale
+            ||this.x/64*drawScale > mouseSquareX-2*drawScale && this.x/64*drawScale < mouseSquareX && side === 0 && this.n === 9 && mouseSquareY >= 0*drawScale && mouseSquareY < 2*drawScale
 
-            ||this.x/64*drawScale > mouseSquareX-1*drawScale && this.x/64*drawScale < mouseSquareX && this.side === 2 && this.n !== 9 && mouseSquareY >= 11*drawScale && mouseSquareY < 13*drawScale
-            ||this.x/64*drawScale > mouseSquareX-2*drawScale && this.x/64*drawScale < mouseSquareX && this.side === 2 && this.n === 9 && mouseSquareY >= 11*drawScale && mouseSquareY < 13*drawScale
+            ||this.x/64*drawScale > mouseSquareX-1*drawScale && this.x/64*drawScale < mouseSquareX && side === 2 && this.n !== 9 && mouseSquareY >= 11*drawScale && mouseSquareY < 13*drawScale
+            ||this.x/64*drawScale > mouseSquareX-2*drawScale && this.x/64*drawScale < mouseSquareX && side === 2 && this.n === 9 && mouseSquareY >= 11*drawScale && mouseSquareY < 13*drawScale
 
-            ||this.y/64*drawScale > mouseSquareY-1.5*drawScale && this.y/64*drawScale < mouseSquareY-0.5*drawScale && this.side === 3 && this.n !== 9 && mouseSquareX >= 11*drawScale && mouseSquareX < 13*drawScale
-            ||this.y/64*drawScale > mouseSquareY-2*drawScale && this.y/64*drawScale < mouseSquareY && this.side === 3 && this.n === 9 && mouseSquareX >= 11*drawScale && mouseSquareX < 13*drawScale
+            ||this.y/64*drawScale > mouseSquareY-1.5*drawScale && this.y/64*drawScale < mouseSquareY-0.5*drawScale && side === 3 && this.n !== 9 && mouseSquareX >= 11*drawScale && mouseSquareX < 13*drawScale
+            ||this.y/64*drawScale > mouseSquareY-2*drawScale && this.y/64*drawScale < mouseSquareY && side === 3 && this.n === 9 && mouseSquareX >= 11*drawScale && mouseSquareX < 13*drawScale
 
-            ||this.y/64*drawScale > mouseSquareY-1.5*drawScale && this.y/64*drawScale < mouseSquareY-0.5*drawScale && this.side === 1 && this.n !== 9 && mouseSquareX >= 0*drawScale && mouseSquareX < 2*drawScale
-            ||this.y/64*drawScale > mouseSquareY-2*drawScale && this.y/64*drawScale < mouseSquareY && this.side === 1 && this.n === 9 && mouseSquareX >= 0*drawScale && mouseSquareX < 2*drawScale
+            ||this.y/64*drawScale > mouseSquareY-1.5*drawScale && this.y/64*drawScale < mouseSquareY-0.5*drawScale && side === 1 && this.n !== 9 && mouseSquareX >= 0*drawScale && mouseSquareX < 2*drawScale
+            ||this.y/64*drawScale > mouseSquareY-2*drawScale && this.y/64*drawScale < mouseSquareY && side === 1 && this.n === 9 && mouseSquareX >= 0*drawScale && mouseSquareX < 2*drawScale
             ){
                 this.offsetY = -1;
             }else{
