@@ -18,7 +18,7 @@ var images = {
         src:["./images/emptyPart.png","./images/brown.png","./images/light_blue.png","./images/pink.png","./images/orange.png","./images/red.png","./images/yellow.png","./images/green.png","./images/blue.png"]
     },
     corner:{
-        src:["./images/emptyCorner.png","./images/Go.png"]
+        src:["./images/emptyCorner.png","./images/go.png","./images/prison.png"]
     }
 };
 
@@ -225,7 +225,9 @@ class BoardPiece{
             }
             if(this.n === 9 && this.side === 0){
                 this.img = img[1]
-
+            }
+            if(this.n === 9 && this.side === 3){
+                this.img = img[2]
             }
         }
                 
