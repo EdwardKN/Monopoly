@@ -157,6 +157,7 @@ class BoardPiece{
         this.x = 0;
         this.y = 0;
         this.imgSide = 0;
+        
         if(this.side === 0){
             this.x = 128+this.n*64;
             this.y = 0;
@@ -166,9 +167,10 @@ class BoardPiece{
                 this.y = 0;
             }
         }
+
         if(this.side === 1){
             this.x = 32;
-            this.y = -32 + 128+this.n*64;
+            this.y = -32 + 128*5+ - this.n*64;
             this.imgSide = 3;
             if(this.n === 9){
                 this.x = 0;
@@ -176,7 +178,7 @@ class BoardPiece{
             }
         }
         if(this.side === 2){
-            this.x = 128+this.n*64;
+            this.x = 128*5-this.n*64;
             this.y = 64*11;
             this.imgSide =0;
             if(this.n === 9){
@@ -197,16 +199,16 @@ class BoardPiece{
         this.setImg = function(){
             this.side = (side+rotation)%4
             this.img = img[0];
-            if(this.side === 2 && this.n === 8 || this.side === 2 && this.n === 6){
+            if(this.side === 2 && this.n === 2 || this.side === 2 && this.n === 0){
                 this.img = img[1];
             }
-            if(this.side === 2 && this.n === 0 || this.side === 2 && this.n === 1 || this.side === 2 && this.n === 3){
+            if(this.side === 2 && this.n === 8 || this.side === 2 && this.n === 7 || this.side === 2 && this.n === 5){
                 this.img = img[2];
             }
-            if(this.side === 1 && this.n === 8 || this.side === 1 && this.n === 6 || this.side === 1 && this.n === 5){
+            if(this.side === 1 && this.n === 0 || this.side === 1 && this.n === 2 || this.side === 1 && this.n === 3){
                 this.img = img[3];
             }
-            if(this.side === 1 && this.n === 0 || this.side === 1 && this.n === 1 || this.side === 1 && this.n === 3){
+            if(this.side === 1 && this.n === 8 || this.side === 1 && this.n === 7 || this.side === 1 && this.n === 5){
                 this.img = img[4];
             }
             if(this.side === 0 && this.n === 0 || this.side === 0 && this.n === 2 || this.side === 0 && this.n === 3){
