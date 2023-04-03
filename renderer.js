@@ -6,7 +6,7 @@ c.imageSmoothingEnabled = false;
 
 var board;
 
-const drawScale = 1;
+const drawScale = 2;
 
 var images = {
     board:{
@@ -217,21 +217,21 @@ class BoardPiece{
             this.img = img[8];
         }        
         this.update = function () {
-            let mouseSquareX = Math.floor(to_grid_coordinate(mouse.x-416*drawScale,mouse.y).x/64)
-            let mouseSquareY = Math.floor(to_grid_coordinate(mouse.x-416*drawScale,mouse.y).y/64)
-            if(this.x/64*drawScale > mouseSquareX-0.5*drawScale && this.x/64*drawScale < mouseSquareX+0.5*drawScale && this.side === 0 && this.n !== 9 && mouseSquareY >= 0*drawScale && mouseSquareY < 2*drawScale
-            ||this.x/64*drawScale > mouseSquareX-2*drawScale && this.x/64*drawScale < mouseSquareX+0.5*drawScale && this.side === 0 && this.n === 9 && mouseSquareY >= 0*drawScale && mouseSquareY < 2*drawScale
+            let mouseSquareX = (to_grid_coordinate(mouse.x-416*drawScale,mouse.y).x/64) 
+            let mouseSquareY = (to_grid_coordinate(mouse.x-416*drawScale,mouse.y).y/64)
+            if(this.x/64*drawScale > mouseSquareX-1*drawScale && this.x/64*drawScale < mouseSquareX && this.side === 0 && this.n !== 9 && mouseSquareY >= 0*drawScale && mouseSquareY < 2*drawScale
+            ||this.x/64*drawScale > mouseSquareX-2*drawScale && this.x/64*drawScale < mouseSquareX && this.side === 0 && this.n === 9 && mouseSquareY >= 0*drawScale && mouseSquareY < 2*drawScale
 
-            ||this.x/64*drawScale > mouseSquareX-0.5*drawScale && this.x/64*drawScale < mouseSquareX+0.5*drawScale && this.side === 2 && this.n !== 9 && mouseSquareY >= 11*drawScale && mouseSquareY < 13*drawScale
-            ||this.x/64*drawScale > mouseSquareX-2*drawScale && this.x/64*drawScale < mouseSquareX+0.5*drawScale && this.side === 2 && this.n === 9 && mouseSquareY >= 11*drawScale && mouseSquareY < 13*drawScale
+            ||this.x/64*drawScale > mouseSquareX-1*drawScale && this.x/64*drawScale < mouseSquareX && this.side === 2 && this.n !== 9 && mouseSquareY >= 11*drawScale && mouseSquareY < 13*drawScale
+            ||this.x/64*drawScale > mouseSquareX-2*drawScale && this.x/64*drawScale < mouseSquareX && this.side === 2 && this.n === 9 && mouseSquareY >= 11*drawScale && mouseSquareY < 13*drawScale
 
-            ||this.y/64*drawScale > mouseSquareY-1*drawScale && this.y/64*drawScale < mouseSquareY && this.side === 3 && this.n !== 9 && mouseSquareX >= 11*drawScale && mouseSquareX < 13*drawScale
-            ||this.y/64*drawScale > mouseSquareY-2*drawScale && this.y/64*drawScale < mouseSquareY+1*drawScale && this.side === 3 && this.n === 9 && mouseSquareX >= 11*drawScale && mouseSquareX < 13*drawScale
+            ||this.y/64*drawScale > mouseSquareY-1.5*drawScale && this.y/64*drawScale < mouseSquareY-0.5*drawScale && this.side === 3 && this.n !== 9 && mouseSquareX >= 11*drawScale && mouseSquareX < 13*drawScale
+            ||this.y/64*drawScale > mouseSquareY-2*drawScale && this.y/64*drawScale < mouseSquareY && this.side === 3 && this.n === 9 && mouseSquareX >= 11*drawScale && mouseSquareX < 13*drawScale
 
-            ||this.y/64*drawScale > mouseSquareY-1*drawScale && this.y/64*drawScale < mouseSquareY && this.side === 1 && this.n !== 9 && mouseSquareX >= 0*drawScale && mouseSquareX < 2*drawScale
-            ||this.y/64*drawScale > mouseSquareY-2*drawScale && this.y/64*drawScale < mouseSquareY+1*drawScale && this.side === 1 && this.n === 9 && mouseSquareX >= 0*drawScale && mouseSquareX < 2*drawScale
+            ||this.y/64*drawScale > mouseSquareY-1.5*drawScale && this.y/64*drawScale < mouseSquareY-0.5*drawScale && this.side === 1 && this.n !== 9 && mouseSquareX >= 0*drawScale && mouseSquareX < 2*drawScale
+            ||this.y/64*drawScale > mouseSquareY-2*drawScale && this.y/64*drawScale < mouseSquareY && this.side === 1 && this.n === 9 && mouseSquareX >= 0*drawScale && mouseSquareX < 2*drawScale
             ){
-                this.offsetY = -3;
+                this.offsetY = -1;
             }else{
                 this.offsetY = 0;
             }
