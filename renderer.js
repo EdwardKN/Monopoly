@@ -15,10 +15,10 @@ var images = {
         src:["./images/board.png"]
     },
     part:{
-        src:["./images/empty.png","./images/brown.png","./images/light_blue.png","./images/pink.png","./images/orange.png","./images/red.png","./images/yellow.png","./images/green.png","./images/blue.png"]
+        src:["./images/emptyPart.png","./images/brown.png","./images/light_blue.png","./images/pink.png","./images/orange.png","./images/red.png","./images/yellow.png","./images/green.png","./images/blue.png"]
     },
     corner:{
-        src:["./images/corner1.png"]
+        src:["./images/emptyCorner.png","./images/Go.png"]
     }
 };
 
@@ -223,6 +223,10 @@ class BoardPiece{
             if(this.side === 3 && this.n === 8 || this.side === 3 && this.n === 6){
                 this.img = img[8];
             }
+            if(this.n === 9 && this.side === 0){
+                this.img = img[1]
+
+            }
         }
                 
         this.update = function () {
@@ -251,7 +255,7 @@ class BoardPiece{
             if(this.n !== 9){
                 drawIsometricImage(this.x,this.y,this.img,false,96*this.imgSide,0,96,48,this.offsetX,this.offsetY);
             }else{
-               drawIsometricImage(this.x,this.y,this.img,false,0,0,128,64,this.offsetX,this.offsetY);
+               drawIsometricImage(this.x,this.y,this.img,false,128*this.imgSide,0,128,64,this.offsetX,this.offsetY);
             }
 
         }
