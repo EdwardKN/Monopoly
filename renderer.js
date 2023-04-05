@@ -18,7 +18,8 @@ const pieces = [
     {
         name:"Brown 1",
         price:60,
-        rent:[2,10,30,90,160,250]
+        rent:[2,10,30,90,160,250],
+        housePrice:50
     },
     {
         name:"Community Chest"
@@ -26,7 +27,8 @@ const pieces = [
     {
         name:"Brown 2",
         price:60,
-        rent:[4,20,60,180,320,450]
+        rent:[4,20,60,180,320,450],
+        housePrice:50
     },
     {
         name:"Income tax",
@@ -40,7 +42,8 @@ const pieces = [
     {
         name:"Light blue 1",
         price:100,
-        rent:[6,30,90,270,400,550]
+        rent:[6,30,90,270,400,550],
+        housePrice:50
     },
     {
         name:"Chance",
@@ -48,12 +51,14 @@ const pieces = [
     {
         name:"Light blue 2",
         price:100,
-        rent:[6,30,90,270,400,550]
+        rent:[6,30,90,270,400,550],
+        housePrice:50
     },
     {
         name:"Light blue 3",
         price:120,
-        rent:[8,40,100,300,450,600]
+        rent:[8,40,100,300,450,600],
+        housePrice:50
     },
     {
         name:"Jail",
@@ -61,7 +66,8 @@ const pieces = [
     {
         name:"Pink 1",
         price:140,
-        rent:[10,50,150,450,625,750]
+        rent:[10,50,150,450,625,750],
+        housePrice:100
     },
     {
         name:"Electric company",
@@ -71,12 +77,14 @@ const pieces = [
     {
         name:"Pink 2",
         price:140,
-        rent:[10,50,150,450,625,750]
+        rent:[10,50,150,450,625,750],
+        housePrice:100
     },
     {
         name:"Pink 3",
         price:160,
-        rent:[12,60,180,500,700,900]
+        rent:[12,60,180,500,700,900],
+        housePrice:100
     },
     {
         name:"Station 2",
@@ -86,7 +94,8 @@ const pieces = [
     {
         name:"Orange 1",
         price:180,
-        rent:[14,70,200,550,750,950]
+        rent:[14,70,200,550,750,950],
+        housePrice:100
     },
     {
         name:"Community Chest",
@@ -94,12 +103,14 @@ const pieces = [
     {
         name:"Orange 2",
         price:180,
-        rent:[14,70,200,550,750,950]
+        rent:[14,70,200,550,750,950],
+        housePrice:100
     },
     {
         name:"Orange 3",
         price:200,
-        rent:[16,80,220,600,800,1000]
+        rent:[16,80,220,600,800,1000],
+        housePrice:100
     },
     {
         name:"Free Parking",
@@ -107,7 +118,8 @@ const pieces = [
     {
         name:"Red 1",
         price:220,
-        rent:[18,90,250,700,875,1050]
+        rent:[18,90,250,700,875,1050],
+        housePrice:150
     },
     {
         name:"Chance"
@@ -115,12 +127,14 @@ const pieces = [
     {
         name:"Red 2",
         price:220,
-        rent:[18,90,250,700,875,1050]
+        rent:[18,90,250,700,875,1050],
+        housePrice:150
     },
     {
         name:"Red 3",
         price:240,
-        rent:[20,100,300,750,925,1100]
+        rent:[20,100,300,750,925,1100],
+        housePrice:150
     },
     {
         name:"Station 3",
@@ -130,12 +144,14 @@ const pieces = [
     {
         name:"Yellow 1",
         price:260,
-        rent:[22,110,330,800,975,1150]
+        rent:[22,110,330,800,975,1150],
+        housePrice:150
     },
     {
         name:"Yellow 2",
         price:260,
-        rent:[22,110,330,800,975,1150]
+        rent:[22,110,330,800,975,1150],
+        housePrice:150
     },
     {
         name:"Water Company",
@@ -145,7 +161,8 @@ const pieces = [
     {
         name:"Yellow 3",
         price:280,
-        rent:[24,120,360,850,1025,1200]
+        rent:[24,120,360,850,1025,1200],
+        housePrice:150
     },
     {
         name:"Go To Jail",
@@ -153,12 +170,14 @@ const pieces = [
     {
         name:"Green 1",
         price:300,
-        rent:[26,130,390,900,1100,1275]
+        rent:[26,130,390,900,1100,1275],
+        housePrice:200
     },
     {
         name:"Green 2",
         price:300,
-        rent:[26,130,390,900,1100,1275]
+        rent:[26,130,390,900,1100,1275],
+        housePrice:200
     },
     {
         name:"Community Chest"
@@ -166,7 +185,8 @@ const pieces = [
     {
         name:"Green 3",
         price:320,
-        rent:[28,150,450,1000,1200,1400]
+        rent:[28,150,450,1000,1200,1400],
+        housePrice:200
     },
     {
         name:"Station 4",
@@ -179,7 +199,8 @@ const pieces = [
     {
         name:"Blue 1",
         price:350,
-        rent:[35,175,500,1100,1300,1500]
+        rent:[35,175,500,1100,1300,1500],
+        housePrice:200
     },
     {
         name:"Super Tax",
@@ -188,7 +209,8 @@ const pieces = [
     {
         name:"Blue 2",
         price:400,
-        rent:[50,200,600,1400,1700,2000]
+        rent:[50,200,600,1400,1700,2000],
+        housePrice:200
     },
     {
         name:"Start",
@@ -490,6 +512,7 @@ class BoardPiece{
                 if(this.piece.name !== undefined){
                     console.log(this.piece.name)
                 }
+                console.log(this.level)
                 if(this.piece.price !== undefined){
                     console.log(this.piece.price)
                 }
@@ -498,8 +521,14 @@ class BoardPiece{
                         console.log(e)
                     })
                 }
-                
-                
+                if(this.owner === players[turn]){
+                    if(this.level < 5){
+                        if(confirm("Vill du köpa ett hus här för " + this.piece.housePrice + "$?")){
+                            this.level++;
+                            this.owner.money -= this.piece.housePrice;
+                        }
+                    }   
+                }
             }
         }
         this.playerStep = function (player,diceRoll){
