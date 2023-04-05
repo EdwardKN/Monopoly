@@ -6,6 +6,8 @@ var board;
 
 var rotation = 0;
 
+var turn = 0;
+
 var players = [];
 
 const drawScale = 2;
@@ -216,6 +218,14 @@ window.addEventListener("mousemove",function(e){
     }
 })
 
+window.addEventListener("mousedown",function(e){
+    board.boardPieces.forEach(function(side){
+        side.forEach(function(piece){
+            piece.click();
+        })
+    })
+})
+
 function preRender(imageObject){
     Object.entries(imageObject).forEach(image => {
         image[1].img = [];
@@ -285,6 +295,7 @@ function randomIntFromRange(min, max) {
 
 function init(){
     document.body.appendChild(canvas);
+    canvas.style.zIndex = -100;
 
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
@@ -302,8 +313,8 @@ function init(){
 
 }
 
-function animate(){
-    requestAnimationFrame(animate);
+function update(){
+    requestAnimationFrame(update);
     c.imageSmoothingEnabled = false;
 
     c.clearRect(0,0,canvas.width,canvas.height);
@@ -313,9 +324,8 @@ function animate(){
 
     players.forEach(function(player,i,a) { 
         player.update(); 
-        c.fillText(player.money, 10, 50*i + 50);
+        c.fillText(player.money, 10, 50*i + 70);
     })
-
 }
 
 class Board{
@@ -352,7 +362,7 @@ class BoardPiece{
         this.piece = piece;
         this.owner = undefined;
         this.level = 0;
-        
+        this.hover = false;
         if(this.side === 2){
             this.x = 128+this.n*64;
             this.y = 0;
@@ -443,8 +453,10 @@ class BoardPiece{
             ||this.y/64*drawScale > mouseSquareY-2*drawScale && this.y/64*drawScale < mouseSquareY && side === 1 && this.n === 9 && mouseSquareX >= 0*drawScale && mouseSquareX < 2*drawScale
             ){
                 this.offsetY = -1;
+                this.hover = true;
             }else{
                 this.offsetY = 0;
+                this.hover = false;
             }
             this.draw();
         }
@@ -455,8 +467,29 @@ class BoardPiece{
                drawIsometricImage(this.x,this.y,this.img,false,128*this.imgSide,0,128,64,this.offsetX,this.offsetY);
             }
         }
+        this.click = function(){
+            if(this.hover === true){
+                this.show = true;
+                console.log("---------")
+                if(this.owner !== undefined){
+                    console.log(this.owner.name)
+                }
+                if(this.piece.name !== undefined){
+                    console.log(this.piece.name)
+                }
+                if(this.piece.price !== undefined){
+                    console.log(this.piece.price)
+                }
+                if(this.piece.rent !== undefined){
+                    this.piece.rent.forEach(e => {
+                        console.log(e)
+                    })
+                }
+                
+                
+            }
+        }
         this.playerStep = function (player){
-            console.log(this.owner)
             if(this.piece.price < 0){
                 player.money += this.piece.price;
             }else if(this.piece.price > 0 && player.money >= this.piece.price && this.owner === undefined){
@@ -464,9 +497,11 @@ class BoardPiece{
                     player.money -= this.piece.price;
                     this.owner = player;
                 }
-            }else if(this.owner !== player){
-                player -= this.piece.rent[this.level];
-                this.owner += this.piece.rent[this.level];
+            }else if(this.owner !== player && this.owner !== undefined){
+                player.money -= this.piece.rent[this.level];
+                this.owner.money += this.piece.rent[this.level];
+                console.log(this.owner.money,player.money)
+
             }
         }
     }
@@ -475,6 +510,7 @@ class BoardPiece{
 class Player{
 
     constructor(img,index){
+        this.name = "Player" + (index+1);
         this.img = img;
         this.x = 0;
         this.y = 0;
@@ -483,6 +519,8 @@ class Player{
         this.index = index
         this.offsetY = 1;
         this.stepsWithOffset = (this.steps - rotation*10)
+        this.rolls = false;
+        this.numberOfRolls = false;
         this.draw = function () {
             
 
@@ -544,25 +582,40 @@ class Player{
         }
         
         this.rollDice = function(){
-            let dice1 = randomIntFromRange(1,6);
-            let dice2 = randomIntFromRange(1,6);
-
-            this.steps += dice1+dice2;
-
-            this.updateVisual();
-
-            if(this.steps === 0){
-                board.boardPieces[3][9].playerStep(this);
+            if(this.rolls === false){
+                let dice1 = randomIntFromRange(1,6);
+                let dice2 = randomIntFromRange(1,6);
+                if(dice1 === dice2){
+                    if(this.numberOfRolls === 3){
+                        this.steps = 10;
+                        this.updateVisual();
+                    }
+                    this.numberOfRolls++;
+                    this.rolls = false;
+                }else{
+                    this.rolls = true;
+                }
+    
+                this.steps += dice1+dice2;
+    
+                this.updateVisual();
+    
+                if(this.steps === 0){
+                    board.boardPieces[3][9].playerStep(this);
+                }else{
+                    board.boardPieces[Math.floor((this.steps-1)/10)][(this.steps-1)%10].playerStep(this);
+                }
             }else{
-                board.boardPieces[Math.floor((this.steps-1)/10)][(this.steps-1)%10].playerStep(this);
+                turn = (turn+1)%players.length;
+                this.rolls = false;
+                this.numberOfRolls = 0;
             }
-            
         }
     }
 }
 
 
 init();
-animate();
+update();
 
 
