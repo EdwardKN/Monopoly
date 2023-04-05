@@ -198,7 +198,7 @@ var images = {
         src:["./images/emptyCorner.png","./images/go.png","./images/prison.png"]
     },
     player:{
-        src:["./images/player.png"]
+        src:["./images/player.png","./images/player2.png"]
     }
 };
 
@@ -309,7 +309,7 @@ function init(){
     board = new Board();    
 
     players.push(new Player(images.player.img[0],players.length))
-    players.push(new Player(images.player.img[0],players.length))
+    players.push(new Player(images.player.img[1],players.length))
 
 }
 
@@ -326,6 +326,8 @@ function update(){
         player.update(); 
         c.fillText(player.money, 10, 50*i + 70);
     })
+    c.fillText("Just nu: Player"+(turn+1), 10, 100 + 70);
+    
 }
 
 class Board{
@@ -493,10 +495,13 @@ class BoardPiece{
             if(this.piece.price < 0){
                 player.money += this.piece.price;
             }else if(this.piece.price > 0 && player.money >= this.piece.price && this.owner === undefined){
-                if(confirm("Vill du köpa " + this.piece.name + " för " + this.piece.price + "$?")){
-                    player.money -= this.piece.price;
-                    this.owner = player;
-                }
+                setTimeout(() => {
+                    if(confirm("Vill du köpa " + this.piece.name + " för " + this.piece.price + "$?")){
+                        player.money -= this.piece.price;
+                        this.owner = player;
+                    }  
+                }, 100);
+
             }else if(this.owner !== player && this.owner !== undefined){
                 player.money -= this.piece.rent[this.level];
                 this.owner.money += this.piece.rent[this.level];
@@ -611,6 +616,7 @@ class Player{
                 this.numberOfRolls = 0;
             }
         }
+        this.updateVisual();
     }
 }
 
