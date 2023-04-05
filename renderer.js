@@ -11,6 +11,8 @@ var turn = 0;
 var players = [];
 
 const drawScale = 2;
+const offsetAll = 100;
+
 
 const pieces = [
     {
@@ -32,7 +34,8 @@ const pieces = [
     },
     {
         name:"Station 1",
-        price:200
+        price:200,
+        type:"station"
     },
     {
         name:"Light blue 1",
@@ -62,7 +65,8 @@ const pieces = [
     },
     {
         name:"Electric company",
-        price:150
+        price:150,
+        type:"utility"
     },
     {
         name:"Pink 2",
@@ -76,7 +80,8 @@ const pieces = [
     },
     {
         name:"Station 2",
-        price:200
+        price:200,
+        type:"station"
     },
     {
         name:"Orange 1",
@@ -119,7 +124,8 @@ const pieces = [
     },
     {
         name:"Station 3",
-        price:200
+        price:200,
+        type:"station"
     },
     {
         name:"Yellow 1",
@@ -133,7 +139,8 @@ const pieces = [
     },
     {
         name:"Water Company",
-        price: 150
+        price: 150,
+        type:"utility"
     },
     {
         name:"Yellow 3",
@@ -163,7 +170,8 @@ const pieces = [
     },
     {
         name:"Station 4",
-        price:200
+        price:200,
+        type:"station"
     },
     {
         name:"Chance"
@@ -198,7 +206,7 @@ var images = {
         src:["./images/emptyCorner.png","./images/go.png","./images/prison.png"]
     },
     player:{
-        src:["./images/player.png","./images/player2.png"]
+        src:["./images/player.png","./images/player2.png","./images/player3.png"]
     }
 };
 
@@ -213,8 +221,8 @@ window.addEventListener("resize",function(e){
 })
 window.addEventListener("mousemove",function(e){
     mouse = {
-        x:e.x,
-        y:e.y
+        x:e.x - offsetAll,
+        y:e.y - offsetAll
     }
 })
 
@@ -239,6 +247,8 @@ function preRender(imageObject){
 }
 function drawRotatedImage(x,y,w,h,img,angle,mirrored,cropX,cropY,cropW,cropH){
     let degree = angle * Math.PI / 180;
+    x+= offsetAll;
+    y+= offsetAll
     let middlePoint = {
         x:x+w/2,
         y:y+h/2
@@ -310,6 +320,7 @@ function init(){
 
     players.push(new Player(images.player.img[0],players.length))
     players.push(new Player(images.player.img[1],players.length))
+    players.push(new Player(images.player.img[2],players.length))
 
 }
 
@@ -326,7 +337,7 @@ function update(){
         player.update(); 
         c.fillText(player.money, 10, 50*i + 70);
     })
-    c.fillText("Just nu: Player"+(turn+1), 10, 100 + 70);
+    c.fillText("Just nu: Player"+(turn+1), 10, players.length*50 + 70);
     
 }
 
@@ -491,7 +502,7 @@ class BoardPiece{
                 
             }
         }
-        this.playerStep = function (player){
+        this.playerStep = function (player,diceRoll){
             if(this.piece.price < 0){
                 player.money += this.piece.price;
             }else if(this.piece.price > 0 && player.money >= this.piece.price && this.owner === undefined){
@@ -499,14 +510,47 @@ class BoardPiece{
                     if(confirm("Vill du köpa " + this.piece.name + " för " + this.piece.price + "$?")){
                         player.money -= this.piece.price;
                         this.owner = player;
+                        player.ownedPlaces.push(this);
                     }  
-                }, 100);
+                }, 500);
 
             }else if(this.owner !== player && this.owner !== undefined){
-                player.money -= this.piece.rent[this.level];
-                this.owner.money += this.piece.rent[this.level];
-                console.log(this.owner.money,player.money)
+                if(this.piece.type === "utility"){
+                    let tmp = 0;
+                    let multiply = 0;
+                    this.owner.ownedPlaces.forEach(e => {
+                        if(e.piece.type === "utility"){
+                            tmp++;
+                        }
+                    })
+                    if(tmp === 1){
+                        multiply = 4;
 
+                    }
+                    if(tmp === 2){
+                        multiply = 10
+                    }
+                    player.money -=  diceRoll * multiply;
+                    this.owner.money += diceRoll * multiply;
+                    console.log(this.owner.name + " fick precis " + (diceRoll * multiply) + "$")
+                    
+                }else if(this.piece.type === "station"){
+                    let tmp = -1;
+                    this.owner.ownedPlaces.forEach(e => {
+                        if(e.piece.type === "station"){
+                            tmp++;
+                        }
+                    })
+                    player.money -=  25 * Math.pow(2,tmp);
+                    this.owner.money += 25 * Math.pow(2,tmp);
+                    console.log(this.owner.name + " fick precis " + (25 * Math.pow(2,tmp)) + "$")
+
+                }else{
+                    player.money -= this.piece.rent[this.level];
+                    this.owner.money += this.piece.rent[this.level];
+                    console.log(this.owner.name + " fick precis " + (this.piece.rent[this.level]) + "$")
+
+                }
             }
         }
     }
@@ -522,28 +566,19 @@ class Player{
         this.steps = 0;
         this.money = 2000;
         this.index = index
-        this.offsetY = 1;
+        this.offsetY = 0;
         this.stepsWithOffset = (this.steps - rotation*10)
         this.rolls = false;
         this.numberOfRolls = false;
+        this.inJail = false;
+        this.ownedPlaces = [];
         this.draw = function () {
-            
-
-            
             drawIsometricImage(800-this.x*64,700-this.y*64,this.img,false,0,0,32,32,0,-this.offsetY)
         }
         this.update = function () {
             this.draw();
         }
         this.updateVisual = function (){
-            this.stepsWithOffset = 40 + (this.steps - rotation*10)
-
-            if(this.steps >= 40){
-                this.money += 200;
-            }
-            this.steps = this.steps%40;
-            this.stepsWithOffset = this.stepsWithOffset%40;
-
             if(this.stepsWithOffset === 0){
                 this.x = 0;
                 this.y = 0;
@@ -574,13 +609,23 @@ class Player{
                     this.y = 12 - (this.stepsWithOffset-29)
                 }
             }
+            
+            this.stepsWithOffset = 40 + (this.steps - rotation*10)
+
+            if(this.steps >= 40){
+                this.money += 200;
+            }
+            this.steps = this.steps%40;
+            this.stepsWithOffset = this.stepsWithOffset%40;
+
+            
             for(let i = 0; i<players.length; i++){
                 if(i !== this.index){
                    if(players[i].steps === this.steps){
                     players[i].offsetY = 20*i
                     this.offsetY = 20*this.index
                    }else{
-                    this.offsetY = 1;
+                    this.offsetY = 0;
                    }
             }
             }
@@ -593,27 +638,34 @@ class Player{
                 if(dice1 === dice2){
                     if(this.numberOfRolls === 3){
                         this.steps = 10;
-                        this.updateVisual();
+                        players.forEach(e => {e.updateVisual();})
                     }
                     this.numberOfRolls++;
                     this.rolls = false;
                 }else{
                     this.rolls = true;
                 }
+                let diceSum = dice1+dice2;
     
                 this.steps += dice1+dice2;
-    
-                this.updateVisual();
+                if(this.steps === 30){
+                    this.steps = 10;
+                    this.inJail = true;
+                }
+                players.forEach(e => {e.updateVisual();})
+                players.forEach(e => {e.updateVisual();})
+
     
                 if(this.steps === 0){
                     board.boardPieces[3][9].playerStep(this);
                 }else{
-                    board.boardPieces[Math.floor((this.steps-1)/10)][(this.steps-1)%10].playerStep(this);
+                    board.boardPieces[Math.floor((this.steps-1)/10)][(this.steps-1)%10].playerStep(this,diceSum);
                 }
             }else{
                 turn = (turn+1)%players.length;
                 this.rolls = false;
                 this.numberOfRolls = 0;
+                
             }
         }
         this.updateVisual();
