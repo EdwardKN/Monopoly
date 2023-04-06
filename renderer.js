@@ -10,7 +10,7 @@ var turn = 0;
 
 var players = [];
 
-const drawScale = 2;
+const drawScale = 1;
 const offsetAll = 50;
 
 
@@ -379,14 +379,14 @@ function update(){
     showBackground();
 
     board.update();
-    c.font = "30px Arial";
+    c.font = "20px Arial";
 
 
     players.forEach(function(player,i,a) { 
         player.update(); 
-        c.fillText(player.name + ": " + player.money + "$", 10, 50*i + 70);
+        c.fillText(player.name + ": " + player.money + "$", 10, 40*i + 70);
     })
-    c.fillText("Just nu: Player"+(turn+1), 10, players.length*50 + 70);
+    c.fillText("Just nu: Player"+(turn+1), 10, players.length*40 + 70);
     
 }
 
@@ -712,48 +712,63 @@ class Player{
         }
         
         this.rollDice = function(){
-            if(this.rolls === false){
-                if(this.steps === 0){
-                    let index = board.boardPieces[3][9].currentPlayer.indexOf(this);
-                    board.boardPieces[3][9].currentPlayer.splice(index,1)
-                }else{
-                    let index = board.boardPieces[Math.floor((this.steps-1)/10)][(this.steps-1)%10].currentPlayer.indexOf(this);
-                    board.boardPieces[Math.floor((this.steps-1)/10)][(this.steps-1)%10].currentPlayer.splice(index,1) 
-                }
-                let dice1 = randomIntFromRange(1,6);
-                let dice2 = randomIntFromRange(1,6);
-                console.log(dice1,dice2)
-                if(dice1 === dice2){
-                    if(this.numberOfRolls === 3){
-                        this.steps = 10;
-                        players.forEach(e => {e.updateVisual();})
+            if(this.inJail === false){
+                if(this.rolls === false){
+                    if(this.steps === 0){
+                        let index = board.boardPieces[3][9].currentPlayer.indexOf(this);
+                        board.boardPieces[3][9].currentPlayer.splice(index,1)
+                    }else{
+                        let index = board.boardPieces[Math.floor((this.steps-1)/10)][(this.steps-1)%10].currentPlayer.indexOf(this);
+                        board.boardPieces[Math.floor((this.steps-1)/10)][(this.steps-1)%10].currentPlayer.splice(index,1) 
                     }
-                    this.numberOfRolls++;
-                    this.rolls = false;
-                }else{
-                    this.rolls = true;
-                }
-                let diceSum = dice1+dice2;
-    
-                this.steps += dice1+dice2;
-                if(this.steps === 30){
-                    this.steps = 10;
-                    this.inJail = true;
-                }
-                players.forEach(e => {e.updateVisual();})
-                players.forEach(e => {e.updateVisual();})
+                    let dice1 = randomIntFromRange(1,6);
+                    let dice2 = randomIntFromRange(1,6);
+                    console.log(dice1,dice2)
+                    if(dice1 === dice2){
+                        if(this.numberOfRolls === 3){
+                            this.steps = 10;
+                            players.forEach(e => {e.updateVisual();})
+                        }
+                        this.numberOfRolls++;
+                        this.rolls = false;
+                    }else{
+                        this.rolls = true;
+                    }
+                    let diceSum = dice1+dice2;
+        
+                    this.steps += dice1+dice2;
+                    if(this.steps === 30){
+                        this.steps = 10;
+                        this.inJail = true;
+                    }
+                    players.forEach(e => {e.updateVisual();})
+                    players.forEach(e => {e.updateVisual();})
 
-    
-                if(this.steps === 0){
-                    board.boardPieces[3][9].playerStep(this);
+        
+                    if(this.steps === 0){
+                        board.boardPieces[3][9].playerStep(this);
+                    }else{
+                        board.boardPieces[Math.floor((this.steps-1)/10)][(this.steps-1)%10].playerStep(this,diceSum);
+                    }
                 }else{
-                    board.boardPieces[Math.floor((this.steps-1)/10)][(this.steps-1)%10].playerStep(this,diceSum);
+                    turn = (turn+1)%players.length;
+                    this.rolls = false;
+                    this.numberOfRolls = 0;
+                    
                 }
             }else{
-                turn = (turn+1)%players.length;
-                this.rolls = false;
-                this.numberOfRolls = 0;
+                if(confirm("Vill du betala 50$ för att komma ut eller slå dubbelt?")){
+                    this.money -= 50;
+                    this.inJail = false;
+                }else{
+                    let dice1 = randomIntFromRange(1,6);
+                    let dice2 = randomIntFromRange(1,6);
                 
+                    if(dice1 === dice2){
+                        this.inJail = false;
+                    }
+                }
+                turn = (turn+1)%players.length;
             }
         }
         this.updateVisual();
