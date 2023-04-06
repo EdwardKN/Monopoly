@@ -11,7 +11,7 @@ var turn = 0;
 var players = [];
 
 const drawScale = 2;
-const offsetAll = 100;
+const offsetAll = 50;
 
 
 const pieces = [
@@ -19,7 +19,8 @@ const pieces = [
         name:"Brown 1",
         price:60,
         rent:[2,10,30,90,160,250],
-        housePrice:50
+        housePrice:50,
+        group:"Brown"
     },
     {
         name:"Community Chest"
@@ -28,7 +29,8 @@ const pieces = [
         name:"Brown 2",
         price:60,
         rent:[4,20,60,180,320,450],
-        housePrice:50
+        housePrice:50,
+        group:"Brown"
     },
     {
         name:"Income tax",
@@ -43,7 +45,8 @@ const pieces = [
         name:"Light blue 1",
         price:100,
         rent:[6,30,90,270,400,550],
-        housePrice:50
+        housePrice:50,
+        group:"light blue"
     },
     {
         name:"Chance",
@@ -52,13 +55,15 @@ const pieces = [
         name:"Light blue 2",
         price:100,
         rent:[6,30,90,270,400,550],
-        housePrice:50
+        housePrice:50,
+        group:"light blue"
     },
     {
         name:"Light blue 3",
         price:120,
         rent:[8,40,100,300,450,600],
-        housePrice:50
+        housePrice:50,
+        group:"light blue"
     },
     {
         name:"Jail",
@@ -67,7 +72,8 @@ const pieces = [
         name:"Pink 1",
         price:140,
         rent:[10,50,150,450,625,750],
-        housePrice:100
+        housePrice:100,
+        group:"pink"
     },
     {
         name:"Electric company",
@@ -78,13 +84,15 @@ const pieces = [
         name:"Pink 2",
         price:140,
         rent:[10,50,150,450,625,750],
-        housePrice:100
+        housePrice:100,
+        group:"pink"
     },
     {
         name:"Pink 3",
         price:160,
         rent:[12,60,180,500,700,900],
-        housePrice:100
+        housePrice:100,
+        group:"pink"
     },
     {
         name:"Station 2",
@@ -95,7 +103,8 @@ const pieces = [
         name:"Orange 1",
         price:180,
         rent:[14,70,200,550,750,950],
-        housePrice:100
+        housePrice:100,
+        group:"orange"
     },
     {
         name:"Community Chest",
@@ -104,13 +113,15 @@ const pieces = [
         name:"Orange 2",
         price:180,
         rent:[14,70,200,550,750,950],
-        housePrice:100
+        housePrice:100,
+        group:"orange"
     },
     {
         name:"Orange 3",
         price:200,
         rent:[16,80,220,600,800,1000],
-        housePrice:100
+        housePrice:100,
+        group:"orange"
     },
     {
         name:"Free Parking",
@@ -119,7 +130,8 @@ const pieces = [
         name:"Red 1",
         price:220,
         rent:[18,90,250,700,875,1050],
-        housePrice:150
+        housePrice:150,
+        group:"red"
     },
     {
         name:"Chance"
@@ -128,13 +140,15 @@ const pieces = [
         name:"Red 2",
         price:220,
         rent:[18,90,250,700,875,1050],
-        housePrice:150
+        housePrice:150,
+        group:"red"
     },
     {
         name:"Red 3",
         price:240,
         rent:[20,100,300,750,925,1100],
-        housePrice:150
+        housePrice:150,
+        group:"red"
     },
     {
         name:"Station 3",
@@ -145,13 +159,15 @@ const pieces = [
         name:"Yellow 1",
         price:260,
         rent:[22,110,330,800,975,1150],
-        housePrice:150
+        housePrice:150,
+        group:"yellow"
     },
     {
         name:"Yellow 2",
         price:260,
         rent:[22,110,330,800,975,1150],
-        housePrice:150
+        housePrice:150,
+        group:"yellow"
     },
     {
         name:"Water Company",
@@ -162,7 +178,8 @@ const pieces = [
         name:"Yellow 3",
         price:280,
         rent:[24,120,360,850,1025,1200],
-        housePrice:150
+        housePrice:150,
+        group:"yellow"
     },
     {
         name:"Go To Jail",
@@ -171,13 +188,15 @@ const pieces = [
         name:"Green 1",
         price:300,
         rent:[26,130,390,900,1100,1275],
-        housePrice:200
+        housePrice:200,
+        group:"green"
     },
     {
         name:"Green 2",
         price:300,
         rent:[26,130,390,900,1100,1275],
-        housePrice:200
+        housePrice:200,
+        group:"green"
     },
     {
         name:"Community Chest"
@@ -186,7 +205,8 @@ const pieces = [
         name:"Green 3",
         price:320,
         rent:[28,150,450,1000,1200,1400],
-        housePrice:200
+        housePrice:200,
+        group:"green"
     },
     {
         name:"Station 4",
@@ -200,7 +220,8 @@ const pieces = [
         name:"Blue 1",
         price:350,
         rent:[35,175,500,1100,1300,1500],
-        housePrice:200
+        housePrice:200,
+        group:"blue"
     },
     {
         name:"Super Tax",
@@ -210,7 +231,8 @@ const pieces = [
         name:"Blue 2",
         price:400,
         rent:[50,200,600,1400,1700,2000],
-        housePrice:200
+        housePrice:200,
+        group:"blue"
     },
     {
         name:"Start",
@@ -357,7 +379,7 @@ function update(){
 
     players.forEach(function(player,i,a) { 
         player.update(); 
-        c.fillText(player.money, 10, 50*i + 70);
+        c.fillText(player.name + ": " + player.money + "$", 10, 50*i + 70);
     })
     c.fillText("Just nu: Player"+(turn+1), 10, players.length*50 + 70);
     
@@ -398,6 +420,7 @@ class BoardPiece{
         this.owner = undefined;
         this.level = 0;
         this.hover = false;
+        this.currentPlayer = [];
         if(this.side === 2){
             this.x = 128+this.n*64;
             this.y = 0;
@@ -521,8 +544,22 @@ class BoardPiece{
                         console.log(e)
                     })
                 }
+                this.currentPlayer.forEach(e => {
+                    console.log(e.name)
+                })
                 if(this.owner === players[turn]){
-                    if(this.level < 5){
+                    let ownAll = true;
+                    for(let i = 0; i<board.boardPieces[this.side].length; i++){
+                        if(board.boardPieces[this.side][i] !== this){
+                            if(board.boardPieces[this.side][i].piece.group === this.piece.group){
+                                if(this.owner !== board.boardPieces[this.side][i].owner){
+                                    ownAll = false;
+                                }
+                            }
+                        }
+                    }
+                    
+                    if(this.level < 5 && this.piece.housePrice !== undefined && ownAll === true){
                         if(confirm("Vill du köpa ett hus här för " + this.piece.housePrice + "$?")){
                             this.level++;
                             this.owner.money -= this.piece.housePrice;
@@ -532,6 +569,8 @@ class BoardPiece{
             }
         }
         this.playerStep = function (player,diceRoll){
+            this.currentPlayer.push(player);
+
             if(this.piece.price < 0){
                 player.money += this.piece.price;
             }else if(this.piece.price > 0 && player.money >= this.piece.price && this.owner === undefined){
@@ -647,23 +686,34 @@ class Player{
             this.steps = this.steps%40;
             this.stepsWithOffset = this.stepsWithOffset%40;
 
+            if(this.steps === 0){
+                for(let i = 0; i<board.boardPieces[3][9].currentPlayer.length; i++){
+                    if(board.boardPieces[3][9].currentPlayer[i] === this){
+                        this.offsetY = i*20
+                    }
+                }
+            }else{
+                for(let i = 0; i<board.boardPieces[Math.floor((this.steps-1)/10)][(this.steps-1)%10].currentPlayer.length; i++){
+                    if(board.boardPieces[Math.floor((this.steps-1)/10)][(this.steps-1)%10].currentPlayer[i] === this){
+                        this.offsetY = i*20
+                    }                
+                }
+            }
             
-            for(let i = 0; i<players.length; i++){
-                if(i !== this.index){
-                   if(players[i].steps === this.steps){
-                    players[i].offsetY = 20*i
-                    this.offsetY = 20*this.index
-                   }else{
-                    this.offsetY = 0;
-                   }
-            }
-            }
         }
         
         this.rollDice = function(){
             if(this.rolls === false){
+                if(this.steps === 0){
+                    let index = board.boardPieces[3][9].currentPlayer.indexOf(this);
+                    board.boardPieces[3][9].currentPlayer.splice(index,1)
+                }else{
+                    let index = board.boardPieces[Math.floor((this.steps-1)/10)][(this.steps-1)%10].currentPlayer.indexOf(this);
+                    board.boardPieces[Math.floor((this.steps-1)/10)][(this.steps-1)%10].currentPlayer.splice(index,1) 
+                }
                 let dice1 = randomIntFromRange(1,6);
                 let dice2 = randomIntFromRange(1,6);
+                console.log(dice1,dice2)
                 if(dice1 === dice2){
                     if(this.numberOfRolls === 3){
                         this.steps = 10;
@@ -697,6 +747,8 @@ class Player{
                 
             }
         }
+        this.updateVisual();
+        board.boardPieces[3][9].currentPlayer.push(this);
         this.updateVisual();
     }
 }
