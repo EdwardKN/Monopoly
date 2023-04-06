@@ -376,11 +376,11 @@ function update(){
     c.imageSmoothingEnabled = false;
 
     c.clearRect(0,0,canvas.width,canvas.height);
+    showBackground();
 
     board.update();
     c.font = "30px Arial";
 
-    showBackground();
 
     players.forEach(function(player,i,a) { 
         player.update(); 
