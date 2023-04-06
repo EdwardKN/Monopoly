@@ -251,6 +251,9 @@ var images = {
     },
     player:{
         src:["./images/player.png","./images/player2.png","./images/player3.png"]
+    },
+    backGround:{
+        src:["./images/insideboard.png"]
     }
 };
 
@@ -377,12 +380,18 @@ function update(){
     board.update();
     c.font = "30px Arial";
 
+    showBackground();
+
     players.forEach(function(player,i,a) { 
         player.update(); 
         c.fillText(player.name + ": " + player.money + "$", 10, 50*i + 70);
     })
     c.fillText("Just nu: Player"+(turn+1), 10, players.length*50 + 70);
     
+}
+
+function showBackground(){
+    drawIsometricImage(-92,351,images.backGround.img[0],false,0,0,572,286,0,0)
 }
 
 class Board{
