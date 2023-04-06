@@ -391,7 +391,7 @@ function update(){
 }
 
 function showBackground(){
-    drawIsometricImage(-92,351,images.backGround.img[0],false,0,0,572,286,0,0)
+    drawIsometricImage(-92,352,images.backGround.img[0],false,0,0,572,286,0,0)
 }
 
 class Board{
