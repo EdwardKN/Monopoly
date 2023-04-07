@@ -255,9 +255,9 @@ var images = {
         "./images/plates/pink.png","./images/plates/orange.png",
         "./images/plates/red.png","./images/plates/yellow.png",
         "./images/plates/green.png","./images/plates/blue.png",
-        "/images/plates/chance.png","/images/plates/chance2.png","/images/plates/chance3.png",
-        "/images/plates/train.png", "/images/plates/water.png", "/images/plates/electric.png",
-        "/images/plates/supertax.png","/images/plates/chest.png","/images/plates/incometax.png"]
+        "./images/plates/chance.png","./images/plates/chance2.png","./images/plates/chance3.png",
+        "./images/plates/train.png", "./images/plates/water.png", "./images/plates/electric.png",
+        "./images/plates/supertax.png","./images/plates/chest.png","./images/plates/incometax.png"]
     },
     corner:{
         src:["./images/corners/go.png","./images/corners/prison.png","./images/corners/parking.png","./images/corners/gotoprison.png"]
