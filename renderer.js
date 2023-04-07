@@ -254,7 +254,12 @@ var images = {
         src:["./images/board.png"]
     },
     part:{
-        src:["./images/emptyPart.png","./images/brown.png","./images/light_blue.png","./images/pink.png","./images/orange.png","./images/red.png","./images/yellow.png","./images/green.png","./images/blue.png","/images/chance.png","/images/chance2.png","/images/chance3.png","/images/train.png"]
+        src:["./images/emptyPart.png","./images/brown.png","./images/light_blue.png",
+        "./images/pink.png","./images/orange.png",
+        "./images/red.png","./images/yellow.png",
+        "./images/green.png","./images/blue.png",
+        "/images/chance.png","/images/chance2.png","/images/chance3.png",
+        "/images/train.png", "/images/water.png"]
     },
     corner:{
         src:["./images/go.png","./images/prison.png","./images/parking.png","./images/gotoprison.png"]
@@ -767,6 +772,9 @@ class BoardPiece{
         if(this.n === 4){
             this.img = img[12]
         }
+        if(this.n === 7 && this.side === 2){
+            this.img = img[13]
+        }
     }
     
 }
@@ -780,7 +788,7 @@ class Player{
         this.x = 0;
         this.y = 0;
         this.steps = 0;
-        this.money = 2000;
+        this.money = 1400;
         this.index = index
         this.offsetY = 0;
         this.stepsWithOffset = (this.steps - rotation*10)
