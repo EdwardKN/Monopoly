@@ -662,7 +662,6 @@ class BoardPiece{
                 }
             }else if(this.piece.type === "chance"){
                 let random = randomIntFromRange(1,13)
-                console.log(random)
                 if(random === 1){
                     player.teleportTo(0)
                     player.money += 200;
@@ -722,6 +721,63 @@ class BoardPiece{
                 }
                 if(random === 13){
                     player.money += 150
+                }
+            }else if(this.piece.type === "community Chest"){
+                let random = randomIntFromRange(1,13);
+                if(random === 1){
+                    player.teleportTo(0)
+                    player.money += 200;
+                }
+                if(random === 2){
+                    player.money += 200;
+                }
+                if(random === 3){
+                    player.money -= 50;
+                }
+                if(random === 4){
+                    player.money += 50;
+                }
+                if(random === 4){
+                    //jail free
+                }
+                if(random === 5){
+                    player.teleportTo(10)
+                    player.inJail = true;
+                }
+                if(random === 6){
+                    player.money -= (players.length-1)*50
+                    players.forEach(e=> {if(e !== player){e.money+=50}})
+                }
+                if(random === 7){
+                    player.money += 100;
+                }
+                if(random === 8){
+                    player.money += 20;
+                }
+                if(random === 9){
+                    player.money -= (players.length-1)*10
+                    players.forEach(e=> {if(e !== player){e.money+=10}})
+                }
+                if(random === 10){
+                    player.money += 100;
+                }
+                if(random === 11){
+                    player.money -= 50;
+                }
+                if(random === 12){
+                    player.money -= 50;
+                }
+                if(random === 13){
+                    player.money -= 25;
+                }
+                if(random === 14){
+                    // pay 40 för varje hus och 115 för alla hotell
+                }
+                if(random === 15){
+                    player.money += 10;
+                }
+                if(random === 16){
+                    player.money += 100;
                 }
             }
         }
