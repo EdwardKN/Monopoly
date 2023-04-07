@@ -260,7 +260,7 @@ var images = {
         "./images/green.png","./images/blue.png",
         "/images/chance.png","/images/chance2.png","/images/chance3.png",
         "/images/train.png", "/images/water.png", "/images/electric.png",
-        "/images/supertax.png","/images/chest.png"]
+        "/images/supertax.png","/images/chest.png","/images/incometax.png"]
     },
     corner:{
         src:["./images/go.png","./images/prison.png","./images/parking.png","./images/gotoprison.png"]
@@ -273,12 +273,20 @@ var images = {
     },
     house:{
         src:["./images/house.png","./images/hotel.png"]
+    },
+    dice:{
+        src:["./images/dices.png"]
+    },
+    buttons:{
+        src:["./images/rolldice.png","./images/nextplayer.png"]
     }
 };
 
 var mouse = {
     x:0,
-    y:0
+    y:0,
+    realX:0,
+    realY:0
 }
 window.addEventListener("resize", e=> {
     canvas.width = window.innerWidth;
@@ -292,7 +300,9 @@ window.addEventListener("resize", e=> {
 canvas.addEventListener("mousemove",function(e){
     mouse = {
         x:e.offsetX - offsets.x,
-        y:e.offsetY - offsets.y
+        y:e.offsetY - offsets.y,
+        realX:e.x,
+        realY:e.y
     }
 })
 
@@ -302,6 +312,7 @@ window.addEventListener("mousedown",function(e){
             piece.click();
         })
     })
+    board.diceClick();
 })
 
 function preRender(imageObject){
@@ -365,6 +376,11 @@ function to_grid_coordinate(x,y) {
     y: Math.floor(x * inv.c + y * inv.d),
   }
 }
+function detectCollition(x,y,w,h,x2,y2,w2,h2){
+    if(x+w>x2 && x<x2+w2 && y+h>y2 && y<y2+h2){
+            return true;
+        };
+};
 function drawIsometricImage(x,y,img,mirror,cropX,cropY,cropW,cropH,offsetX,offsetY){
     drawRotatedImage(to_screen_coordinate(x*drawScale,y*drawScale).x + 832/2*drawScale - 64*drawScale + offsetX*drawScale,to_screen_coordinate(x*drawScale,y*drawScale).y + offsetY*drawScale,cropW*drawScale,cropH*drawScale,img,0,mirror,cropX,cropY,cropW,cropH)
 }
@@ -402,13 +418,29 @@ function update(){
 
     board.update();
     c.fillStyle = "black";
-    c.font = "20px Arial";
+    c.font = "50px Arial";
 
 
     players.forEach(function(player,i,a) { 
-        c.fillText(player.name + ": " + player.money + "$", 10, 40*i + 70);
+        if(i === 0){
+            c.textAlign = "left";
+            c.fillText(player.name + ": " + player.money + "$", 10, 50);
+        }
+        if(i === 1){
+            c.textAlign = "right";
+            c.fillText(player.name + ": " + player.money + "$", canvas.width-10, 50);
+        }
+        if(i === 2){
+            c.textAlign = "left";
+            c.fillText(player.name + ": " + player.money + "$", 10, canvas.height-50);
+        }
+        if(i === 3){
+            c.textAlign = "right";
+            c.fillText(player.name + ": " + player.money + "$", canvas.width-10, canvas.height-50);
+        }
     })
-    c.fillText("Just nu: Player"+(turn+1), 10, players.length*40 + 70);
+    c.textAlign = "left";
+    c.fillText("Just nu: Player"+(turn+1), 10, 40 + 70);
     
 }
 
@@ -424,6 +456,10 @@ function showBackground(){
 
 class Board{
     constructor(){
+        this.dice1 = 0;
+        this.dice2 = 0;
+        this.dice1Type = 0;
+        this.dice2Type = 0;
         this.boardPieces = [];
         for(let i = 0; i < 4; i++){
             let tmp = [];
@@ -441,7 +477,41 @@ class Board{
             this.boardPieces.forEach(e => e.forEach(g => g.update()))
             this.boardPieces.forEach(e => e.forEach(g => g.drawHouses()))
             this.boardPieces.forEach(e => e.forEach(g => g.currentPlayer.forEach(p => p.update())))
+            this.showDice()
         }  
+        this.randomizeDice = function () {
+            this.dice1Type = randomIntFromRange(0,3);
+            this.dice2Type = randomIntFromRange(0,3);
+        }
+
+        this.showDice = function () {
+            if(players[turn].animationOffset > 0){
+            drawIsometricImage(500,500,images.dice.img[0],false,this.dice1Type*64,(this.dice1-1)*64,64,64,0,0)
+            drawIsometricImage(550,400,images.dice.img[0],false,this.dice2Type*64,(this.dice2-1)*64,64,64,0,0)
+            }else{
+                if(players[turn].rolls === false){
+                    if(detectCollition(canvas.width/2 - 107/2*drawScale,canvas.height/2 + 42*drawScale,107*drawScale,23*drawScale,mouse.realX,mouse.realY,1,1)){
+                        drawIsometricImage(0,0,images.buttons.img[0],false,107,0,107,23,10,250)
+                    }else{
+                        drawIsometricImage(0,0,images.buttons.img[0],false,0,0,107,23,10,250)
+                    }
+                }else{
+                    if(detectCollition(canvas.width/2 - 107/2*drawScale,canvas.height/2 + 42*drawScale,107*drawScale,23*drawScale,mouse.realX,mouse.realY,1,1)){
+                        drawIsometricImage(0,0,images.buttons.img[1],false,107,0,107,23,10,250)
+                    }else{
+                        drawIsometricImage(0,0,images.buttons.img[1],false,0,0,107,23,10,250)
+                    }
+                }
+                
+            }
+        }
+        this.diceClick = function(){
+            if(players[turn].animationOffset === 0){
+                if(detectCollition(canvas.width/2 - 107/2*drawScale,canvas.height/2 + 42*drawScale,107*drawScale,23*drawScale,mouse.realX,mouse.realY,1,1)){
+                    players[turn].rollDice()
+                }
+            }
+        }
     }
 }
 
@@ -609,181 +679,182 @@ class BoardPiece{
                 }
             }
         }
-        this.playerStep = function (player,diceRoll){
+        this.playerStep = function (onlyStep,player,diceRoll){
             this.currentPlayer.push(player);
+            if(!onlyStep){
+                if(this.piece.price < 0){
+                    player.money += this.piece.price;
+                }else if(this.piece.price > 0 && player.money >= this.piece.price && this.owner === undefined){
+                    setTimeout(() => {
+                        if(confirm("Vill du köpa " + this.piece.name + " för " + this.piece.price + "$?")){
+                            player.money -= this.piece.price;
+                            this.owner = player;
+                            player.ownedPlaces.push(this);
+                        }  
+                    }, 50);
 
-            if(this.piece.price < 0){
-                player.money += this.piece.price;
-            }else if(this.piece.price > 0 && player.money >= this.piece.price && this.owner === undefined){
-                setTimeout(() => {
-                    if(confirm("Vill du köpa " + this.piece.name + " för " + this.piece.price + "$?")){
-                        player.money -= this.piece.price;
-                        this.owner = player;
-                        player.ownedPlaces.push(this);
-                    }  
-                }, 50);
+                }else if(this.owner !== player && this.owner !== undefined){
+                    if(this.piece.type === "utility"){
+                        let tmp = 0;
+                        let multiply = 0;
+                        this.owner.ownedPlaces.forEach(e => {
+                            if(e.piece.type === "utility"){
+                                tmp++;
+                            }
+                        })
+                        if(tmp === 1){
+                            multiply = 4;
 
-            }else if(this.owner !== player && this.owner !== undefined){
-                if(this.piece.type === "utility"){
-                    let tmp = 0;
-                    let multiply = 0;
-                    this.owner.ownedPlaces.forEach(e => {
-                        if(e.piece.type === "utility"){
-                            tmp++;
                         }
-                    })
-                    if(tmp === 1){
-                        multiply = 4;
-
-                    }
-                    if(tmp === 2){
-                        multiply = 10
-                    }
-                    player.money -=  diceRoll * multiply;
-                    this.owner.money += diceRoll * multiply;
-                    console.log(this.owner.name + " fick precis " + (diceRoll * multiply) + "$")
-                    
-                }else if(this.piece.type === "station"){
-                    let tmp = -1;
-                    this.owner.ownedPlaces.forEach(e => {
-                        if(e.piece.type === "station"){
-                            tmp++;
+                        if(tmp === 2){
+                            multiply = 10
                         }
-                    })
-                    player.money -=  25 * Math.pow(2,tmp);
-                    this.owner.money += 25 * Math.pow(2,tmp);
-                    console.log(this.owner.name + " fick precis " + (25 * Math.pow(2,tmp)) + "$")
+                        player.money -=  diceRoll * multiply;
+                        this.owner.money += diceRoll * multiply;
+                        console.log(this.owner.name + " fick precis " + (diceRoll * multiply) + "$")
+                        
+                    }else if(this.piece.type === "station"){
+                        let tmp = -1;
+                        this.owner.ownedPlaces.forEach(e => {
+                            if(e.piece.type === "station"){
+                                tmp++;
+                            }
+                        })
+                        player.money -=  25 * Math.pow(2,tmp);
+                        this.owner.money += 25 * Math.pow(2,tmp);
+                        console.log(this.owner.name + " fick precis " + (25 * Math.pow(2,tmp)) + "$")
 
-                }else{
-                    player.money -= this.piece.rent[this.level];
-                    this.owner.money += this.piece.rent[this.level];
-                    console.log(this.owner.name + " fick precis " + (this.piece.rent[this.level]) + "$")
+                    }else{
+                        player.money -= this.piece.rent[this.level];
+                        this.owner.money += this.piece.rent[this.level];
+                        console.log(this.owner.name + " fick precis " + (this.piece.rent[this.level]) + "$")
 
-                }
-            }else if(this.piece.type === "chance"){
-                let random = randomIntFromRange(1,13)
-                if(random === 1){
-                    player.teleportTo(0)
-                    player.money += 200;
-                }
-                if(random === 2){
-                    if(player.step >= 24){
-                        player.money+=200;   
                     }
-                    player.teleportTo(24)
-                }
-                if(random === 3){
-                    if(player.step >= 11){
-                        player.money+=200;   
+                }else if(this.piece.type === "chance"){
+                    let random = randomIntFromRange(1,13)
+                    if(random === 1){
+                        player.teleportTo(0)
+                        player.money += 200;
                     }
-                    player.teleportTo(11)
-                }
-                if(random === 4){
-                    if(player.step >= 0 || player.step >= 35){
-                        player.money+=200;
-                        player.teleportTo(5)
+                    if(random === 2){
+                        if(player.step >= 24){
+                            player.money+=200;   
+                        }
+                        player.teleportTo(24)
                     }
-                    if(player.step >= 5 && player.step < 15){
-                        player.teleportTo(15)
+                    if(random === 3){
+                        if(player.step >= 11){
+                            player.money+=200;   
+                        }
+                        player.teleportTo(11)
                     }
-                    if(player.step >= 15 && player.step < 25){
-                        player.teleportTo(25)
+                    if(random === 4){
+                        if(player.step >= 0 || player.step >= 35){
+                            player.money+=200;
+                            player.teleportTo(5)
+                        }
+                        if(player.step >= 5 && player.step < 15){
+                            player.teleportTo(15)
+                        }
+                        if(player.step >= 15 && player.step < 25){
+                            player.teleportTo(25)
+                        }
+                        if(player.step >= 25 && player.step < 35){
+                            player.teleportTo(35)
+                        }
                     }
-                    if(player.step >= 25 && player.step < 35){
-                        player.teleportTo(35)
+                    if(random === 5){
+                        player.money += 50;
                     }
-                }
-                if(random === 5){
-                    player.money += 50;
-                }
-                if(random === 6){
-                    //get out of jail
-                }
-                if(random === 7){
-                    player.teleportTo(player.steps-3)
-                }
-                if(random === 8){
-                    player.teleportTo(10)
-                    player.inJail = true;
-                }
-                if(random === 9){
-                    // pay 25 för varje hus och 100 för alla hotell
-                }
-                if(random === 10){
-                    // konstig
-                }
-                if(random === 11){
-                    player.teleportTo(39);
-                }
-                if(random === 12){
-                    player.money -= (players.length-1)*50
-                    players.forEach(e=> {if(e !== player){e.money+=50}})
-                }
-                if(random === 13){
-                    player.money += 150
-                }
-            }else if(this.piece.type === "community Chest"){
-                let random = randomIntFromRange(1,13);
-                if(random === 1){
-                    player.teleportTo(0)
-                    player.money += 200;
-                }
-                if(random === 2){
-                    player.money += 200;
-                }
-                if(random === 3){
-                    player.money -= 50;
-                }
-                if(random === 4){
-                    player.money += 50;
-                }
-                if(random === 4){
-                    //jail free
-                }
-                if(random === 5){
-                    player.teleportTo(10)
-                    player.inJail = true;
-                }
-                if(random === 6){
-                    player.money -= (players.length-1)*50
-                    players.forEach(e=> {if(e !== player){e.money+=50}})
-                }
-                if(random === 7){
-                    player.money += 100;
-                }
-                if(random === 8){
-                    player.money += 20;
-                }
-                if(random === 9){
-                    player.money -= (players.length-1)*10
-                    players.forEach(e=> {if(e !== player){e.money+=10}})
-                }
-                if(random === 10){
-                    player.money += 100;
-                }
-                if(random === 11){
-                    player.money -= 50;
-                }
-                if(random === 12){
-                    player.money -= 50;
-                }
-                if(random === 13){
-                    player.money -= 25;
-                }
-                if(random === 14){
-                    // pay 40 för varje hus och 115 för alla hotell
-                }
-                if(random === 15){
-                    player.money += 10;
-                }
-                if(random === 16){
-                    player.money += 100;
-                }
-            }else if(this.piece.type === "income tax"){
-                if(player.money > 2000){
-                    player.money -= 200;
-                }else{
-                    player.money = player.money * 0.9;
+                    if(random === 6){
+                        //get out of jail
+                    }
+                    if(random === 7){
+                        player.teleportTo(player.steps-3)
+                    }
+                    if(random === 8){
+                        player.teleportTo(10)
+                        player.inJail = true;
+                    }
+                    if(random === 9){
+                        // pay 25 för varje hus och 100 för alla hotell
+                    }
+                    if(random === 10){
+                        // konstig
+                    }
+                    if(random === 11){
+                        player.teleportTo(39);
+                    }
+                    if(random === 12){
+                        player.money -= (players.length-1)*50
+                        players.forEach(e=> {if(e !== player){e.money+=50}})
+                    }
+                    if(random === 13){
+                        player.money += 150
+                    }
+                }else if(this.piece.type === "community Chest"){
+                    let random = randomIntFromRange(1,13);
+                    if(random === 1){
+                        player.teleportTo(0)
+                        player.money += 200;
+                    }
+                    if(random === 2){
+                        player.money += 200;
+                    }
+                    if(random === 3){
+                        player.money -= 50;
+                    }
+                    if(random === 4){
+                        player.money += 50;
+                    }
+                    if(random === 4){
+                        //jail free
+                    }
+                    if(random === 5){
+                        player.teleportTo(10)
+                        player.inJail = true;
+                    }
+                    if(random === 6){
+                        player.money -= (players.length-1)*50
+                        players.forEach(e=> {if(e !== player){e.money+=50}})
+                    }
+                    if(random === 7){
+                        player.money += 100;
+                    }
+                    if(random === 8){
+                        player.money += 20;
+                    }
+                    if(random === 9){
+                        player.money -= (players.length-1)*10
+                        players.forEach(e=> {if(e !== player){e.money+=10}})
+                    }
+                    if(random === 10){
+                        player.money += 100;
+                    }
+                    if(random === 11){
+                        player.money -= 50;
+                    }
+                    if(random === 12){
+                        player.money -= 50;
+                    }
+                    if(random === 13){
+                        player.money -= 25;
+                    }
+                    if(random === 14){
+                        // pay 40 för varje hus och 115 för alla hotell
+                    }
+                    if(random === 15){
+                        player.money += 10;
+                    }
+                    if(random === 16){
+                        player.money += 100;
+                    }
+                }else if(this.piece.type === "income tax"){
+                    if(player.money > 2000){
+                        player.money -= 200;
+                    }else{
+                        player.money = player.money * 0.9;
+                    }
                 }
             }
         }
@@ -847,6 +918,9 @@ class BoardPiece{
         if(this.side === 0 && this.n === 1 || this.side === 1 && this.n === 6|| this.side === 3 && this.n === 2){
             this.img = img[16];
         }
+        if(this.n === 3 && this.side === 0){
+            this.img = img[17]
+        }
     }
     
 }
@@ -868,6 +942,8 @@ class Player{
         this.numberOfRolls = false;
         this.inJail = false;
         this.ownedPlaces = [];
+        this.animationOffset = 0;
+        this.timer = undefined;
         this.draw = function () {
             drawIsometricImage(800-this.x*64,700-this.y*64,this.img,false,0,0,32,32,0,-this.offsetY)
         }
@@ -876,14 +952,23 @@ class Player{
             this.draw();
         }
         this.updateVisual = function (){
-            
+            if(this.inJail === false){
+                this.stepsWithOffset = 40 + (this.steps + (rotation%4)*10) - this.animationOffset
+                this.stepsWithOffset = this.stepsWithOffset%40;
+            }else{
+                this.stepsWithOffset = 40 + (10 + (rotation%4)*10) - this.animationOffset
+                this.stepsWithOffset = this.stepsWithOffset%40;
+
+                this.x = 11
+                this.y = 1;
+            }
             if(this.stepsWithOffset === 0){
                 this.x = 0;
                 this.y = 0;
             }
             if(this.stepsWithOffset > 0 && this.stepsWithOffset < 10){
                 this.y = 0;
-                this.x = this.steps + 1;
+                this.x = this.stepsWithOffset + 1;
             }
             if(this.stepsWithOffset > 9 && this.stepsWithOffset < 21){
                 this.x = 12
@@ -907,19 +992,6 @@ class Player{
                     this.y = 12 - (this.stepsWithOffset-29)
                 }
             }
-            
-            if(this.inJail === false){
-                this.stepsWithOffset = 40 + (this.steps + (rotation%4)*10)
-                this.stepsWithOffset = this.stepsWithOffset%40;
-            }else{
-                this.stepsWithOffset = 40 + (10 + (rotation%4)*10)
-                this.stepsWithOffset = this.stepsWithOffset%40;
-
-                this.x = 11
-                this.y = 1;
-            }
-            
-
             if(this.steps === 0){
                 for(let i = 0; i<board.boardPieces[3][9].currentPlayer.length; i++){
                     if(board.boardPieces[3][9].currentPlayer[i] === this){
@@ -936,6 +1008,7 @@ class Player{
             
         }
         this.teleportTo = function(step){
+            let oldStep = this.steps;
             if(this.steps === 0){
                 let index = board.boardPieces[3][9].currentPlayer.indexOf(this);
                 board.boardPieces[3][9].currentPlayer.splice(index,1)
@@ -946,23 +1019,51 @@ class Player{
             this.steps = step;
             this.rolls = true;
 
-            if(this.steps === 0){
-                board.boardPieces[3][9].playerStep(this);
-            }else{
-                board.boardPieces[Math.floor((this.steps-1)/10)][(this.steps-1)%10].playerStep(this,0);
+            this.animateSteps(oldStep,this.steps,0)
+        }
+        this.animateSteps = function(from,to,dicesum){
+            let self = this;
+            clearInterval(this.timer)
+            if(to === 30){
+                to = 10;
+                this.inJail = true;
             }
+            if(to <= from){
+                to += 40
+            };
+            this.animationOffset = to-from;
+            self.timer = setInterval(function(){
+                if(self.animationOffset <= 0){
+                    clearInterval(self.timer);
+        
+                    if(to === 0){
+                        board.boardPieces[3][9].playerStep(false,self);
+                    }else{
+                        board.boardPieces[Math.floor((to-1)/10)][(to-1)%10].playerStep(false,self,dicesum);
+                    }
+                }else{
+                    let tmpI1;
+                    let tmpI2;
+                    let tmpI3;
+                    board.boardPieces.forEach(function(e,i1) {e.forEach(function(b,i2) {b.currentPlayer.forEach(function(d,i3) {
+                        if(d === self){
+                            tmpI1 = i1;
+                            tmpI2 = i2;
+                            tmpI3 = i3;
+                            board.boardPieces[i1][i2].currentPlayer.splice(i3,1)
+                        }
+                    })})})
+                    board.boardPieces[tmpI1][tmpI2].playerStep(true,self);
+
+                    self.animationOffset--;
+                }
+            },500);
         }
         
         this.rollDice = function(){
             if(this.inJail === false){
                 if(this.rolls === false){
-                    if(this.steps === 0){
-                        let index = board.boardPieces[3][9].currentPlayer.indexOf(this);
-                        board.boardPieces[3][9].currentPlayer.splice(index,1)
-                    }else{
-                        let index = board.boardPieces[Math.floor((this.steps-1)/10)][(this.steps-1)%10].currentPlayer.indexOf(this);
-                        board.boardPieces[Math.floor((this.steps-1)/10)][(this.steps-1)%10].currentPlayer.splice(index,1) 
-                    }
+                    let oldStep = this.steps;
                     let dice1 = randomIntFromRange(1,6);
                     let dice2 = randomIntFromRange(1,6);
                     console.log(dice1,dice2)
@@ -977,30 +1078,25 @@ class Player{
                         this.rolls = true;
                     }
                     let diceSum = dice1+dice2;
-        
+
+                    board.randomizeDice();
+                    board.dice1 = dice1;
+                    board.dice2 = dice2;
+
                     this.steps += dice1+dice2;
                     if(this.steps >= 40){
                         this.money+=200
                     }
                     this.steps = this.steps%40;
                     
-
-                    if(this.steps === 30){
-                        this.steps = 10;
-                        this.inJail = true;
-                    }
-
-
-        
-                    if(this.steps === 0){
-                        board.boardPieces[3][9].playerStep(this);
-                    }else{
-                        board.boardPieces[Math.floor((this.steps-1)/10)][(this.steps-1)%10].playerStep(this,diceSum);
-                    }
+                    this.animateSteps(oldStep,this.steps,diceSum)
+                    
                 }else{
                     turn = (turn+1)%players.length;
                     this.rolls = false;
                     this.numberOfRolls = 0;
+                    board.dice1 = 0;
+                    board.dice2 = 0;
                     
                 }
             }else{
