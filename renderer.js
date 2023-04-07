@@ -12,8 +12,11 @@ var turn = 0;
 var players = [];
 
 const drawScale = 2;
-const offsetAll = 0;
 
+var offsets = {
+    x:(window.innerWidth/2) - 832,
+    y:(window.innerHeight/2) - 416
+}
 
 const pieces = [
     {
@@ -262,12 +265,20 @@ var mouse = {
     x:0,
     y:0
 }
+window.addEventListener("resize", e=> {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    offsets = {
+        x:(window.innerWidth/2) - 832,
+        y:(window.innerHeight/2) - 416
+    }
+})
 
 canvas.addEventListener("mousemove",function(e){
     console.log(e)
     mouse = {
-        x:e.offsetX - offsetAll,
-        y:e.offsetY - offsetAll
+        x:e.offsetX - offsets.x,
+        y:e.offsetY - offsets.y
     }
 })
 
@@ -292,8 +303,8 @@ function preRender(imageObject){
 }
 function drawRotatedImage(x,y,w,h,img,angle,mirrored,cropX,cropY,cropW,cropH){
     let degree = angle * Math.PI / 180;
-    x+= offsetAll;
-    y+= offsetAll
+    x+= offsets.x;
+    y+= offsets.y
     let middlePoint = {
         x:x+w/2,
         y:y+h/2
@@ -353,8 +364,8 @@ function init(){
     document.body.appendChild(canvas);
     canvas.style.zIndex = -100;
 
-    canvas.width = 832*drawScale;
-    canvas.height = 416*drawScale;
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
 
     preRender(images);
 
