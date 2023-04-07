@@ -1049,7 +1049,7 @@ class Player{
                     board.boardPieces[Math.floor(((to-self.animationOffset)-1)/10)][((to-self.animationOffset)-1)%10].playerStep(true,self);
 
                 }
-            },500);
+            },100);
         }
         
         this.rollDice = function(){
