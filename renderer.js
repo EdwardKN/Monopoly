@@ -1,5 +1,6 @@
 var canvas = document.createElement("canvas");
 var c = canvas.getContext("2d");
+canvas.id = "game"
 
 
 var board;
@@ -10,8 +11,8 @@ var turn = 0;
 
 var players = [];
 
-const drawScale = 1;
-const offsetAll = 50;
+const drawScale = 2;
+const offsetAll = 0;
 
 
 const pieces = [
@@ -262,14 +263,11 @@ var mouse = {
     y:0
 }
 
-window.addEventListener("resize",function(e){
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-})
-window.addEventListener("mousemove",function(e){
+canvas.addEventListener("mousemove",function(e){
+    console.log(e)
     mouse = {
-        x:e.x - offsetAll,
-        y:e.y - offsetAll
+        x:e.offsetX - offsetAll,
+        y:e.offsetY - offsetAll
     }
 })
 
@@ -346,6 +344,7 @@ function drawIsometricImage(x,y,img,mirror,cropX,cropY,cropW,cropH,offsetX,offse
     drawRotatedImage(to_screen_coordinate(x*drawScale,y*drawScale).x + 832/2*drawScale - 64*drawScale + offsetX*drawScale,to_screen_coordinate(x*drawScale,y*drawScale).y + offsetY*drawScale,cropW*drawScale,cropH*drawScale,img,0,mirror,cropX,cropY,cropW,cropH)
 }
 
+
 function randomIntFromRange(min, max) {
     return Math.floor(Math.random() * (max - min + 1) + min)
 };
@@ -354,20 +353,18 @@ function init(){
     document.body.appendChild(canvas);
     canvas.style.zIndex = -100;
 
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+    canvas.width = 832*drawScale;
+    canvas.height = 416*drawScale;
 
     preRender(images);
 
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-    
+
 
     board = new Board();    
 
-    players.push(new Player(images.player.img[0],players.length))
-    players.push(new Player(images.player.img[1],players.length))
-    players.push(new Player(images.player.img[2],players.length))
+    players.push(new Player(images.player.img[0],players.length,"green"))
+    players.push(new Player(images.player.img[1],players.length,"yellow"))
+    players.push(new Player(images.player.img[2],players.length,"purple"))
 
 }
 
@@ -379,6 +376,7 @@ function update(){
     showBackground();
 
     board.update();
+    c.fillStyle = "black";
     c.font = "20px Arial";
 
 
@@ -540,6 +538,7 @@ class BoardPiece{
             }else{
                drawIsometricImage(this.x,this.y,this.img,false,128*this.imgSide,0,128,64,this.offsetX,this.offsetY);
             }
+            
         }
         this.click = function(){
             if(this.hover === true){
@@ -642,8 +641,9 @@ class BoardPiece{
 
 class Player{
 
-    constructor(img,index){
+    constructor(img,index,color){
         this.name = "Player" + (index+1);
+        this.color = color;
         this.img = img;
         this.x = 0;
         this.y = 0;
