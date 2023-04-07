@@ -14,8 +14,8 @@ var players = [];
 const drawScale = 2;
 
 var offsets = {
-    x:Math.floor(window.innerWidth/2) - 832,
-    y:Math.floor(window.innerHeight/2) - 416
+    x:Math.floor(window.innerWidth/2) - 832*drawScale/2,
+    y:Math.floor(window.innerHeight/2) - 416*drawScale/2
 }
 
 const pieces = [
@@ -283,8 +283,8 @@ window.addEventListener("resize", e=> {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
     offsets = {
-        x:Math.floor(window.innerWidth/2) - 832,
-        y:Math.floor(window.innerHeight/2) - 416
+        x:Math.floor(window.innerWidth/2) - 832*drawScale/2,
+        y:Math.floor(window.innerHeight/2) - 416*drawScale/2
     }
 })
 
