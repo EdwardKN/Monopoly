@@ -27,7 +27,8 @@ const pieces = [
         group:"Brown"
     },
     {
-        name:"Community Chest"
+        name:"Community Chest",
+        type:"Community Chest"
     },
     {
         name:"Brown 2",
@@ -54,6 +55,7 @@ const pieces = [
     },
     {
         name:"Chance",
+        type:"Chance"
     },
     {
         name:"Light blue 2",
@@ -112,6 +114,7 @@ const pieces = [
     },
     {
         name:"Community Chest",
+        type:"Community Chest"
     },
     {
         name:"Orange 2",
@@ -138,7 +141,8 @@ const pieces = [
         group:"red"
     },
     {
-        name:"Chance"
+        name:"Chance",
+        type:"Chance"
     },
     {
         name:"Red 2",
@@ -203,7 +207,8 @@ const pieces = [
         group:"green"
     },
     {
-        name:"Community Chest"
+        name:"Community Chest",
+        type:"Community Chest"
     },
     {
         name:"Green 3",
@@ -218,7 +223,8 @@ const pieces = [
         type:"station"
     },
     {
-        name:"Chance"
+        name:"Chance",
+        type:"Chance"
     },
     {
         name:"Blue 1",
@@ -404,7 +410,7 @@ function update(){
 function showBackground(){
     for(let x = -1; x < 2; x++){
         for(let y = -1; y < 2; y++){
-            drawIsometricImage(-352 + 832*x ,352+827*y,images.backGround.img[1],false,0,0,832,416,0,0)
+            drawIsometricImage(-352 + 832*x ,352+824*y,images.backGround.img[1],false,0,0,832,416,0,0)
 
         }
     }
