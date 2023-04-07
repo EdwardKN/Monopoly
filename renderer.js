@@ -14,8 +14,8 @@ var players = [];
 const drawScale = 2;
 
 var offsets = {
-    x:Math.floor(window.innerWidth/2) - 832,
-    y:Math.floor(window.innerHeight/2) - 416
+    x:Math.floor(window.innerWidth/2) - 832*drawScale/2,
+    y:Math.floor(window.innerHeight/2) - 416*drawScale/2
 }
 
 const pieces = [
@@ -259,7 +259,7 @@ var images = {
         "./images/red.png","./images/yellow.png",
         "./images/green.png","./images/blue.png",
         "/images/chance.png","/images/chance2.png","/images/chance3.png",
-        "/images/train.png", "/images/water.png"]
+        "/images/train.png", "/images/water.png", "/images/electric.png"]
     },
     corner:{
         src:["./images/go.png","./images/prison.png","./images/parking.png","./images/gotoprison.png"]
@@ -283,8 +283,8 @@ window.addEventListener("resize", e=> {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
     offsets = {
-        x:Math.floor(window.innerWidth/2) - 832,
-        y:Math.floor(window.innerHeight/2) - 416
+        x:Math.floor(window.innerWidth/2) - 832*drawScale/2,
+        y:Math.floor(window.innerHeight/2) - 416*drawScale/2
     }
 })
 
@@ -774,6 +774,9 @@ class BoardPiece{
         }
         if(this.n === 7 && this.side === 2){
             this.img = img[13]
+        }
+        if(this.n === 1 && this.side === 1){
+            this.img = img[14]
         }
     }
     
