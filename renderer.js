@@ -39,7 +39,7 @@ const pieces = [
     },
     {
         name:"Income tax",
-        price:-200
+        type:"income tax"
     },
     {
         name:"Station 1",
@@ -778,6 +778,12 @@ class BoardPiece{
                 }
                 if(random === 16){
                     player.money += 100;
+                }
+            }else if(this.piece.type === "income tax"){
+                if(player.money > 2000){
+                    player.money -= 200;
+                }else{
+                    player.money = player.money * 0.9;
                 }
             }
         }
