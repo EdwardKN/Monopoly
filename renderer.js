@@ -989,30 +989,24 @@ class Player{
                     this.y = 12 - (this.stepsWithOffset-29)
                 }
             }
-            if(this.steps === 0){
+            let tmpSteps = (this.steps -this.animationOffset + 40)%40;
+            if(tmpSteps === 0){
                 for(let i = 0; i<board.boardPieces[3][9].currentPlayer.length; i++){
                     if(board.boardPieces[3][9].currentPlayer[i] === this){
                         this.offsetY = i*20
                     }
                 }
             }else{
-                for(let i = 0; i<board.boardPieces[Math.floor((this.steps-1)/10)][(this.steps-1)%10].currentPlayer.length; i++){
-                    if(board.boardPieces[Math.floor((this.steps-1)/10)][(this.steps-1)%10].currentPlayer[i] === this){
+                for(let i = 0; i<board.boardPieces[Math.floor((tmpSteps-1)/10)][(tmpSteps-1)%10].currentPlayer.length; i++){
+                    if(board.boardPieces[Math.floor((tmpSteps-1)/10)][(tmpSteps-1)%10].currentPlayer[i] === this){
                         this.offsetY = i*20
                     }                
                 }
             }
-            
         }
         this.teleportTo = function(step){
             let oldStep = this.steps;
-            if(this.steps === 0){
-                let index = board.boardPieces[3][9].currentPlayer.indexOf(this);
-                board.boardPieces[3][9].currentPlayer.splice(index,1)
-            }else{
-                let index = board.boardPieces[Math.floor((this.steps-1)/10)][(this.steps-1)%10].currentPlayer.indexOf(this);
-                board.boardPieces[Math.floor((this.steps-1)/10)][(this.steps-1)%10].currentPlayer.splice(index,1) 
-            }
+
             this.steps = step;
             this.rolls = true;
 
@@ -1032,27 +1026,28 @@ class Player{
             self.timer = setInterval(function(){
                 if(self.animationOffset <= 0){
                     clearInterval(self.timer);
+                    board.boardPieces.forEach(function(e,i1) {e.forEach(function(b,i2) {b.currentPlayer.forEach(function(d,i3) {
+                        if(d === self){
+                            board.boardPieces[i1][i2].currentPlayer.splice(i3,1)
+                        }
+                    })})})
                     to = to%40
                     if(to === 0){
                         board.boardPieces[3][9].playerStep(false,self);
                     }else{
                         board.boardPieces[Math.floor((to-1)/10)][(to-1)%10].playerStep(false,self,dicesum);
                     }
+
                 }else{
-                    let tmpI1;
-                    let tmpI2;
-                    let tmpI3;
                     board.boardPieces.forEach(function(e,i1) {e.forEach(function(b,i2) {b.currentPlayer.forEach(function(d,i3) {
                         if(d === self){
-                            tmpI1 = i1;
-                            tmpI2 = i2;
-                            tmpI3 = i3;
                             board.boardPieces[i1][i2].currentPlayer.splice(i3,1)
                         }
                     })})})
-                    board.boardPieces[tmpI1][tmpI2].playerStep(true,self);
 
                     self.animationOffset--;
+                    board.boardPieces[Math.floor(((to-self.animationOffset)-1)/10)][((to-self.animationOffset)-1)%10].playerStep(true,self);
+
                 }
             },500);
         }
@@ -1063,7 +1058,6 @@ class Player{
                     let oldStep = this.steps;
                     let dice1 = randomIntFromRange(1,6);
                     let dice2 = randomIntFromRange(1,6);
-                    console.log(dice1,dice2)
                     if(dice1 === dice2){
                         if(this.numberOfRolls === 3){
                             this.steps = 10;
