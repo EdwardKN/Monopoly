@@ -14,8 +14,8 @@ var players = [];
 const drawScale = 2;
 
 var offsets = {
-    x:(window.innerWidth/2) - 832,
-    y:(window.innerHeight/2) - 416
+    x:Math.floor(window.innerWidth/2) - 832,
+    y:Math.floor(window.innerHeight/2) - 416
 }
 
 const pieces = [
@@ -257,7 +257,10 @@ var images = {
         src:["./images/player.png","./images/player2.png","./images/player3.png"]
     },
     backGround:{
-        src:["./images/insideboard.png"]
+        src:["./images/insideboard.png","./images/background.png"]
+    },
+    house:{
+        src:["./images/house.png","./images/hotel.png"]
     }
 };
 
@@ -269,13 +272,12 @@ window.addEventListener("resize", e=> {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
     offsets = {
-        x:(window.innerWidth/2) - 832,
-        y:(window.innerHeight/2) - 416
+        x:Math.floor(window.innerWidth/2) - 832,
+        y:Math.floor(window.innerHeight/2) - 416
     }
 })
 
 canvas.addEventListener("mousemove",function(e){
-    console.log(e)
     mouse = {
         x:e.offsetX - offsets.x,
         y:e.offsetY - offsets.y
@@ -400,6 +402,12 @@ function update(){
 }
 
 function showBackground(){
+    for(let x = -1; x < 2; x++){
+        for(let y = -1; y < 2; y++){
+            drawIsometricImage(-352 + 832*x ,352+827*y,images.backGround.img[1],false,0,0,832,416,0,0)
+
+        }
+    }
     drawIsometricImage(-92,352,images.backGround.img[0],false,0,0,572,286,0,0)
 }
 
@@ -420,6 +428,8 @@ class Board{
 
         this.update = function () {
             this.boardPieces.forEach(e => e.forEach(g => g.update()))
+            this.boardPieces.forEach(e => e.forEach(g => g.drawHouses()))
+
         }  
     }
 }
@@ -439,83 +449,46 @@ class BoardPiece{
         this.level = 0;
         this.hover = false;
         this.currentPlayer = [];
-        if(this.side === 2){
-            this.x = 128+this.n*64;
-            this.y = 0;
-            this.imgSide = 1;
-            if(this.n === 9){
-                this.x = 128+this.n*64;
-                this.y = 0;
-            }
-        }
-
-        if(this.side === 1){
-            this.x = 32;
-            this.y = -32 + 128*5+ - this.n*64;
-            this.imgSide = 3;
-            if(this.n === 9){
-                this.x = 0;
-                this.y = 0;
-            }
-        }
-        if(this.side === 0){
-            this.x = 128*5-this.n*64;
-            this.y = 64*11;
-            this.imgSide =0;
-            if(this.n === 9){
-                this.x = 0;
-                this.y = 128+this.n*64;
-            }
-        }
-        if(this.side === 3){
-            this.x = 32 + 64*11
-            this.y = -32 + 128+this.n*64;
-            this.imgSide = 2;
-            if(this.n === 9){
-                this.x = 128+this.n*64;
-                this.y = 128+this.n*64;
-            }
-        }
-        console.log(img[3])
-
+        
+        
         this.setImg = function(){
             this.side = (side+rotation)%4
-            this.img = img[0];
-            if(this.side === 0 && this.n === 2 || this.side === 0 && this.n === 0){
-                this.img = img[1];
+            if(this.side === 2){
+                this.x = 128+this.n*64;
+                this.y = 0;
+                this.imgSide = 1;
+                if(this.n === 9){
+                    this.x = 128+this.n*64;
+                    this.y = 0;
+                }
             }
-            if(this.side === 0 && this.n === 8 || this.side === 0 && this.n === 7 || this.side === 0 && this.n === 5){
-                this.img = img[2];
+    
+            if(this.side === 1){
+                this.x = 32;
+                this.y = -32 + 128*5+ - this.n*64;
+                this.imgSide = 3;
+                if(this.n === 9){
+                    this.x = 0;
+                    this.y = 0;
+                }
             }
-            if(this.side === 1 && this.n === 0 || this.side === 1 && this.n === 2 || this.side === 1 && this.n === 3){
-                this.img = img[3];
+            if(this.side === 0){
+                this.x = 128*5-this.n*64;
+                this.y = 64*11;
+                this.imgSide =0;
+                if(this.n === 9){
+                    this.x = 0;
+                    this.y = 128+this.n*64;
+                }
             }
-            if(this.side === 1 && this.n === 8 || this.side === 1 && this.n === 7 || this.side === 1 && this.n === 5){
-                this.img = img[4];
-            }
-            if(this.side === 2 && this.n === 0 || this.side === 2 && this.n === 2 || this.side === 2 && this.n === 3){
-                this.img = img[5];
-            }
-            if(this.side === 2 && this.n === 8 || this.side === 2 && this.n === 6 || this.side === 2 && this.n === 5){
-                this.img = img[6];
-            }
-            if(this.side === 3 && this.n === 0 || this.side === 3 && this.n === 1 || this.side === 3 && this.n === 3){
-                this.img = img[7];
-            }
-            if(this.side === 3 && this.n === 8 || this.side === 3 && this.n === 6){
-                this.img = img[8];
-            }
-            if(this.n === 9 && this.side === 3){
-                this.img = img[0]
-            }
-            if(this.n === 9 && this.side === 0){
-                this.img = img[1]
-            }
-            if(this.n === 9 && this.side === 1){
-               this.img = img[2]
-            }
-            if(this.n === 9 && this.side === 2){
-               this.img = img[3]
+            if(this.side === 3){
+                this.x = 32 + 64*11
+                this.y = -32 + 128+this.n*64;
+                this.imgSide = 2;
+                if(this.n === 9){
+                    this.x = 128+this.n*64;
+                    this.y = 128+this.n*64;
+                }
             }
         }
                 
@@ -523,19 +496,19 @@ class BoardPiece{
             this.setImg();
             let mouseSquareX = (to_grid_coordinate(mouse.x-416*drawScale,mouse.y).x/64) 
             let mouseSquareY = (to_grid_coordinate(mouse.x-416*drawScale,mouse.y).y/64)
-            if(this.x/64*drawScale > mouseSquareX-1*drawScale && this.x/64*drawScale < mouseSquareX && side === 2 && this.n !== 9 && mouseSquareY >= 0*drawScale && mouseSquareY < 2*drawScale
-            ||this.x/64*drawScale > mouseSquareX-2*drawScale && this.x/64*drawScale < mouseSquareX && side === 2 && this.n === 9 && mouseSquareY >= 0*drawScale && mouseSquareY < 2*drawScale
+            if(this.x/64*drawScale > mouseSquareX-1*drawScale && this.x/64*drawScale < mouseSquareX && this.side === 2 && this.n !== 9 && mouseSquareY >= 0*drawScale && mouseSquareY < 2*drawScale
+            ||this.x/64*drawScale > mouseSquareX-2*drawScale && this.x/64*drawScale < mouseSquareX && this.side === 2 && this.n === 9 && mouseSquareY >= 0*drawScale && mouseSquareY < 2*drawScale
 
-            ||this.x/64*drawScale > mouseSquareX-1*drawScale && this.x/64*drawScale < mouseSquareX && side === 0 && this.n !== 9 && mouseSquareY >= 11*drawScale && mouseSquareY < 13*drawScale
-            ||this.x/64*drawScale > mouseSquareX-2*drawScale && this.x/64*drawScale < mouseSquareX && side === 0 && this.n === 9 && mouseSquareY >= 11*drawScale && mouseSquareY < 13*drawScale
+            ||this.x/64*drawScale > mouseSquareX-1*drawScale && this.x/64*drawScale < mouseSquareX && this.side === 0 && this.n !== 9 && mouseSquareY >= 11*drawScale && mouseSquareY < 13*drawScale
+            ||this.x/64*drawScale > mouseSquareX-2*drawScale && this.x/64*drawScale < mouseSquareX && this.side === 0 && this.n === 9 && mouseSquareY >= 11*drawScale && mouseSquareY < 13*drawScale
 
-            ||this.y/64*drawScale > mouseSquareY-1.5*drawScale && this.y/64*drawScale < mouseSquareY-0.5*drawScale && side === 3 && this.n !== 9 && mouseSquareX >= 11*drawScale && mouseSquareX < 13*drawScale
-            ||this.y/64*drawScale > mouseSquareY-2*drawScale && this.y/64*drawScale < mouseSquareY && side === 3 && this.n === 9 && mouseSquareX >= 11*drawScale && mouseSquareX < 13*drawScale
+            ||this.y/64*drawScale > mouseSquareY-1.5*drawScale && this.y/64*drawScale < mouseSquareY-0.5*drawScale && this.side === 3 && this.n !== 9 && mouseSquareX >= 11*drawScale && mouseSquareX < 13*drawScale
+            ||this.y/64*drawScale > mouseSquareY-2*drawScale && this.y/64*drawScale < mouseSquareY && this.side === 3 && this.n === 9 && mouseSquareX >= 11*drawScale && mouseSquareX < 13*drawScale
 
-            ||this.y/64*drawScale > mouseSquareY-1.5*drawScale && this.y/64*drawScale < mouseSquareY-0.5*drawScale && side === 1 && this.n !== 9 && mouseSquareX >= 0*drawScale && mouseSquareX < 2*drawScale
-            ||this.y/64*drawScale > mouseSquareY-2*drawScale && this.y/64*drawScale < mouseSquareY && side === 1 && this.n === 9 && mouseSquareX >= 0*drawScale && mouseSquareX < 2*drawScale
+            ||this.y/64*drawScale > mouseSquareY-1.5*drawScale && this.y/64*drawScale < mouseSquareY-0.5*drawScale && this.side === 1 && this.n !== 9 && mouseSquareX >= 0*drawScale && mouseSquareX < 2*drawScale
+            ||this.y/64*drawScale > mouseSquareY-2*drawScale && this.y/64*drawScale < mouseSquareY && this.side === 1 && this.n === 9 && mouseSquareX >= 0*drawScale && mouseSquareX < 2*drawScale
             ){
-                this.offsetY = -1;
+                this.offsetY = -0.5;
                 this.hover = true;
             }else{
                 this.offsetY = 0;
@@ -549,7 +522,37 @@ class BoardPiece{
             }else{
                 drawIsometricImage(this.x,this.y,this.img,false,128*this.imgSide,0,128,64,this.offsetX,this.offsetY);
             }
-            
+        }
+        this.drawHouses = function (){
+            if(this.level < 5 && this.piece.housePrice !== undefined){
+                for(let i = 0; i < this.level; i++){
+                    if(this.imgSide === 0){
+                        drawIsometricImage(this.x+13*drawScale + i*8*drawScale,this.y-31*drawScale,images.house.img[0],false,0,0,24,24,this.offsetX,this.offsetY);
+                    }
+                    if(this.imgSide === 1){
+                        drawIsometricImage(this.x+13*drawScale + i*8*drawScale,this.y+15*drawScale,images.house.img[0],false,0,0,24,24,this.offsetX,this.offsetY);
+                    }
+                    if(this.imgSide === 2){
+                        drawIsometricImage(this.x+5*drawScale ,this.y-21*drawScale+ i*8*drawScale,images.house.img[0],false,24,0,24,24,this.offsetX,this.offsetY);
+                    }
+                    if(this.imgSide === 3){
+                        drawIsometricImage(this.x+50*drawScale ,this.y-21*drawScale+ i*8*drawScale,images.house.img[0],false,24,0,24,24,this.offsetX,this.offsetY);
+                    }
+                }
+            }else if(this.piece.housePrice !== undefined){
+                if(this.imgSide === 0){
+                    drawIsometricImage(this.x+28*drawScale,this.y-31*drawScale,images.house.img[1],false,0,0,24,24,this.offsetX,this.offsetY);
+                }
+                if(this.imgSide === 1){
+                    drawIsometricImage(this.x+28*drawScale,this.y+15*drawScale,images.house.img[1],false,0,0,24,24,this.offsetX,this.offsetY);
+                }
+                if(this.imgSide === 2){
+                    drawIsometricImage(this.x+5*drawScale ,this.y-8*drawScale,images.house.img[1],false,24,0,24,24,this.offsetX,this.offsetY);
+                }
+                if(this.imgSide === 3){
+                    drawIsometricImage(this.x+50*drawScale ,this.y-8*drawScale,images.house.img[1],false,24,0,24,24,this.offsetX,this.offsetY);
+                }
+            }
         }
         this.click = function(){
             if(this.hover === true){
@@ -647,7 +650,44 @@ class BoardPiece{
                 }
             }
         }
+        if(this.side === 0 && this.n === 2 || this.side === 0 && this.n === 0){
+            this.img = img[1];
+        }
+        if(this.side === 0 && this.n === 8 || this.side === 0 && this.n === 7 || this.side === 0 && this.n === 5){
+            this.img = img[2];
+        }
+        if(this.side === 1 && this.n === 0 || this.side === 1 && this.n === 2 || this.side === 1 && this.n === 3){
+            this.img = img[3];
+        }
+        if(this.side === 1 && this.n === 8 || this.side === 1 && this.n === 7 || this.side === 1 && this.n === 5){
+            this.img = img[4];
+        }
+        if(this.side === 2 && this.n === 0 || this.side === 2 && this.n === 2 || this.side === 2 && this.n === 3){
+            this.img = img[5];
+        }
+        if(this.side === 2 && this.n === 8 || this.side === 2 && this.n === 6 || this.side === 2 && this.n === 5){
+            this.img = img[6];
+        }
+        if(this.side === 3 && this.n === 0 || this.side === 3 && this.n === 1 || this.side === 3 && this.n === 3){
+            this.img = img[7];
+        }
+        if(this.side === 3 && this.n === 8 || this.side === 3 && this.n === 6){
+            this.img = img[8];
+        }
+        if(this.n === 9 && this.side === 3){
+            this.img = img[0]
+        }
+        if(this.n === 9 && this.side === 0){
+            this.img = img[1]
+        }
+        if(this.n === 9 && this.side === 1){
+           this.img = img[2]
+        }
+        if(this.n === 9 && this.side === 2){
+           this.img = img[3]
+        }
     }
+    
 }
 
 class Player{
@@ -706,7 +746,7 @@ class Player{
                 }
             }
             
-            this.stepsWithOffset = 40 + (this.steps - rotation*10)
+            this.stepsWithOffset = 40 + (this.steps + (rotation%4)*10)
 
             if(this.steps >= 40){
                 this.money += 200;
