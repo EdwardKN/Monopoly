@@ -39,7 +39,7 @@ const pieces = [
     },
     {
         name:"Income tax",
-        price:-200
+        type:"income tax"
     },
     {
         name:"Station 1",
@@ -260,7 +260,7 @@ var images = {
         "./images/green.png","./images/blue.png",
         "/images/chance.png","/images/chance2.png","/images/chance3.png",
         "/images/train.png", "/images/water.png", "/images/electric.png",
-        "/images/supertax.png"]
+        "/images/supertax.png","/images/chest.png"]
     },
     corner:{
         src:["./images/go.png","./images/prison.png","./images/parking.png","./images/gotoprison.png"]
@@ -662,7 +662,6 @@ class BoardPiece{
                 }
             }else if(this.piece.type === "chance"){
                 let random = randomIntFromRange(1,13)
-                console.log(random)
                 if(random === 1){
                     player.teleportTo(0)
                     player.money += 200;
@@ -723,6 +722,69 @@ class BoardPiece{
                 if(random === 13){
                     player.money += 150
                 }
+            }else if(this.piece.type === "community Chest"){
+                let random = randomIntFromRange(1,13);
+                if(random === 1){
+                    player.teleportTo(0)
+                    player.money += 200;
+                }
+                if(random === 2){
+                    player.money += 200;
+                }
+                if(random === 3){
+                    player.money -= 50;
+                }
+                if(random === 4){
+                    player.money += 50;
+                }
+                if(random === 4){
+                    //jail free
+                }
+                if(random === 5){
+                    player.teleportTo(10)
+                    player.inJail = true;
+                }
+                if(random === 6){
+                    player.money -= (players.length-1)*50
+                    players.forEach(e=> {if(e !== player){e.money+=50}})
+                }
+                if(random === 7){
+                    player.money += 100;
+                }
+                if(random === 8){
+                    player.money += 20;
+                }
+                if(random === 9){
+                    player.money -= (players.length-1)*10
+                    players.forEach(e=> {if(e !== player){e.money+=10}})
+                }
+                if(random === 10){
+                    player.money += 100;
+                }
+                if(random === 11){
+                    player.money -= 50;
+                }
+                if(random === 12){
+                    player.money -= 50;
+                }
+                if(random === 13){
+                    player.money -= 25;
+                }
+                if(random === 14){
+                    // pay 40 för varje hus och 115 för alla hotell
+                }
+                if(random === 15){
+                    player.money += 10;
+                }
+                if(random === 16){
+                    player.money += 100;
+                }
+            }else if(this.piece.type === "income tax"){
+                if(player.money > 2000){
+                    player.money -= 200;
+                }else{
+                    player.money = player.money * 0.9;
+                }
             }
         }
         if(this.side === 0 && this.n === 2 || this.side === 0 && this.n === 0){
@@ -781,6 +843,9 @@ class BoardPiece{
         }
         if(this.n === 7 && this.side === 3){
             this.img = img[15]
+        }
+        if(this.side === 0 && this.n === 1 || this.side === 1 && this.n === 6|| this.side === 3 && this.n === 2){
+            this.img = img[16];
         }
     }
     
