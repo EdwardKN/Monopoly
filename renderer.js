@@ -514,7 +514,7 @@ class BoardPiece{
             ||this.y/64*drawScale > mouseSquareY-1.5*drawScale && this.y/64*drawScale < mouseSquareY-0.5*drawScale && this.side === 1 && this.n !== 9 && mouseSquareX >= 0*drawScale && mouseSquareX < 2*drawScale
             ||this.y/64*drawScale > mouseSquareY-2*drawScale && this.y/64*drawScale < mouseSquareY && this.side === 1 && this.n === 9 && mouseSquareX >= 0*drawScale && mouseSquareX < 2*drawScale
             ){
-                this.offsetY = -0.5;
+                this.offsetY = -1;
                 this.hover = true;
             }else{
                 this.offsetY = 0;
