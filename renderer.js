@@ -268,7 +268,7 @@ var images = {
     player:{
         src:["./images/player.png","./images/player2.png","./images/player3.png"]
     },
-    backGround:{
+    background:{
         src:["./images/insideboard.png","./images/background.png"]
     },
     house:{
@@ -447,11 +447,11 @@ function update(){
 function showBackground(){
     for(let x = -1; x < 2; x++){
         for(let y = -1; y < 2; y++){
-            drawIsometricImage(-352 + 832*x ,352+824*y,images.backGround.img[1],false,0,0,832,416,0,0)
+            drawIsometricImage(-352 + 832*x ,352+824*y,images.background.img[1],false,0,0,832,416,0,0)
 
         }
     }
-    drawIsometricImage(-92,352,images.backGround.img[0],false,0,0,572,286,0,0)
+    drawIsometricImage(-92,352,images.background.img[0],false,0,0,572,286,0,0)
 }
 
 class Board{
