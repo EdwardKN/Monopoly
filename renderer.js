@@ -14,8 +14,8 @@ var players = [];
 const drawScale = 2;
 
 var offsets = {
-    x:(window.innerWidth/2) - 832,
-    y:(window.innerHeight/2) - 416
+    x:Math.floor(window.innerWidth/2) - 832,
+    y:Math.floor(window.innerHeight/2) - 416
 }
 
 const pieces = [
@@ -257,7 +257,7 @@ var images = {
         src:["./images/player.png","./images/player2.png","./images/player3.png"]
     },
     backGround:{
-        src:["./images/insideboard.png"]
+        src:["./images/insideboard.png","./images/background.png"]
     },
     house:{
         src:["./images/house.png","./images/hotel.png"]
@@ -272,8 +272,8 @@ window.addEventListener("resize", e=> {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
     offsets = {
-        x:(window.innerWidth/2) - 832,
-        y:(window.innerHeight/2) - 416
+        x:Math.floor(window.innerWidth/2) - 832,
+        y:Math.floor(window.innerHeight/2) - 416
     }
 })
 
@@ -402,6 +402,12 @@ function update(){
 }
 
 function showBackground(){
+    for(let x = -1; x < 2; x++){
+        for(let y = -1; y < 2; y++){
+            drawIsometricImage(-352 + 832*x ,352+827*y,images.backGround.img[1],false,0,0,832,416,0,0)
+
+        }
+    }
     drawIsometricImage(-92,352,images.backGround.img[0],false,0,0,572,286,0,0)
 }
 
@@ -440,7 +446,7 @@ class BoardPiece{
         this.imgSide = 0;
         this.piece = piece;
         this.owner = undefined;
-        this.level = 4;
+        this.level = 0;
         this.hover = false;
         this.currentPlayer = [];
         
@@ -502,7 +508,7 @@ class BoardPiece{
             ||this.y/64*drawScale > mouseSquareY-1.5*drawScale && this.y/64*drawScale < mouseSquareY-0.5*drawScale && this.side === 1 && this.n !== 9 && mouseSquareX >= 0*drawScale && mouseSquareX < 2*drawScale
             ||this.y/64*drawScale > mouseSquareY-2*drawScale && this.y/64*drawScale < mouseSquareY && this.side === 1 && this.n === 9 && mouseSquareX >= 0*drawScale && mouseSquareX < 2*drawScale
             ){
-                this.offsetY = -1;
+                this.offsetY = -0.5;
                 this.hover = true;
             }else{
                 this.offsetY = 0;
@@ -520,19 +526,31 @@ class BoardPiece{
         this.drawHouses = function (){
             if(this.level < 5 && this.piece.housePrice !== undefined){
                 for(let i = 0; i < this.level; i++){
-                    this.tmpSide = this.imgSide
-                    if(this.tmpSide === 0){
-                        drawIsometricImage(this.x+13*drawScale + i*8*drawScale,this.y-31*drawScale,images.house.img[0],false,24*this.imgSide,0,24,24,this.offsetX,this.offsetY);
+                    if(this.imgSide === 0){
+                        drawIsometricImage(this.x+13*drawScale + i*8*drawScale,this.y-31*drawScale,images.house.img[0],false,0,0,24,24,this.offsetX,this.offsetY);
                     }
-                    if(this.tmpSide === 1){
+                    if(this.imgSide === 1){
                         drawIsometricImage(this.x+13*drawScale + i*8*drawScale,this.y+15*drawScale,images.house.img[0],false,0,0,24,24,this.offsetX,this.offsetY);
                     }
-                    if(this.tmpSide === 2){
+                    if(this.imgSide === 2){
                         drawIsometricImage(this.x+5*drawScale ,this.y-21*drawScale+ i*8*drawScale,images.house.img[0],false,24,0,24,24,this.offsetX,this.offsetY);
                     }
-                    if(this.tmpSide === 3){
+                    if(this.imgSide === 3){
                         drawIsometricImage(this.x+50*drawScale ,this.y-21*drawScale+ i*8*drawScale,images.house.img[0],false,24,0,24,24,this.offsetX,this.offsetY);
                     }
+                }
+            }else if(this.piece.housePrice !== undefined){
+                if(this.imgSide === 0){
+                    drawIsometricImage(this.x+28*drawScale,this.y-31*drawScale,images.house.img[1],false,0,0,24,24,this.offsetX,this.offsetY);
+                }
+                if(this.imgSide === 1){
+                    drawIsometricImage(this.x+28*drawScale,this.y+15*drawScale,images.house.img[1],false,0,0,24,24,this.offsetX,this.offsetY);
+                }
+                if(this.imgSide === 2){
+                    drawIsometricImage(this.x+5*drawScale ,this.y-8*drawScale,images.house.img[1],false,24,0,24,24,this.offsetX,this.offsetY);
+                }
+                if(this.imgSide === 3){
+                    drawIsometricImage(this.x+50*drawScale ,this.y-8*drawScale,images.house.img[1],false,24,0,24,24,this.offsetX,this.offsetY);
                 }
             }
         }
