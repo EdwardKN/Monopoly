@@ -260,7 +260,7 @@ var images = {
         "./images/green.png","./images/blue.png",
         "/images/chance.png","/images/chance2.png","/images/chance3.png",
         "/images/train.png", "/images/water.png", "/images/electric.png",
-        "/images/supertax.png"]
+        "/images/supertax.png","/images/chest.png"]
     },
     corner:{
         src:["./images/go.png","./images/prison.png","./images/parking.png","./images/gotoprison.png"]
@@ -781,6 +781,9 @@ class BoardPiece{
         }
         if(this.n === 7 && this.side === 3){
             this.img = img[15]
+        }
+        if(this.side === 0 && this.n === 1 || this.side === 1 && this.n === 6|| this.side === 3 && this.n === 2){
+            this.img = img[16];
         }
     }
     
