@@ -250,9 +250,6 @@ const pieces = [
 ]
 
 var images = {
-    board:{
-        src:["./images/board.png"]
-    },
     part:{
         src:["./images/plates/emptyPart.png","./images/plates/brown.png","./images/plates/light_blue.png",
         "./images/plates/pink.png","./images/plates/orange.png",
