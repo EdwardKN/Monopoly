@@ -502,10 +502,10 @@ class BoardPiece{
             if(this.n === 9 && this.side === 0){
                 this.img = img[1]
             }
-            if(this.n === 9 && this.side === 1 && img[3] !== undefined){
+            if(this.n === 9 && this.side === 1){
                this.img = img[2]
             }
-            if(this.n === 9 && this.side === 2 && img[4] !== undefined){
+            if(this.n === 9 && this.side === 2){
                this.img = img[3]
             }
         }
