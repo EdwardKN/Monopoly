@@ -254,31 +254,31 @@ var images = {
         src:["./images/board.png"]
     },
     part:{
-        src:["./images/emptyPart.png","./images/brown.png","./images/light_blue.png",
-        "./images/pink.png","./images/orange.png",
-        "./images/red.png","./images/yellow.png",
-        "./images/green.png","./images/blue.png",
-        "/images/chance.png","/images/chance2.png","/images/chance3.png",
-        "/images/train.png", "/images/water.png", "/images/electric.png",
-        "/images/supertax.png","/images/chest.png","/images/incometax.png"]
+        src:["./images/plates/emptyPart.png","./images/plates/brown.png","./images/plates/light_blue.png",
+        "./images/plates/pink.png","./images/plates/orange.png",
+        "./images/plates/red.png","./images/plates/yellow.png",
+        "./images/plates/green.png","./images/plates/blue.png",
+        "/images/plates/chance.png","/images/plates/chance2.png","/images/plates/chance3.png",
+        "/images/plates/train.png", "/images/plates/water.png", "/images/plates/electric.png",
+        "/images/plates/supertax.png","/images/plates/chest.png","/images/plates/incometax.png"]
     },
     corner:{
-        src:["./images/go.png","./images/prison.png","./images/parking.png","./images/gotoprison.png"]
+        src:["./images/corners/go.png","./images/corners/prison.png","./images/corners/parking.png","./images/corners/gotoprison.png"]
     },
     player:{
-        src:["./images/player.png","./images/player2.png","./images/player3.png"]
+        src:["./images/players/player.png","./images/players/player2.png","./images/players/player3.png"]
     },
     background:{
-        src:["./images/insideboard.png","./images/background.png"]
+        src:["./images/static/insideboard.png","./images/static/background.png"]
     },
     house:{
-        src:["./images/house.png","./images/hotel.png"]
+        src:["./images/buildings/house.png","./images/buildings/hotel.png"]
     },
     dice:{
-        src:["./images/dices.png"]
+        src:["./images/dices/dices.png"]
     },
     buttons:{
-        src:["./images/rolldice.png","./images/nextplayer.png"]
+        src:["./images/buttons/rolldice.png","./images/buttons/nextplayer.png"]
     }
 };
 
