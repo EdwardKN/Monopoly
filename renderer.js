@@ -247,7 +247,7 @@ var images = {
         src:["./images/emptyPart.png","./images/brown.png","./images/light_blue.png","./images/pink.png","./images/orange.png","./images/red.png","./images/yellow.png","./images/green.png","./images/blue.png"]
     },
     corner:{
-        src:["./images/emptyCorner.png","./images/go.png","./images/prison.png"]
+        src:["./images/go.png","./images/prison.png","./images/parking.png","./images/gotoprison.png"]
     },
     player:{
         src:["./images/player.png","./images/player2.png","./images/player3.png"]
@@ -467,7 +467,8 @@ class BoardPiece{
                 this.y = 128+this.n*64;
             }
         }
-        
+        console.log(img[3])
+
         this.setImg = function(){
             this.side = (side+rotation)%4
             this.img = img[0];
@@ -496,10 +497,16 @@ class BoardPiece{
                 this.img = img[8];
             }
             if(this.n === 9 && this.side === 3){
-                this.img = img[1]
+                this.img = img[0]
             }
             if(this.n === 9 && this.side === 0){
-                this.img = img[2]
+                this.img = img[1]
+            }
+            if(this.n === 9 && this.side === 1 && img[3] !== undefined){
+               this.img = img[2]
+            }
+            if(this.n === 9 && this.side === 2 && img[4] !== undefined){
+               this.img = img[3]
             }
         }
                 
