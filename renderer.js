@@ -536,7 +536,7 @@ class BoardPiece{
             if(this.n !== 9){
                 drawIsometricImage(this.x,this.y,this.img,false,96*this.imgSide,0,96,48,this.offsetX,this.offsetY);
             }else{
-               drawIsometricImage(this.x,this.y,this.img,false,128*this.imgSide,0,128,64,this.offsetX,this.offsetY);
+                drawIsometricImage(this.x,this.y,this.img,false,128*this.imgSide,0,128,64,this.offsetX,this.offsetY);
             }
             
         }
@@ -660,6 +660,7 @@ class Player{
             drawIsometricImage(800-this.x*64,700-this.y*64,this.img,false,0,0,32,32,0,-this.offsetY)
         }
         this.update = function () {
+            this.updateVisual();
             this.draw();
         }
         this.updateVisual = function (){
@@ -748,8 +749,7 @@ class Player{
                         this.steps = 10;
                         this.inJail = true;
                     }
-                    players.forEach(e => {e.updateVisual();})
-                    players.forEach(e => {e.updateVisual();})
+
 
         
                     if(this.steps === 0){
@@ -778,9 +778,8 @@ class Player{
                 turn = (turn+1)%players.length;
             }
         }
-        this.updateVisual();
+        
         board.boardPieces[3][9].currentPlayer.push(this);
-        this.updateVisual();
     }
 }
 
