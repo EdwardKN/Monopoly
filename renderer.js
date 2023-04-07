@@ -254,7 +254,7 @@ var images = {
         src:["./images/board.png"]
     },
     part:{
-        src:["./images/emptyPart.png","./images/brown.png","./images/light_blue.png","./images/pink.png","./images/orange.png","./images/red.png","./images/yellow.png","./images/green.png","./images/blue.png","/images/chance.png","/images/train.png"]
+        src:["./images/emptyPart.png","./images/brown.png","./images/light_blue.png","./images/pink.png","./images/orange.png","./images/red.png","./images/yellow.png","./images/green.png","./images/blue.png","/images/chance.png","/images/chance2.png","/images/chance3.png","/images/train.png"]
     },
     corner:{
         src:["./images/go.png","./images/prison.png","./images/parking.png","./images/gotoprison.png"]
@@ -655,7 +655,7 @@ class BoardPiece{
 
                 }
             }else if(this.piece.type === "chance"){
-                let random = randomIntFromRange(1,4)
+                let random = randomIntFromRange(1,13)
                 console.log(random)
                 if(random === 1){
                     player.teleportTo(0)
@@ -755,11 +755,17 @@ class BoardPiece{
         if(this.n === 9 && this.side === 2){
            this.img = img[3]
         }
-        if(this.n === 6 && this.side === 0 || this.n === 1 && this.side === 2 || this.n === 5 && this.side === 3){
+        if(this.n === 6 && this.side === 0){
+            this.img = img[11]
+        }
+        if(this.n === 1 && this.side === 2){
             this.img = img[9]
         }
-        if(this.n === 4){
+        if(this.n === 5 && this.side === 3){
             this.img = img[10]
+        }
+        if(this.n === 4){
+            this.img = img[12]
         }
     }
     
@@ -790,6 +796,7 @@ class Player{
             this.draw();
         }
         this.updateVisual = function (){
+            
             if(this.stepsWithOffset === 0){
                 this.x = 0;
                 this.y = 0;
@@ -821,13 +828,17 @@ class Player{
                 }
             }
             
-            this.stepsWithOffset = 40 + (this.steps + (rotation%4)*10)
+            if(this.inJail === false){
+                this.stepsWithOffset = 40 + (this.steps + (rotation%4)*10)
+                this.stepsWithOffset = this.stepsWithOffset%40;
+            }else{
+                this.stepsWithOffset = 40 + (10 + (rotation%4)*10)
+                this.stepsWithOffset = this.stepsWithOffset%40;
 
-            if(this.steps >= 40){
-                this.money += 200;
+                this.x = 11
+                this.y = 1;
             }
-            this.steps = this.steps%40;
-            this.stepsWithOffset = this.stepsWithOffset%40;
+            
 
             if(this.steps === 0){
                 for(let i = 0; i<board.boardPieces[3][9].currentPlayer.length; i++){
@@ -888,6 +899,12 @@ class Player{
                     let diceSum = dice1+dice2;
         
                     this.steps += dice1+dice2;
+                    if(this.steps >= 40){
+                        this.money+=200
+                    }
+                    this.steps = this.steps%40;
+                    
+
                     if(this.steps === 30){
                         this.steps = 10;
                         this.inJail = true;
