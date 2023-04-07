@@ -28,7 +28,7 @@ const pieces = [
     },
     {
         name:"Community Chest",
-        type:"Community Chest"
+        type:"community Chest"
     },
     {
         name:"Brown 2",
@@ -55,7 +55,7 @@ const pieces = [
     },
     {
         name:"Chance",
-        type:"Chance"
+        type:"chance"
     },
     {
         name:"Light blue 2",
@@ -114,7 +114,7 @@ const pieces = [
     },
     {
         name:"Community Chest",
-        type:"Community Chest"
+        type:"community Chest"
     },
     {
         name:"Orange 2",
@@ -142,7 +142,7 @@ const pieces = [
     },
     {
         name:"Chance",
-        type:"Chance"
+        type:"chance"
     },
     {
         name:"Red 2",
@@ -208,7 +208,7 @@ const pieces = [
     },
     {
         name:"Community Chest",
-        type:"Community Chest"
+        type:"community Chest"
     },
     {
         name:"Green 3",
@@ -224,7 +224,7 @@ const pieces = [
     },
     {
         name:"Chance",
-        type:"Chance"
+        type:"chance"
     },
     {
         name:"Blue 1",
@@ -400,7 +400,6 @@ function update(){
 
 
     players.forEach(function(player,i,a) { 
-        player.update(); 
         c.fillText(player.name + ": " + player.money + "$", 10, 40*i + 70);
     })
     c.fillText("Just nu: Player"+(turn+1), 10, players.length*40 + 70);
@@ -435,7 +434,7 @@ class Board{
         this.update = function () {
             this.boardPieces.forEach(e => e.forEach(g => g.update()))
             this.boardPieces.forEach(e => e.forEach(g => g.drawHouses()))
-
+            this.boardPieces.forEach(e => e.forEach(g => g.currentPlayer.forEach(p => p.update())))
         }  
     }
 }
@@ -521,6 +520,7 @@ class BoardPiece{
                 this.hover = false;
             }
             this.draw();
+            
         }
         this.draw = function () {
             if(this.n !== 9){
@@ -615,7 +615,7 @@ class BoardPiece{
                         this.owner = player;
                         player.ownedPlaces.push(this);
                     }  
-                }, 500);
+                }, 50);
 
             }else if(this.owner !== player && this.owner !== undefined){
                 if(this.piece.type === "utility"){
@@ -653,6 +653,69 @@ class BoardPiece{
                     this.owner.money += this.piece.rent[this.level];
                     console.log(this.owner.name + " fick precis " + (this.piece.rent[this.level]) + "$")
 
+                }
+            }else if(this.piece.type === "chance"){
+                let random = randomIntFromRange(1,4)
+                console.log(random)
+                if(random === 1){
+                    player.teleportTo(0)
+                    player.money += 200;
+                }
+                if(random === 2){
+                    if(player.step >= 24){
+                        player.money+=200;   
+                    }
+                    player.teleportTo(24)
+                }
+                if(random === 3){
+                    if(player.step >= 11){
+                        player.money+=200;   
+                    }
+                    player.teleportTo(11)
+                }
+                if(random === 4){
+                    if(player.step >= 0 || player.step >= 35){
+                        player.money+=200;
+                        player.teleportTo(5)
+                    }
+                    if(player.step >= 5 && player.step < 15){
+                        player.teleportTo(15)
+                    }
+                    if(player.step >= 15 && player.step < 25){
+                        player.teleportTo(25)
+                    }
+                    if(player.step >= 25 && player.step < 35){
+                        player.teleportTo(35)
+                    }
+                }
+                if(random === 5){
+                    player.money += 50;
+                }
+                if(random === 6){
+                    //get out of jail
+                }
+                if(random === 7){
+                    player.teleportTo(player.steps-3)
+                }
+                if(random === 8){
+                    player.teleportTo(10)
+                    player.inJail = true;
+                }
+                if(random === 9){
+                    // pay 25 för varje hus och 100 för alla hotell
+                }
+                if(random === 10){
+                    // konstig
+                }
+                if(random === 11){
+                    player.teleportTo(39);
+                }
+                if(random === 12){
+                    player.money -= (players.length-1)*50
+                    players.forEach(e=> {if(e !== player){e.money+=50}})
+                }
+                if(random === 13){
+                    player.money += 150
                 }
             }
         }
@@ -777,6 +840,23 @@ class Player{
                 }
             }
             
+        }
+        this.teleportTo = function(step){
+            if(this.steps === 0){
+                let index = board.boardPieces[3][9].currentPlayer.indexOf(this);
+                board.boardPieces[3][9].currentPlayer.splice(index,1)
+            }else{
+                let index = board.boardPieces[Math.floor((this.steps-1)/10)][(this.steps-1)%10].currentPlayer.indexOf(this);
+                board.boardPieces[Math.floor((this.steps-1)/10)][(this.steps-1)%10].currentPlayer.splice(index,1) 
+            }
+            this.steps = step;
+            this.rolls = true;
+
+            if(this.steps === 0){
+                board.boardPieces[3][9].playerStep(this);
+            }else{
+                board.boardPieces[Math.floor((this.steps-1)/10)][(this.steps-1)%10].playerStep(this,0);
+            }
         }
         
         this.rollDice = function(){
