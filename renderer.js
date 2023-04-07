@@ -1032,7 +1032,7 @@ class Player{
             self.timer = setInterval(function(){
                 if(self.animationOffset <= 0){
                     clearInterval(self.timer);
-        
+                    to = to%40
                     if(to === 0){
                         board.boardPieces[3][9].playerStep(false,self);
                     }else{
