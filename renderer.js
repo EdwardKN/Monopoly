@@ -266,7 +266,7 @@ var images = {
         src:["./images/players/player.png","./images/players/player2.png","./images/players/player3.png"]
     },
     background:{
-        src:["./images/static/insideboard.png","./images/static/background.png"]
+        src:["./images/static/insideboard.png","./images/static/realbackground.png"]
     },
     house:{
         src:["./images/buildings/house.png","./images/buildings/hotel.png"]
@@ -442,9 +442,9 @@ function update(){
 }
 
 function showBackground(){
-    for(let x = -1; x < 2; x++){
-        for(let y = -1; y < 2; y++){
-            drawIsometricImage(-352 + 832*x ,352+824*y,images.background.img[1],false,0,0,832,416,0,0)
+    for(let x = -2; x < 4; x++){
+        for(let y = -2; y < 4; y++){
+            drawIsometricImage(-352*2 + 832*x,+832*y,images.background.img[1],false,0,0,832,416,0,0)
 
         }
     }
