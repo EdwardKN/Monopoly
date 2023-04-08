@@ -707,7 +707,7 @@ class BoardPiece{
                     alert(player.name + " betalade " + this.piece.price)
                 }else if(this.piece.price > 0 && player.money >= this.piece.price && this.owner === undefined){
                     setTimeout(() => {
-                        if(confirm("Vill du köpa " + this.piece.name + " för " + this.piece.price + "$?" + "\n" + this.info())){
+                        if(confirm("Vill du köpa " + this.piece.name + " för " + this.piece.price + "$?" + "\n" + "\n"+ this.info())){
                             player.money -= this.piece.price;
                             this.owner = player;
                             player.ownedPlaces.push(this);
