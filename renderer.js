@@ -527,7 +527,7 @@ class BoardPiece{
         this.level = 0;
         this.hover = false;
         this.currentPlayer = [];
-        
+        this.inJail = false;
         
         this.setImg = function(){
             this.side = (side+rotation)%4
@@ -772,6 +772,7 @@ class BoardPiece{
                     if(random === 8){
                         player.teleportTo(10)
                         player.inJail = true;
+                        player.rolls = true;
                     }
                     if(random === 9){
                         // pay 25 för varje hus och 100 för alla hotell
@@ -810,6 +811,7 @@ class BoardPiece{
                     if(random === 5){
                         player.teleportTo(10)
                         player.inJail = true;
+                        player.rolls = true;
                     }
                     if(random === 6){
                         player.money -= (players.length-1)*50
@@ -955,9 +957,6 @@ class Player{
             }else{
                 this.stepsWithOffset = 40 + (10 + (rotation%4)*10) - this.animationOffset
                 this.stepsWithOffset = this.stepsWithOffset%40;
-
-                this.x = 11
-                this.y = 1;
             }
             if(this.stepsWithOffset === 0){
                 this.x = 0;
@@ -990,6 +989,11 @@ class Player{
                 }
             }
             let tmpSteps = (this.steps -this.animationOffset + 40)%40;
+
+            if(this.inJail === true && this.animationOffset === 0){
+                this.x = 11.25;
+                this.y = 0.70;
+            }
             if(tmpSteps === 0){
                 for(let i = 0; i<board.boardPieces[3][9].currentPlayer.length; i++){
                     if(board.boardPieces[3][9].currentPlayer[i] === this){
@@ -1018,6 +1022,12 @@ class Player{
             if(to === 30){
                 to = 10;
                 this.inJail = true;
+                this.rolls = true;
+                board.boardPieces.forEach(function(e,i1) {e.forEach(function(b,i2) {b.currentPlayer.forEach(function(d,i3) {
+                    if(d === self){
+                        board.boardPieces[i1][i2].currentPlayer.splice(i3,1)
+                    }
+                })})})
             }
             if(to <= from){
                 to += 40
@@ -1046,7 +1056,12 @@ class Player{
                     })})})
 
                     self.animationOffset--;
-                    board.boardPieces[Math.floor(((to-self.animationOffset)-1)/10)][((to-self.animationOffset)-1)%10].playerStep(true,self);
+                    if(((to-self.animationOffset)%40-1) === -1){
+                        board.boardPieces[3][9].playerStep(true,self);
+                    }else{
+                        board.boardPieces[Math.floor(((to-self.animationOffset)%40-1)/10)][((to-self.animationOffset)%40-1)%10].playerStep(true,self);
+                    }
+                    
 
                 }
             },100);
@@ -1060,8 +1075,9 @@ class Player{
                     let dice2 = randomIntFromRange(1,6);
                     if(dice1 === dice2){
                         if(this.numberOfRolls === 3){
-                            this.steps = 10;
-                            players.forEach(e => {e.updateVisual();})
+                            player.teleportTo(10)
+                            player.inJail = true;
+                            player.rolls = true;
                         }
                         this.numberOfRolls++;
                         this.rolls = false;
@@ -1091,18 +1107,28 @@ class Player{
                     
                 }
             }else{
-                if(confirm("Vill du betala 50$ för att komma ut eller slå dubbelt?")){
-                    this.money -= 50;
-                    this.inJail = false;
-                }else{
-                    let dice1 = randomIntFromRange(1,6);
-                    let dice2 = randomIntFromRange(1,6);
-                
-                    if(dice1 === dice2){
+                if(this.rolls === false){
+                    if(confirm("Vill du betala 50$ för att komma ut eller slå dubbelt?")){
+                        this.money -= 50;
                         this.inJail = false;
+                        this.steps = 10;
+                        this.rolls = true;
+                    }else{
+                        let dice1 = randomIntFromRange(1,6);
+                        let dice2 = randomIntFromRange(1,6);
+                    
+                        if(dice1 === dice2){
+                            this.inJail = false;
+                            this.steps = 10;
+                        }
+                        this.rolls = true;
                     }
+                }else{
+                    turn = (turn+1)%players.length;
+                    this.rolls = false;
+                    this.numberOfRolls = 0;
                 }
-                turn = (turn+1)%players.length;
+                
             }
         }
         
