@@ -414,8 +414,8 @@ function update(){
     showBackground();
 
     board.update();
-    c.fillStyle = "black";
-    c.font = "80px Arial";
+    c.fillStyle = "white";
+    c.font = "80px calibri";
 
 
     players.forEach(function(player,i,a) { 
@@ -436,7 +436,9 @@ function update(){
             c.fillText(player.name + ": " + player.money + "$", canvas.width-10, canvas.height-30);
         }
     })
-    c.font = "50px Arial";
+    
+    c.fillStyle = "black";
+    c.font = "50px Brush Script MT";
     c.textAlign = "center";
     c.fillText("Just nu:" + players[turn].name, canvas.width/2, canvas.height/2 + 50);
     
