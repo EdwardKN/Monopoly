@@ -1064,7 +1064,7 @@ class Player{
                     
 
                 }
-            },100);
+            },500);
         }
         
         this.rollDice = function(){
