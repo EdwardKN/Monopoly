@@ -1134,6 +1134,7 @@ class Player{
                     let dice2 = randomIntFromRange(1,6);
                     if(dice1 === dice2){
                         if(this.numberOfRolls === 3){
+                            alert("Gå till finkan!")
                             player.teleportTo(10)
                             player.inJail = true;
                             player.rolls = true;
