@@ -436,7 +436,7 @@ function update(){
             c.fillText(player.name + ": " + player.money + "$", canvas.width-10, canvas.height-30);
         }
     })
-    
+
     c.fillStyle = "black";
     c.font = "50px Brush Script MT";
     c.textAlign = "center";
@@ -461,6 +461,7 @@ class Board{
         this.dice1Type = 0;
         this.dice2Type = 0;
         this.boardPieces = [];
+        this.showDices = false;
         for(let i = 0; i < 4; i++){
             let tmp = [];
             for(let n = 0; n < 10; n++){
@@ -485,7 +486,7 @@ class Board{
         }
 
         this.showDice = function () {
-            if(players[turn].animationOffset > 0){
+            if(players[turn].animationOffset > 0 ||this.showDices === true){
             drawIsometricImage(500,500,images.dice.img[0],false,this.dice1Type*64,(this.dice1-1)*64,64,64,0,0)
             drawIsometricImage(550,400,images.dice.img[0],false,this.dice2Type*64,(this.dice2-1)*64,64,64,0,0)
             }else{
@@ -706,7 +707,7 @@ class BoardPiece{
             if(!onlyStep){
                 if(this.piece.price < 0){
                     player.money += this.piece.price;
-                    alert(player.name + " betalade " + this.piece.price)
+                    alert(player.name + " betalade " + -this.piece.price + "$")
                 }else if(this.piece.price > 0 && player.money >= this.piece.price && this.owner === undefined){
                     setTimeout(() => {
                         if(confirm("Vill du köpa " + this.piece.name + " för " + this.piece.price + "$?" + "\n" + "\n"+ this.info())){
@@ -1009,13 +1010,9 @@ class Player{
             this.draw();
         }
         this.updateVisual = function (){
-            if(this.inJail === false){
-                this.stepsWithOffset = 40 + (this.steps + (rotation%4)*10) - this.animationOffset
-                this.stepsWithOffset = this.stepsWithOffset%40;
-            }else{
-                this.stepsWithOffset = 40 + (10 + (rotation%4)*10) - this.animationOffset
-                this.stepsWithOffset = this.stepsWithOffset%40;
-            }
+            this.stepsWithOffset = 40 + (this.steps + (rotation%4)*10) - this.animationOffset
+            this.stepsWithOffset = this.stepsWithOffset%40;
+            
             if(this.stepsWithOffset === 0){
                 this.x = 0;
                 this.y = 0;
@@ -1178,12 +1175,19 @@ class Player{
                     }else{
                         let dice1 = randomIntFromRange(1,6);
                         let dice2 = randomIntFromRange(1,6);
-                    
+                        board.randomizeDice();
+                        board.dice1 = dice1;
+                        board.dice2 = dice2;
+                        board.showDices = true;
+
                         if(dice1 === dice2){
                             this.inJail = false;
                             this.steps = 10;
                         }
                         this.rolls = true;
+                        setTimeout(() => {
+                            board.showDices = false;
+                        }, 1000);
                     }
                 }else{
                     turn = (turn+1)%players.length;
