@@ -20,88 +20,88 @@ var offsets = {
 
 const pieces = [
     {
-        name:"Brown 1",
+        name:"Brun 1",
         price:60,
         rent:[2,10,30,90,160,250],
         housePrice:50,
         group:"Brown"
     },
     {
-        name:"Community Chest",
+        name:"Allmänning",
         type:"community Chest"
     },
     {
-        name:"Brown 2",
+        name:"Brun 2",
         price:60,
         rent:[4,20,60,180,320,450],
         housePrice:50,
         group:"Brown"
     },
     {
-        name:"Income tax",
+        name:"Inkomstskatt",
         type:"income tax"
     },
     {
-        name:"Station 1",
+        name:"Södra stationen",
         price:200,
         type:"station"
     },
     {
-        name:"Light blue 1",
+        name:"Ljusblå 1",
         price:100,
         rent:[6,30,90,270,400,550],
         housePrice:50,
         group:"light blue"
     },
     {
-        name:"Chance",
+        name:"Chans",
         type:"chance"
     },
     {
-        name:"Light blue 2",
+        name:"Ljusblå 2",
         price:100,
         rent:[6,30,90,270,400,550],
         housePrice:50,
         group:"light blue"
     },
     {
-        name:"Light blue 3",
+        name:"Ljusblå 3",
         price:120,
         rent:[8,40,100,300,450,600],
         housePrice:50,
         group:"light blue"
     },
     {
-        name:"Jail",
+        name:"Fängelse",
     },
     {
-        name:"Pink 1",
+        name:"Rosa 1",
         price:140,
         rent:[10,50,150,450,625,750],
         housePrice:100,
         group:"pink"
     },
     {
-        name:"Electric company",
+        name:"Elverket",
         price:150,
         type:"utility"
     },
     {
-        name:"Pink 2",
+        name:"Rosa 2",
         price:140,
         rent:[10,50,150,450,625,750],
         housePrice:100,
         group:"pink"
     },
     {
-        name:"Pink 3",
+        name:"Rosa 3",
         price:160,
         rent:[12,60,180,500,700,900],
         housePrice:100,
         group:"pink"
     },
     {
-        name:"Station 2",
+        name:"Östra Stationen",
         price:200,
         type:"station"
     },
@@ -113,7 +113,7 @@ const pieces = [
         group:"orange"
     },
     {
-        name:"Community Chest",
+        name:"Allmänning",
         type:"community Chest"
     },
     {
@@ -131,114 +131,114 @@ const pieces = [
         group:"orange"
     },
     {
-        name:"Free Parking",
+        name:"Fri parkering",
     },
     {
-        name:"Red 1",
+        name:"Röd 1",
         price:220,
         rent:[18,90,250,700,875,1050],
         housePrice:150,
         group:"red"
     },
     {
-        name:"Chance",
+        name:"Chans",
         type:"chance"
     },
     {
-        name:"Red 2",
+        name:"Röd 2",
         price:220,
         rent:[18,90,250,700,875,1050],
         housePrice:150,
         group:"red"
     },
     {
-        name:"Red 3",
+        name:"Röd 3",
         price:240,
         rent:[20,100,300,750,925,1100],
         housePrice:150,
         group:"red"
     },
     {
-        name:"Station 3",
+        name:"Centralstationen",
         price:200,
         type:"station"
     },
     {
-        name:"Yellow 1",
+        name:"Gul 1",
         price:260,
         rent:[22,110,330,800,975,1150],
         housePrice:150,
         group:"yellow"
     },
     {
-        name:"Yellow 2",
+        name:"Gul 2",
         price:260,
         rent:[22,110,330,800,975,1150],
         housePrice:150,
         group:"yellow"
     },
     {
-        name:"Water Company",
+        name:"Vattenledningsverket",
         price: 150,
         type:"utility"
     },
     {
-        name:"Yellow 3",
+        name:"Gul 3",
         price:280,
         rent:[24,120,360,850,1025,1200],
         housePrice:150,
         group:"yellow"
     },
     {
-        name:"Go To Jail",
+        name:"Gå till finkan",
     },
     {
-        name:"Green 1",
+        name:"Grön 1",
         price:300,
         rent:[26,130,390,900,1100,1275],
         housePrice:200,
         group:"green"
     },
     {
-        name:"Green 2",
+        name:"Grön 2",
         price:300,
         rent:[26,130,390,900,1100,1275],
         housePrice:200,
         group:"green"
     },
     {
-        name:"Community Chest",
+        name:"Allmänning",
         type:"community Chest"
     },
     {
-        name:"Green 3",
+        name:"Grön 3",
         price:320,
         rent:[28,150,450,1000,1200,1400],
         housePrice:200,
         group:"green"
     },
     {
-        name:"Station 4",
+        name:"Norra stationen",
         price:200,
         type:"station"
     },
     {
-        name:"Chance",
+        name:"Chans",
         type:"chance"
     },
     {
-        name:"Blue 1",
+        name:"Blå 1",
         price:350,
         rent:[35,175,500,1100,1300,1500],
         housePrice:200,
         group:"blue"
     },
     {
-        name:"Super Tax",
+        name:"Lyxskatt",
         price:-100
     },
     {
-        name:"Blue 2",
+        name:"Blå 2",
         price:400,
         rent:[50,200,600,1400,1700,2000],
         housePrice:200,
@@ -398,11 +398,11 @@ function init(){
 
 
 
-    board = new Board();    
+    board = new Board();  
 
-    players.push(new Player(images.player.img[0],players.length,"green"))
-    players.push(new Player(images.player.img[1],players.length,"yellow"))
-    players.push(new Player(images.player.img[2],players.length,"purple"))
+    players.push(new Player(images.player.img[0],players.length,"green","Spelare 1"))
+    players.push(new Player(images.player.img[1],players.length,"yellow","Spelare 2"))
+    players.push(new Player(images.player.img[2],players.length,"purple","Spelare 3"))
 
 }
 
@@ -415,29 +415,30 @@ function update(){
 
     board.update();
     c.fillStyle = "black";
-    c.font = "50px Arial";
+    c.font = "80px Arial";
 
 
     players.forEach(function(player,i,a) { 
         if(i === 0){
             c.textAlign = "left";
-            c.fillText(player.name + ": " + player.money + "$", 10, 50);
+            c.fillText(player.name + ": " + player.money + "$", 10, 80);
         }
         if(i === 1){
             c.textAlign = "right";
-            c.fillText(player.name + ": " + player.money + "$", canvas.width-10, 50);
+            c.fillText(player.name + ": " + player.money + "$", canvas.width-10, 80);
         }
         if(i === 2){
             c.textAlign = "left";
-            c.fillText(player.name + ": " + player.money + "$", 10, canvas.height-50);
+            c.fillText(player.name + ": " + player.money + "$", 10, canvas.height-30);
         }
         if(i === 3){
             c.textAlign = "right";
-            c.fillText(player.name + ": " + player.money + "$", canvas.width-10, canvas.height-50);
+            c.fillText(player.name + ": " + player.money + "$", canvas.width-10, canvas.height-30);
         }
     })
-    c.textAlign = "left";
-    c.fillText("Just nu: Player"+(turn+1), 10, 40 + 70);
+    c.font = "50px Arial";
+    c.textAlign = "center";
+    c.fillText("Just nu:" + players[turn].name, canvas.width/2, canvas.height/2 + 50);
     
 }
 
@@ -633,28 +634,50 @@ class BoardPiece{
                 }
             }
         }
+        this.info = function() {
+            let message = "";
+            if(this.piece.name !== undefined){
+                message += this.piece.name + "\n"
+            }
+
+            if(this.piece.price !== undefined){
+                message += "Pris:" + this.piece.price + "$\n" + "\n" 
+            }
+
+            if(this.owner !== undefined){
+                message += "Ägare:" + this.owner.name + "\n" + "\n"
+            }
+            
+            if(this.piece.rent !== undefined){
+                this.piece.rent.forEach(function(e,i){
+                    if(i === 0){
+                        message += "Inga hus:" + e + "$\n"
+                    }
+                    if(i === 1){
+                        message += "Ett hus:" + e + "$\n"
+                    }
+                    if(i === 2){
+                        message += "Två hus:" + e + "$\n"
+                    }
+                    if(i === 3){
+                        message += "Tre hus:" + e + "$\n"
+                    }
+                    if(i === 4){
+                        message += "Fyra hus:" + e + "$\n"
+                    }
+                    if(i === 5){
+                        message += "Hotell:" + e + "$\n"
+                    }
+                })
+                message += "\n"
+            }
+            return message;
+        }
         this.click = function(){
             if(this.hover === true){
                 this.show = true;
-                console.log("---------")
-                if(this.owner !== undefined){
-                    console.log(this.owner.name)
-                }
-                if(this.piece.name !== undefined){
-                    console.log(this.piece.name)
-                }
-                console.log(this.level)
-                if(this.piece.price !== undefined){
-                    console.log(this.piece.price)
-                }
-                if(this.piece.rent !== undefined){
-                    this.piece.rent.forEach(e => {
-                        console.log(e)
-                    })
-                }
-                this.currentPlayer.forEach(e => {
-                    console.log(e.name)
-                })
+                
+                alert(this.info())
                 if(this.owner === players[turn]){
                     let ownAll = true;
                     for(let i = 0; i<board.boardPieces[this.side].length; i++){
@@ -681,9 +704,10 @@ class BoardPiece{
             if(!onlyStep){
                 if(this.piece.price < 0){
                     player.money += this.piece.price;
+                    alert(player.name + " betalade " + this.piece.price)
                 }else if(this.piece.price > 0 && player.money >= this.piece.price && this.owner === undefined){
                     setTimeout(() => {
-                        if(confirm("Vill du köpa " + this.piece.name + " för " + this.piece.price + "$?")){
+                        if(confirm("Vill du köpa " + this.piece.name + " för " + this.piece.price + "$?" + "\n" + this.info())){
                             player.money -= this.piece.price;
                             this.owner = player;
                             player.ownedPlaces.push(this);
@@ -708,7 +732,7 @@ class BoardPiece{
                         }
                         player.money -=  diceRoll * multiply;
                         this.owner.money += diceRoll * multiply;
-                        console.log(this.owner.name + " fick precis " + (diceRoll * multiply) + "$")
+                        alert(this.owner.name + " fick precis " + (diceRoll * multiply) + "$ av " + player.name)
                         
                     }else if(this.piece.type === "station"){
                         let tmp = -1;
@@ -719,139 +743,171 @@ class BoardPiece{
                         })
                         player.money -=  25 * Math.pow(2,tmp);
                         this.owner.money += 25 * Math.pow(2,tmp);
-                        console.log(this.owner.name + " fick precis " + (25 * Math.pow(2,tmp)) + "$")
+                        alert(this.owner.name + " fick precis " + (25 * Math.pow(2,tmp)) + "$ av " + player.name)
 
                     }else{
                         player.money -= this.piece.rent[this.level];
                         this.owner.money += this.piece.rent[this.level];
-                        console.log(this.owner.name + " fick precis " + (this.piece.rent[this.level]) + "$")
+                        alert(this.owner.name + " fick precis " + (this.piece.rent[this.level]) + "$ av " + player.name)
 
                     }
                 }else if(this.piece.type === "chance"){
                     let random = randomIntFromRange(1,13)
                     if(random === 1){
+                        alert("Gå till start!")
                         player.teleportTo(0)
                         player.money += 200;
                     }
                     if(random === 2){
-                        if(player.step >= 24){
+                        alert("Gå till röd 3")
+                        if(player.steps >= 24){
                             player.money+=200;   
                         }
                         player.teleportTo(24)
                     }
                     if(random === 3){
-                        if(player.step >= 11){
+                        alert("Gå till rosa 1")
+                        if(player.steps >= 11){
                             player.money+=200;   
                         }
                         player.teleportTo(11)
                     }
                     if(random === 4){
-                        if(player.step >= 0 || player.step >= 35){
+                        alert("Gå till närmsta tågstation")
+                        if(player.steps >= 0 || player.steps >= 35){
                             player.money+=200;
                             player.teleportTo(5)
                         }
-                        if(player.step >= 5 && player.step < 15){
+                        if(player.steps >= 5 && player.steps < 15){
                             player.teleportTo(15)
                         }
-                        if(player.step >= 15 && player.step < 25){
+                        if(player.steps >= 15 && player.steps < 25){
                             player.teleportTo(25)
                         }
-                        if(player.step >= 25 && player.step < 35){
+                        if(player.steps >= 25 && player.steps < 35){
                             player.teleportTo(35)
                         }
                     }
                     if(random === 5){
+                        alert("Få 50$")
                         player.money += 50;
                     }
                     if(random === 6){
+                        alert("")
                         //get out of jail
                     }
                     if(random === 7){
+                        alert("Gå bak tre steg")
                         player.teleportTo(player.steps-3)
                     }
                     if(random === 8){
+                        alert("Gå till finkan!")
                         player.teleportTo(10)
                         player.inJail = true;
                         player.rolls = true;
                     }
                     if(random === 9){
+                        alert("")
                         // pay 25 för varje hus och 100 för alla hotell
                     }
                     if(random === 10){
+                        alert("")
                         // konstig
                     }
                     if(random === 11){
+                        alert("Gå till blå 3")
                         player.teleportTo(39);
                     }
                     if(random === 12){
+                        alert("Få 50$ av alla andra spelare")
                         player.money -= (players.length-1)*50
                         players.forEach(e=> {if(e !== player){e.money+=50}})
                     }
                     if(random === 13){
+                        alert("Få 150$")
                         player.money += 150
                     }
                 }else if(this.piece.type === "community Chest"){
                     let random = randomIntFromRange(1,13);
                     if(random === 1){
+                        alert("Gå till start")
                         player.teleportTo(0)
                         player.money += 200;
                     }
                     if(random === 2){
+                        alert("Få 200$")
                         player.money += 200;
                     }
                     if(random === 3){
+                        alert("Förlora 50$")
                         player.money -= 50;
                     }
                     if(random === 4){
+                        alert("Få 50$")
                         player.money += 50;
                     }
                     if(random === 4){
+                        alert("")
                         //jail free
                     }
                     if(random === 5){
+                        alert("Gå till finkan")
                         player.teleportTo(10)
                         player.inJail = true;
                         player.rolls = true;
                     }
                     if(random === 6){
+                        alert("Få 50$ av alla andra spelare")
                         player.money -= (players.length-1)*50
                         players.forEach(e=> {if(e !== player){e.money+=50}})
                     }
                     if(random === 7){
+                        alert("Få 100$")
                         player.money += 100;
                     }
                     if(random === 8){
+                        alert("Få 20$")
                         player.money += 20;
                     }
                     if(random === 9){
+                        alert("Få 10$ av alla andra spelare")
                         player.money -= (players.length-1)*10
                         players.forEach(e=> {if(e !== player){e.money+=10}})
                     }
                     if(random === 10){
+                        alert("Få 100$")
                         player.money += 100;
                     }
                     if(random === 11){
+                        alert("Förlora 50$")
                         player.money -= 50;
                     }
                     if(random === 12){
+                        alert("Förlora 50$")
                         player.money -= 50;
                     }
                     if(random === 13){
+                        alert("Förlora 25$")
                         player.money -= 25;
                     }
                     if(random === 14){
+                        alert("")
                         // pay 40 för varje hus och 115 för alla hotell
                     }
                     if(random === 15){
+                        alert("Få 10$")
                         player.money += 10;
                     }
                     if(random === 16){
+                        alert("Få 100$")
                         player.money += 100;
                     }
                 }else if(this.piece.type === "income tax"){
                     if(player.money > 2000){
+                        alert("Betala 200$ skatt")
                         player.money -= 200;
                     }else{
+                        alert("Betala " + player.money * 0.1 + "$ skatt")
                         player.money = player.money * 0.9;
                     }
                 }
@@ -926,8 +982,8 @@ class BoardPiece{
 
 class Player{
 
-    constructor(img,index,color){
-        this.name = "Player" + (index+1);
+    constructor(img,index,color,name){
+        this.name = name;
         this.color = color;
         this.img = img;
         this.x = 0;
@@ -1041,6 +1097,9 @@ class Player{
                             board.boardPieces[i1][i2].currentPlayer.splice(i3,1)
                         }
                     })})})
+                    if(self.to >= 40){
+                        alert(self.name + " gick förbi start och fick då 200$")
+                    }
                     to = to%40
                     if(to === 0){
                         board.boardPieces[3][9].playerStep(false,self);
