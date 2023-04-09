@@ -807,9 +807,7 @@ class BoardPiece{
                     }
                     if(random === 8){
                         alert("Gå till finkan!")
-                        player.teleportTo(10)
-                        player.inJail = true;
-                        player.rolls = true;
+                        player.goToPrison();
                     }
                     if(random === 9){
                         alert("")
@@ -857,9 +855,7 @@ class BoardPiece{
                     }
                     if(random === 5){
                         alert("Gå till finkan")
-                        player.teleportTo(10)
-                        player.inJail = true;
-                        player.rolls = true;
+                        player.goToPrison()
                     }
                     if(random === 6){
                         alert("Få 50$ av alla andra spelare")
@@ -1072,6 +1068,12 @@ class Player{
   
             }
         }
+        this.goToPrison = function(){
+            alert("Gå till finkan!")
+            self.teleportTo(10)
+            self.inJail = true;
+            self.rolls = true;
+        }
         this.teleportTo = function(step){
             let oldStep = this.steps;
 
@@ -1111,10 +1113,7 @@ class Player{
                         }
                     }
                     if(to === 30){
-                        alert("Gå till finkan!")
-                        self.teleportTo(10)
-                        self.inJail = true;
-                        self.rolls = true;
+                        this.goToPrison()
                     }
 
                 }else{
@@ -1145,10 +1144,7 @@ class Player{
                     let dice2 = randomIntFromRange(1,6);
                     if(dice1 === dice2){
                         if(this.numberOfRolls === 3){
-                            alert("Gå till finkan!")
-                            player.teleportTo(10)
-                            player.inJail = true;
-                            player.rolls = true;
+                            this.goToPrison();
                         }
                         this.numberOfRolls++;
                         this.rolls = false;
