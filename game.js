@@ -263,7 +263,7 @@ var images = {
         src:["./images/corners/go.png","./images/corners/prison.png","./images/corners/parking.png","./images/corners/gotoprison.png"]
     },
     player:{
-        src:["./images/players/player.png","./images/players/player2.png","./images/players/player3.png"]
+        src:["./images/players/player.png","./images/players/player2.png","./images/players/player3.png","./images/players/player4.png"]
     },
     background:{
         src:["./images/static/insideboard.png","./images/static/realbackground.png"]
@@ -378,6 +378,12 @@ function detectCollition(x,y,w,h,x2,y2,w2,h2){
             return true;
         };
 };
+function isNumeric(str) {
+    if (typeof str != "string") return false
+    return !isNaN(str) && 
+           !isNaN(parseFloat(str)) 
+  }
+
 function drawIsometricImage(x,y,img,mirror,cropX,cropY,cropW,cropH,offsetX,offsetY){
     drawRotatedImage(to_screen_coordinate(x*drawScale,y*drawScale).x + 832/2*drawScale - 64*drawScale + offsetX*drawScale,to_screen_coordinate(x*drawScale,y*drawScale).y + offsetY*drawScale,cropW*drawScale,cropH*drawScale,img,0,mirror,cropX,cropY,cropW,cropH)
 }
@@ -399,10 +405,24 @@ function init(){
 
 
     board = new Board();  
+    let playerAmount = 0;
 
-    players.push(new Player(images.player.img[0],players.length,"green","Spelare 1"))
-    players.push(new Player(images.player.img[1],players.length,"yellow","Spelare 2"))
-    players.push(new Player(images.player.img[2],players.length,"purple","Spelare 3"))
+    while(playerAmount == 0){
+        let promptText = prompt("Hur många spelare?") 
+        if(isNumeric(promptText)){
+            if(JSON.parse(promptText) < 1 || JSON.parse(promptText) > 4){
+                playerAmount = 0;
+            }else{
+                playerAmount = JSON.parse(promptText)
+            }
+        }else{
+            playerAmount = 0;
+        }
+    }
+
+    for(i = 0; i < playerAmount; i++){
+        players.push(new Player(images.player.img[i],players.length,"green","Spelare " + (i+1)))
+    }
 
 }
 
