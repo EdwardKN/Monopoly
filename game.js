@@ -16,279 +16,6 @@ var offsets = {
     y:Math.floor(window.innerHeight/2) - 416*drawScale/2
 }
 
-
-
-const pieces = [
-    {
-        name:"Start",
-        img:0
-    },
-    {
-        name:"Brun 1",
-        price:60,
-        rent:[2,10,30,90,160,250],
-        housePrice:50,
-        group:"Brown",
-        img:0
-    },
-    {
-        name:"Allmänning",
-        type:"community Chest",
-        img:15
-    },
-    {
-        name:"Brun 2",
-        price:60,
-        rent:[4,20,60,180,320,450],
-        housePrice:50,
-        group:"Brown",
-        img:0
-    },
-    {
-        name:"Inkomstskatt",
-        type:"income tax",
-        img:16
-    },
-    {
-        name:"Södra stationen",
-        price:200,
-        type:"station",
-        img:11
-    },
-    {
-        name:"Ljusblå 1",
-        price:100,
-        rent:[6,30,90,270,400,550],
-        housePrice:50,
-        group:"light blue",
-        img:1
-    },
-    {
-        name:"Chans",
-        type:"chance",
-        img:10
-    },
-    {
-        name:"Ljusblå 2",
-        price:100,
-        rent:[6,30,90,270,400,550],
-        housePrice:50,
-        group:"light blue",
-        img:1
-    },
-    {
-        name:"Ljusblå 3",
-        price:120,
-        rent:[8,40,100,300,450,600],
-        housePrice:50,
-        group:"light blue",
-        img:1
-    },
-    {
-        name:"Fängelse",
-        img:1
-    },
-    {
-        name:"Rosa 1",
-        price:140,
-        rent:[10,50,150,450,625,750],
-        housePrice:100,
-        group:"pink",
-        img:2
-    },
-    {
-        name:"Elverket",
-        price:150,
-        type:"utility",
-        img:13
-    },
-    {
-        name:"Rosa 2",
-        price:140,
-        rent:[10,50,150,450,625,750],
-        housePrice:100,
-        group:"pink",
-        img:2
-    },
-    {
-        name:"Rosa 3",
-        price:160,
-        rent:[12,60,180,500,700,900],
-        housePrice:100,
-        group:"pink",
-        img:2
-    },
-    {
-        name:"Östra Stationen",
-        price:200,
-        type:"station",
-        img:11
-    },
-    {
-        name:"Orange 1",
-        price:180,
-        rent:[14,70,200,550,750,950],
-        housePrice:100,
-        group:"orange",
-        img:3
-    },
-    {
-        name:"Allmänning",
-        type:"community Chest",
-        img:15
-    },
-    {
-        name:"Orange 2",
-        price:180,
-        rent:[14,70,200,550,750,950],
-        housePrice:100,
-        group:"orange",
-        img:3
-    },
-    {
-        name:"Orange 3",
-        price:200,
-        rent:[16,80,220,600,800,1000],
-        housePrice:100,
-        group:"orange",
-        img:3
-    },
-    {
-        name:"Fri parkering",
-        img:2
-    },
-    {
-        name:"Röd 1",
-        price:220,
-        rent:[18,90,250,700,875,1050],
-        housePrice:150,
-        group:"red",
-        img:4
-    },
-    {
-        name:"Chans",
-        type:"chance",
-        img:8
-    },
-    {
-        name:"Röd 2",
-        price:220,
-        rent:[18,90,250,700,875,1050],
-        housePrice:150,
-        group:"red",
-        img:4
-    },
-    {
-        name:"Röd 3",
-        price:240,
-        rent:[20,100,300,750,925,1100],
-        housePrice:150,
-        group:"red",
-        img:4
-    },
-    {
-        name:"Centralstationen",
-        price:200,
-        type:"station",
-        img:11
-    },
-    {
-        name:"Gul 1",
-        price:260,
-        rent:[22,110,330,800,975,1150],
-        housePrice:150,
-        group:"yellow",
-        img:5
-    },
-    {
-        name:"Gul 2",
-        price:260,
-        rent:[22,110,330,800,975,1150],
-        housePrice:150,
-        group:"yellow",
-        img:5
-    },
-    {
-        name:"Vattenledningsverket",
-        price: 150,
-        type:"utility",
-        img:12
-    },
-    {
-        name:"Gul 3",
-        price:280,
-        rent:[24,120,360,850,1025,1200],
-        housePrice:150,
-        group:"yellow",
-        img:5
-    },
-    {
-        name:"Gå till finkan",
-        img:3
-    },
-    {
-        name:"Grön 1",
-        price:300,
-        rent:[26,130,390,900,1100,1275],
-        housePrice:200,
-        group:"green",
-        img:6
-    },
-    {
-        name:"Grön 2",
-        price:300,
-        rent:[26,130,390,900,1100,1275],
-        housePrice:200,
-        group:"green",
-        img:6
-    },
-    {
-        name:"Allmänning",
-        type:"community Chest",
-        img:15
-    },
-    {
-        name:"Grön 3",
-        price:320,
-        rent:[28,150,450,1000,1200,1400],
-        housePrice:200,
-        group:"green",
-        img:6
-    },
-    {
-        name:"Norra stationen",
-        price:200,
-        type:"station",
-        img:11
-    },
-    {
-        name:"Chans",
-        type:"chance",
-        img:9
-    },
-    {
-        name:"Blå 1",
-        price:350,
-        rent:[35,175,500,1100,1300,1500],
-        housePrice:200,
-        group:"blue",
-        img:7
-    },
-    {
-        name:"Lyxskatt",
-        price:-100,
-        img:15
-    },
-    {
-        name:"Blå 2",
-        price:400,
-        rent:[50,200,600,1400,1700,2000],
-        housePrice:200,
-        group:"blue",
-        img:7
-    }
-]
-
 var images = {
     part:{
         src:["./images/plates/brown.png","./images/plates/light_blue.png",
@@ -297,26 +24,40 @@ var images = {
         "./images/plates/green.png","./images/plates/blue.png",
         "./images/plates/chance.png","./images/plates/chance2.png","./images/plates/chance3.png",
         "./images/plates/train.png", "./images/plates/water.png", "./images/plates/electric.png",
-        "./images/plates/supertax.png","./images/plates/chest.png","./images/plates/incometax.png"]
+        "./images/plates/supertax.png","./images/plates/chest.png","./images/plates/incometax.png"
+        ]
+    },
+    card:{
+        src:["./images/cards/browncard1.png","./images/cards/browncard2.png","./images/cards/lightbluecard1.png","./images/cards/lightbluecard2.png","./images/cards/lightbluecard3.png"
+            ,"./images/cards/pinkcard1.png","./images/cards/pinkcard2.png","./images/cards/pinkcard3.png","./images/cards/orangecard1.png","./images/cards/orangecard2.png","./images/cards/orangecard3.png"
+            ,"./images/cards/redcard1.png","./images/cards/redcard2.png","./images/cards/redcard3.png","./images/cards/yellowcard1.png","./images/cards/yellowcard2.png","./images/cards/yellowcard3.png"
+            ,"./images/cards/greencard1.png","./images/cards/greencard2.png","./images/cards/greencard3.png","./images/cards/bluecard1.png","./images/cards/bluecard2.png"
+        ]
     },
     corner:{
-        src:["./images/corners/go.png","./images/corners/prison.png","./images/corners/parking.png","./images/corners/gotoprison.png"]
+        src:["./images/corners/go.png","./images/corners/prison.png","./images/corners/parking.png","./images/corners/gotoprison.png"
+        ]
     },
     player:{
         src:["./images/players/player.png","./images/players/player2.png","./images/players/player3.png","./images/players/player4.png",
-        "./images/players/player5.png","./images/players/player6.png","./images/players/player7.png","./images/players/player8.png"]
+        "./images/players/player5.png","./images/players/player6.png","./images/players/player7.png","./images/players/player8.png"
+        ]
     },
     background:{
-        src:["./images/static/insideboard.png","./images/static/realbackground.png"]
+        src:["./images/static/insideboard.png","./images/static/realbackground.png"
+        ]
     },
     house:{
-        src:["./images/buildings/house.png","./images/buildings/hotel.png"]
+        src:["./images/buildings/house.png","./images/buildings/hotel.png"
+        ]
     },
     dice:{
-        src:["./images/dices/dices.png"]
+        src:["./images/dices/dices.png"
+        ]
     },
     buttons:{
-        src:["./images/buttons/rolldice.png","./images/buttons/nextplayer.png"]
+        src:["./images/buttons/rolldice.png","./images/buttons/nextplayer.png"
+        ]
     }
 };
 
@@ -338,6 +79,302 @@ var mouse = {
     realX:0,
     realY:0
 }
+const pieces = [
+    {
+        name:"Start",
+        img:0
+    },
+    {
+        name:"Brun 1",
+        price:60,
+        rent:[2,10,30,90,160,250],
+        housePrice:50,
+        group:"Brown",
+        img:0,
+        card:0
+    },
+    {
+        name:"Allmänning",
+        type:"community Chest",
+        img:15
+    },
+    {
+        name:"Brun 2",
+        price:60,
+        rent:[4,20,60,180,320,450],
+        housePrice:50,
+        group:"Brown",
+        img:0,
+        card:1
+    },
+    {
+        name:"Inkomstskatt",
+        type:"income tax",
+        img:16,
+        type:"tax"
+    },
+    {
+        name:"Södra stationen",
+        price:200,
+        type:"station",
+        img:11
+    },
+    {
+        name:"Ljusblå 1",
+        price:100,
+        rent:[6,30,90,270,400,550],
+        housePrice:50,
+        group:"light blue",
+        img:1,
+        card:2
+    },
+    {
+        name:"Chans",
+        type:"chance",
+        img:10
+    },
+    {
+        name:"Ljusblå 2",
+        price:100,
+        rent:[6,30,90,270,400,550],
+        housePrice:50,
+        group:"light blue",
+        img:1,
+        card:3
+    },
+    {
+        name:"Ljusblå 3",
+        price:120,
+        rent:[8,40,100,300,450,600],
+        housePrice:50,
+        group:"light blue",
+        img:1,
+        card:4
+    },
+    {
+        name:"Fängelse",
+        img:1
+    },
+    {
+        name:"Rosa 1",
+        price:140,
+        rent:[10,50,150,450,625,750],
+        housePrice:100,
+        group:"pink",
+        img:2,
+        card:5
+    },
+    {
+        name:"Elverket",
+        price:150,
+        type:"utility",
+        img:13
+    },
+    {
+        name:"Rosa 2",
+        price:140,
+        rent:[10,50,150,450,625,750],
+        housePrice:100,
+        group:"pink",
+        img:2,
+        card:6
+    },
+    {
+        name:"Rosa 3",
+        price:160,
+        rent:[12,60,180,500,700,900],
+        housePrice:100,
+        group:"pink",
+        img:2,
+        card:7
+    },
+    {
+        name:"Östra Stationen",
+        price:200,
+        type:"station",
+        img:11
+    },
+    {
+        name:"Orange 1",
+        price:180,
+        rent:[14,70,200,550,750,950],
+        housePrice:100,
+        group:"orange",
+        img:3,
+        card:8
+    },
+    {
+        name:"Allmänning",
+        type:"community Chest",
+        img:15
+    },
+    {
+        name:"Orange 2",
+        price:180,
+        rent:[14,70,200,550,750,950],
+        housePrice:100,
+        group:"orange",
+        img:3,
+        card:9
+    },
+    {
+        name:"Orange 3",
+        price:200,
+        rent:[16,80,220,600,800,1000],
+        housePrice:100,
+        group:"orange",
+        img:3,
+        card:10
+    },
+    {
+        name:"Fri parkering",
+        img:2
+    },
+    {
+        name:"Röd 1",
+        price:220,
+        rent:[18,90,250,700,875,1050],
+        housePrice:150,
+        group:"red",
+        img:4,
+        card:11
+    },
+    {
+        name:"Chans",
+        type:"chance",
+        img:8
+    },
+    {
+        name:"Röd 2",
+        price:220,
+        rent:[18,90,250,700,875,1050],
+        housePrice:150,
+        group:"red",
+        img:4,
+        card:12
+    },
+    {
+        name:"Röd 3",
+        price:240,
+        rent:[20,100,300,750,925,1100],
+        housePrice:150,
+        group:"red",
+        img:4,
+        card:13
+    },
+    {
+        name:"Centralstationen",
+        price:200,
+        type:"station",
+        img:11,
+        card:14
+    },
+    {
+        name:"Gul 1",
+        price:260,
+        rent:[22,110,330,800,975,1150],
+        housePrice:150,
+        group:"yellow",
+        img:5,
+        card:15
+    },
+    {
+        name:"Gul 2",
+        price:260,
+        rent:[22,110,330,800,975,1150],
+        housePrice:150,
+        group:"yellow",
+        img:5,
+        card:16
+    },
+    {
+        name:"Vattenledningsverket",
+        price: 150,
+        type:"utility",
+        img:12
+    },
+    {
+        name:"Gul 3",
+        price:280,
+        rent:[24,120,360,850,1025,1200],
+        housePrice:150,
+        group:"yellow",
+        img:5,
+        card:17
+    },
+    {
+        name:"Gå till finkan",
+        img:3
+    },
+    {
+        name:"Grön 1",
+        price:300,
+        rent:[26,130,390,900,1100,1275],
+        housePrice:200,
+        group:"green",
+        img:6,
+        card:18
+    },
+    {
+        name:"Grön 2",
+        price:300,
+        rent:[26,130,390,900,1100,1275],
+        housePrice:200,
+        group:"green",
+        img:6,
+        card:19
+    },
+    {
+        name:"Allmänning",
+        type:"community Chest",
+        img:15
+    },
+    {
+        name:"Grön 3",
+        price:320,
+        rent:[28,150,450,1000,1200,1400],
+        housePrice:200,
+        group:"green",
+        img:6,
+        card:20
+    },
+    {
+        name:"Norra stationen",
+        price:200,
+        type:"station",
+        img:11
+    },
+    {
+        name:"Chans",
+        type:"chance",
+        img:9
+    },
+    {
+        name:"Blå 1",
+        price:350,
+        rent:[35,175,500,1100,1300,1500],
+        housePrice:200,
+        group:"blue",
+        img:7,
+        card:20
+    },
+    {
+        name:"Lyxskatt",
+        price:-100,
+        img:14,
+        type:"tax"
+    },
+    {
+        name:"Blå 2",
+        price:400,
+        rent:[50,200,600,1400,1700,2000],
+        housePrice:200,
+        group:"blue",
+        img:7,
+        card:21
+    }
+]
+
 window.addEventListener("resize", e=> {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
@@ -362,6 +399,7 @@ window.addEventListener("mousedown",function(e){
         })
     board.nextPlayerButton.click();
     board.rollDiceButton.click();
+    board.cardCloseButton.click();
 })
 
 function preRender(imageObject){
@@ -453,8 +491,12 @@ function isNumeric(str) {
            !isNaN(parseFloat(str)) 
   }
 
-function drawIsometricImage(x,y,img,mirror,cropX,cropY,cropW,cropH,offsetX,offsetY){
-    drawRotatedImage(to_screen_coordinate(x*drawScale,y*drawScale).x + 832/2*drawScale - 64*drawScale + offsetX*drawScale,to_screen_coordinate(x*drawScale,y*drawScale).y + offsetY*drawScale,cropW*drawScale,cropH*drawScale,img,0,mirror,cropX,cropY,cropW,cropH)
+function drawIsometricImage(x,y,img,mirror,cropX,cropY,cropW,cropH,offsetX,offsetY,sizeOveride){
+    let scaleOfThis = drawScale;
+    if(sizeOveride !== undefined){
+        scaleOfThis = sizeOveride*drawScale;
+    }
+    drawRotatedImage(to_screen_coordinate(x*drawScale,y*drawScale).x + 832/2*drawScale - 64*scaleOfThis + offsetX*scaleOfThis,to_screen_coordinate(x*drawScale,y*drawScale).y + offsetY*drawScale,cropW*scaleOfThis,cropH*scaleOfThis,img,0,mirror,cropX,cropY,cropW,cropH)
 }
 
 
@@ -588,6 +630,9 @@ class Board{
         this.animateDices = false;
         this.rollDiceButton = new Button(0,250,images.buttons.img[0],function(){players[turn].rollDice()})
         this.nextPlayerButton = new Button(0,250,images.buttons.img[1],function(){players[turn].rollDice()})
+        this.currentCard = undefined;
+        this.cardCloseButton = new Button(119,45,undefined,function(){board.currentCard = undefined;board.currentCardType = undefined;},30,15)
+        this.currentCardType = undefined;
 
             for(let n = 0; n < 40; n++){
                 if(n%10 === 0){
@@ -606,11 +651,28 @@ class Board{
             this.boardPieces.forEach(g => g.drawHouses())
             this.boardPieces.forEach(g => g.currentPlayer.forEach(p => p.update()))
             this.prisonExtra.currentPlayer.forEach(p => p.update())
-
+            this.showCard();
         }  
         this.randomizeDice = function () {
             this.dice1Type = randomIntFromRange(0,3);
             this.dice2Type = randomIntFromRange(0,3);
+        }
+        this.showCard = function (){
+            if(this.currentCard !== undefined){
+                this.cardCloseButton.visible = true;
+                drawIsometricImage(0,0,images.card.img[this.currentCard.piece.card],false,0,0,images.card.img[this.currentCard.piece.card].width,images.card.img[this.currentCard.piece.card].height,-images.card.img[this.currentCard.piece.card].width/4,images.card.img[this.currentCard.piece.card].height/7.5,1)
+                this.cardCloseButton.draw();
+                c.fillStyle = "black";
+                c.textAlign = "center";
+                c.font ="10px Brush Script MT";
+                if(this.currentCard.owner !== undefined){
+                    c.fillText("Ägare: " + this.currentCard.owner.name,canvas.width/2,canvas.height/2)
+                }
+                this.nextPlayerButton.visible = false;
+                this.rollDiceButton.visible = false;
+            }else{
+                this.cardCloseButton.visible = false;
+            }
         }
 
         this.showDice = function () {
@@ -634,24 +696,42 @@ class Board{
 }
 
 class Button{
-    constructor(x,y,img,onClick){
+    constructor(x,y,img,onClick,w,h){
         this.x = x;
         this.y = y;
+        this.w = w;
+        this.h = h;
         this.img = img;
+
+        if(this.w === undefined ||this.h === undefined){
+            this.w = this.img.width;
+            this.h = this.img.height;
+        }
         this.onClick = onClick
         this.visible = false;
         this.draw = function(){
-            if(this.visible){
+            if(this.visible && this.img !== undefined){
                 if(detectCollition(canvas.width/2 +this.x*drawScale- this.img.width/2,this.y*drawScale-208*drawScale + canvas.height/2,this.img.width/2*drawScale,this.img.height*drawScale,mouse.realX,mouse.realY,1,1)){
                     drawIsometricImage(0,0,this.img,false,this.img.width/2,0,this.img.width/2,this.img.height,this.x+ 5*drawScale,this.y)
+                    canvas.style.cursor = "pointer";
                 }else{
+                    canvas.style.cursor = "auto";
                     drawIsometricImage(0,0,this.img,false,0,0,this.img.width/2,this.img.height,this.x+ 5*drawScale,this.y)
+                }
+            }else if(this.visible){
+                if(detectCollition(canvas.width/2 +this.x*drawScale- this.w/2,this.y*drawScale-208*drawScale + canvas.height/2,this.w/2*drawScale,this.h*drawScale,mouse.realX,mouse.realY,1,1)){
+                    canvas.style.cursor = "pointer";
+                }else{
+                    canvas.style.cursor = "auto";    
                 }
             }
         }
         this.click = function(){
-            if(detectCollition(canvas.width/2 +this.x*drawScale- this.img.width/2,this.y*drawScale-208*drawScale + canvas.height/2,this.img.width/2*drawScale,this.img.height*drawScale,mouse.realX,mouse.realY,1,1)){
-                this.onClick();
+            if(this.visible){
+                if(detectCollition(canvas.width/2 +this.x*drawScale- this.w/2,this.y*drawScale-208*drawScale + canvas.height/2,this.w/2*drawScale,this.h*drawScale,mouse.realX,mouse.realY,1,1)){
+                    this.onClick();
+                    canvas.style.cursor = "auto";    
+                }
             }
         }
         
@@ -717,7 +797,10 @@ class BoardPiece{
         this.update = function () {
             let mouseSquareX = (to_grid_coordinate(mouse.x-416*drawScale,mouse.y).x/64) 
             let mouseSquareY = (to_grid_coordinate(mouse.x-416*drawScale,mouse.y).y/64)
-            if(this.x/64*drawScale > mouseSquareX-1*drawScale && this.x/64*drawScale < mouseSquareX && this.side === 2 && this.n%10 !== 0 && mouseSquareY >= 0*drawScale && mouseSquareY < 2*drawScale
+            if(board.currentCard !== undefined || this.piece.type === "chance" || this.piece.type === "community Chest" || this.piece.type === "tax" || this.n%10 === 0){
+                this.offsetY = 0;
+                this.hover = false;
+            }else if(this.x/64*drawScale > mouseSquareX-1*drawScale && this.x/64*drawScale < mouseSquareX && this.side === 2 && this.n%10 !== 0 && mouseSquareY >= 0*drawScale && mouseSquareY < 2*drawScale
             ||this.x/64*drawScale > mouseSquareX-2*drawScale && this.x/64*drawScale < mouseSquareX && this.side === 2 && this.n%10 === 0 && mouseSquareY >= 0*drawScale && mouseSquareY < 2*drawScale
 
             ||this.x/64*drawScale > mouseSquareX-1*drawScale && this.x/64*drawScale < mouseSquareX && this.side === 0 && this.n%10 !== 0 && mouseSquareY >= 11*drawScale && mouseSquareY < 13*drawScale
@@ -731,10 +814,12 @@ class BoardPiece{
             ){
                 this.offsetY = -1;
                 this.hover = true;
+                
             }else{
                 this.offsetY = 0;
                 this.hover = false;
             }
+
             this.draw();
             
         }
@@ -817,9 +902,12 @@ class BoardPiece{
         }
         this.click = function(){
             if(this.hover === true){
-                this.show = true;
-                
-                alert(this.info())
+                if(this.piece.card === undefined){
+                    alert(this.info())
+                }else{
+                    board.currentCard = this;
+                    board.currentCardType = "show";
+                }
                 if(this.owner === players[turn]){
                     let ownAll = true;
                     for(let i = 0; i<board.boardPieces.length; i++){
