@@ -463,6 +463,7 @@ class Board{
         this.boardPieces = [];
         this.prisonExtra = new BoardPiece(-1,-1,[])
         this.showDices = false;
+        this.animateDices = false;
         for(let i = 0; i < 4; i++){
             let tmp = [];
             for(let n = 0; n < 10; n++){
@@ -488,7 +489,7 @@ class Board{
         }
 
         this.showDice = function () {
-            if(players[turn].animationOffset > 0 ||this.showDices === true){
+            if(players[turn].animationOffset > 0 ||this.showDices === true || this.animateDices === true){
             drawIsometricImage(500,500,images.dice.img[0],false,this.dice1Type*64,(this.dice1-1)*64,64,64,0,0)
             drawIsometricImage(550,400,images.dice.img[0],false,this.dice2Type*64,(this.dice2-1)*64,64,64,0,0)
             }else{
@@ -1110,6 +1111,7 @@ class Player{
                     })})})
                     if(self.to >= 40){
                         alert(self.name + " gick förbi start och fick då 200$")
+                        self.money += 200;
                     }
                     to = to%40
                     if(to === 0){
@@ -1162,17 +1164,33 @@ class Player{
                     }
                     let diceSum = dice1+dice2;
 
-                    board.randomizeDice();
-                    board.dice1 = dice1;
-                    board.dice2 = dice2;
-
-                    this.steps += dice1+dice2;
-                    if(this.steps >= 40){
-                        this.money+=200
-                    }
-                    this.steps = this.steps%40;
                     
-                    this.animateSteps(oldStep,this.steps,diceSum)
+                    board.animateDices = true;
+
+                    let counter = 1;
+                    let self = this;
+                    var myFunction = function() {
+                        board.randomizeDice();
+                        board.dice1 = randomIntFromRange(1,6)
+                        board.dice2 = randomIntFromRange(1,6)
+                        counter *= 1.2;
+                        if(counter > 1000){
+                            board.dice1 = dice1;
+                            board.dice2 = dice2;
+                            setTimeout(() => {
+                                board.animateDices = false;
+                                self.steps += dice1+dice2;
+                                self.steps = self.steps%40;
+                                self.animateSteps(oldStep,self.steps,diceSum)
+                            }, 1000);                  
+                        }else{
+                            setTimeout(myFunction, counter);
+                        }
+                    }
+                    setTimeout(myFunction, counter);
+                    
+                        
+                    
                     
                 }else{
                     turn = (turn+1)%players.length;
