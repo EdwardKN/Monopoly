@@ -1382,8 +1382,8 @@ class Player{
             if(this.inJail === false){
                 if(this.rolls === false){
                     let oldStep = this.steps;
-                    let dice1 = randomIntFromRange(3,3);
-                    let dice2 = randomIntFromRange(3,3);
+                    let dice1 = randomIntFromRange(1,6);
+                    let dice2 = randomIntFromRange(1,6);
                     if(dice1 === dice2){
                         if(this.numberOfRolls === 3){
                             this.goToPrison();
