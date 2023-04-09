@@ -263,7 +263,8 @@ var images = {
         src:["./images/corners/go.png","./images/corners/prison.png","./images/corners/parking.png","./images/corners/gotoprison.png"]
     },
     player:{
-        src:["./images/players/player.png","./images/players/player2.png","./images/players/player3.png","./images/players/player4.png"]
+        src:["./images/players/player.png","./images/players/player2.png","./images/players/player3.png","./images/players/player4.png",
+        "./images/players/player5.png","./images/players/player6.png","./images/players/player7.png","./images/players/player8.png"]
     },
     background:{
         src:["./images/static/insideboard.png","./images/static/realbackground.png"]
@@ -407,10 +408,12 @@ function init(){
     board = new Board();  
     let playerAmount = 0;
 
+    let playerImages = [0,1,2,3,4,5,6,7]
+
     while(playerAmount == 0){
         let promptText = prompt("Hur många spelare?") 
         if(isNumeric(promptText)){
-            if(JSON.parse(promptText) < 1 || JSON.parse(promptText) > 4){
+            if(JSON.parse(promptText) < 1 || JSON.parse(promptText) > 8){
                 playerAmount = 0;
             }else{
                 playerAmount = JSON.parse(promptText)
@@ -421,7 +424,9 @@ function init(){
     }
 
     for(i = 0; i < playerAmount; i++){
-        players.push(new Player(images.player.img[i],players.length,"green","Spelare " + (i+1)))
+        let random = randomIntFromRange(0,playerImages.length-1)
+        players.push(new Player(images.player.img[playerImages[random]],players.length,"green","Spelare " + (i+1)))
+        playerImages.splice(random,1)
     }
 
 }
@@ -433,6 +438,8 @@ function update(){
     c.clearRect(0,0,canvas.width,canvas.height);
     showBackground();
 
+    c.fillStyle = "white";
+    c.font = "80px calibri";
     players.forEach(function(player,i,a) { 
         if(i === 0){
             c.textAlign = "left";
@@ -450,6 +457,22 @@ function update(){
             c.textAlign = "right";
             c.fillText(player.name + ": " + player.money + "$", canvas.width-10, canvas.height-30);
         }
+        if(i === 4){
+            c.textAlign = "left";
+            c.fillText(player.name + ": " + player.money + "$", 10, 160);
+        }
+        if(i === 5){
+            c.textAlign = "right";
+            c.fillText(player.name + ": " + player.money + "$", canvas.width-10, 160);
+        }
+        if(i === 6){
+            c.textAlign = "left";
+            c.fillText(player.name + ": " + player.money + "$", 10, canvas.height-110);
+        }
+        if(i === 7){
+            c.textAlign = "right";
+            c.fillText(player.name + ": " + player.money + "$", canvas.width-10, canvas.height-110);
+        }
     })
 
     c.fillStyle = "black";
@@ -457,8 +480,7 @@ function update(){
     c.textAlign = "center";
     c.fillText("Just nu:" + players[turn].name, canvas.width/2, canvas.height/2 + 50);
     board.update();
-    c.fillStyle = "white";
-    c.font = "80px calibri";
+    
 
 
 
