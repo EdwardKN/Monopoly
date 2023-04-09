@@ -642,9 +642,6 @@ class Button{
         this.visible = false;
         this.draw = function(){
             if(this.visible){
-                c.fillStyle = "black";
-                c.fillRect(canvas.width/2 +this.x*drawScale- this.img.width/2,this.y*drawScale-208*drawScale + canvas.height/2,this.img.width/2*drawScale,this.img.height*drawScale)
-
                 if(detectCollition(canvas.width/2 +this.x*drawScale- this.img.width/2,this.y*drawScale-208*drawScale + canvas.height/2,this.img.width/2*drawScale,this.img.height*drawScale,mouse.realX,mouse.realY,1,1)){
                     drawIsometricImage(0,0,this.img,false,this.img.width/2,0,this.img.width/2,this.img.height,this.x+ 5*drawScale,this.y)
                 }else{
