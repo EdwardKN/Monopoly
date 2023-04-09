@@ -643,7 +643,9 @@ class Button{
         this.draw = function(){
             if(this.visible){
                 c.fillStyle = "black";
-                if(detectCollition(832/2*drawScale - 53*drawScale +this.x*drawScale,this.y*drawScale+27*drawScale,this.img.width/2*drawScale,this.img.height*drawScale,mouse.realX,mouse.realY,1,1)){
+                c.fillRect(canvas.width/2 +this.x*drawScale- this.img.width/2,this.y*drawScale-208*drawScale + canvas.height/2,this.img.width/2*drawScale,this.img.height*drawScale)
+
+                if(detectCollition(canvas.width/2 +this.x*drawScale- this.img.width/2,this.y*drawScale-208*drawScale + canvas.height/2,this.img.width/2*drawScale,this.img.height*drawScale,mouse.realX,mouse.realY,1,1)){
                     drawIsometricImage(0,0,this.img,false,this.img.width/2,0,this.img.width/2,this.img.height,this.x+ 5*drawScale,this.y)
                 }else{
                     drawIsometricImage(0,0,this.img,false,0,0,this.img.width/2,this.img.height,this.x+ 5*drawScale,this.y)
@@ -651,7 +653,7 @@ class Button{
             }
         }
         this.click = function(){
-            if(detectCollition(832/2*drawScale - 53*drawScale +this.x*drawScale,this.y*drawScale+27*drawScale,this.img.width/2*drawScale,this.img.height*drawScale,mouse.realX,mouse.realY,1,1)){
+            if(detectCollition(canvas.width/2 +this.x*drawScale- this.img.width/2,this.y*drawScale-208*drawScale + canvas.height/2,this.img.width/2*drawScale,this.img.height*drawScale,mouse.realX,mouse.realY,1,1)){
                 this.onClick();
             }
         }
