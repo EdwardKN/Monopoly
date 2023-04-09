@@ -542,7 +542,7 @@ function init(){
     while(playerAmount == 0){
         let promptText = prompt("Hur många spelare?") 
         if(isNumeric(promptText)){
-            if(JSON.parse(promptText) < 1 || JSON.parse(promptText) > 8){
+            if(JSON.parse(promptText) < 2 || JSON.parse(promptText) > 8){
                 playerAmount = 0;
             }else{
                 playerAmount = JSON.parse(promptText)
