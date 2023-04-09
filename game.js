@@ -32,6 +32,8 @@ var images = {
             ,"./images/cards/pinkcard1.png","./images/cards/pinkcard2.png","./images/cards/pinkcard3.png","./images/cards/orangecard1.png","./images/cards/orangecard2.png","./images/cards/orangecard3.png"
             ,"./images/cards/redcard1.png","./images/cards/redcard2.png","./images/cards/redcard3.png","./images/cards/yellowcard1.png","./images/cards/yellowcard2.png","./images/cards/yellowcard3.png"
             ,"./images/cards/greencard1.png","./images/cards/greencard2.png","./images/cards/greencard3.png","./images/cards/bluecard1.png","./images/cards/bluecard2.png"
+            ,"./images/cards/electricitycard.png","./images/cards/waterworkscard.png"
+            ,"./images/cards/eaststation.png","./images/cards/northstation.png","./images/cards/centralstation.png","./images/cards/southstation.png"
         ]
     },
     corner:{
@@ -118,7 +120,8 @@ const pieces = [
         name:"Södra stationen",
         price:200,
         type:"station",
-        img:11
+        img:11,
+        card:27
     },
     {
         name:"Ljusblå 1",
@@ -169,7 +172,8 @@ const pieces = [
         name:"Elverket",
         price:150,
         type:"utility",
-        img:13
+        img:13,
+        card:22
     },
     {
         name:"Rosa 2",
@@ -193,7 +197,8 @@ const pieces = [
         name:"Östra Stationen",
         price:200,
         type:"station",
-        img:11
+        img:11,
+        card:24
     },
     {
         name:"Orange 1",
@@ -268,6 +273,7 @@ const pieces = [
         price:200,
         type:"station",
         img:11,
+        card:26
     },
     {
         name:"Gul 1",
@@ -291,7 +297,8 @@ const pieces = [
         name:"Vattenledningsverket",
         price: 150,
         type:"utility",
-        img:12
+        img:12,
+        card:23
     },
     {
         name:"Gul 3",
@@ -342,7 +349,8 @@ const pieces = [
         name:"Norra stationen",
         price:200,
         type:"station",
-        img:11
+        img:11,
+        card:25
     },
     {
         name:"Chans",
@@ -409,6 +417,13 @@ window.addEventListener("mousedown",function(e){
     board.upgradeButton.click();
     board.downgradeButton.click();
 })
+
+window.addEventListener("keydown",function(e){
+    if(e.keyCode === 27){
+        board.currentCard = undefined;
+    }
+})
+
 
 function preRender(imageObject){
     Object.entries(imageObject).forEach(image => {
