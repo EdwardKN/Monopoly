@@ -16,6 +16,8 @@ var offsets = {
     y:Math.floor(window.innerHeight/2) - 416*drawScale/2
 }
 
+
+
 const pieces = [
     {
         name:"Start",
@@ -318,6 +320,18 @@ var images = {
     }
 };
 
+var sounds = {
+    click:{
+        type:"single",
+        src:"./sounds/click.mp3"
+    },
+    movement:{
+        type:"multiple",
+        src:"./sounds/movement/move-",
+        amount:46
+    }
+}
+
 var mouse = {
     x:0,
     y:0,
@@ -358,6 +372,23 @@ function preRender(imageObject){
 
             image[1].img[i].src = image[1].src[i];
             c.drawImage(image[1].img[i],0,0)
+        }
+    });
+}
+function loadSounds(soundObject){
+    Object.entries(soundObject).forEach(sound => {
+        if(sound[1].type === "single"){
+            sound[1].sound = new Audio(sound[1].src)
+        }
+        if(sound[1].type === "multiple"){
+            sound[1].sounds = []
+            for(let i = 1; i<sound[1].amount; i++){
+                if(i < 10){
+                    sound[1].sounds.push(new Audio(sound[1].src + "0" + i + ".mp3"))
+                }else{
+                    sound[1].sounds.push(new Audio(sound[1].src + i + ".mp3"))
+                }
+            }
         }
     });
 }
@@ -431,6 +462,17 @@ function randomIntFromRange(min, max) {
     return Math.floor(Math.random() * (max - min + 1) + min)
 };
 
+function playSound(sound){
+    if(sound.type === "single"){
+        let myClonedAudio = sound.sound.cloneNode();
+        myClonedAudio.play();
+    }else{
+        let myClonedAudio = sound.sounds[Math.floor(Math.random() * sound.sounds.length)].cloneNode();
+        myClonedAudio.play();
+    }
+
+};
+
 function init(){
     document.body.appendChild(canvas);
     canvas.style.zIndex = -100;
@@ -440,10 +482,10 @@ function init(){
 
     preRender(images);
 
-
+    loadSounds(sounds);
 
     board = new Board();  
-    let playerAmount = 0;
+    let playerAmount = 4;
 
     let playerImages = [0,1,2,3,4,5,6,7]
 
@@ -1179,6 +1221,7 @@ class Player{
                     })})
 
                     self.animationOffset--;
+                    playSound(sounds.movement)
                     if(((to-self.animationOffset)%40-1) === -1){
                         board.boardPieces[0].playerStep(true,self);
                     }else{
@@ -1187,7 +1230,7 @@ class Player{
                     
 
                 }
-            },10);
+            },300);
         }
         
         this.rollDice = function(){
@@ -1210,14 +1253,16 @@ class Player{
                     
                     board.animateDices = true;
 
-                    let counter = 1;
+                    let counter = 25;
                     let self = this;
                     var myFunction = function() {
                         board.randomizeDice();
                         board.dice1 = randomIntFromRange(1,6)
                         board.dice2 = randomIntFromRange(1,6)
+                        playSound(sounds.click)
                         counter *= 1.2;
                         if(counter > 1000){
+                            playSound(sounds.click)
                             board.dice1 = dice1;
                             board.dice2 = dice2;
                             setTimeout(() => {
