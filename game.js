@@ -1100,6 +1100,7 @@ class Player{
                 to += 40
             };
             this.animationOffset = to-from;
+            board.showDices = true;
             self.timer = setInterval(function(){
                 if(self.animationOffset <= 0){
                     clearInterval(self.timer);
@@ -1126,7 +1127,7 @@ class Player{
                     if(to === 30){
                         this.goToPrison()
                     }
-
+                    board.showDices = false;
                 }else{
                     board.boardPieces.forEach(function(e,i1) {e.forEach(function(b,i2) {b.currentPlayer.forEach(function(d,i3) {
                         if(d === self){
