@@ -5,8 +5,6 @@ canvas.id = "game"
 
 var board;
 
-var rotation = 0;
-
 var turn = 0;
 
 var players = [];
@@ -20,238 +18,278 @@ var offsets = {
 
 const pieces = [
     {
+        name:"Start",
+        img:0
+    },
+    {
         name:"Brun 1",
         price:60,
         rent:[2,10,30,90,160,250],
         housePrice:50,
-        group:"Brown"
+        group:"Brown",
+        img:0
     },
     {
         name:"Allmänning",
-        type:"community Chest"
+        type:"community Chest",
+        img:15
     },
     {
         name:"Brun 2",
         price:60,
         rent:[4,20,60,180,320,450],
         housePrice:50,
-        group:"Brown"
+        group:"Brown",
+        img:0
     },
     {
         name:"Inkomstskatt",
-        type:"income tax"
+        type:"income tax",
+        img:16
     },
     {
         name:"Södra stationen",
         price:200,
-        type:"station"
+        type:"station",
+        img:11
     },
     {
         name:"Ljusblå 1",
         price:100,
         rent:[6,30,90,270,400,550],
         housePrice:50,
-        group:"light blue"
+        group:"light blue",
+        img:1
     },
     {
         name:"Chans",
-        type:"chance"
+        type:"chance",
+        img:10
     },
     {
         name:"Ljusblå 2",
         price:100,
         rent:[6,30,90,270,400,550],
         housePrice:50,
-        group:"light blue"
+        group:"light blue",
+        img:1
     },
     {
         name:"Ljusblå 3",
         price:120,
         rent:[8,40,100,300,450,600],
         housePrice:50,
-        group:"light blue"
+        group:"light blue",
+        img:1
     },
     {
         name:"Fängelse",
+        img:1
     },
     {
         name:"Rosa 1",
         price:140,
         rent:[10,50,150,450,625,750],
         housePrice:100,
-        group:"pink"
+        group:"pink",
+        img:2
     },
     {
         name:"Elverket",
         price:150,
-        type:"utility"
+        type:"utility",
+        img:13
     },
     {
         name:"Rosa 2",
         price:140,
         rent:[10,50,150,450,625,750],
         housePrice:100,
-        group:"pink"
+        group:"pink",
+        img:2
     },
     {
         name:"Rosa 3",
         price:160,
         rent:[12,60,180,500,700,900],
         housePrice:100,
-        group:"pink"
+        group:"pink",
+        img:2
     },
     {
         name:"Östra Stationen",
         price:200,
-        type:"station"
+        type:"station",
+        img:11
     },
     {
         name:"Orange 1",
         price:180,
         rent:[14,70,200,550,750,950],
         housePrice:100,
-        group:"orange"
+        group:"orange",
+        img:3
     },
     {
         name:"Allmänning",
-        type:"community Chest"
+        type:"community Chest",
+        img:15
     },
     {
         name:"Orange 2",
         price:180,
         rent:[14,70,200,550,750,950],
         housePrice:100,
-        group:"orange"
+        group:"orange",
+        img:3
     },
     {
         name:"Orange 3",
         price:200,
         rent:[16,80,220,600,800,1000],
         housePrice:100,
-        group:"orange"
+        group:"orange",
+        img:3
     },
     {
         name:"Fri parkering",
+        img:2
     },
     {
         name:"Röd 1",
         price:220,
         rent:[18,90,250,700,875,1050],
         housePrice:150,
-        group:"red"
+        group:"red",
+        img:4
     },
     {
         name:"Chans",
-        type:"chance"
+        type:"chance",
+        img:8
     },
     {
         name:"Röd 2",
         price:220,
         rent:[18,90,250,700,875,1050],
         housePrice:150,
-        group:"red"
+        group:"red",
+        img:4
     },
     {
         name:"Röd 3",
         price:240,
         rent:[20,100,300,750,925,1100],
         housePrice:150,
-        group:"red"
+        group:"red",
+        img:4
     },
     {
         name:"Centralstationen",
         price:200,
-        type:"station"
+        type:"station",
+        img:11
     },
     {
         name:"Gul 1",
         price:260,
         rent:[22,110,330,800,975,1150],
         housePrice:150,
-        group:"yellow"
+        group:"yellow",
+        img:5
     },
     {
         name:"Gul 2",
         price:260,
         rent:[22,110,330,800,975,1150],
         housePrice:150,
-        group:"yellow"
+        group:"yellow",
+        img:5
     },
     {
         name:"Vattenledningsverket",
         price: 150,
-        type:"utility"
+        type:"utility",
+        img:12
     },
     {
         name:"Gul 3",
         price:280,
         rent:[24,120,360,850,1025,1200],
         housePrice:150,
-        group:"yellow"
+        group:"yellow",
+        img:5
     },
     {
         name:"Gå till finkan",
+        img:3
     },
     {
         name:"Grön 1",
         price:300,
         rent:[26,130,390,900,1100,1275],
         housePrice:200,
-        group:"green"
+        group:"green",
+        img:6
     },
     {
         name:"Grön 2",
         price:300,
         rent:[26,130,390,900,1100,1275],
         housePrice:200,
-        group:"green"
+        group:"green",
+        img:6
     },
     {
         name:"Allmänning",
-        type:"community Chest"
+        type:"community Chest",
+        img:15
     },
     {
         name:"Grön 3",
         price:320,
         rent:[28,150,450,1000,1200,1400],
         housePrice:200,
-        group:"green"
+        group:"green",
+        img:6
     },
     {
         name:"Norra stationen",
         price:200,
-        type:"station"
+        type:"station",
+        img:11
     },
     {
         name:"Chans",
-        type:"chance"
+        type:"chance",
+        img:9
     },
     {
         name:"Blå 1",
         price:350,
         rent:[35,175,500,1100,1300,1500],
         housePrice:200,
-        group:"blue"
+        group:"blue",
+        img:7
     },
     {
         name:"Lyxskatt",
-        price:-100
+        price:-100,
+        img:15
     },
     {
         name:"Blå 2",
         price:400,
         rent:[50,200,600,1400,1700,2000],
         housePrice:200,
-        group:"blue"
-    },
-    {
-        name:"Start",
+        group:"blue",
+        img:7
     }
 ]
 
 var images = {
     part:{
-        src:["./images/plates/emptyPart.png","./images/plates/brown.png","./images/plates/light_blue.png",
+        src:["./images/plates/brown.png","./images/plates/light_blue.png",
         "./images/plates/pink.png","./images/plates/orange.png",
         "./images/plates/red.png","./images/plates/yellow.png",
         "./images/plates/green.png","./images/plates/blue.png",
@@ -305,12 +343,11 @@ canvas.addEventListener("mousemove",function(e){
 })
 
 window.addEventListener("mousedown",function(e){
-    board.boardPieces.forEach(function(side){
-        side.forEach(function(piece){
+    board.boardPieces.forEach(function(piece){
             piece.click();
         })
-    })
-    board.diceClick();
+    board.nextPlayerButton.click();
+    board.rollDiceButton.click();
 })
 
 function preRender(imageObject){
@@ -504,27 +541,30 @@ class Board{
         this.dice1Type = 0;
         this.dice2Type = 0;
         this.boardPieces = [];
-        this.prisonExtra = new BoardPiece(-1,-1,[])
+        this.prisonExtra = new BoardPiece(-1,[])
         this.showDices = false;
         this.animateDices = false;
-        for(let i = 0; i < 4; i++){
-            let tmp = [];
-            for(let n = 0; n < 10; n++){
-                if(n === 9){
-                    tmp.push(new BoardPiece(i,n,images.corner.img,pieces[i*10+n]))
+        this.rollDiceButton = new Button(0,250,images.buttons.img[0],function(){players[turn].rollDice()})
+        this.nextPlayerButton = new Button(0,250,images.buttons.img[1],function(){players[turn].rollDice()})
+
+            for(let n = 0; n < 40; n++){
+                if(n%10 === 0){
+                    this.boardPieces.push(new BoardPiece(n,images.corner.img))
                 }else{
-                    tmp.push(new BoardPiece(i,n,images.part.img,pieces[i*10+n]))
+
+                    this.boardPieces.push(new BoardPiece(n,images.part.img))
                 }
-            }
-            this.boardPieces.push(tmp);
         }
 
         this.update = function () {
-            this.boardPieces.forEach(e => e.forEach(g => g.update()))
+            this.boardPieces.forEach(g => g.update())
             this.showDice()
-            this.boardPieces.forEach(e => e.forEach(g => g.drawHouses()))
-            this.boardPieces.forEach(e => e.forEach(g => g.currentPlayer.forEach(p => p.update())))
+            this.rollDiceButton.draw();
+            this.nextPlayerButton.draw();
+            this.boardPieces.forEach(g => g.drawHouses())
+            this.boardPieces.forEach(g => g.currentPlayer.forEach(p => p.update()))
             this.prisonExtra.currentPlayer.forEach(p => p.update())
+
         }  
         this.randomizeDice = function () {
             this.dice1Type = randomIntFromRange(0,3);
@@ -535,44 +575,61 @@ class Board{
             if(players[turn].animationOffset > 0 ||this.showDices === true || this.animateDices === true){
             drawIsometricImage(500,500,images.dice.img[0],false,this.dice1Type*64,(this.dice1-1)*64,64,64,0,0)
             drawIsometricImage(550,400,images.dice.img[0],false,this.dice2Type*64,(this.dice2-1)*64,64,64,0,0)
+            this.nextPlayerButton.visible = false;
+            this.rollDiceButton.visible = false;
             }else{
                 if(players[turn].rolls === false){
-                    if(detectCollition(canvas.width/2 - 107/2*drawScale,canvas.height/2 + 42*drawScale,107*drawScale,23*drawScale,mouse.realX,mouse.realY,1,1)){
-                        drawIsometricImage(0,0,images.buttons.img[0],false,107,0,107,23,10,250)
-                    }else{
-                        drawIsometricImage(0,0,images.buttons.img[0],false,0,0,107,23,10,250)
-                    }
+                    this.rollDiceButton.visible = true;
+                    this.nextPlayerButton.visible = false;
                 }else{
-                    if(detectCollition(canvas.width/2 - 107/2*drawScale,canvas.height/2 + 42*drawScale,107*drawScale,23*drawScale,mouse.realX,mouse.realY,1,1)){
-                        drawIsometricImage(0,0,images.buttons.img[1],false,107,0,107,23,10,250)
-                    }else{
-                        drawIsometricImage(0,0,images.buttons.img[1],false,0,0,107,23,10,250)
-                    }
+                    this.nextPlayerButton.visible = true;
+                    this.rollDiceButton.visible = false;
                 }
                 
-            }
-        }
-        this.diceClick = function(){
-            if(players[turn].animationOffset === 0){
-                if(detectCollition(canvas.width/2 - 107/2*drawScale,canvas.height/2 + 42*drawScale,107*drawScale,23*drawScale,mouse.realX,mouse.realY,1,1)){
-                    players[turn].rollDice()
-                }
             }
         }
     }
 }
 
+class Button{
+    constructor(x,y,img,onClick){
+        this.x = x;
+        this.y = y;
+        this.img = img;
+        this.onClick = onClick
+        this.visible = false;
+        this.draw = function(){
+            if(this.visible){
+                c.fillStyle = "black";
+                if(detectCollition(832/2*drawScale - 53*drawScale +this.x*drawScale,this.y*drawScale+27*drawScale,this.img.width/2*drawScale,this.img.height*drawScale,mouse.realX,mouse.realY,1,1)){
+                    drawIsometricImage(0,0,this.img,false,this.img.width/2,0,this.img.width/2,this.img.height,this.x+ 5*drawScale,this.y)
+                }else{
+                    drawIsometricImage(0,0,this.img,false,0,0,this.img.width/2,this.img.height,this.x+ 5*drawScale,this.y)
+                }
+            }
+        }
+        this.click = function(){
+            if(detectCollition(832/2*drawScale - 53*drawScale +this.x*drawScale,this.y*drawScale+27*drawScale,this.img.width/2*drawScale,this.img.height*drawScale,mouse.realX,mouse.realY,1,1)){
+                this.onClick();
+            }
+        }
+        
+    }
+}
+
 class BoardPiece{
-    constructor(side,n,img,piece){
-        this.side = side;
+    constructor(n,img){
+        this.side = Math.floor(n/10);
         this.n = n;
-        this.img = img[0];
+        this.piece = pieces[this.n];
+        if(this.n !== -1){
+            this.img = img[this.piece.img];
+        }
         this.offsetX = 0;
         this.offsetY = 0;
         this.x = 0;
         this.y = 0;
         this.imgSide = 0;
-        this.piece = piece;
         this.owner = undefined;
         this.level = 0;
         this.hover = false;
@@ -580,61 +637,56 @@ class BoardPiece{
         this.inJail = false;
         
         this.setImg = function(){
-            this.side = (side+rotation)%4
-            if(this.side === 2){
-                this.x = 128+this.n*64;
-                this.y = 0;
-                this.imgSide = 1;
-                if(this.n === 9){
-                    this.x = 128+this.n*64;
-                    this.y = 0;
-                }
-            }
-    
-            if(this.side === 1){
-                this.x = 32;
-                this.y = -32 + 128*5+ - this.n*64;
-                this.imgSide = 3;
-                if(this.n === 9){
-                    this.x = 0;
-                    this.y = 0;
-                }
-            }
             if(this.side === 0){
-                this.x = 128*5-this.n*64;
+                this.x = 128*5.5-this.n*64;
                 this.y = 64*11;
                 this.imgSide =0;
-                if(this.n === 9){
+            }
+            if(this.side === 1){
+                this.x = 32;
+                this.y = -32 + 128*10.5+ - this.n*64;
+                this.imgSide = 3;
+                if(this.n%10 === 0){
                     this.x = 0;
-                    this.y = 128+this.n*64;
+                    this.y = -32 + 128*10.75+ - this.n*64;
                 }
             }
+            if(this.side === 2){
+                this.x = (this.n%10)*64;
+                this.y = 0;
+                this.imgSide = 1;
+                if(this.n%10 !== 0){
+                    this.x = (this.n%10)*64 + 64;
+                    this.y = 0;
+                }
+            }
+
             if(this.side === 3){
-                this.x = 32 + 64*11
-                this.y = -32 + 128+this.n*64;
+                this.x = 128*5.5
+                this.y = 0
                 this.imgSide = 2;
-                if(this.n === 9){
-                    this.x = 128+this.n*64;
-                    this.y = 128+this.n*64;
+                if(this.n%10 !== 0){
+                    this.x = 128*5.75
+                    this.y = 0.25*128 + 64*(this.n%10)
                 }
             }
         }
-                
+        this.setImg();
+  
         this.update = function () {
-            this.setImg();
             let mouseSquareX = (to_grid_coordinate(mouse.x-416*drawScale,mouse.y).x/64) 
             let mouseSquareY = (to_grid_coordinate(mouse.x-416*drawScale,mouse.y).y/64)
-            if(this.x/64*drawScale > mouseSquareX-1*drawScale && this.x/64*drawScale < mouseSquareX && this.side === 2 && this.n !== 9 && mouseSquareY >= 0*drawScale && mouseSquareY < 2*drawScale
-            ||this.x/64*drawScale > mouseSquareX-2*drawScale && this.x/64*drawScale < mouseSquareX && this.side === 2 && this.n === 9 && mouseSquareY >= 0*drawScale && mouseSquareY < 2*drawScale
+            if(this.x/64*drawScale > mouseSquareX-1*drawScale && this.x/64*drawScale < mouseSquareX && this.side === 2 && this.n%10 !== 0 && mouseSquareY >= 0*drawScale && mouseSquareY < 2*drawScale
+            ||this.x/64*drawScale > mouseSquareX-2*drawScale && this.x/64*drawScale < mouseSquareX && this.side === 2 && this.n%10 === 0 && mouseSquareY >= 0*drawScale && mouseSquareY < 2*drawScale
 
-            ||this.x/64*drawScale > mouseSquareX-1*drawScale && this.x/64*drawScale < mouseSquareX && this.side === 0 && this.n !== 9 && mouseSquareY >= 11*drawScale && mouseSquareY < 13*drawScale
-            ||this.x/64*drawScale > mouseSquareX-2*drawScale && this.x/64*drawScale < mouseSquareX && this.side === 0 && this.n === 9 && mouseSquareY >= 11*drawScale && mouseSquareY < 13*drawScale
+            ||this.x/64*drawScale > mouseSquareX-1*drawScale && this.x/64*drawScale < mouseSquareX && this.side === 0 && this.n%10 !== 0 && mouseSquareY >= 11*drawScale && mouseSquareY < 13*drawScale
+            ||this.x/64*drawScale > mouseSquareX-2*drawScale && this.x/64*drawScale < mouseSquareX && this.side === 0 && this.n%10 === 0 && mouseSquareY >= 11*drawScale && mouseSquareY < 13*drawScale
 
-            ||this.y/64*drawScale > mouseSquareY-1.5*drawScale && this.y/64*drawScale < mouseSquareY-0.5*drawScale && this.side === 3 && this.n !== 9 && mouseSquareX >= 11*drawScale && mouseSquareX < 13*drawScale
-            ||this.y/64*drawScale > mouseSquareY-2*drawScale && this.y/64*drawScale < mouseSquareY && this.side === 3 && this.n === 9 && mouseSquareX >= 11*drawScale && mouseSquareX < 13*drawScale
+            ||this.y/64*drawScale > mouseSquareY-1.5*drawScale && this.y/64*drawScale < mouseSquareY-0.5*drawScale && this.side === 3 && this.n%10 !== 0 && mouseSquareX >= 11*drawScale && mouseSquareX < 13*drawScale
+            ||this.y/64*drawScale > mouseSquareY-2*drawScale && this.y/64*drawScale < mouseSquareY && this.side === 3 && this.n%10 === 0 && mouseSquareX >= 11*drawScale && mouseSquareX < 13*drawScale
 
-            ||this.y/64*drawScale > mouseSquareY-1.5*drawScale && this.y/64*drawScale < mouseSquareY-0.5*drawScale && this.side === 1 && this.n !== 9 && mouseSquareX >= 0*drawScale && mouseSquareX < 2*drawScale
-            ||this.y/64*drawScale > mouseSquareY-2*drawScale && this.y/64*drawScale < mouseSquareY && this.side === 1 && this.n === 9 && mouseSquareX >= 0*drawScale && mouseSquareX < 2*drawScale
+            ||this.y/64*drawScale > mouseSquareY-1.5*drawScale && this.y/64*drawScale < mouseSquareY-0.5*drawScale && this.side === 1 && this.n%10 !== 0 && mouseSquareX >= 0*drawScale && mouseSquareX < 2*drawScale
+            ||this.y/64*drawScale > mouseSquareY-2*drawScale && this.y/64*drawScale < mouseSquareY && this.side === 1 && this.n%10 === 0 && mouseSquareX >= 0*drawScale && mouseSquareX < 2*drawScale
             ){
                 this.offsetY = -1;
                 this.hover = true;
@@ -646,10 +698,10 @@ class BoardPiece{
             
         }
         this.draw = function () {
-            if(this.n !== 9){
+            if(this.n%10 !== 0){
                 drawIsometricImage(this.x,this.y,this.img,false,96*this.imgSide,0,96,48,this.offsetX,this.offsetY);
             }else{
-                drawIsometricImage(this.x,this.y,this.img,false,128*this.imgSide,0,128,64,this.offsetX,this.offsetY);
+                drawIsometricImage(this.x,this.y,this.img,false,0,0,128,64,this.offsetX,this.offsetY);
             }
         }
         this.drawHouses = function (){
@@ -729,10 +781,10 @@ class BoardPiece{
                 alert(this.info())
                 if(this.owner === players[turn]){
                     let ownAll = true;
-                    for(let i = 0; i<board.boardPieces[this.side].length; i++){
-                        if(board.boardPieces[this.side][i] !== this){
-                            if(board.boardPieces[this.side][i].piece.group === this.piece.group){
-                                if(this.owner !== board.boardPieces[this.side][i].owner){
+                    for(let i = 0; i<board.boardPieces.length; i++){
+                        if(board.boardPieces[i] !== this){
+                            if(board.boardPieces[i].piece.group === this.piece.group){
+                                if(this.owner !== board.boardPieces[i].owner){
                                     ownAll = false;
                                 }
                             }
@@ -795,9 +847,23 @@ class BoardPiece{
                         alert(this.owner.name + " fick precis " + (25 * Math.pow(2,tmp)) + "$ av " + player.name)
 
                     }else{
-                        player.money -= this.piece.rent[this.level];
-                        this.owner.money += this.piece.rent[this.level];
-                        alert(this.owner.name + " fick precis " + (this.piece.rent[this.level]) + "$ av " + player.name)
+                        let ownAll = true;
+                        for(let i = 0; i<board.boardPieces.length; i++){
+                            if(board.boardPieces[i] !== this){
+                                if(board.boardPieces[i].piece.group === this.piece.group){
+                                    if(this.owner !== board.boardPieces[i].owner){
+                                        ownAll = false;
+                                    }
+                                }
+                            }
+                        }
+                        let multiply = 1;
+                        if(ownAll && this.level === 0){
+                            multiply = 2;
+                        }
+                        player.money -= this.piece.rent[this.level] * multiply;
+                        this.owner.money += this.piece.rent[this.level] * multiply;
+                        alert(this.owner.name + " fick precis " + (this.piece.rent[this.level] * multiply) + "$ av " + player.name)
 
                     }
                 }else if(this.piece.type === "chance"){
@@ -958,69 +1024,7 @@ class BoardPiece{
                 }
             }
         }
-        if(this.side === 0 && this.n === 2 || this.side === 0 && this.n === 0){
-            this.img = img[1];
-        }
-        if(this.side === 0 && this.n === 8 || this.side === 0 && this.n === 7 || this.side === 0 && this.n === 5){
-            this.img = img[2];
-        }
-        if(this.side === 1 && this.n === 0 || this.side === 1 && this.n === 2 || this.side === 1 && this.n === 3){
-            this.img = img[3];
-        }
-        if(this.side === 1 && this.n === 8 || this.side === 1 && this.n === 7 || this.side === 1 && this.n === 5){
-            this.img = img[4];
-        }
-        if(this.side === 2 && this.n === 0 || this.side === 2 && this.n === 2 || this.side === 2 && this.n === 3){
-            this.img = img[5];
-        }
-        if(this.side === 2 && this.n === 8 || this.side === 2 && this.n === 6 || this.side === 2 && this.n === 5){
-            this.img = img[6];
-        }
-        if(this.side === 3 && this.n === 0 || this.side === 3 && this.n === 1 || this.side === 3 && this.n === 3){
-            this.img = img[7];
-        }
-        if(this.side === 3 && this.n === 8 || this.side === 3 && this.n === 6){
-            this.img = img[8];
-        }
-        if(this.n === 9 && this.side === 3){
-            this.img = img[0]
-        }
-        if(this.n === 9 && this.side === 0){
-            this.img = img[1]
-        }
-        if(this.n === 9 && this.side === 1){
-           this.img = img[2]
-        }
-        if(this.n === 9 && this.side === 2){
-           this.img = img[3]
-        }
-        if(this.n === 6 && this.side === 0){
-            this.img = img[11]
-        }
-        if(this.n === 1 && this.side === 2){
-            this.img = img[9]
-        }
-        if(this.n === 5 && this.side === 3){
-            this.img = img[10]
-        }
-        if(this.n === 4){
-            this.img = img[12]
-        }
-        if(this.n === 7 && this.side === 2){
-            this.img = img[13]
-        }
-        if(this.n === 1 && this.side === 1){
-            this.img = img[14]
-        }
-        if(this.n === 7 && this.side === 3){
-            this.img = img[15]
-        }
-        if(this.side === 0 && this.n === 1 || this.side === 1 && this.n === 6|| this.side === 3 && this.n === 2){
-            this.img = img[16];
-        }
-        if(this.n === 3 && this.side === 0){
-            this.img = img[17]
-        }
+        
     }
     
 }
@@ -1037,7 +1041,7 @@ class Player{
         this.money = 1400;
         this.index = index
         this.offsetY = 0;
-        this.stepsWithOffset = (this.steps - rotation*10)
+        this.stepsWithOffset = (this.steps)
         this.rolls = false;
         this.numberOfRolls = false;
         this.inJail = false;
@@ -1052,7 +1056,7 @@ class Player{
             this.draw();
         }
         this.updateVisual = function (){
-            this.stepsWithOffset = 40 + (this.steps + (rotation%4)*10) - this.animationOffset
+            this.stepsWithOffset = 40 + (this.steps) - this.animationOffset
             this.stepsWithOffset = this.stepsWithOffset%40;
             
             if(this.stepsWithOffset === 0){
@@ -1091,41 +1095,37 @@ class Player{
                 this.x = 11.25;
                 this.y = 0.70;
             }
-            if(tmpSteps === 0){
-                for(let i = 0; i<board.boardPieces[3][9].currentPlayer.length; i++){
-                    if(board.boardPieces[3][9].currentPlayer[i] === this){
-                        this.offsetY = i*20
-                    }
+            
+            for(let i = 0; i<board.boardPieces[tmpSteps].currentPlayer.length; i++){
+                if(board.boardPieces[tmpSteps].currentPlayer[i] === this){
+                    this.offsetY = i*20
+                }                
+            }
+            for(let i = 0; i<board.prisonExtra.currentPlayer.length; i++){
+                if(board.prisonExtra.currentPlayer[i] === this){
+                    this.offsetY = i*20;
                 }
-            }else{
-                for(let i = 0; i<board.boardPieces[Math.floor((tmpSteps-1)/10)][(tmpSteps-1)%10].currentPlayer.length; i++){
-                    if(board.boardPieces[Math.floor((tmpSteps-1)/10)][(tmpSteps-1)%10].currentPlayer[i] === this){
-                        this.offsetY = i*20
-                    }                
-                }
-                for(let i = 0; i<board.prisonExtra.currentPlayer.length; i++){
-                    if(board.prisonExtra.currentPlayer[i] === this){
-                        this.offsetY = i*20;
-                    }
-                }
+            }
 
   
-            }
+            
         }
         this.goToPrison = function(){
             alert("Gå till finkan!")
-            self.teleportTo(10)
-            self.inJail = true;
-            self.rolls = true;
+            this.teleportTo(10)
+            this.inJail = true;
+            this.rolls = true;
         }
         this.getOutOfJail = function(){
-            this.inJail = false;
-            this.steps = 10;
+            let self = this;
             board.prisonExtra.currentPlayer.forEach(function(e,i){
-                if(e === this){
+                if(e == self){
                     board.prisonExtra.currentPlayer.splice(i,1)
                 }
             })
+            self.inJail = false;
+            self.steps = 10;
+            board.boardPieces[10].playerStep(true,self);
         }
         this.teleportTo = function(step){
             let oldStep = this.steps;
@@ -1148,47 +1148,46 @@ class Player{
                 if(self.animationOffset <= 0){
                     clearInterval(self.timer);
                     
-                    board.boardPieces.forEach(function(e,i1) {e.forEach(function(b,i2) {b.currentPlayer.forEach(function(d,i3) {
+                    board.boardPieces.forEach(function(b,i2) {b.currentPlayer.forEach(function(d,i3) {
                         if(d === self){
-                            board.boardPieces[i1][i2].currentPlayer.splice(i3,1)
+                            b.currentPlayer.splice(i3,1)
                         }
-                    })})})
+                    })})
                     if(self.to >= 40){
                         alert(self.name + " gick förbi start och fick då 200$")
                         self.money += 200;
                     }
                     to = to%40
                     if(to === 0){
-                        board.boardPieces[3][9].playerStep(false,self);
+                        board.boardPieces[0].playerStep(false,self);
                     }else{
                         if(self.inJail === true){
                             board.prisonExtra.playerStep(true,self);
                         }else{
-                            board.boardPieces[Math.floor((to-1)/10)][(to-1)%10].playerStep(false,self,dicesum);
+                            board.boardPieces[to].playerStep(false,self,dicesum);
                         }
                     }
                     if(to === 30){
-                        this.goToPrison()
+                        self.goToPrison()
                     }
                     board.showDices = false;
                 }else{
-                    board.boardPieces.forEach(function(e,i1) {e.forEach(function(b,i2) {b.currentPlayer.forEach(function(d,i3) {
+                    board.boardPieces.forEach(function(b,i2) {b.currentPlayer.forEach(function(d,i3) {
                         if(d === self){
-                            board.boardPieces[i1][i2].currentPlayer.splice(i3,1)
+                            b.currentPlayer.splice(i3,1)
                         }
-                    })})})
+                    })})
 
                     self.animationOffset--;
                     if(((to-self.animationOffset)%40-1) === -1){
-                        board.boardPieces[3][9].playerStep(true,self);
+                        board.boardPieces[0].playerStep(true,self);
                     }else{
-                        
-                        board.boardPieces[Math.floor(((to-self.animationOffset)%40-1)/10)][((to-self.animationOffset)%40-1)%10].playerStep(true,self);
+                        board.boardPieces[(to-self.animationOffset)%40].playerStep(true,self);
                     }
                     
 
                 }
-            },500);
+            },10);
         }
         
         this.rollDice = function(){
@@ -1275,7 +1274,7 @@ class Player{
             }
         }
         
-        board.boardPieces[3][9].currentPlayer.push(this);
+        board.boardPieces[0].currentPlayer.push(this);
     }
 }
 
