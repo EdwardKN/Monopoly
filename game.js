@@ -268,7 +268,6 @@ const pieces = [
         price:200,
         type:"station",
         img:11,
-        card:14
     },
     {
         name:"Gul 1",
@@ -277,7 +276,7 @@ const pieces = [
         housePrice:150,
         group:"yellow",
         img:5,
-        card:15
+        card:14
     },
     {
         name:"Gul 2",
@@ -286,7 +285,7 @@ const pieces = [
         housePrice:150,
         group:"yellow",
         img:5,
-        card:16
+        card:15
     },
     {
         name:"Vattenledningsverket",
@@ -301,7 +300,7 @@ const pieces = [
         housePrice:150,
         group:"yellow",
         img:5,
-        card:17
+        card:16
     },
     {
         name:"Gå till finkan",
@@ -314,7 +313,7 @@ const pieces = [
         housePrice:200,
         group:"green",
         img:6,
-        card:18
+        card:17
     },
     {
         name:"Grön 2",
@@ -323,7 +322,7 @@ const pieces = [
         housePrice:200,
         group:"green",
         img:6,
-        card:19
+        card:18
     },
     {
         name:"Allmänning",
@@ -337,7 +336,7 @@ const pieces = [
         housePrice:200,
         group:"green",
         img:6,
-        card:20
+        card:19
     },
     {
         name:"Norra stationen",
