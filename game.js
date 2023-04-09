@@ -1074,6 +1074,15 @@ class Player{
             self.inJail = true;
             self.rolls = true;
         }
+        this.getOutOfJail = function(){
+            this.inJail = false;
+            this.steps = 10;
+            board.prisonExtra.currentPlayer.forEach(function(e,i){
+                if(e === this){
+                    board.prisonExtra.currentPlayer.splice(i,1)
+                }
+            })
+        }
         this.teleportTo = function(step){
             let oldStep = this.steps;
 
@@ -1177,14 +1186,8 @@ class Player{
                 if(this.rolls === false){
                     if(confirm("Vill du betala 50$ för att komma ut eller slå dubbelt?")){
                         this.money -= 50;
-                        this.inJail = false;
-                        this.steps = 10;
                         this.rolls = true;
-                        board.prisonExtra.currentPlayer.forEach(function(e,i){
-                            if(e === this){
-                                board.prisonExtra.currentPlayer.splice(i,1)
-                            }
-                        })
+                        this.getOutOfJail();
                     }else{
                         let dice1 = randomIntFromRange(1,6);
                         let dice2 = randomIntFromRange(1,6);
@@ -1194,13 +1197,7 @@ class Player{
                         board.showDices = true;
 
                         if(dice1 === dice2){
-                            this.inJail = false;
-                            this.steps = 10;
-                            board.prisonExtra.currentPlayer.forEach(function(e,i){
-                                if(e === this){
-                                    board.prisonExtra.currentPlayer.splice(i,1)
-                                }
-                            })
+                            this.getOutOfJail()
                         }
                         this.rolls = true;
                         setTimeout(() => {
