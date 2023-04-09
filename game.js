@@ -413,11 +413,6 @@ function update(){
     c.clearRect(0,0,canvas.width,canvas.height);
     showBackground();
 
-    board.update();
-    c.fillStyle = "white";
-    c.font = "80px calibri";
-
-
     players.forEach(function(player,i,a) { 
         if(i === 0){
             c.textAlign = "left";
@@ -441,6 +436,12 @@ function update(){
     c.font = "50px Brush Script MT";
     c.textAlign = "center";
     c.fillText("Just nu:" + players[turn].name, canvas.width/2, canvas.height/2 + 50);
+    board.update();
+    c.fillStyle = "white";
+    c.font = "80px calibri";
+
+
+
     
 }
 
@@ -478,10 +479,10 @@ class Board{
 
         this.update = function () {
             this.boardPieces.forEach(e => e.forEach(g => g.update()))
+            this.showDice()
             this.boardPieces.forEach(e => e.forEach(g => g.drawHouses()))
             this.boardPieces.forEach(e => e.forEach(g => g.currentPlayer.forEach(p => p.update())))
             this.prisonExtra.currentPlayer.forEach(p => p.update())
-            this.showDice()
         }  
         this.randomizeDice = function () {
             this.dice1Type = randomIntFromRange(0,3);
