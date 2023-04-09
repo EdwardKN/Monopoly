@@ -461,6 +461,7 @@ class Board{
         this.dice1Type = 0;
         this.dice2Type = 0;
         this.boardPieces = [];
+        this.prisonExtra = new BoardPiece(-1,-1,[])
         this.showDices = false;
         for(let i = 0; i < 4; i++){
             let tmp = [];
@@ -478,6 +479,7 @@ class Board{
             this.boardPieces.forEach(e => e.forEach(g => g.update()))
             this.boardPieces.forEach(e => e.forEach(g => g.drawHouses()))
             this.boardPieces.forEach(e => e.forEach(g => g.currentPlayer.forEach(p => p.update())))
+            this.prisonExtra.currentPlayer.forEach(p => p.update())
             this.showDice()
         }  
         this.randomizeDice = function () {
@@ -1061,6 +1063,13 @@ class Player{
                         this.offsetY = i*20
                     }                
                 }
+                for(let i = 0; i<board.prisonExtra.currentPlayer.length; i++){
+                    if(board.prisonExtra.currentPlayer[i] === this){
+                        this.offsetY = i*20;
+                    }
+                }
+
+  
             }
         }
         this.teleportTo = function(step){
@@ -1074,16 +1083,7 @@ class Player{
         this.animateSteps = function(from,to,dicesum){
             let self = this;
             clearInterval(this.timer)
-            if(to === 30){
-                to = 10;
-                this.inJail = true;
-                this.rolls = true;
-                board.boardPieces.forEach(function(e,i1) {e.forEach(function(b,i2) {b.currentPlayer.forEach(function(d,i3) {
-                    if(d === self){
-                        board.boardPieces[i1][i2].currentPlayer.splice(i3,1)
-                    }
-                })})})
-            }
+            
             if(to <= from){
                 to += 40
             };
@@ -1091,6 +1091,7 @@ class Player{
             self.timer = setInterval(function(){
                 if(self.animationOffset <= 0){
                     clearInterval(self.timer);
+                    
                     board.boardPieces.forEach(function(e,i1) {e.forEach(function(b,i2) {b.currentPlayer.forEach(function(d,i3) {
                         if(d === self){
                             board.boardPieces[i1][i2].currentPlayer.splice(i3,1)
@@ -1103,7 +1104,17 @@ class Player{
                     if(to === 0){
                         board.boardPieces[3][9].playerStep(false,self);
                     }else{
-                        board.boardPieces[Math.floor((to-1)/10)][(to-1)%10].playerStep(false,self,dicesum);
+                        if(self.inJail === true){
+                            board.prisonExtra.playerStep(true,self);
+                        }else{
+                            board.boardPieces[Math.floor((to-1)/10)][(to-1)%10].playerStep(false,self,dicesum);
+                        }
+                    }
+                    if(to === 30){
+                        alert("Gå till finkan!")
+                        self.teleportTo(10)
+                        self.inJail = true;
+                        self.rolls = true;
                     }
 
                 }else{
@@ -1117,6 +1128,7 @@ class Player{
                     if(((to-self.animationOffset)%40-1) === -1){
                         board.boardPieces[3][9].playerStep(true,self);
                     }else{
+                        
                         board.boardPieces[Math.floor(((to-self.animationOffset)%40-1)/10)][((to-self.animationOffset)%40-1)%10].playerStep(true,self);
                     }
                     
@@ -1172,6 +1184,11 @@ class Player{
                         this.inJail = false;
                         this.steps = 10;
                         this.rolls = true;
+                        board.prisonExtra.currentPlayer.forEach(function(e,i){
+                            if(e === this){
+                                board.prisonExtra.currentPlayer.splice(i,1)
+                            }
+                        })
                     }else{
                         let dice1 = randomIntFromRange(1,6);
                         let dice2 = randomIntFromRange(1,6);
@@ -1183,6 +1200,11 @@ class Player{
                         if(dice1 === dice2){
                             this.inJail = false;
                             this.steps = 10;
+                            board.prisonExtra.currentPlayer.forEach(function(e,i){
+                                if(e === this){
+                                    board.prisonExtra.currentPlayer.splice(i,1)
+                                }
+                            })
                         }
                         this.rolls = true;
                         setTimeout(() => {
