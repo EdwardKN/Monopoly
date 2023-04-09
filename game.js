@@ -535,7 +535,7 @@ function init(){
     loadSounds(sounds);
 
     board = new Board();  
-    let playerAmount = 4;
+    let playerAmount = 0;
 
     let playerImages = [0,1,2,3,4,5,6,7]
 
