@@ -1,4 +1,4 @@
-var canvas = document.createElement("canvas");
+hvar canvas = document.createElement("canvas");
 var c = canvas.getContext("2d");
 canvas.id = "game"
 
@@ -373,7 +373,7 @@ const pieces = [
         type:"tax"
     },
     {
-        name:"Blå 2",
+        name:"Blå 2", 
         price:400,
         rent:[50,200,600,1400,1700,2000],
         housePrice:200,
