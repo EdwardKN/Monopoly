@@ -1,4 +1,4 @@
-hvar canvas = document.createElement("canvas");
+var canvas = document.createElement("canvas");
 var c = canvas.getContext("2d");
 canvas.id = "game"
 
@@ -550,7 +550,7 @@ function init(){
     loadSounds(sounds);
 
     board = new Board();  
-    let playerAmount = 4;
+    let playerAmount = 0;
 
     let playerImages = [0,1,2,3,4,5,6,7]
 
@@ -569,7 +569,14 @@ function init(){
 
     for(i = 0; i < playerAmount; i++){
         let random = randomIntFromRange(0,playerImages.length-1)
-        players.push(new Player(images.player.img[playerImages[random]],players.length,"green","Spelare " + (i+1)))
+        let playername = "";
+        while(playername == ""){
+            playername = prompt("Vad heter spelare " + (i+1) + "?")
+            if(playername.length > 15 || playername.length < 4){
+                playername = ""
+            }
+        }
+        players.push(new Player(images.player.img[playerImages[random]],players.length,"green",playername))
         playerImages.splice(random,1)
     }
 
@@ -726,16 +733,27 @@ class Board{
                 c.textAlign = "center";
                 c.font ="20px Brush Script MT";
                 if(this.currentCard.owner !== undefined){
-                    c.fillText("Ägare: " + this.currentCard.owner.name,canvas.width/2,canvas.height/3.5)
                     if(this.currentCard.owner === players[turn]){
+
                         this.sellButton.draw();
                         this.sellButton.visible = true;
                         this.mortgageButton.draw();
                         this.mortgageButton.visible = true;
-                        this.upgradeButton.draw();
-                        this.upgradeButton.visible = true;
-                        this.downgradeButton.draw();
-                        this.downgradeButton.visible = true;
+                        if(this.currentCard.piece.type === "utility"){
+                            c.fillText("Ägare: " + this.currentCard.owner.name,canvas.width/2,canvas.height/3.15)
+                            this.sellButton.x = 80;
+                            this.mortgageButton.x = 5;
+                            this.upgradeButton.visible = false;
+                            this.downgradeButton.visible = false;
+                        }else{
+                            c.fillText("Ägare: " + this.currentCard.owner.name,canvas.width/2,canvas.height/3.5)
+                            this.sellButton.x = 130;
+                            this.mortgageButton.x = 80;
+                            this.upgradeButton.draw();
+                            this.upgradeButton.visible = true;
+                            this.downgradeButton.draw();
+                            this.downgradeButton.visible = true;
+                        }
                         this.buyButton.visible = false;
                         let ownAll = true;
                         for(let i = 0; i<board.boardPieces.length; i++){
@@ -1122,18 +1140,14 @@ class BoardPiece{
                     }
                     if(random === 4){
                         alert("Gå till närmsta tågstation")
-                        if(player.steps >= 0 || player.steps >= 35){
-                            player.money+=200;
-                            player.teleportTo(5)
-                        }
-                        if(player.steps >= 5 && player.steps < 15){
+                        if(this.n === 7){
                             player.teleportTo(15)
                         }
-                        if(player.steps >= 15 && player.steps < 25){
+                        if(this.n === 22){
                             player.teleportTo(25)
                         }
-                        if(player.steps >= 25 && player.steps < 35){
-                            player.teleportTo(35)
+                        if(this.n === 36){
+                            player.teleportTo(5)
                         }
                     }
                     if(random === 5){
