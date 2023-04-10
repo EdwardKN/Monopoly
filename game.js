@@ -1,4 +1,4 @@
-hvar canvas = document.createElement("canvas");
+var canvas = document.createElement("canvas");
 var c = canvas.getContext("2d");
 canvas.id = "game"
 
