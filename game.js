@@ -616,35 +616,35 @@ function update(){
     players.forEach(function(player,i,a) { 
         if(i === 0){
             c.textAlign = "left";
-            c.fillText(player.name + ": " + player.money + "$", 10, 80);
+            c.fillText(player.name + ": " + player.money + "kr", 10, 80);
         }
         if(i === 1){
             c.textAlign = "right";
-            c.fillText(player.name + ": " + player.money + "$", canvas.width-10, 80);
+            c.fillText(player.name + ": " + player.money + "kr", canvas.width-10, 80);
         }
         if(i === 2){
             c.textAlign = "left";
-            c.fillText(player.name + ": " + player.money + "$", 10, canvas.height-30);
+            c.fillText(player.name + ": " + player.money + "kr", 10, canvas.height-30);
         }
         if(i === 3){
             c.textAlign = "right";
-            c.fillText(player.name + ": " + player.money + "$", canvas.width-10, canvas.height-30);
+            c.fillText(player.name + ": " + player.money + "kr", canvas.width-10, canvas.height-30);
         }
         if(i === 4){
             c.textAlign = "left";
-            c.fillText(player.name + ": " + player.money + "$", 10, 160);
+            c.fillText(player.name + ": " + player.money + "kr", 10, 160);
         }
         if(i === 5){
             c.textAlign = "right";
-            c.fillText(player.name + ": " + player.money + "$", canvas.width-10, 160);
+            c.fillText(player.name + ": " + player.money + "kr", canvas.width-10, 160);
         }
         if(i === 6){
             c.textAlign = "left";
-            c.fillText(player.name + ": " + player.money + "$", 10, canvas.height-110);
+            c.fillText(player.name + ": " + player.money + "kr", 10, canvas.height-110);
         }
         if(i === 7){
             c.textAlign = "right";
-            c.fillText(player.name + ": " + player.money + "$", canvas.width-10, canvas.height-110);
+            c.fillText(player.name + ": " + player.money + "kr", canvas.width-10, canvas.height-110);
         }
     })
 
@@ -1030,7 +1030,7 @@ class BoardPiece{
             }
 
             if(this.piece.price !== undefined){
-                message += "Pris:" + this.piece.price + "$\n" + "\n" 
+                message += "Pris:" + this.piece.price + "kr\n" + "\n" 
             }
 
             if(this.owner !== undefined){
@@ -1040,22 +1040,22 @@ class BoardPiece{
             if(this.piece.rent !== undefined){
                 this.piece.rent.forEach(function(e,i){
                     if(i === 0){
-                        message += "Inga hus:" + e + "$\n"
+                        message += "Inga hus:" + e + "kr\n"
                     }
                     if(i === 1){
-                        message += "Ett hus:" + e + "$\n"
+                        message += "Ett hus:" + e + "kr\n"
                     }
                     if(i === 2){
-                        message += "Två hus:" + e + "$\n"
+                        message += "Två hus:" + e + "kr\n"
                     }
                     if(i === 3){
-                        message += "Tre hus:" + e + "$\n"
+                        message += "Tre hus:" + e + "kr\n"
                     }
                     if(i === 4){
-                        message += "Fyra hus:" + e + "$\n"
+                        message += "Fyra hus:" + e + "kr\n"
                     }
                     if(i === 5){
-                        message += "Hotell:" + e + "$\n"
+                        message += "Hotell:" + e + "kr\n"
                     }
                 })
                 message += "\n"
@@ -1079,11 +1079,11 @@ class BoardPiece{
             if(!onlyStep && !this.mortgaged){
                 if(this.piece.price < 0){
                     player.money += this.piece.price;
-                    alert(player.name + " betalade " + -this.piece.price + "$")
+                    alert(player.name + " betalade " + -this.piece.price + "kr")
                 }else if(this.piece.price > 0 && player.money >= this.piece.price && this.owner === undefined){
                     setTimeout(() => {
                         if(this.piece.card === undefined){
-                            if(confirm("Vill du köpa " + this.piece.name + " för " + this.piece.price + "$?" + "\n" + "\n"+ this.info())){
+                            if(confirm("Vill du köpa " + this.piece.name + " för " + this.piece.price + "kr?" + "\n" + "\n"+ this.info())){
                                 player.money -= this.piece.price;
                                 this.owner = player;
                                 player.ownedPlaces.push(this);
@@ -1112,7 +1112,7 @@ class BoardPiece{
                         }
                         player.money -=  diceRoll * multiply;
                         this.owner.money += diceRoll * multiply;
-                        alert(this.owner.name + " fick precis " + (diceRoll * multiply) + "$ av " + player.name)
+                        alert(this.owner.name + " fick precis " + (diceRoll * multiply) + "kr av " + player.name)
                         
                     }else if(this.piece.type === "station"){
                         let tmp = -1;
@@ -1123,7 +1123,7 @@ class BoardPiece{
                         })
                         player.money -=  25 * Math.pow(2,tmp);
                         this.owner.money += 25 * Math.pow(2,tmp);
-                        alert(this.owner.name + " fick precis " + (25 * Math.pow(2,tmp)) + "$ av " + player.name)
+                        alert(this.owner.name + " fick precis " + (25 * Math.pow(2,tmp)) + "kr av " + player.name)
 
                     }else{
                         let ownAll = true;
@@ -1142,21 +1142,22 @@ class BoardPiece{
                         }
                         player.money -= this.piece.rent[this.level] * multiply;
                         this.owner.money += this.piece.rent[this.level] * multiply;
-                        alert(this.owner.name + " fick precis " + (this.piece.rent[this.level] * multiply) + "$ av " + player.name)
+                        alert(this.owner.name + " fick precis " + (this.piece.rent[this.level] * multiply) + "kr av " + player.name)
 
                     }
                 }else if(this.piece.type === "chance"){
+
                     let random = randomIntFromRange(1,13)
                     if(random === 1){
                         alert("Gå till start!")
                         player.teleportTo(0)
                     }
                     if(random === 2){
-                        alert("Gå till röd 3")
+                        alert("Gå till Hässleholm")
                         player.teleportTo(24)
                     }
                     if(random === 3){
-                        alert("Gå till rosa 1")
+                        alert("Gå till Simrishamn")
                         player.teleportTo(11)
                     }
                     if(random === 4){
@@ -1172,7 +1173,7 @@ class BoardPiece{
                         }
                     }
                     if(random === 5){
-                        alert("Få 50$")
+                        alert("Få 50kr")
                         player.money += 50;
                     }
                     if(random === 6){
@@ -1188,42 +1189,50 @@ class BoardPiece{
                         player.goToPrison();
                     }
                     if(random === 9){
-                        alert("Inte inlagd men ska vara att man betalar 25 för varje hus man har och 100 för varje hotell")
-                        // pay 25 för varje hus och 100 för alla hotell
+                        alert("Betala 40 för varje hus man har och 115 för varje hotell")
+                        board.boardPieces.forEach(function(e){
+                            if(player === e.owner){
+                                if(e.level < 5){
+                                    player.money -= 25*e.level
+                                }else{
+                                    player.money -= 100
+                                }
+                            }
+                        })
                     }
                     if(random === 10){
                         alert("Inte inlagd för att jag inte riktigt vet vad det ska vara")
                         // konstig
                     }
                     if(random === 11){
-                        alert("Gå till blå 3")
+                        alert("Gå till Malmö")
                         player.teleportTo(39);
                     }
                     if(random === 12){
-                        alert("Få 50$ av alla andra spelare")
+                        alert("Få 50kr av alla andra spelare")
                         player.money += (players.length-1)*50
                         players.forEach(e=> {if(e !== player){e.money-=50}})
                     }
                     if(random === 13){
-                        alert("Få 150$")
+                        alert("Få 150kr")
                         player.money += 150
                     }
                 }else if(this.piece.type === "community Chest"){
-                    let random = randomIntFromRange(1,13);
+                    let random = randomIntFromRange(1,16);
                     if(random === 1){
                         alert("Gå till start")
                         player.teleportTo(0)
                     }
                     if(random === 2){
-                        alert("Få 200$")
+                        alert("Få 200kr")
                         player.money += 200;
                     }
                     if(random === 3){
-                        alert("Förlora 50$")
+                        alert("Förlora 50kr")
                         player.money -= 50;
                     }
                     if(random === 4){
-                        alert("Få 50$")
+                        alert("Få 50kr")
                         player.money += 50;
                     }
                     if(random === 4){
@@ -1235,57 +1244,65 @@ class BoardPiece{
                         player.goToPrison()
                     }
                     if(random === 6){
-                        alert("Få 50$ av alla andra spelare")
+                        alert("Få 50kr av alla andra spelare")
                         player.money += (players.length-1)*50
                         players.forEach(e=> {if(e !== player){e.money-=50}})
                     }
                     if(random === 7){
-                        alert("Få 100$")
+                        alert("Få 100kr")
                         player.money += 100;
                     }
                     if(random === 8){
-                        alert("Få 20$")
+                        alert("Få 20kr")
                         player.money += 20;
                     }
                     if(random === 9){
-                        alert("Få 10$ av alla andra spelare")
+                        alert("Få 10kr av alla andra spelare")
                         player.money += (players.length-1)*10
                         players.forEach(e=> {if(e !== player){e.money-=10}})
                     }
                     if(random === 10){
-                        alert("Få 100$")
+                        alert("Få 100kr")
                         player.money += 100;
                     }
                     if(random === 11){
-                        alert("Förlora 50$")
+                        alert("Förlora 50kr")
                         player.money -= 50;
                     }
                     if(random === 12){
-                        alert("Förlora 50$")
+                        alert("Förlora 50kr")
                         player.money -= 50;
                     }
                     if(random === 13){
-                        alert("Förlora 25$")
+                        alert("Förlora 25kr")
                         player.money -= 25;
                     }
                     if(random === 14){
-                        alert("Inte inlagd men ska vara att man betalar 40 för varje hus man har och 115 för varje hotell")
-                        // pay 40 för varje hus och 115 för alla hotell
+                        alert("Betala 40 för varje hus man har och 115 för varje hotell")
+                        board.boardPieces.forEach(function(e){
+                            if(player === e.owner){
+                                if(e.level < 5){
+                                    player.money -= 40*e.level
+                                }else{
+                                    player.money -= 115
+                                }
+                            }
+                        })
                     }
                     if(random === 15){
-                        alert("Få 10$")
+                        alert("Få 10kr")
                         player.money += 10;
                     }
                     if(random === 16){
-                        alert("Få 100$")
+                        alert("Få 100kr")
                         player.money += 100;
                     }
                 }else if(this.piece.type === "income tax"){
                     if(player.money > 2000){
-                        alert("Betala 200$ skatt")
+                        alert("Betala 200kr skatt")
                         player.money -= 200;
                     }else{
-                        alert("Betala " + player.money * 0.1 + "$ skatt")
+                        alert("Betala " + player.money * 0.1 + "kr skatt")
                         player.money = player.money * 0.9;
                     }
                 }
@@ -1405,8 +1422,11 @@ class Player{
         this.animateSteps = function(from,to,dicesum){
             let self = this;
             clearInterval(this.timer)
-            
-            to += 40
+            if(from-to > from){
+                to += 40
+            }
+            let to2 = to
+            to = to%40
             this.animationOffset = to-from;
             board.showDices = true;
             self.timer = setInterval(function(){
@@ -1418,11 +1438,11 @@ class Player{
                             b.currentPlayer.splice(i3,1)
                         }
                     })})
-                    if(to >= 40){
-                        alert(self.name + " gick förbi start och fick då 200$")
+                    if(to2 >= 40){
+                        alert(self.name + " gick förbi start och fick då 200kr")
                         self.money += 200;
                     }
-                    to = to%40
+                    
                     if(to === 0){
                         board.boardPieces[0].playerStep(false,self);
                     }else{
@@ -1513,7 +1533,7 @@ class Player{
                 }
             }else{
                 if(this.rolls === false){
-                    if(confirm("Vill du betala 50$ för att komma ut eller slå dubbelt?")){
+                    if(confirm("Vill du betala 50kr för att komma ut eller slå dubbelt?")){
                         this.money -= 50;
                         this.rolls = true;
                         this.getOutOfJail();
