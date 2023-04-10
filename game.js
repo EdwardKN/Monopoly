@@ -751,6 +751,13 @@ class Board{
                 c.textAlign = "center";
                 c.font ="20px Brush Script MT";
                 if(this.currentCard.owner !== undefined){
+                    if(this.currentCard.piece.type !== "utility" && this.currentCard.piece.type !== "station"){
+                        c.fillText("Ägare: " + this.currentCard.owner.name,canvas.width/2,canvas.height/2-200)
+                    }else{
+                        c.fillText("Ägare: " + this.currentCard.owner.name,canvas.width/2,canvas.height/2-153)
+                    }
+
+
                     if(this.currentCard.owner === players[turn]){
 
                         this.sellButton.draw();
@@ -758,13 +765,11 @@ class Board{
                         this.mortgageButton.draw();
                         this.mortgageButton.visible = true;
                         if(this.currentCard.piece.type === "utility" || this.currentCard.piece.type === "station"){
-                            c.fillText("Ägare: " + this.currentCard.owner.name,canvas.width/2,canvas.height/3.15)
                             this.sellButton.x = 80;
                             this.mortgageButton.x = 5;
                             this.upgradeButton.visible = false;
                             this.downgradeButton.visible = false;
                         }else{
-                            c.fillText("Ägare: " + this.currentCard.owner.name,canvas.width/2,canvas.height/3.8)
                             this.sellButton.x = 130;
                             this.mortgageButton.x = 80;
                             this.upgradeButton.draw();
@@ -805,6 +810,10 @@ class Board{
                     if(this.currentCard === board.boardPieces[(players[turn].steps)]){
                         this.buyButton.draw();
                         this.buyButton.visible = true;
+                        this.mortgageButton.visible = false;
+                        this.sellButton.visible = false;
+                        this.downgradeButton.visible = false;
+                        this.upgradeButton.visible = false;
                         if(this.currentCard.piece.type === "station"){
                             this.buyButton.y = 310;
                         }else{
