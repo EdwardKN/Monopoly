@@ -472,6 +472,28 @@ function drawRotatedImage(x,y,w,h,img,angle,mirrored,cropX,cropY,cropW,cropH){
     c.restore();
 }
 
+function drawRotatedText(x,y,text,font,angle,color,mirrored){
+    let degree = angle * Math.PI / 180;
+    x+= offsets.x;
+    y+= offsets.y
+    let middlePoint = {
+        x:x,
+        y:y
+    };
+
+    c.save();
+    c.translate(middlePoint.x,middlePoint.y);
+    c.rotate(degree);
+    if(mirrored === true){
+        c.scale(-1, 1);
+    }
+    c.font = font;
+    c.fillStyle = color;
+    c.textAlign = "center"
+    c.fillText(text,Math.floor(0),Math.floor(0));
+    c.restore();
+}
+
 function to_screen_coordinate(x,y){
     return {
         x: x*0.5+y*-0.5,
@@ -632,10 +654,6 @@ function update(){
     c.fillText("Just nu:" + players[turn].name, canvas.width/2, canvas.height/2 + 50);
     board.update();
     
-
-
-
-    
 }
 
 function showBackground(){
@@ -739,14 +757,14 @@ class Board{
                         this.sellButton.visible = true;
                         this.mortgageButton.draw();
                         this.mortgageButton.visible = true;
-                        if(this.currentCard.piece.type === "utility"){
+                        if(this.currentCard.piece.type === "utility" || this.currentCard.piece.type === "station"){
                             c.fillText("Ägare: " + this.currentCard.owner.name,canvas.width/2,canvas.height/3.15)
                             this.sellButton.x = 80;
                             this.mortgageButton.x = 5;
                             this.upgradeButton.visible = false;
                             this.downgradeButton.visible = false;
                         }else{
-                            c.fillText("Ägare: " + this.currentCard.owner.name,canvas.width/2,canvas.height/3.5)
+                            c.fillText("Ägare: " + this.currentCard.owner.name,canvas.width/2,canvas.height/3.8)
                             this.sellButton.x = 130;
                             this.mortgageButton.x = 80;
                             this.upgradeButton.draw();
@@ -754,6 +772,7 @@ class Board{
                             this.downgradeButton.draw();
                             this.downgradeButton.visible = true;
                         }
+                        
                         this.buyButton.visible = false;
                         let ownAll = true;
                         for(let i = 0; i<board.boardPieces.length; i++){
@@ -786,6 +805,11 @@ class Board{
                     if(this.currentCard === board.boardPieces[(players[turn].steps)]){
                         this.buyButton.draw();
                         this.buyButton.visible = true;
+                        if(this.currentCard.piece.type === "station"){
+                            this.buyButton.y = 310;
+                        }else{
+                            this.buyButton.y = 300;
+                        }
                         if(players[turn].money >= this.currentCard.piece.price){
                             this.buyButton.disabled = false;
                         }else{
@@ -797,9 +821,13 @@ class Board{
                 }
                 this.nextPlayerButton.visible = false;
                 this.rollDiceButton.visible = false;
+                if(this.currentCard.mortgaged === true){
+                    drawRotatedText(canvas.width/2 + canvas.width/50,canvas.height/2,"Intecknad","150px Brush Script MT",45,"black",false)
+                }
             }else{
                 this.cardCloseButton.visible = false;
             }
+            
         }
 
         this.showDice = function () {
@@ -1122,20 +1150,13 @@ class BoardPiece{
                     if(random === 1){
                         alert("Gå till start!")
                         player.teleportTo(0)
-                        player.money += 200;
                     }
                     if(random === 2){
                         alert("Gå till röd 3")
-                        if(player.steps >= 24){
-                            player.money+=200;   
-                        }
                         player.teleportTo(24)
                     }
                     if(random === 3){
                         alert("Gå till rosa 1")
-                        if(player.steps >= 11){
-                            player.money+=200;   
-                        }
                         player.teleportTo(11)
                     }
                     if(random === 4){
@@ -1155,7 +1176,7 @@ class BoardPiece{
                         player.money += 50;
                     }
                     if(random === 6){
-                        alert("")
+                        alert("Inte inlagd men ska vara ett GET OUT OF JAIL kort")
                         //get out of jail
                     }
                     if(random === 7){
@@ -1167,11 +1188,11 @@ class BoardPiece{
                         player.goToPrison();
                     }
                     if(random === 9){
-                        alert("")
+                        alert("Inte inlagd men ska vara att man betalar 25 för varje hus man har och 100 för varje hotell")
                         // pay 25 för varje hus och 100 för alla hotell
                     }
                     if(random === 10){
-                        alert("")
+                        alert("Inte inlagd för att jag inte riktigt vet vad det ska vara")
                         // konstig
                     }
                     if(random === 11){
@@ -1180,8 +1201,8 @@ class BoardPiece{
                     }
                     if(random === 12){
                         alert("Få 50$ av alla andra spelare")
-                        player.money -= (players.length-1)*50
-                        players.forEach(e=> {if(e !== player){e.money+=50}})
+                        player.money += (players.length-1)*50
+                        players.forEach(e=> {if(e !== player){e.money-=50}})
                     }
                     if(random === 13){
                         alert("Få 150$")
@@ -1192,7 +1213,6 @@ class BoardPiece{
                     if(random === 1){
                         alert("Gå till start")
                         player.teleportTo(0)
-                        player.money += 200;
                     }
                     if(random === 2){
                         alert("Få 200$")
@@ -1207,7 +1227,7 @@ class BoardPiece{
                         player.money += 50;
                     }
                     if(random === 4){
-                        alert("")
+                        alert("Inte inlagd men ska vara ett GET OUT OF JAIL kort")
                         //jail free
                     }
                     if(random === 5){
@@ -1216,8 +1236,8 @@ class BoardPiece{
                     }
                     if(random === 6){
                         alert("Få 50$ av alla andra spelare")
-                        player.money -= (players.length-1)*50
-                        players.forEach(e=> {if(e !== player){e.money+=50}})
+                        player.money += (players.length-1)*50
+                        players.forEach(e=> {if(e !== player){e.money-=50}})
                     }
                     if(random === 7){
                         alert("Få 100$")
@@ -1229,8 +1249,8 @@ class BoardPiece{
                     }
                     if(random === 9){
                         alert("Få 10$ av alla andra spelare")
-                        player.money -= (players.length-1)*10
-                        players.forEach(e=> {if(e !== player){e.money+=10}})
+                        player.money += (players.length-1)*10
+                        players.forEach(e=> {if(e !== player){e.money-=10}})
                     }
                     if(random === 10){
                         alert("Få 100$")
@@ -1249,7 +1269,7 @@ class BoardPiece{
                         player.money -= 25;
                     }
                     if(random === 14){
-                        alert("")
+                        alert("Inte inlagd men ska vara att man betalar 40 för varje hus man har och 115 för varje hotell")
                         // pay 40 för varje hus och 115 för alla hotell
                     }
                     if(random === 15){
@@ -1386,9 +1406,7 @@ class Player{
             let self = this;
             clearInterval(this.timer)
             
-            if(to <= from){
-                to += 40
-            };
+            to += 40
             this.animationOffset = to-from;
             board.showDices = true;
             self.timer = setInterval(function(){
@@ -1400,7 +1418,7 @@ class Player{
                             b.currentPlayer.splice(i3,1)
                         }
                     })})
-                    if(self.to >= 40){
+                    if(to >= 40){
                         alert(self.name + " gick förbi start och fick då 200$")
                         self.money += 200;
                     }
