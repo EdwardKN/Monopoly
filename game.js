@@ -724,6 +724,7 @@ class Board{
         this.showDices = false;
         this.animateDices = false;
         this.win = false;
+        this.auction = undefined;
         this.rollDiceButton = new Button(10,250,images.buttons.img[0],function(){players[turn].rollDice()},107,23)
         this.nextPlayerButton = new Button(10,250,images.buttons.img[1],function(){players[turn].rollDice()},107,23)
         this.currentCard = undefined;
@@ -751,12 +752,15 @@ class Board{
             board.currentCard.level--;
             board.currentCard.owner.money += board.currentCard.piece.housePrice/2;
         },40,40);
-        this.buyButton = new Button(-15,300,images.buttons.img[6],function(){
+        this.buyButton = new Button(-40,300,images.buttons.img[6],function(){
             players[turn].money -= board.currentCard.piece.price;
             board.currentCard.owner = players[turn];
             players[turn].ownedPlaces.push(board.currentCard);
             board.currentCard = undefined;
-        },160,40);
+        },97,40);
+        this.auctionButton = new Button(-40 + 117,300,images.buttons.img[8],function(){
+            board.auction = new Auction(board.currentCard)
+        },97,40);
 
             for(let n = 0; n < 40; n++){
                 if(n%10 === 0){
@@ -1177,7 +1181,7 @@ class BoardPiece{
                 if(this.piece.price < 0){
                     player.money += this.piece.price;
                     alert(player.name + " betalade " + -this.piece.price + "kr")
-                }else if(this.piece.price > 0 && player.money >= this.piece.price && this.owner === undefined){
+                }else if(this.piece.price > 0 && this.owner === undefined){
                     setTimeout(() => {
                         if(this.piece.card === undefined){
                             if(confirm("Vill du köpa " + this.piece.name + " för " + this.piece.price + "kr?" + "\n" + "\n"+ this.info())){
