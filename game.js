@@ -1401,6 +1401,7 @@ class Player{
         this.update = function () {
             this.updateVisual();
             this.draw();
+            this.money = Math.floor(this.money)
             this.checkMoney();
         }
 
