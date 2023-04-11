@@ -73,9 +73,17 @@ var images = {
 };
 
 var sounds = {
+    dice:{
+        type:"single",
+        src:"./sounds/dice.mp3"
+    },
     click:{
         type:"single",
         src:"./sounds/click.mp3"
+    },
+    release:{
+        type:"single",
+        src:"./sounds/release.mp3"
     },
     movement:{
         type:"multiple",
@@ -412,9 +420,13 @@ canvas.addEventListener("mousemove",function(e){
 })
 
 window.addEventListener("mousedown",function(e){
+        
+})
+window.addEventListener("mouseup",e =>{
+    playSound(sounds.release,1)
     board.boardPieces.forEach(function(piece){
-            piece.click();
-        })
+        piece.click();
+    })
     board.nextPlayerButton.click();
     board.rollDiceButton.click();
     board.cardCloseButton.click();
@@ -637,7 +649,7 @@ function init(){
     }
     for(i = 0; i < botAmount; i++){
         let random = randomIntFromRange(0,playerImages.length-1)
-        players.push(new Player(images.player.img[playerImages[random]],playerImages[random],"Spelare " + (i+1),true))
+        players.push(new Player(images.player.img[playerImages[random]],playerImages[random],"Bot " + (i+1),true))
         playerImages.splice(random,1)
     }
 
@@ -887,11 +899,21 @@ class Board{
             this.rollDiceButton.visible = false;
             }else{
                 if(players[turn].rolls === false){
-                    this.rollDiceButton.visible = true;
-                    this.nextPlayerButton.visible = false;
+                    if(players[turn].bot === undefined){
+                        this.rollDiceButton.visible = true;
+                        this.nextPlayerButton.visible = false;
+                    }else{
+                        this.rollDiceButton.visible = false;
+                        this.nextPlayerButton.visible = false;
+                    }
                 }else{
-                    this.nextPlayerButton.visible = true;
-                    this.rollDiceButton.visible = false;
+                    if(players[turn].bot === undefined){
+                        this.rollDiceButton.visible = false;
+                        this.nextPlayerButton.visible = true;
+                    }else{
+                        this.rollDiceButton.visible = false;
+                        this.nextPlayerButton.visible = false;
+                    }
                 }
                 
             }
@@ -1585,10 +1607,10 @@ class Player{
                             board.randomizeDice();
                             board.dice1 = randomIntFromRange(1,6)
                             board.dice2 = randomIntFromRange(1,6)
-                            playSound(sounds.click,0.5)
+                            playSound(sounds.dice,0.5)
                             counter *= 1.2;
                             if(counter > 1000){
-                                playSound(sounds.click,0.5)
+                                playSound(sounds.dice,0.5)
                                 board.dice1 = dice1;
                                 board.dice2 = dice2;
                                 setTimeout(() => {
