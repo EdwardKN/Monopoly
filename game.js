@@ -556,12 +556,14 @@ function randomIntFromRange(min, max) {
     return Math.floor(Math.random() * (max - min + 1) + min)
 };
 
-function playSound(sound){
+function playSound(sound,volume){
     if(sound.type === "single"){
         let myClonedAudio = sound.sound.cloneNode();
+        myClonedAudio.volume = volume;
         myClonedAudio.play();
     }else{
         let myClonedAudio = sound.sounds[Math.floor(Math.random() * sound.sounds.length)].cloneNode();
+        myClonedAudio.volume = volume;
         myClonedAudio.play();
     }
 
@@ -1543,7 +1545,7 @@ class Player{
                     })})
 
                     self.animationOffset--;
-                    playSound(sounds.movement)
+                    playSound(sounds.movement,1)
                     if(((to-self.animationOffset)%40-1) === -1){
                         board.boardPieces[0].playerStep(true,self);
                     }else{
@@ -1552,7 +1554,7 @@ class Player{
                     
 
                 }
-            },50);
+            },250);
         }
         
         this.rollDice = function(){
@@ -1582,10 +1584,10 @@ class Player{
                             board.randomizeDice();
                             board.dice1 = randomIntFromRange(1,6)
                             board.dice2 = randomIntFromRange(1,6)
-                            playSound(sounds.click)
+                            playSound(sounds.click,0.5)
                             counter *= 1.2;
-                            if(counter > 100){
-                                playSound(sounds.click)
+                            if(counter > 1000){
+                                playSound(sounds.click,0.5)
                                 board.dice1 = dice1;
                                 board.dice2 = dice2;
                                 setTimeout(() => {
