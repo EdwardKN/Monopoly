@@ -67,7 +67,7 @@ var images = {
     buttons:{
         src:["./images/buttons/rolldice","./images/buttons/nextplayer",
         "./images/buttons/sellbutton","./images/buttons/mortgage","./images/buttons/arrowup","./images/buttons/arrowdown",
-        "./images/buttons/buythislawn","./images/buttons/exitCard"
+        "./images/buttons/buythislawn","./images/buttons/exitCard","./images/buttons/auction"
         ]
     }
 };
@@ -431,6 +431,7 @@ window.addEventListener("mousedown",function(e){
     board.mortgageButton.click();
     board.upgradeButton.click();
     board.downgradeButton.click();
+    board.auctionButton.click();
 })
 
 window.addEventListener("keydown",function(e){
@@ -752,14 +753,16 @@ class Board{
             board.currentCard.level--;
             board.currentCard.owner.money += board.currentCard.piece.housePrice/2;
         },40,40);
-        this.buyButton = new Button(-40,300,images.buttons.img[6],function(){
+        this.buyButton = new Button(-43,300,images.buttons.img[6],function(){
             players[turn].money -= board.currentCard.piece.price;
             board.currentCard.owner = players[turn];
             players[turn].ownedPlaces.push(board.currentCard);
             board.currentCard = undefined;
         },97,40);
-        this.auctionButton = new Button(-40 + 117,300,images.buttons.img[8],function(){
+
+        this.auctionButton = new Button(-43 + 117,300,images.buttons.img[8],function(){
             board.auction = new Auction(board.currentCard)
+            board.currentCard = undefined;
         },97,40);
 
             for(let n = 0; n < 40; n++){
@@ -872,6 +875,8 @@ class Board{
                     if(this.currentCard === board.boardPieces[(players[turn].steps)]){
                         this.buyButton.draw();
                         this.buyButton.visible = true;
+                        this.auctionButton.draw();
+                        this.auctionButton.visible = true;
                         this.mortgageButton.visible = false;
                         this.sellButton.visible = false;
                         this.downgradeButton.visible = false;
@@ -888,6 +893,7 @@ class Board{
                         }
                     }else{
                         this.buyButton.visible = false;
+                        this.auctionButton.visible = false;
                     }
                 }
                 this.nextPlayerButton.visible = false;
@@ -933,7 +939,7 @@ class Board{
 
 class Auction{
     constructor(card){
-        
+        this.card = card;
     }
 }
 
