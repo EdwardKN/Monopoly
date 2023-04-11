@@ -2,7 +2,6 @@ var canvas = document.createElement("canvas");
 var c = canvas.getContext("2d");
 canvas.id = "game"
 
-
 var board;
 
 var turn = 0;
@@ -837,7 +836,7 @@ class Board{
                         }else{
                             this.sellButton.x = 130;
                             this.mortgageButton.x = 80;
-                            this.upgradeButton.draw();
+                            this.upgradeButton.draw()
                             this.upgradeButton.visible = true;
                             this.downgradeButton.draw();
                             this.downgradeButton.visible = true;
@@ -1196,7 +1195,9 @@ class BoardPiece{
                                 player.ownedPlaces.push(this);
                             }  
                         }else{
-                            board.currentCard = this;
+                            if(this.bot !== undefined){
+                                board.currentCard = this;
+                            }
                         }
                         
                     }, 50);
@@ -1419,11 +1420,6 @@ class BoardPiece{
     }
     
 }
-class Bot{
-    constructor(player) {
-
-    }
-}
 
 class Player{
 
@@ -1458,6 +1454,9 @@ class Player{
             this.draw();
             this.money = Math.floor(this.money)
             this.checkMoney();
+            if(this.bot !== undefined){
+                this.bot.update();
+            }
         }
 
         this.checkMoney = function(){
@@ -1631,7 +1630,7 @@ class Player{
                     
 
                 }
-            },250);
+            },300);
         }
         
         this.rollDice = function(){
