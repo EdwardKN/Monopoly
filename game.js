@@ -67,7 +67,7 @@ var images = {
     buttons:{
         src:["./images/buttons/rolldice","./images/buttons/nextplayer",
         "./images/buttons/sellbutton","./images/buttons/mortgage","./images/buttons/arrowup","./images/buttons/arrowdown",
-        "./images/buttons/buythislawn"
+        "./images/buttons/buythislawn","./images/buttons/exitCard"
         ]
     }
 };
@@ -593,7 +593,7 @@ function init(){
     let botAmount = 0;
 
     if(fastLoad === true){
-        playerAmount = 8;
+        playerAmount = 2;
         botAmount = -1
     }
 
@@ -727,7 +727,7 @@ class Board{
         this.rollDiceButton = new Button(10,250,images.buttons.img[0],function(){players[turn].rollDice()},107,23)
         this.nextPlayerButton = new Button(10,250,images.buttons.img[1],function(){players[turn].rollDice()},107,23)
         this.currentCard = undefined;
-        this.cardCloseButton = new Button(174,45,undefined,function(){board.currentCard = undefined;},15,15)
+        this.cardCloseButton = new Button(174,43,images.buttons.img[7],function(){board.currentCard = undefined;},18,18)
         this.sellButton = new Button(130,300,images.buttons.img[2],function(){
             if(board.currentCard.mortgaged === false){
                 players[turn].money+= board.currentCard.piece.price/2
@@ -927,8 +927,14 @@ class Board{
     }
 }
 
+class Auction{
+    constructor(){
+        
+    }
+}
+
 class Button{
-    constructor(x,y,img,onClick,w,h){
+    constructor(x,y,img,onClick,w,h,showBorder){
         this.x = x;
         this.y = y;
         this.w = w;
@@ -938,12 +944,18 @@ class Button{
         this.visible = false;
         this.disabled = false;
         this.hover = false;
+        this.showBorder = showBorder;
         this.draw = function(){
+            
             if(this.visible && this.img !== undefined){
                 if(!this.disabled){
                     
                     if(detectCollition(canvas.width/2 + this.x*drawScale - 64*drawScale,canvas.height/2 + this.y*drawScale - 208*drawScale,this.w*drawScale,this.h*drawScale,mouse.realX,mouse.realY,1,1)){
-                        drawIsometricImage(0,0,this.img,false,this.w,0,this.w,this.h,this.x,this.y)
+                        if(this.img.width < this.w*2){
+                            drawIsometricImage(0,0,this.img,false,0,0,this.w,this.h,this.x,this.y)
+                        }else{
+                            drawIsometricImage(0,0,this.img,false,this.w,0,this.w,this.h,this.x,this.y)
+                        }
                         this.hover = true;
                     }else{
                         this.hover = false;
@@ -961,10 +973,12 @@ class Button{
                     this.hover = false;
                 }
             }
-
+            if(showBorder){
+                c.strokeStyle = "black";
+                c.strokeRect(canvas.width/2 + this.x*drawScale - 64*drawScale,canvas.height/2 + this.y*drawScale - 208*drawScale,this.w*drawScale,this.h*drawScale)
+            }
         }
         this.click = function(){
-            c.fillStyle = "black";
             if(this.visible && !this.disabled){
                 if(detectCollition(canvas.width/2 + this.x*drawScale - 64*drawScale,canvas.height/2 + this.y*drawScale - 208*drawScale,this.w*drawScale,this.h*drawScale,mouse.realX,mouse.realY,1,1)){
                     playSound(sounds.release,1)
@@ -1461,11 +1475,11 @@ class Player{
                 this.y = 0;
             }
             if(this.stepsWithOffset > 0 && this.stepsWithOffset < 10){
-                this.y = 0;
+                this.y = 0.5;
                 this.x = this.stepsWithOffset + 1;
             }
             if(this.stepsWithOffset > 9 && this.stepsWithOffset < 21){
-                this.x = 12
+                this.x = 11.5
                 if(this.stepsWithOffset === 10){
                     this.y = this.stepsWithOffset-10;
                 }else if(this.stepsWithOffset < 20){
@@ -1475,11 +1489,11 @@ class Player{
                 }
             }
             if(this.stepsWithOffset > 20 && this.stepsWithOffset < 30){
-                this.y = 12;
+                this.y = 11.5;
                 this.x = 12 - (this.stepsWithOffset-19)
             }
             if(this.stepsWithOffset > 29){
-                this.x = 0;
+                this.x = 0.5;
                 if(this.stepsWithOffset === 30){
                     this.y = 12 - (this.stepsWithOffset-30)
                 }else{
