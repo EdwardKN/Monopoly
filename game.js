@@ -1427,7 +1427,7 @@ class Player{
 
 
         this.draw = function () {
-            drawIsometricImage(800-this.x*64 -64,700-this.y*64 -64,this.img,false,0,0,64,128,0,-this.offsetY,0.5)
+            drawIsometricImage(800-this.x*64-64,700-this.y*64-64,this.img,false,0,0,32,64,0,-this.offsetY,1)
         }
         this.update = function () {
             this.updateVisual();
@@ -1497,23 +1497,23 @@ class Player{
                 if(board.boardPieces[tmpSteps].currentPlayer[i] === this){
                     if(tmpSteps === 0){
                         if(i < Math.floor(board.boardPieces[tmpSteps].currentPlayer.length/2)){
-                            this.x+=0.7
-                            this.y-=((i)/1.5)
+                            this.x+=0.8
+                            this.y-=((i)/1.4)
                         }else{
-                            this.y-=((i-Math.floor(board.boardPieces[tmpSteps].currentPlayer.length/2))/1.5)
+                            this.y-=((i-Math.floor(board.boardPieces[tmpSteps].currentPlayer.length/2))/1.4)
                         }
                     }else{
                         if(Math.floor(this.stepsWithOffset/10) === 0){
-                            this.y-=((i)/1.5)
+                            this.y-=((i)/1.4)
                         }
                         if(Math.floor(this.stepsWithOffset/10) === 1){
-                            this.x+=((i)/1.5)
+                            this.x+=((i)/1.4)
                         }
                         if(Math.floor(this.stepsWithOffset/10) === 2){
-                            this.y+=((i)/1.5)
+                            this.y+=((i)/1.4)
                         }
                         if(Math.floor(this.stepsWithOffset/10) === 3){
-                            this.x-=((i)/1.5)
+                            this.x-=((i)/1.4)
                         }
                     }
                 }                
