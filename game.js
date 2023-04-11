@@ -2,7 +2,6 @@ var canvas = document.createElement("canvas");
 var c = canvas.getContext("2d");
 canvas.id = "game"
 
-
 var board;
 
 var turn = 0;
@@ -550,6 +549,7 @@ function randomIntFromRange(min, max) {
 };
 
 function playSound(sound){
+    return
     if(sound.type === "single"){
         let myClonedAudio = sound.sound.cloneNode();
         myClonedAudio.play();
@@ -572,7 +572,7 @@ function init(){
     loadSounds(sounds);
 
     board = new Board();  
-    let playerAmount = 0;
+    let playerAmount = 2;
 
     let playerImages = [0,1,2,3,4,5,6,7]
 
@@ -591,14 +591,14 @@ function init(){
 
     for(i = 0; i < playerAmount; i++){
         let random = randomIntFromRange(0,playerImages.length-1)
-        let playername = "";
+        let playername = "asdasd";
         while(playername == ""){
             playername = prompt("Vad heter spelare " + (i+1) + "?")
             if(playername.length > 15 || playername.length < 4){
                 playername = ""
             }
         }
-        players.push(new Player(images.player.img[playerImages[random]],players.length,"green",playername))
+        players.push(new Player(images.player.img[playerImages[random]],players.length,"green",playername,true))
         playerImages.splice(random,1)
     }
 
@@ -773,7 +773,7 @@ class Board{
                         }else{
                             this.sellButton.x = 130;
                             this.mortgageButton.x = 80;
-                            this.upgradeButton.draw();
+                            this.upgradeButton.draw()
                             this.upgradeButton.visible = true;
                             this.downgradeButton.draw();
                             this.downgradeButton.visible = true;
@@ -1099,7 +1099,9 @@ class BoardPiece{
                                 player.ownedPlaces.push(this);
                             }  
                         }else{
-                            board.currentCard = this;
+                            if(this.bot !== undefined){
+                                board.currentCard = this;
+                            }
                         }
                         
                     }, 50);
@@ -1322,11 +1324,6 @@ class BoardPiece{
     }
     
 }
-class Bot{
-    constructor(player) {
-
-    }
-}
 
 class Player{
 
@@ -1361,6 +1358,9 @@ class Player{
             this.updateVisual();
             this.draw();
             this.checkMoney();
+            if(this.bot !== undefined){
+                this.bot.update();
+            }
         }
 
         this.checkMoney = function(){
@@ -1462,12 +1462,12 @@ class Player{
         this.animateSteps = function(from,to,dicesum){
             let self = this;
             clearInterval(this.timer)
-            if(from-to > from){
+            if(to < from){
                 to += 40
             }
             let to2 = to
-            to = to%40
             this.animationOffset = to-from;
+            to = to%40
             board.showDices = true;
             self.timer = setInterval(function(){
                 if(self.animationOffset <= 0){
@@ -1508,12 +1508,12 @@ class Player{
                     if(((to-self.animationOffset)%40-1) === -1){
                         board.boardPieces[0].playerStep(true,self);
                     }else{
-                        board.boardPieces[(to-self.animationOffset)%40].playerStep(true,self);
+                        board.boardPieces[(to2-self.animationOffset)%40].playerStep(true,self);
                     }
                     
 
                 }
-            },300);
+            },100);
         }
         
         this.rollDice = function(){
