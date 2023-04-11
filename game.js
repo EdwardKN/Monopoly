@@ -796,7 +796,7 @@ class Board{
         }  
 
         this.fixCursor = function (){
-            if(this.rollDiceButton.hover || this.nextPlayerButton.hover || this.cardCloseButton.hover || this.sellButton.hover || this.mortgageButton.hover || this.upgradeButton.hover || this.downgradeButton.hover || this.buyButton.hover){
+            if(this.rollDiceButton.hover || this.nextPlayerButton.hover || this.cardCloseButton.hover || this.sellButton.hover || this.mortgageButton.hover || this.upgradeButton.hover || this.downgradeButton.hover || this.buyButton.hover|| this.auctionButton.hover){
                 canvas.style.cursor = "pointer"
             }else{
                 canvas.style.cursor = "auto"
@@ -1195,7 +1195,7 @@ class BoardPiece{
                                 player.ownedPlaces.push(this);
                             }  
                         }else{
-                            if(this.bot !== undefined){
+                            if(this.bot === undefined){
                                 board.currentCard = this;
                             }
                         }
