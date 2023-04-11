@@ -1504,7 +1504,6 @@ class Player{
                     })})
 
                     self.animationOffset--;
-                    console.log(self.animationOffset)
                     playSound(sounds.movement)
                     if(((to-self.animationOffset)%40-1) === -1){
                         board.boardPieces[0].playerStep(true,self);
