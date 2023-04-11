@@ -1347,6 +1347,7 @@ class Player{
         this.update = function () {
             this.updateVisual();
             this.draw();
+            this.money = Math.floor(this.money)
         }
         this.updateVisual = function (){
             this.stepsWithOffset = 40 + (this.steps) - this.animationOffset
