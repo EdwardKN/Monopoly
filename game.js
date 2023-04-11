@@ -420,10 +420,9 @@ canvas.addEventListener("mousemove",function(e){
 })
 
 window.addEventListener("mousedown",function(e){
-        
+
 })
 window.addEventListener("mouseup",e =>{
-    playSound(sounds.release,1)
     board.boardPieces.forEach(function(piece){
         piece.click();
     })
@@ -961,6 +960,7 @@ class Button{
             c.fillStyle = "black";
             if(this.visible && !this.disabled){
                 if(detectCollition(canvas.width/2 + this.x*drawScale - 64*drawScale,canvas.height/2 + this.y*drawScale - 208*drawScale,this.w*drawScale,this.h*drawScale,mouse.realX,mouse.realY,1,1)){
+                    playSound(sounds.release,1)
                     this.onClick();
                     this.hover = false;
                 }
@@ -1139,6 +1139,8 @@ class BoardPiece{
 
         this.click = function(){
             if(this.hover === true){
+                playSound(sounds.release,1)
+
                 if(this.piece.card === undefined){
                     alert(this.info())
                 }else{
