@@ -47,6 +47,9 @@ var images = {
         "./images/players/player5.png","./images/players/player6.png","./images/players/player7.png","./images/players/player8.png"
         ]
     },
+    playerOverlay:{
+        src:[""]
+    },
     background:{
         src:["./images/static/insideboard.png","./images/static/realbackground.png"
         ]
@@ -625,12 +628,12 @@ function init(){
                 playername = ""
             }
         }
-        players.push(new Player(images.player.img[playerImages[random]],players.length,playername,false))
+        players.push(new Player(images.player.img[playerImages[random]],playerImages[random],playername,false))
         playerImages.splice(random,1)
     }
     for(i = 0; i < botAmount; i++){
         let random = randomIntFromRange(0,playerImages.length-1)
-        players.push(new Player(images.player.img[playerImages[random]],players.length,"Spelare " + (i+1),true))
+        players.push(new Player(images.player.img[playerImages[random]],playerImages[random],"Spelare " + (i+1),true))
         playerImages.splice(random,1)
     }
 
@@ -1030,6 +1033,9 @@ class BoardPiece{
         this.draw = function () {
             if(this.n%10 !== 0){
                 drawIsometricImage(this.x,this.y,this.img,false,96*this.imgSide,0,96,48,this.offsetX,this.offsetY);
+                if(this.owner !== undefined){
+                    drawIsometricImage(this.x,this.y,images.playerOverlay.img[this.owner.colorIndex],false,96*this.imgSide,0,96,48,this.offsetX,this.offsetY);
+                }
             }else{
                 drawIsometricImage(this.x,this.y,this.img,false,0,0,128,64,this.offsetX,this.offsetY);
             }
@@ -1369,7 +1375,7 @@ class Player{
         this.y = 0;
         this.steps = 0;
         this.money = 1400;
-        this.index = index
+        this.colorIndex = index
         this.offsetY = 0;
         this.stepsWithOffset = (this.steps)
         this.rolls = false;
