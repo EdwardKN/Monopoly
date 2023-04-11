@@ -676,6 +676,7 @@ class Board{
         this.prisonExtra = new BoardPiece(-1,[])
         this.showDices = false;
         this.animateDices = false;
+        this.win = false;
         this.rollDiceButton = new Button(10,250,images.buttons.img[0],function(){players[turn].rollDice()},107,23)
         this.nextPlayerButton = new Button(10,250,images.buttons.img[1],function(){players[turn].rollDice()},107,23)
         this.currentCard = undefined;
@@ -725,7 +726,7 @@ class Board{
             this.rollDiceButton.draw();
             this.nextPlayerButton.draw();
             this.boardPieces.forEach(g => g.drawHouses())
-            this.boardPieces.forEach(g => g.currentPlayer.forEach(p => p.update()))
+            if(this.win === false){ this.boardPieces.forEach(g => g.currentPlayer.forEach(p => p.update())) }
             this.prisonExtra.currentPlayer.forEach(p => p.update())
             this.showCard();
             this.fixCursor();
@@ -751,6 +752,13 @@ class Board{
                 c.textAlign = "center";
                 c.font ="20px Brush Script MT";
                 if(this.currentCard.owner !== undefined){
+                    if(this.currentCard.piece.type !== "utility" && this.currentCard.piece.type !== "station"){
+                        c.fillText("Ägare: " + this.currentCard.owner.name,canvas.width/2,canvas.height/2-200)
+                    }else{
+                        c.fillText("Ägare: " + this.currentCard.owner.name,canvas.width/2,canvas.height/2-153)
+                    }
+
+
                     if(this.currentCard.owner === players[turn]){
 
                         this.sellButton.draw();
@@ -758,13 +766,11 @@ class Board{
                         this.mortgageButton.draw();
                         this.mortgageButton.visible = true;
                         if(this.currentCard.piece.type === "utility" || this.currentCard.piece.type === "station"){
-                            c.fillText("Ägare: " + this.currentCard.owner.name,canvas.width/2,canvas.height/3.15)
                             this.sellButton.x = 80;
                             this.mortgageButton.x = 5;
                             this.upgradeButton.visible = false;
                             this.downgradeButton.visible = false;
                         }else{
-                            c.fillText("Ägare: " + this.currentCard.owner.name,canvas.width/2,canvas.height/3.8)
                             this.sellButton.x = 130;
                             this.mortgageButton.x = 80;
                             this.upgradeButton.draw();
@@ -805,6 +811,10 @@ class Board{
                     if(this.currentCard === board.boardPieces[(players[turn].steps)]){
                         this.buyButton.draw();
                         this.buyButton.visible = true;
+                        this.mortgageButton.visible = false;
+                        this.sellButton.visible = false;
+                        this.downgradeButton.visible = false;
+                        this.upgradeButton.visible = false;
                         if(this.currentCard.piece.type === "station"){
                             this.buyButton.y = 310;
                         }else{
@@ -822,7 +832,7 @@ class Board{
                 this.nextPlayerButton.visible = false;
                 this.rollDiceButton.visible = false;
                 if(this.currentCard.mortgaged === true){
-                    drawRotatedText(canvas.width/2 + canvas.width/50,canvas.height/2,"Intecknad","150px Brush Script MT",45,"black",false)
+                    drawRotatedText(canvas.width/2 + 50,canvas.height/2 - 100,"Intecknad","150px Brush Script MT",45,"black",false)
                 }
             }else{
                 this.cardCloseButton.visible = false;
@@ -1312,10 +1322,15 @@ class BoardPiece{
     }
     
 }
+class Bot{
+    constructor(player) {
+
+    }
+}
 
 class Player{
 
-    constructor(img,index,color,name){
+    constructor(img,index,color,name,bot){
         this.name = name;
         this.color = color;
         this.img = img;
@@ -1332,12 +1347,37 @@ class Player{
         this.ownedPlaces = [];
         this.animationOffset = 0;
         this.timer = undefined;
+        this.negative = false;
+        this.bot = undefined;
+        if(bot == true ){
+            this.bot = new Bot(this);
+        }
+
+
         this.draw = function () {
             drawIsometricImage(800-this.x*64,700-this.y*64,this.img,false,0,0,32,32,0,-this.offsetY)
         }
         this.update = function () {
             this.updateVisual();
             this.draw();
+            this.checkMoney();
+        }
+
+        this.checkMoney = function(){
+            if(this.money < 0 && this.ownedPlaces.length == 0){
+                turn = turn%(players.length-1);
+
+                if(players.length-1 === 1){
+                    board.win = true;
+                }
+                this.money = 0;
+                players.splice(players.indexOf(this),1)
+
+            }else if(this.money < 0){
+                this.negative = true;
+            }  else{
+                this.negative = false;
+            }
         }
         this.updateVisual = function (){
             this.stepsWithOffset = 40 + (this.steps) - this.animationOffset
@@ -1477,92 +1517,95 @@ class Player{
         }
         
         this.rollDice = function(){
-            if(this.inJail === false){
-                if(this.rolls === false){
-                    let oldStep = this.steps;
-                    let dice1 = randomIntFromRange(1,6);
-                    let dice2 = randomIntFromRange(1,6);
-                    if(dice1 === dice2){
-                        if(this.numberOfRolls === 3){
-                            this.goToPrison();
-                        }
-                        this.numberOfRolls++;
-                        this.rolls = false;
-                    }else{
-                        this.rolls = true;
-                    }
-                    let diceSum = dice1+dice2;
-
-                    
-                    board.animateDices = true;
-
-                    let counter = 25;
-                    let self = this;
-                    var myFunction = function() {
-                        board.randomizeDice();
-                        board.dice1 = randomIntFromRange(1,6)
-                        board.dice2 = randomIntFromRange(1,6)
-                        playSound(sounds.click)
-                        counter *= 1.2;
-                        if(counter > 1000){
-                            playSound(sounds.click)
-                            board.dice1 = dice1;
-                            board.dice2 = dice2;
-                            setTimeout(() => {
-                                board.animateDices = false;
-                                self.steps += dice1+dice2;
-                                self.steps = self.steps%40;
-                                self.animateSteps(oldStep,self.steps,diceSum)
-                            }, 1000);                  
-                        }else{
-                            setTimeout(myFunction, counter);
-                        }
-                    }
-                    setTimeout(myFunction, counter);
-                    
-                        
-                    
-                    
-                }else{
-                    turn = (turn+1)%players.length;
-                    this.rolls = false;
-                    this.numberOfRolls = 0;
-                    board.dice1 = 0;
-                    board.dice2 = 0;
-                    
-                }
-            }else{
-                if(this.rolls === false){
-                    if(confirm("Vill du betala 50kr för att komma ut eller slå dubbelt?")){
-                        this.money -= 50;
-                        this.rolls = true;
-                        this.getOutOfJail();
-                    }else{
+            if(this.negative === false){
+                if(this.inJail === false){
+                    if(this.rolls === false){
+                        let oldStep = this.steps;
                         let dice1 = randomIntFromRange(1,6);
                         let dice2 = randomIntFromRange(1,6);
-                        board.randomizeDice();
-                        board.dice1 = dice1;
-                        board.dice2 = dice2;
-                        board.showDices = true;
-
                         if(dice1 === dice2){
-                            this.getOutOfJail()
+                            if(this.numberOfRolls === 3){
+                                this.goToPrison();
+                            }
+                            this.numberOfRolls++;
+                            this.rolls = false;
+                        }else{
+                            this.rolls = true;
                         }
-                        this.rolls = true;
-                        setTimeout(() => {
-                            board.showDices = false;
-                        }, 1000);
+                        let diceSum = dice1+dice2;
+
+                        
+                        board.animateDices = true;
+
+                        let counter = 25;
+                        let self = this;
+                        var myFunction = function() {
+                            board.randomizeDice();
+                            board.dice1 = randomIntFromRange(1,6)
+                            board.dice2 = randomIntFromRange(1,6)
+                            playSound(sounds.click)
+                            counter *= 1.2;
+                            if(counter > 1000){
+                                playSound(sounds.click)
+                                board.dice1 = dice1;
+                                board.dice2 = dice2;
+                                setTimeout(() => {
+                                    board.animateDices = false;
+                                    self.steps += dice1+dice2;
+                                    self.steps = self.steps%40;
+                                    self.animateSteps(oldStep,self.steps,diceSum)
+                                }, 1000);                  
+                            }else{
+                                setTimeout(myFunction, counter);
+                            }
+                        }
+                        setTimeout(myFunction, counter);
+                        
+                            
+                        
+                        
+                    }else{
+                        turn = (turn+1)%players.length;
+                        this.rolls = false;
+                        this.numberOfRolls = 0;
+                        board.dice1 = 0;
+                        board.dice2 = 0;
+                        
                     }
                 }else{
-                    turn = (turn+1)%players.length;
-                    this.rolls = false;
-                    this.numberOfRolls = 0;
+                    if(this.rolls === false){
+                        if(confirm("Vill du betala 50kr för att komma ut eller slå dubbelt?")){
+                            this.money -= 50;
+                            this.rolls = true;
+                            this.getOutOfJail();
+                        }else{
+                            let dice1 = randomIntFromRange(1,6);
+                            let dice2 = randomIntFromRange(1,6);
+                            board.randomizeDice();
+                            board.dice1 = dice1;
+                            board.dice2 = dice2;
+                            board.showDices = true;
+
+                            if(dice1 === dice2){
+                                this.getOutOfJail()
+                            }
+                            this.rolls = true;
+                            setTimeout(() => {
+                                board.showDices = false;
+                            }, 1000);
+                        }
+                    }else{
+                        turn = (turn+1)%players.length;
+                        this.rolls = false;
+                        this.numberOfRolls = 0;
+                    }
+                    
                 }
-                
             }
+            
         }
-        
         board.boardPieces[0].currentPlayer.push(this);
+
     }
 }
 
