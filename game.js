@@ -832,7 +832,7 @@ class Board{
                 this.nextPlayerButton.visible = false;
                 this.rollDiceButton.visible = false;
                 if(this.currentCard.mortgaged === true){
-                    drawRotatedText(canvas.width/2 + canvas.width/50,canvas.height/2,"Intecknad","150px Brush Script MT",45,"black",false)
+                    drawRotatedText(canvas.width/2 + 50,canvas.height/2 - 100,"Intecknad","150px Brush Script MT",45,"black",false)
                 }
             }else{
                 this.cardCloseButton.visible = false;
