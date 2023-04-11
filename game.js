@@ -1322,10 +1322,15 @@ class BoardPiece{
     }
     
 }
+class Bot{
+    constructor(player) {
+
+    }
+}
 
 class Player{
 
-    constructor(img,index,color,name){
+    constructor(img,index,color,name,bot){
         this.name = name;
         this.color = color;
         this.img = img;
@@ -1343,6 +1348,11 @@ class Player{
         this.animationOffset = 0;
         this.timer = undefined;
         this.negative = false;
+        this.bot = undefined;
+        if(bot == true ){
+            this.bot = new Bot(this);
+        }
+
 
         this.draw = function () {
             drawIsometricImage(800-this.x*64,700-this.y*64,this.img,false,0,0,32,32,0,-this.offsetY)
