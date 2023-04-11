@@ -1462,12 +1462,12 @@ class Player{
         this.animateSteps = function(from,to,dicesum){
             let self = this;
             clearInterval(this.timer)
-            if(from-to > from){
+            if(to < from){
                 to += 40
             }
             let to2 = to
-            to = to%40
             this.animationOffset = to-from;
+            to = to%40
             board.showDices = true;
             self.timer = setInterval(function(){
                 if(self.animationOffset <= 0){
@@ -1504,16 +1504,17 @@ class Player{
                     })})
 
                     self.animationOffset--;
+                    console.log(self.animationOffset)
                     playSound(sounds.movement)
                     if(((to-self.animationOffset)%40-1) === -1){
                         board.boardPieces[0].playerStep(true,self);
                     }else{
-                        board.boardPieces[(to-self.animationOffset)%40].playerStep(true,self);
+                        board.boardPieces[(to2-self.animationOffset)%40].playerStep(true,self);
                     }
                     
 
                 }
-            },300);
+            },50);
         }
         
         this.rollDice = function(){
@@ -1545,7 +1546,7 @@ class Player{
                             board.dice2 = randomIntFromRange(1,6)
                             playSound(sounds.click)
                             counter *= 1.2;
-                            if(counter > 1000){
+                            if(counter > 100){
                                 playSound(sounds.click)
                                 board.dice1 = dice1;
                                 board.dice2 = dice2;
