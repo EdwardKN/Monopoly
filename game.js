@@ -20,52 +20,54 @@ var offsets = {
 
 var images = {
     part:{
-        src:["./images/plates/brown.png","./images/plates/light_blue.png",
-        "./images/plates/pink.png","./images/plates/orange.png",
-        "./images/plates/red.png","./images/plates/yellow.png",
-        "./images/plates/green.png","./images/plates/blue.png",
-        "./images/plates/chance.png","./images/plates/chance2.png","./images/plates/chance3.png",
-        "./images/plates/train.png", "./images/plates/water.png", "./images/plates/electric.png",
-        "./images/plates/supertax.png","./images/plates/chest.png","./images/plates/incometax.png"
+        src:["./images/plates/brown","./images/plates/light_blue",
+        "./images/plates/pink","./images/plates/orange",
+        "./images/plates/red","./images/plates/yellow",
+        "./images/plates/green","./images/plates/blue",
+        "./images/plates/chance","./images/plates/chance2","./images/plates/chance3",
+        "./images/plates/train", "./images/plates/water", "./images/plates/electric",
+        "./images/plates/supertax","./images/plates/chest","./images/plates/incometax"
         ]
     },
     card:{
-        src:["./images/cards/browncard1.png","./images/cards/browncard2.png","./images/cards/lightbluecard1.png","./images/cards/lightbluecard2.png","./images/cards/lightbluecard3.png"
-            ,"./images/cards/pinkcard1.png","./images/cards/pinkcard2.png","./images/cards/pinkcard3.png","./images/cards/orangecard1.png","./images/cards/orangecard2.png","./images/cards/orangecard3.png"
-            ,"./images/cards/redcard1.png","./images/cards/redcard2.png","./images/cards/redcard3.png","./images/cards/yellowcard1.png","./images/cards/yellowcard2.png","./images/cards/yellowcard3.png"
-            ,"./images/cards/greencard1.png","./images/cards/greencard2.png","./images/cards/greencard3.png","./images/cards/bluecard1.png","./images/cards/bluecard2.png"
-            ,"./images/cards/electricitycard.png","./images/cards/waterworkscard.png"
-            ,"./images/cards/eaststation.png","./images/cards/northstation.png","./images/cards/centralstation.png","./images/cards/southstation.png"
+        src:["./images/cards/browncard1","./images/cards/browncard2","./images/cards/lightbluecard1","./images/cards/lightbluecard2","./images/cards/lightbluecard3"
+            ,"./images/cards/pinkcard1","./images/cards/pinkcard2","./images/cards/pinkcard3","./images/cards/orangecard1","./images/cards/orangecard2","./images/cards/orangecard3"
+            ,"./images/cards/redcard1","./images/cards/redcard2","./images/cards/redcard3","./images/cards/yellowcard1","./images/cards/yellowcard2","./images/cards/yellowcard3"
+            ,"./images/cards/greencard1","./images/cards/greencard2","./images/cards/greencard3","./images/cards/bluecard1","./images/cards/bluecard2"
+            ,"./images/cards/electricitycard","./images/cards/waterworkscard"
+            ,"./images/cards/eaststation","./images/cards/northstation","./images/cards/centralstation","./images/cards/southstation"
         ]
     },
     corner:{
-        src:["./images/corners/go.png","./images/corners/prison.png","./images/corners/parking.png","./images/corners/gotoprison.png"
+        src:["./images/corners/go","./images/corners/prison","./images/corners/parking","./images/corners/gotoprison"
         ]
     },
     player:{
-        src:["./images/players/player.png","./images/players/player2.png","./images/players/player3.png","./images/players/player4.png",
-        "./images/players/player5.png","./images/players/player6.png","./images/players/player7.png","./images/players/player8.png"
+        src:["./images/players/player","./images/players/player2","./images/players/player3","./images/players/player4",
+        "./images/players/player5","./images/players/player6","./images/players/player7","./images/players/player8"
         ]
     },
     playerOverlay:{
-        src:[""]
+        src:["./images/players/redowned","./images/players/pinkowned","./images/players/purpleowned","./images/players/blueowned",
+        "./images/players/lightblueowned","./images/players/greenowned","./images/players/yellowowned","./images/players/orangeowned"
+    ]
     },
     background:{
-        src:["./images/static/insideboard.png","./images/static/realbackground.png"
+        src:["./images/static/insideboard","./images/static/realbackground"
         ]
     },
     house:{
-        src:["./images/buildings/house.png","./images/buildings/hotel.png"
+        src:["./images/buildings/house","./images/buildings/hotel"
         ]
     },
     dice:{
-        src:["./images/dices/dices.png"
+        src:["./images/dices/dices"
         ]
     },
     buttons:{
-        src:["./images/buttons/rolldice.png","./images/buttons/nextplayer.png",
-        "./images/buttons/sellbutton.png","./images/buttons/mortgage.png","./images/buttons/arrowup.png","./images/buttons/arrowdown.png",
-        "./images/buttons/buythislawn.png"
+        src:["./images/buttons/rolldice","./images/buttons/nextplayer",
+        "./images/buttons/sellbutton","./images/buttons/mortgage","./images/buttons/arrowup","./images/buttons/arrowdown",
+        "./images/buttons/buythislawn"
         ]
     }
 };
@@ -436,7 +438,7 @@ function preRender(imageObject){
         for(i=0;i<image[1].src.length;i++){
             image[1].img.push(new Image());
 
-            image[1].img[i].src = image[1].src[i];
+            image[1].img[i].src = image[1].src[i] + ".png";
             c.drawImage(image[1].img[i],0,0)
         }
     });
