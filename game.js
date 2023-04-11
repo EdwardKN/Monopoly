@@ -593,7 +593,7 @@ function init(){
     let botAmount = 0;
 
     if(fastLoad === true){
-        playerAmount = 2;
+        playerAmount = 8;
         botAmount = -1
     }
 
@@ -773,7 +773,17 @@ class Board{
             this.rollDiceButton.draw();
             this.nextPlayerButton.draw();
             this.boardPieces.forEach(g => g.drawHouses())
-            if(this.win === false){ this.boardPieces.forEach(g => g.currentPlayer.forEach(p => p.update())) }
+            if(this.win === false){ this.boardPieces.forEach(g => {
+                if(g.side == 0 || g.side === 3){
+                    g.currentPlayer.forEach(p => p.update())
+                }else{
+                    for(let i = (g.currentPlayer.length-1); i>-1; i--){                        
+                        g.currentPlayer[i].update()
+                    }
+                }
+            }
+                ) 
+            }
             this.prisonExtra.currentPlayer.forEach(p => p.update())
             this.showCard();
             this.fixCursor();
@@ -1417,7 +1427,7 @@ class Player{
 
 
         this.draw = function () {
-            drawIsometricImage(800-this.x*64,700-this.y*64,this.img,false,0,0,32,32,0,-this.offsetY)
+            drawIsometricImage(800-this.x*64,700-this.y*64,this.img,false,0,0,32,32,0,-this.offsetY,1)
         }
         this.update = function () {
             this.updateVisual();
@@ -1485,12 +1495,33 @@ class Player{
             
             for(let i = 0; i<board.boardPieces[tmpSteps].currentPlayer.length; i++){
                 if(board.boardPieces[tmpSteps].currentPlayer[i] === this){
-                    this.offsetY = i*20
+                    if(tmpSteps === 0){
+                        if(i < Math.floor(board.boardPieces[tmpSteps].currentPlayer.length/2)){
+                            this.x+=0.7
+                            this.y-=((i)/1.5)
+                        }else{
+                            this.y-=((i-Math.floor(board.boardPieces[tmpSteps].currentPlayer.length/2))/1.5)
+                        }
+                    }else{
+                        if(Math.floor(this.stepsWithOffset/10) === 0){
+                            this.y-=((i)/1.5)
+                        }
+                        if(Math.floor(this.stepsWithOffset/10) === 1){
+                            this.x+=((i)/1.5)
+                        }
+                        if(Math.floor(this.stepsWithOffset/10) === 2){
+                            this.y+=((i)/1.5)
+                        }
+                        if(Math.floor(this.stepsWithOffset/10) === 3){
+                            this.x-=((i)/1.5)
+                        }
+                    }
                 }                
             }
             for(let i = 0; i<board.prisonExtra.currentPlayer.length; i++){
                 if(board.prisonExtra.currentPlayer[i] === this){
-                    this.offsetY = i*20;
+                    this.y+=i/1.8
+                    this.x-=i/1.8
                 }
             }
 
@@ -1541,7 +1572,7 @@ class Player{
                             b.currentPlayer.splice(i3,1)
                         }
                     })})
-                    if(to2 >= 40){
+                    if(to2 >= 40 && self.inJail === false){
                         alert(self.name + " gick förbi start och fick då 200kr")
                         self.money += 200;
                     }
