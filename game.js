@@ -11,6 +11,8 @@ var players = [];
 
 const drawScale = 2;
 
+const fastLoad = true;
+
 var offsets = {
     x:Math.floor(window.innerWidth/2) - 832*drawScale/2,
     y:Math.floor(window.innerHeight/2) - 416*drawScale/2
@@ -571,15 +573,21 @@ function init(){
 
     loadSounds(sounds);
 
-    board = new Board();  
+    board = new Board(); 
     let playerAmount = 0;
+    let botAmount = 0;
+
+    if(fastLoad === true){
+        playerAmount = 2;
+        botAmount = 2
+    }
 
     let playerImages = [0,1,2,3,4,5,6,7]
 
     while(playerAmount == 0){
         let promptText = prompt("Hur många spelare?") 
         if(isNumeric(promptText)){
-            if(JSON.parse(promptText) < 2 || JSON.parse(promptText) > 8){
+            if(JSON.parse(promptText) < 1 || JSON.parse(promptText) > 8){
                 playerAmount = 0;
             }else{
                 playerAmount = JSON.parse(promptText)
@@ -588,17 +596,41 @@ function init(){
             playerAmount = 0;
         }
     }
+    while(botAmount == 0){
+        if(playerAmount < 8){
+            let promptText = prompt("Hur många bots?") 
+            if(isNumeric(promptText)){
+                if(JSON.parse(promptText) <= 8-playerAmount){
+                    botAmount = JSON.parse(promptText)
+                }else{
+                    botAmount = 0;
+                }
+            }else{
+                botAmount = 0;
+            }
+        }else{
+            botAmount = -1
+        }
+    }
 
     for(i = 0; i < playerAmount; i++){
         let random = randomIntFromRange(0,playerImages.length-1)
         let playername = "";
+        if(fastLoad === true){
+            playername = "Spelare " + (i+1);
+        }
         while(playername == ""){
             playername = prompt("Vad heter spelare " + (i+1) + "?")
             if(playername.length > 15 || playername.length < 4){
                 playername = ""
             }
         }
-        players.push(new Player(images.player.img[playerImages[random]],players.length,"green",playername))
+        players.push(new Player(images.player.img[playerImages[random]],players.length,playername,false))
+        playerImages.splice(random,1)
+    }
+    for(i = 0; i < botAmount; i++){
+        let random = randomIntFromRange(0,playerImages.length-1)
+        players.push(new Player(images.player.img[playerImages[random]],players.length,"Spelare " + (i+1),true))
         playerImages.splice(random,1)
     }
 
@@ -1330,9 +1362,8 @@ class Bot{
 
 class Player{
 
-    constructor(img,index,color,name,bot){
+    constructor(img,index,name,bot){
         this.name = name;
-        this.color = color;
         this.img = img;
         this.x = 0;
         this.y = 0;
