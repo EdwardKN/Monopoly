@@ -928,7 +928,7 @@ class Board{
 }
 
 class Auction{
-    constructor(){
+    constructor(card){
         
     }
 }
