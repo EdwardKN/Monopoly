@@ -70,7 +70,7 @@ var images = {
         ]
     },
     auction:{
-        src:["./images/menus/auctionmenubackground"]
+        src:["./images/menus/auctionmenubackground","./images/buttons/auction+2","./images/buttons/auction+10","./images/buttons/auction+100"]
     }
 };
 
@@ -434,6 +434,11 @@ window.addEventListener("mousedown",function(e){
     board.upgradeButton.click();
     board.downgradeButton.click();
     board.auctionButton.click();
+    if(board.auction !== undefined){
+        board.auction.addMoneyButton2.click()
+        board.auction.addMoneyButton10.click()
+        board.auction.addMoneyButton100.click()
+    }
 })
 
 window.addEventListener("keydown",function(e){
@@ -765,6 +770,8 @@ class Board{
         this.auctionButton = new Button(-43 + 117,300,images.buttons.img[8],function(){
             board.auction = new Auction(board.currentCard)
             board.currentCard = undefined;
+            board.buyButton.visible = false;
+            board.auctionButton.visible = false;
         },97,40);
 
             for(let n = 0; n < 40; n++){
@@ -814,12 +821,12 @@ class Board{
         }
         this.showCard = function (){
             if(this.currentCard !== undefined){
-                this.cardCloseButton.visible = true;
                 drawIsometricImage(0,0,images.card.img[this.currentCard.piece.card],false,0,0,images.card.img[this.currentCard.piece.card].width,images.card.img[this.currentCard.piece.card].height,-images.card.img[this.currentCard.piece.card].width/4,images.card.img[this.currentCard.piece.card].height/7.5,1)
                 this.cardCloseButton.draw();
                 c.fillStyle = "black";
                 c.textAlign = "center";
                 c.font ="20px Brush Script MT";
+                
                 if(this.currentCard.owner !== undefined){
                     if(this.currentCard.piece.type !== "utility" && this.currentCard.piece.type !== "station"){
                         c.fillText("Ägare: " + this.currentCard.owner.name,canvas.width/2,canvas.height/2-200)
@@ -877,9 +884,14 @@ class Board{
                         
                     }
                 }else{
-                    if(this.currentCard === board.boardPieces[(players[turn].steps)]){
+                    this.cardCloseButton.visible = true;
+
+                    if(this.currentCard === board.boardPieces[(players[turn].steps)] && this.auction === undefined){
+                            
+                        
                         this.buyButton.draw();
                         this.buyButton.visible = true;
+                        this.cardCloseButton.visible = false;
                         this.auctionButton.draw();
                         this.auctionButton.visible = true;
                         this.mortgageButton.visible = false;
@@ -888,8 +900,10 @@ class Board{
                         this.upgradeButton.visible = false;
                         if(this.currentCard.piece.type === "station"){
                             this.buyButton.y = 310;
+                            this.auctionButton.y = 310;
                         }else{
                             this.buyButton.y = 300;
+                            this.auctionButton.y = 300;
                         }
                         if(players[turn].money >= this.currentCard.piece.price){
                             this.buyButton.disabled = false;
@@ -897,6 +911,7 @@ class Board{
                             this.buyButton.disabled = true;
                         }
                     }else{
+                        
                         this.buyButton.visible = false;
                         this.auctionButton.visible = false;
                     }
@@ -945,10 +960,31 @@ class Board{
 class Auction{
     constructor(card){
         this.card = card;
+        this.auctionMoney = 0;
+        this.addMoneyButton2 = new Button(-150,280,images.auction.img[1],function(){     
+            board.auction.auctionMoney += 2;
+        },54,54,false)
+        this.addMoneyButton10 = new Button(-60,280,images.auction.img[2],function(){
+            board.auction.auctionMoney += 10;
+        },54,54,false)
+        this.addMoneyButton100 = new Button(30,280,images.auction.img[3],function(){
+            board.auction.auctionMoney += 100;
+        },54,54,false)
 
         this.draw = function(){
             drawIsometricImage(0,0,images.card.img[card.piece.card],false,0,0,images.card.img[this.card.piece.card].width,images.card.img[this.card.piece.card].height,images.card.img[this.card.piece.card].width/3,images.card.img[this.card.piece.card].height/7.5,1)
             drawIsometricImage(0,0,images.auction.img[0],false,0,0,images.auction.img[0].width,images.card.img[this.card.piece.card].height,-images.card.img[this.card.piece.card].width/1.5,images.card.img[this.card.piece.card].height/7.5,1)
+            this.addMoneyButton2.draw();
+            this.addMoneyButton2.visible = true;
+            this.addMoneyButton10.draw();
+            this.addMoneyButton10.visible = true;
+            this.addMoneyButton100.draw();
+            this.addMoneyButton100.visible = true;
+
+            c.fillStyle = "black";
+            c.font = "50px Brush Script MT";
+            c.textAlign = "center";
+            c.fillText(this.auctionMoney, canvas.width/2-190, canvas.height/2 + 50);
 
         }
         this.update = function(){
