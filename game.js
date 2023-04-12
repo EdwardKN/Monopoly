@@ -1541,11 +1541,13 @@ class Player{
             if(this.stepsWithOffset > 9 && this.stepsWithOffset < 21){
                 this.x = 11.5
                 if(this.stepsWithOffset === 10){
+                    this.x = 12
                     this.y = this.stepsWithOffset-10;
                 }else if(this.stepsWithOffset < 20){
                     this.y = this.stepsWithOffset-9;
                 }else{
-                    this.y = this.stepsWithOffset-8;
+                    this.x = 11.5
+                    this.y = this.stepsWithOffset-8 -0.5;
                 }
             }
             if(this.stepsWithOffset > 20 && this.stepsWithOffset < 30){
@@ -1555,7 +1557,8 @@ class Player{
             if(this.stepsWithOffset > 29){
                 this.x = 0.5;
                 if(this.stepsWithOffset === 30){
-                    this.y = 12 - (this.stepsWithOffset-30)
+                    this.x = 0.5;
+                    this.y = 12 - (this.stepsWithOffset-30) -0.5
                 }else{
                     this.y = 12 - (this.stepsWithOffset-29)
                 }
