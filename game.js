@@ -70,7 +70,7 @@ var images = {
         ]
     },
     auction:{
-        src:["./images/menus/auctionmenubackground","./images/buttons/auction+2","./images/buttons/auction+10","./images/buttons/auction+100"]
+        src:["./images/menus/auctionmenubackground","./images/buttons/auction+2","./images/buttons/auction+10","./images/buttons/auction+100","./images/menus/auctionloadingbar","./images/buttons/startauction"]
     }
 };
 
@@ -438,6 +438,7 @@ window.addEventListener("mousedown",function(e){
         board.auction.addMoneyButton2.click()
         board.auction.addMoneyButton10.click()
         board.auction.addMoneyButton100.click()
+        board.auction.startAuctionButton.click();
     }
 })
 
@@ -810,11 +811,18 @@ class Board{
         }  
 
         this.fixCursor = function (){
-            if(this.rollDiceButton.hover || this.nextPlayerButton.hover || this.cardCloseButton.hover || this.sellButton.hover || this.mortgageButton.hover || this.upgradeButton.hover || this.downgradeButton.hover || this.buyButton.hover|| this.auctionButton.hover){
-                canvas.style.cursor = "pointer"
-            }else{
+            try{
+                if(this.rollDiceButton.hover || this.nextPlayerButton.hover || this.cardCloseButton.hover || this.sellButton.hover || this.mortgageButton.hover 
+                    || this.upgradeButton.hover || this.downgradeButton.hover || this.buyButton.hover|| this.auctionButton.hover|| 
+                    this.auction.addMoneyButton2.hover || this.auction.addMoneyButton10.hover || this.auction.addMoneyButton100.hover){
+                    canvas.style.cursor = "pointer"
+                }else{
+                    canvas.style.cursor = "auto"
+                }
+            }catch{
                 canvas.style.cursor = "auto"
             }
+            
         }
         this.randomizeDice = function () {
             this.dice1Type = randomIntFromRange(0,3);
@@ -963,6 +971,12 @@ class Auction{
         this.card = card;
         this.turn = 0;
         this.auctionMoney = 0;
+        this.time = 472;
+        this.started = false;
+        this.timer = undefined;
+        this.playerlist = [...players];
+
+
         this.addMoneyButton2 = new Button(-150,280,images.auction.img[1],function(){     
             board.auction.addMoney(2);
         },54,54,false)
@@ -972,30 +986,110 @@ class Auction{
         this.addMoneyButton100 = new Button(30,280,images.auction.img[3],function(){
             board.auction.addMoney(100);
         },54,54,false)
+        this.startAuctionButton = new Button(-150,220,images.auction.img[5],function(){
+            board.auction.started = true;
+            board.auction.timer = setInterval(function(){
+                board.auction.time--;
+            },10);
+        },240,40,false)
 
         this.draw = function(){
             drawIsometricImage(0,0,images.card.img[card.piece.card],false,0,0,images.card.img[this.card.piece.card].width,images.card.img[this.card.piece.card].height,images.card.img[this.card.piece.card].width/3,images.card.img[this.card.piece.card].height/7.5,1)
             drawIsometricImage(0,0,images.auction.img[0],false,0,0,images.auction.img[0].width,images.card.img[this.card.piece.card].height,-images.card.img[this.card.piece.card].width/1.5,images.card.img[this.card.piece.card].height/7.5,1)
-            this.addMoneyButton2.draw();
-            this.addMoneyButton2.visible = true;
-            this.addMoneyButton10.draw();
-            this.addMoneyButton10.visible = true;
-            this.addMoneyButton100.draw();
-            this.addMoneyButton100.visible = true;
-
             c.fillStyle = "black";
-            c.font = "50px Brush Script MT";
+            c.font = "80px calibri";
             c.textAlign = "center";
-            c.fillText(this.auctionMoney, canvas.width/2-190, canvas.height/2 + 50);
+            c.fillText(this.auctionMoney + "kr", canvas.width/2-190, canvas.height/2 - 75);
             c.font = "80px calibri";
             c.fillText(players[this.turn].name, canvas.width/2-190, canvas.height/2 - 150);
 
+            if(this.started){
+                this.startAuctionButton.visible = false;
+                this.addMoneyButton2.visible = true;
+                this.addMoneyButton2.draw();
+                this.addMoneyButton10.visible = true;
+                this.addMoneyButton10.draw();
+                this.addMoneyButton100.visible = true;
+                this.addMoneyButton100.draw();
+                drawIsometricImage(0,0,images.auction.img[4],false,0,30,240,30,-150,220,1)
+                if(this.time > 472){
+                    this.time = 472
+                }
+                c.fillStyle = "white"
+                if(this.time > 466){
+                    c.fillRect(canvas.width/2-422,canvas.height/2 + 28,2,52)
+                }
+                if(this.time > 468){
+                    c.fillRect(canvas.width/2-424,canvas.height/2 + 30,2,48)
+                }
+                if(this.time > 470){
+                    c.fillRect(canvas.width/2-426,canvas.height/2 + 32,2,44)
+                }
+                if(this.time < 466 && this.time >0){
+                    c.fillRect(canvas.width/2+44,canvas.height/2 + 26,-this.time + 3,56)
+                }else if(this.time > 0){
+                    c.fillRect(canvas.width/2+44,canvas.height/2 + 26,-467 + 3,56)
+                }
+                if(this.time > -2){
+                    c.fillRect(canvas.width/2 + 44,canvas.height/2 + 28,2,52)
+                }
+                if(this.time > -4){
+                    c.fillRect(canvas.width/2+ 46,canvas.height/2 + 30,2,48)
+                }
+                if(this.time > -6){
+                    c.fillRect(canvas.width/2+ 48,canvas.height/2 + 32,2,44)
+                }
+                if(this.time < -6){
+                    this.playerlist.splice(this.playerlist.indexOf(this.playerlist[this.turn]),1)
+                    this.turn = (this.turn)%this.playerlist.length;
+                    this.time = 472;
+                    if(this.playerlist.length === 1){
+                        for(let i = 0; i<players.length; i++){
+                            if(this.playerlist[0].colorIndex == players[i].colorIndex){
+                                clearInterval(board.auction.timer)
+                                players[i].money -= this.auctionMoney;
+                                board.auction.card.owner = players[i];
+                                players[i].ownedPlaces.push(this.card);
+                                board.currentCard = undefined;
+                                board.buyButton.visible = false;
+                                board.auction = undefined;
+                            }
+                        }
+
+                    }
+                }
+    
+                
+            }else{
+                this.startAuctionButton.visible = true;
+                this.startAuctionButton.draw();
+            }
+            
+
         }
         this.update = function(){
+        if(this.playerlist[this.turn].money < (this.auctionMoney+2)){
+            this.addMoneyButton2.disabled = true;
+        }else{
+            this.addMoneyButton2.disabled = false;
+        }
+        if(this.playerlist[this.turn].money < (this.auctionMoney+10)){
+            this.addMoneyButton10.disabled = true;
+        }else{
+            this.addMoneyButton10.disabled = false;
+        }
+        if(this.playerlist[this.turn].money < (this.auctionMoney+100)){
+            this.addMoneyButton100.disabled = true;
+        }else{
+            this.addMoneyButton100.disabled = false;
+        }
             this.draw();
+            
         }
         this.addMoney = function(money){
             this.auctionMoney += money;
+            this.turn = (this.turn+1)%this.playerlist.length;
+            this.time = 472;
         }
     }
 }
