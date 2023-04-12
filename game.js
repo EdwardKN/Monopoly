@@ -10,7 +10,7 @@ var players = [];
 
 const drawScale = 2;
 
-const fastLoad = true;
+const fastLoad = false;
 
 var offsets = {
     x:Math.floor(window.innerWidth/2) - 832*drawScale/2,
@@ -601,7 +601,7 @@ function init(){
     let botAmount = 0;
 
     if(fastLoad === true){
-        playerAmount = 3;
+        playerAmount = 4;
         botAmount = -1
     }
 
@@ -765,6 +765,7 @@ class Board{
             board.currentCard.owner = players[turn];
             players[turn].ownedPlaces.push(board.currentCard);
             board.currentCard = undefined;
+            board.buyButton.visible = false;
         },97,40);
 
         this.auctionButton = new Button(-43 + 117,300,images.buttons.img[8],function(){
@@ -836,7 +837,7 @@ class Board{
 
 
                     if(this.currentCard.owner === players[turn]){
-
+                        this.cardCloseButton.visible = true;
                         this.sellButton.draw();
                         this.sellButton.visible = true;
                         this.mortgageButton.draw();
@@ -922,7 +923,7 @@ class Board{
                     drawRotatedText(canvas.width/2 + 50,canvas.height/2 - 100,"Intecknad","150px Brush Script MT",45,"black",false)
                 }
             }else{
-                this.cardCloseButton.visible = false;
+                this.cardCloseButton.visible = true;
             }
             
         }
@@ -1219,7 +1220,7 @@ class BoardPiece{
         }
 
         this.click = function(){
-            if(this.hover === true){
+            if(this.hover === true && players[turn].bot === undefined){
                 playSound(sounds.release,1)
 
                 if(this.piece.card === undefined){
@@ -1246,7 +1247,7 @@ class BoardPiece{
                                 player.ownedPlaces.push(this);
                             }  
                         }else{
-                            if(this.bot === undefined){
+                            if(players[turn].bot === undefined){
                                 board.currentCard = this;
                             }
                         }
