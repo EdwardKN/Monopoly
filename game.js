@@ -68,6 +68,9 @@ var images = {
         "./images/buttons/sellbutton","./images/buttons/mortgage","./images/buttons/arrowup","./images/buttons/arrowdown",
         "./images/buttons/buythislawn","./images/buttons/exitCard","./images/buttons/auction"
         ]
+    },
+    auction:{
+        src:["./images/menus/auctionmenubackground"]
     }
 };
 
@@ -793,6 +796,9 @@ class Board{
             this.prisonExtra.currentPlayer.forEach(p => p.update())
             this.showCard();
             this.fixCursor();
+            if(this.auction !== undefined){
+                this.auction.update();
+            }
         }  
 
         this.fixCursor = function (){
@@ -914,7 +920,7 @@ class Board{
             this.rollDiceButton.visible = false;
             }else{
                 if(players[turn].rolls === false){
-                    if(players[turn].bot === undefined){
+                    if(players[turn].bot === undefined && this.auction === undefined){
                         this.rollDiceButton.visible = true;
                         this.nextPlayerButton.visible = false;
                     }else{
@@ -922,7 +928,7 @@ class Board{
                         this.nextPlayerButton.visible = false;
                     }
                 }else{
-                    if(players[turn].bot === undefined){
+                    if(players[turn].bot === undefined && this.auction === undefined){
                         this.rollDiceButton.visible = false;
                         this.nextPlayerButton.visible = true;
                     }else{
@@ -939,6 +945,15 @@ class Board{
 class Auction{
     constructor(card){
         this.card = card;
+
+        this.draw = function(){
+            drawIsometricImage(0,0,images.card.img[card.piece.card],false,0,0,images.card.img[this.card.piece.card].width,images.card.img[this.card.piece.card].height,images.card.img[this.card.piece.card].width/3,images.card.img[this.card.piece.card].height/7.5,1)
+            drawIsometricImage(0,0,images.auction.img[0],false,0,0,images.card.img[this.card.piece.card].width,images.card.img[this.card.piece.card].height,-images.card.img[this.card.piece.card].width/1.5,images.card.img[this.card.piece.card].height/7.5,1)
+
+        }
+        this.update = function(){
+            this.draw();
+        }
     }
 }
 
@@ -1060,7 +1075,7 @@ class BoardPiece{
         this.update = function () {
             let mouseSquareX = (to_grid_coordinate(mouse.x-416*drawScale,mouse.y).x/64) 
             let mouseSquareY = (to_grid_coordinate(mouse.x-416*drawScale,mouse.y).y/64)
-            if(board.currentCard !== undefined || this.piece.type === "chance" || this.piece.type === "community Chest" || this.piece.type === "income tax" || this.piece.type === "tax" ||this.n%10 === 0){
+            if(board.currentCard !== undefined || this.piece.type === "chance" || this.piece.type === "community Chest" || this.piece.type === "income tax" || this.piece.type === "tax" ||this.n%10 === 0 || board.auction !== undefined ){
                 this.offsetY = 0;
                 this.hover = false;
             }else if(this.x/64*drawScale > mouseSquareX-1*drawScale && this.x/64*drawScale < mouseSquareX && this.side === 2 && this.n%10 !== 0 && mouseSquareY >= 0*drawScale && mouseSquareY < 2*drawScale
