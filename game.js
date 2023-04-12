@@ -1599,7 +1599,7 @@ class Player{
 
 
         this.draw = function () {
-            drawIsometricImage(800-this.x*64-64,700-this.y*64-64,this.img,false,0,0,32,64,0,-this.offsetY,1)
+            drawIsometricImage(800-this.x*64-32,700-this.y*64-32,this.img,false,0,0,24,48,0,-this.offsetY,1)
         }
         this.update = function () {
             this.updateVisual();
