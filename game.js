@@ -602,7 +602,7 @@ function init(){
 
     if(fastLoad === true){
         playerAmount = 3;
-        botAmount = 0
+        botAmount = -1
     }
 
     let playerImages = [0,1,2,3,4,5,6,7]
