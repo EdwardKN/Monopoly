@@ -10,7 +10,7 @@ var players = [];
 
 const drawScale = 2;
 
-const fastLoad = false;
+const fastLoad = true;
 
 var offsets = {
     x:Math.floor(window.innerWidth/2) - 832*drawScale/2,
@@ -601,7 +601,7 @@ function init(){
     let botAmount = 0;
 
     if(fastLoad === true){
-        playerAmount = 4;
+        playerAmount = 3;
         botAmount = -1
     }
 
@@ -644,7 +644,7 @@ function init(){
         }
         while(playername == ""){
             playername = prompt("Vad heter spelare " + (i+1) + "?")
-            if(playername.length > 15 || playername.length < 4){
+            if(playername.length > 15 || playername.length < 2){
                 playername = ""
             }
         }
@@ -961,15 +961,16 @@ class Board{
 class Auction{
     constructor(card){
         this.card = card;
+        this.turn = 0;
         this.auctionMoney = 0;
         this.addMoneyButton2 = new Button(-150,280,images.auction.img[1],function(){     
-            board.auction.auctionMoney += 2;
+            board.auction.addMoney(2);
         },54,54,false)
         this.addMoneyButton10 = new Button(-60,280,images.auction.img[2],function(){
-            board.auction.auctionMoney += 10;
+            board.auction.addMoney(10);
         },54,54,false)
         this.addMoneyButton100 = new Button(30,280,images.auction.img[3],function(){
-            board.auction.auctionMoney += 100;
+            board.auction.addMoney(100);
         },54,54,false)
 
         this.draw = function(){
@@ -986,10 +987,15 @@ class Auction{
             c.font = "50px Brush Script MT";
             c.textAlign = "center";
             c.fillText(this.auctionMoney, canvas.width/2-190, canvas.height/2 + 50);
+            c.font = "80px calibri";
+            c.fillText(players[this.turn].name, canvas.width/2-190, canvas.height/2 - 150);
 
         }
         this.update = function(){
             this.draw();
+        }
+        this.addMoney = function(money){
+            this.auctionMoney += money;
         }
     }
 }
