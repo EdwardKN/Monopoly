@@ -602,8 +602,8 @@ function init(){
     let botAmount = 0;
 
     if(fastLoad === true){
-        playerAmount = 3;
-        botAmount = -1
+        playerAmount = 2;
+        botAmount = 2
     }
 
     let playerImages = [0,1,2,3,4,5,6,7]
@@ -1001,16 +1001,18 @@ class Auction{
             c.textAlign = "center";
             c.fillText(this.auctionMoney + "kr", canvas.width/2-190, canvas.height/2 - 75);
             c.font = "80px calibri";
-            c.fillText(players[this.turn].name, canvas.width/2-190, canvas.height/2 - 150);
+            c.fillText(this.playerlist[this.turn].name, canvas.width/2-190, canvas.height/2 - 150);
 
             if(this.started){
-                this.startAuctionButton.visible = false;
-                this.addMoneyButton2.visible = true;
-                this.addMoneyButton2.draw();
-                this.addMoneyButton10.visible = true;
-                this.addMoneyButton10.draw();
-                this.addMoneyButton100.visible = true;
-                this.addMoneyButton100.draw();
+                if(this.playerlist[this.turn].bot === undefined){
+                    this.startAuctionButton.visible = false;
+                    this.addMoneyButton2.visible = true;
+                    this.addMoneyButton2.draw();
+                    this.addMoneyButton10.visible = true;
+                    this.addMoneyButton10.draw();
+                    this.addMoneyButton100.visible = true;
+                    this.addMoneyButton100.draw();
+                }
                 drawIsometricImage(0,0,images.auction.img[4],false,0,30,240,30,-150,220,1)
                 if(this.time > 472){
                     this.time = 472
@@ -1041,7 +1043,7 @@ class Auction{
                 }
                 if(this.time < -6){
                     this.playerlist.splice(this.playerlist.indexOf(this.playerlist[this.turn]),1)
-                    this.turn = (this.turn+1)%this.playerlist.length;
+                    this.turn = (this.turn)%this.playerlist.length;
                     this.time = 472;
                     if(this.playerlist.length === 1){
                         for(let i = 0; i<players.length; i++){
