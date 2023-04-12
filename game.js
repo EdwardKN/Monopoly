@@ -1041,7 +1041,7 @@ class Auction{
                 }
                 if(this.time < -6){
                     this.playerlist.splice(this.playerlist.indexOf(this.playerlist[this.turn]),1)
-                    this.turn = (this.turn)%this.playerlist.length;
+                    this.turn = (this.turn+1)%this.playerlist.length;
                     this.time = 472;
                     if(this.playerlist.length === 1){
                         for(let i = 0; i<players.length; i++){
