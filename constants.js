@@ -1,4 +1,3 @@
-
 var board;
 
 var turn = 0;
@@ -7,7 +6,7 @@ var players = [];
 
 const drawScale = 2;
 
-const fastLoad = false;
+const fastLoad = true;
 
 var offsets = {
     x:Math.floor(window.innerWidth/2) - 832*drawScale/2,

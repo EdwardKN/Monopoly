@@ -1285,7 +1285,7 @@ class Player{
         }
         this.goToPrison = function(){
             alert("Gå till finkan!")
-            this.teleportTo(10)
+            this.teleportTo(10,false)
             this.inJail = true;
             this.rolls = true;
         }
@@ -1300,20 +1300,23 @@ class Player{
             self.steps = 10;
             board.boardPieces[10].playerStep(true,self);
         }
-        this.teleportTo = function(step){
+        this.teleportTo = function(step,getMoney){
             let oldStep = this.steps;
             let direction = 1;
             if(step < 0){
                 direction = -1;
                 step = -step
             }
+            if(getMoney === undefined){
+                getMoney = true;
+            }
 
             this.steps = step;
             this.rolls = true;
 
-            this.animateSteps(oldStep,this.steps,0,direction)
+            this.animateSteps(oldStep,this.steps,0,direction,getMoney)
         }
-        this.animateSteps = function(from,to,dicesum,direction){
+        this.animateSteps = function(from,to,dicesum,direction,getMoney){
             let self = this;
             clearInterval(this.timer)
             if(to < from && direction === 1){
@@ -1337,7 +1340,7 @@ class Player{
                             b.currentPlayer.splice(i3,1)
                         }
                     })})
-                    if(to2 >= 40 && self.inJail === false){
+                    if(to2 >= 40 && self.inJail === false && getMoney === true){
                         alert(self.name + " gick förbi start och fick då 200kr")
                         self.money += 200;
                     }
