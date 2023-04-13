@@ -424,7 +424,7 @@ class Board{
             try{
                 if(this.rollDiceButton.hover || this.nextPlayerButton.hover || this.cardCloseButton.hover || this.sellButton.hover || this.mortgageButton.hover 
                     || this.upgradeButton.hover || this.downgradeButton.hover || this.buyButton.hover|| this.auctionButton.hover|| 
-                    this.auction.addMoneyButton2.hover || this.auction.addMoneyButton10.hover || this.auction.addMoneyButton100.hover){
+                    this.auction.addMoneyButton2.hover || this.auction.addMoneyButton10.hover || this.auction.addMoneyButton100.hover || this.auction.startAuctionButton.hover){
                     canvas.style.cursor = "pointer"
                 }else{
                     canvas.style.cursor = "auto"
