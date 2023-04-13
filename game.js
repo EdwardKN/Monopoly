@@ -1134,8 +1134,8 @@ class BoardPiece{
                         alert("Betala 200kr skatt")
                         player.money -= 200;
                     }else{
-                        alert("Betala " + player.money * 0.1 + "kr skatt")
-                        player.money = player.money * 0.9;
+                        alert("Betala " + Math.round(player.money * 0.1) + "kr skatt")
+                        player.money =  Math.round(player.money * 0.9);
                     }
                 }
             }
@@ -1431,6 +1431,7 @@ class Player{
                     }
                 }else{
                     if(this.rolls === false){
+                        if(this.bot === undefined){
                         if(confirm("Vill du betala 50kr för att komma ut eller slå dubbelt?")){
                             this.money -= 50;
                             this.rolls = true;
@@ -1468,6 +1469,7 @@ class Player{
                             }
                             setTimeout(myFunction, counter);
                             }
+                        }
                     }else{
                         turn = (turn+1)%players.length;
                         this.rolls = false;
