@@ -27,21 +27,11 @@ window.addEventListener("mousedown",function(e){
     board.boardPieces.forEach(function(piece){
         piece.click();
     })
-    board.nextPlayerButton.click();
-    board.rollDiceButton.click();
-    board.cardCloseButton.click();
-    board.buyButton.click();
-    board.sellButton.click();
-    board.mortgageButton.click();
-    board.upgradeButton.click();
-    board.downgradeButton.click();
-    board.auctionButton.click();
-    if(board.auction !== undefined){
-        board.auction.addMoneyButton2.click()
-        board.auction.addMoneyButton10.click()
-        board.auction.addMoneyButton100.click()
-        board.auction.startAuctionButton.click();
-    }
+
+    buttons.forEach(e =>{
+        e.click();
+    })
+
 })
 
 window.addEventListener("keydown",function(e){
@@ -319,6 +309,19 @@ function update(){
     c.textAlign = "center";
     c.fillText("Just nu:" + players[turn].name, canvas.width/2, canvas.height/2 + 50);
     board.update();
+
+    let tmp = false;
+
+    buttons.forEach(e =>{
+        if(e.hover){
+            tmp = true;
+        }
+    })
+    if(tmp === true){
+        canvas.style.cursor = "pointer"
+    }else{
+        canvas.style.cursor = "auto"
+    }
     
 }
 
@@ -414,26 +417,12 @@ class Board{
             }
             this.prisonExtra.currentPlayer.forEach(p => p.update())
             this.showCard();
-            this.fixCursor();
             if(this.auction !== undefined){
                 this.auction.update();
             }
         }  
 
-        this.fixCursor = function (){
-            try{
-                if(this.rollDiceButton.hover || this.nextPlayerButton.hover || this.cardCloseButton.hover || this.sellButton.hover || this.mortgageButton.hover 
-                    || this.upgradeButton.hover || this.downgradeButton.hover || this.buyButton.hover|| this.auctionButton.hover|| 
-                    this.auction.addMoneyButton2.hover || this.auction.addMoneyButton10.hover || this.auction.addMoneyButton100.hover || this.auction.startAuctionButton.hover){
-                    canvas.style.cursor = "pointer"
-                }else{
-                    canvas.style.cursor = "auto"
-                }
-            }catch{
-                canvas.style.cursor = "auto"
-            }
-            
-        }
+        
         this.randomizeDice = function () {
             this.dice1Type = randomIntFromRange(0,3);
             this.dice2Type = randomIntFromRange(0,3);
@@ -662,6 +651,10 @@ class Auction{
                                 players[i].money -= this.auctionMoney;
                                 board.auction.card.owner = players[i];
                                 players[i].ownedPlaces.push(this.card);
+                                buttons.splice(buttons.indexOf(this.addMoneyButton2),1)
+                                buttons.splice(buttons.indexOf(this.addMoneyButton10),1)
+                                buttons.splice(buttons.indexOf(this.addMoneyButton100),1)
+                                buttons.splice(buttons.indexOf(this.startAuctionButton),1)
                                 board.currentCard = undefined;
                                 board.buyButton.visible = false;
                                 board.auction = undefined;
@@ -718,6 +711,8 @@ class Button{
         this.disabled = false;
         this.hover = false;
         this.showBorder = showBorder;
+        buttons.push(this);
+
         this.draw = function(){
             
             if(this.visible && this.img !== undefined){

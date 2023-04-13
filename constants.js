@@ -8,6 +8,8 @@ const drawScale = 2;
 
 const fastLoad = true;
 
+var buttons = [];
+
 var offsets = {
     x:Math.floor(window.innerWidth/2) - 832*drawScale/2,
     y:Math.floor(window.innerHeight/2) - 416*drawScale/2
