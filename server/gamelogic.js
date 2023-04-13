@@ -1,4 +1,136 @@
 var api = require('./api');
+var pieces = JSON.parse(require('node:fs').readFileSync("./boardPieces.json"));
+
+class BoardPiece{
+    constructor(n){
+        // The side on which this tile is located
+        this.side = Math.floor(n/10);
+
+        // n is the index of this tile
+        this.n = n;
+
+        // Data about the boardPiece such as cost, group and more.
+        this.piece = pieces[this.n];
+
+        // The player who owns this tile
+        this.owner = undefined;
+
+        // Level of buildings
+        this.level = 0;
+
+        // Players currently standing on this tile?
+        this.currentPlayer = [];
+
+        // If this is mortaged
+        this.mortgaged = false;
+
+        this.playerStep = (onlyStep, player, diceRoll) => {
+            this.currentPlayer.push(player);
+            if(!onlyStep && !this.mortgaged){
+                if (this.piece.price < 0) {
+                    // Why would the price be negative?
+                    player.money += this.piece.price;
+                    alert(player.name + " betalade " + -this.piece.price + "kr")
+                } else if (this.piece.price > 0 && this.owner === undefined) {
+                    // If this isn't owned by anyone (and the price is more than 0kr; Why?)
+                    setTimeout(() => {
+                        if (this.piece.card === undefined) {
+                            if(confirm("Vill du köpa " + this.piece.name + " för " + this.piece.price + "kr?" + "\n" + "\n"+ this.info())){
+                                player.money -= this.piece.price;
+                                this.owner = player;
+                                player.ownedPlaces.push(this);
+                            }  
+                        } else if (player.bot === undefined) {
+                            api.showCard(this);
+//                            board.currentCard = this;
+                        }
+                    }, 50);
+                } else if(this.owner !== player && this.owner !== undefined) {
+                    // The owner isn't this player, but there is an owner.
+
+                    if(this.piece.type === "utility"){
+                        let amountOwned = this.owner.ownedPlaces.filter(e => e.piece.type == "utility").length;
+                        let multiply = amountOwned == 1 ? 4 : 10;
+
+                        player.money -=  diceRoll * multiply;
+                        this.owner.money += diceRoll * multiply;
+
+                        alert(this.owner.name + " fick precis " + (diceRoll * multiply) + "kr av " + player.name)                        
+                    }else if(this.piece.type === "station"){
+                        let amountOwned = this.owner.ownedPlaces.filter(e => e.piece.type == "station").length - 1;
+
+                        player.money -=  25 * Math.pow(2,amountOwned);
+                        this.owner.money += 25 * Math.pow(2,amountOwned);
+
+                        alert(this.owner.name + " fick precis " + (25 * Math.pow(2,amountOwned)) + "kr av " + player.name)
+                    }else{
+                        let ownAll = BoardManager.board.boardPieces.filter(x => x != this).filter(x => x.piece.group == this.piece.group).every(x => x.owner == this.owner);
+                        let multiply = this.level == 0 && ownAll ? 2 : 1;
+
+                        player.money -= this.piece.rent[this.level] * multiply;
+                        this.owner.money += this.piece.rent[this.level] * multiply;
+
+                        alert(this.owner.name + " fick precis " + (this.piece.rent[this.level] * multiply) + "kr av " + player.name)
+                    }
+                 } else if (this.piece.type === "chance") {
+                    let random = randomIntFromRange(0, ChanceTile.alternatives.length - 1);
+                    ChanceTile.alternatives[random](player);
+                }else if(this.piece.type === "community Chest"){
+                    let random = randomIntFromRange(0, CommunityChestTile.alternatives.length - 1);
+                    CommunityChestTile.alternatives[random](player);
+                }else if(this.piece.type === "income tax"){
+                    if(player.money > 2000){
+                        alert("Betala 200kr i skatt")
+                        player.money -= 200;
+                    }else{
+                        alert("Betala " + player.money * 0.1 + "kr i skatt")
+                        player.money *= 0.9;
+                    }
+                }
+            }
+        }
+    }    
+}
+
+class CommunityChestTile {
+    static alternatives = [
+        (player) => { alert("Gå till start!"); player.teleportTo(0); },
+        (player) => { alert("Gå till finkan!"); player.goToPrison(); },
+        (player) => { alert("Få 10kr av alla andra spelare"); player.money += (PlayerManager.getNumberOfPlayers() - 1) * 10; players.filter(x => x != player).forEach(x => { x.money -= 10; }); },
+        (player) => { alert("Få 50kr av alla andra spelare"); player.money += (PlayerManager.getNumberOfPlayers() - 1) * 50; players.filter(x => x != player).forEach(x => { x.money -= 50; }); },
+        (player) => { alert("Betala 40kr för varje hus du har och 135kr för varje hotell"); player.ownedPlaces.reduce((total, x) => total + (x.level < 5 ? 40*x.level : 135), 0); },
+        (player) => { alert("Förlora 25kr!"); player.money -= 25; },
+        (player) => { alert("Förlora 50kr!"); player.money -= 50; },
+        (player) => { alert("Förlora 50kr!"); player.money -= 50; }, // Repeat? Why?
+        (player) => { alert("Förlora 50kr!"); player.money -= 50; }, // Repeat? Why?
+        (player) => { alert("Få 10kr"); player.money += 10; },
+        (player) => { alert("Få 20kr"); player.money += 20; },
+        (player) => { alert("Få 50kr!"); player.money += 50; },
+        (player) => { alert("Få 100kr"); player.money += 100; },
+        (player) => { alert("Få 100kr"); player.money += 100; }, // Repeat? Why?
+        (player) => { alert("Få 100kr"); player.money += 100; }, // Repeat? Why?
+        (player) => { alert("Få 200kr"); player.money += 200; },
+        (player) => { alert("Inte inlagd, men ska vara ett GET OUT OF JAIL kort"); },
+    ];
+}
+
+class ChanceTile {
+    static alternatives = [
+        (player) => { alert("Gå till start!"); player.teleportTo(0); },
+        (player) => { alert("Gå till finkan!"); player.goToPrison(); },
+        (player) => { alert("Gå till Hässleholm!"); player.teleportTo(24); },
+        (player) => { alert("Gå till Simrishamn!"); player.teleportTo(11); },
+        (player) => { alert("Gå till Malmö!"); player.teleportTo(39); },
+        (player) => { alert("Gå till närmsta tågstation!"); player.teleportTo([ 15, 25, 35, 45 ].find(x => player.steps < x) % 40); },
+        (player) => { alert("Gå tillbaka tre steg!"); player.teleportTo(player.steps - 3); },
+        (player) => { alert("Betala 25kr för varje hus du har och 100kr för varje hotell"); player.ownedPlaces.reduce((total, x) => total + (x.level < 5 ? 25*x.level : 100), 0); },
+        (player) => { alert("Få 50kr av alla andra spelare"); player.money += (PlayerManager.getNumberOfPlayers() - 1) * 50; PlayerManager.players.filter(x => x != player).forEach(x => x.money -= 50); },
+        (player) => { alert("Få 50kr"); player.money += 50; },
+        (player) => { alert("Få 150kr"); player.money += 150; },
+        (player) => { alert("Inte inlagd, men ska vara ett GET OUT OF JAIL kort"); },
+        (player) => { alert("Inte inlagd"); }
+    ];
+}
 
 class Board {
     constructor() {
@@ -6,6 +138,11 @@ class Board {
         this.prisonExtra = new BoardPiece(-1,[])
         this.win = false;
         this.auction = undefined;
+
+        for (var i = 0; i < 40; i++) {
+            // Initialize all of the boardPieces
+            this.boardPieces[i] = new BoardPiece(i);
+        }
 
         this.update = function () {
             this.boardPieces.forEach(g => g.update())
@@ -33,271 +170,8 @@ class Board {
 
 class BoardManager {
     static board = new Board();
-}
-
-class BoardPiece{
-    constructor(n){
-        // The side on which this tile is located
-        this.side = Math.floor(n/10);
-
-        // n is the index of this tile
-        this.n = n;
-
-        // Probably the image
-        this.piece = pieces[this.n];
-
-        // The player who owns this tile
-        this.owner = undefined;
-
-        // Level of buildings
-        this.level = 0;
-
-        // Players currently standing on this tile?
-        this.currentPlayer = [];
-
-        // If this is mortaged
-        this.mortgaged = false;
-
-        this.playerStep = function (onlyStep,player,diceRoll){
-            this.currentPlayer.push(player);
-            if(!onlyStep && !this.mortgaged){
-                if(this.piece.price < 0){
-                    player.money += this.piece.price;
-                    alert(player.name + " betalade " + -this.piece.price + "kr")
-                }else if(this.piece.price > 0 && this.owner === undefined){
-                    // If this isn't owned by anyone (and the price is more than 0kr; Why?)
-                    setTimeout(() => {
-                        if(this.piece.card === undefined){
-                            if(confirm("Vill du köpa " + this.piece.name + " för " + this.piece.price + "kr?" + "\n" + "\n"+ this.info())){
-                                player.money -= this.piece.price;
-                                this.owner = player;
-                                player.ownedPlaces.push(this);
-                            }  
-                        }else{
-                            if(players[turn].bot === undefined){
-                                board.currentCard = this;
-                            }
-                        }
-                        
-                    }, 50);
-
-                }else if(this.owner !== player && this.owner !== undefined){
-                    if(this.piece.type === "utility"){
-                        let tmp = 0;
-                        let multiply = 0;
-                        this.owner.ownedPlaces.forEach(e => {
-                            if(e.piece.type === "utility"){
-                                tmp++;
-                            }
-                        })
-                        if(tmp === 1){
-                            multiply = 4;
-
-                        }
-                        if(tmp === 2){
-                            multiply = 10
-                        }
-                        player.money -=  diceRoll * multiply;
-                        this.owner.money += diceRoll * multiply;
-                        alert(this.owner.name + " fick precis " + (diceRoll * multiply) + "kr av " + player.name)
-                        
-                    }else if(this.piece.type === "station"){
-                        let tmp = -1;
-                        this.owner.ownedPlaces.forEach(e => {
-                            if(e.piece.type === "station"){
-                                tmp++;
-                            }
-                        })
-                        player.money -=  25 * Math.pow(2,tmp);
-                        this.owner.money += 25 * Math.pow(2,tmp);
-                        alert(this.owner.name + " fick precis " + (25 * Math.pow(2,tmp)) + "kr av " + player.name)
-
-                    }else{
-                        let ownAll = true;
-                        for(let i = 0; i<board.boardPieces.length; i++){
-                            if(board.boardPieces[i] !== this){
-                                if(board.boardPieces[i].piece.group === this.piece.group){
-                                    if(this.owner !== board.boardPieces[i].owner){
-                                        ownAll = false;
-                                    }
-                                }
-                            }
-                        }
-                        let multiply = 1;
-                        if(ownAll && this.level === 0){
-                            multiply = 2;
-                        }
-                        player.money -= this.piece.rent[this.level] * multiply;
-                        this.owner.money += this.piece.rent[this.level] * multiply;
-                        alert(this.owner.name + " fick precis " + (this.piece.rent[this.level] * multiply) + "kr av " + player.name)
-
-                    }
-                }else if(this.piece.type === "chance"){
-
-                    let random = randomIntFromRange(1,13)
-                    if(random === 1){
-                        alert("Gå till start!")
-                        player.teleportTo(0)
-                    }
-                    if(random === 2){
-                        alert("Gå till Hässleholm")
-                        player.teleportTo(24)
-                    }
-                    if(random === 3){
-                        alert("Gå till Simrishamn")
-                        player.teleportTo(11)
-                    }
-                    if(random === 4){
-                        alert("Gå till närmsta tågstation")
-                        if(this.n === 7){
-                            player.teleportTo(15)
-                        }
-                        if(this.n === 22){
-                            player.teleportTo(25)
-                        }
-                        if(this.n === 36){
-                            player.teleportTo(5)
-                        }
-                    }
-                    if(random === 5){
-                        alert("Få 50kr")
-                        player.money += 50;
-                    }
-                    if(random === 6){
-                        alert("Inte inlagd men ska vara ett GET OUT OF JAIL kort")
-                        //get out of jail
-                    }
-                    if(random === 7){
-                        alert("Gå bak tre steg")
-                        player.teleportTo(player.steps - 3);
-                    }
-                    if(random === 8){
-                        alert("Gå till finkan!")
-                        player.goToPrison();
-                    }
-                    if(random === 9){
-                        alert("Betala 40 för varje hus man har och 115 för varje hotell")
-                        board.boardPieces.forEach(function(e){
-                            if(player === e.owner){
-                                if(e.level < 5){
-                                    player.money -= 25*e.level
-                                }else{
-                                    player.money -= 100
-                                }
-                            }
-                        })
-                    }
-                    if(random === 10){
-                        alert("Inte inlagd för att jag inte riktigt vet vad det ska vara")
-                        // konstig
-                    }
-                    if(random === 11){
-                        alert("Gå till Malmö")
-                        player.teleportTo(39);
-                    }
-                    if(random === 12){
-                        alert("Få 50kr av alla andra spelare")
-                        player.money += (players.length-1)*50
-                        players.forEach(e=> {if(e !== player){e.money-=50}})
-                    }
-                    if(random === 13){
-                        alert("Få 150kr")
-                        player.money += 150
-                    }
-                }else if(this.piece.type === "community Chest"){
-                    let random = randomIntFromRange(1,16);
-                    if(random === 1){
-                        alert("Gå till start")
-                        player.teleportTo(0)
-                    }
-                    if(random === 2){
-                        alert("Få 200kr")
-                        player.money += 200;
-                    }
-                    if(random === 3){
-                        alert("Förlora 50kr")
-                        player.money -= 50;
-                    }
-                    if(random === 4){
-                        alert("Få 50kr")
-                        player.money += 50;
-                    }
-                    if(random === 4){
-                        alert("Inte inlagd men ska vara ett GET OUT OF JAIL kort")
-                        //jail free
-                    }
-                    if(random === 5){
-                        alert("Gå till finkan")
-                        player.goToPrison()
-                    }
-                    if(random === 6){
-                        alert("Få 50kr av alla andra spelare")
-                        player.money += (players.length-1)*50
-                        players.forEach(e=> {if(e !== player){e.money-=50}})
-                    }
-                    if(random === 7){
-                        alert("Få 100kr")
-                        player.money += 100;
-                    }
-                    if(random === 8){
-                        alert("Få 20kr")
-                        player.money += 20;
-                    }
-                    if(random === 9){
-                        alert("Få 10kr av alla andra spelare")
-                        player.money += (players.length-1)*10
-                        players.forEach(e=> {if(e !== player){e.money-=10}})
-                    }
-                    if(random === 10){
-                        alert("Få 100kr")
-                        player.money += 100;
-                    }
-                    if(random === 11){
-                        alert("Förlora 50kr")
-                        player.money -= 50;
-                    }
-                    if(random === 12){
-                        alert("Förlora 50kr")
-                        player.money -= 50;
-                    }
-                    if(random === 13){
-                        alert("Förlora 25kr")
-                        player.money -= 25;
-                    }
-                    if(random === 14){
-                        alert("Betala 40 för varje hus man har och 115 för varje hotell")
-                        board.boardPieces.forEach(function(e){
-                            if(player === e.owner){
-                                if(e.level < 5){
-                                    player.money -= 40*e.level
-                                }else{
-                                    player.money -= 115
-                                }
-                            }
-                        })
-                    }
-                    if(random === 15){
-                        alert("Få 10kr")
-                        player.money += 10;
-                    }
-                    if(random === 16){
-                        alert("Få 100kr")
-                        player.money += 100;
-                    }
-                }else if(this.piece.type === "income tax"){
-                    if(player.money > 2000){
-                        alert("Betala 200kr skatt")
-                        player.money -= 200;
-                    }else{
-                        alert("Betala " + player.money * 0.1 + "kr skatt")
-                        player.money = player.money * 0.9;
-                    }
-                }
-            }
-        }
-        
-    }
-    
+    // Should return some information about the state of the board
+    static getJoinInfo = () => BoardManager.board;
 }
 
 class PlayerManager {
@@ -308,6 +182,8 @@ class PlayerManager {
 
         PlayerManager.players.push(player);
         api.addPlayer(player.name, player.colorIndex, player.bot != undefined);
+
+        return PlayerManager.players;
     }
 }
 
@@ -496,5 +372,6 @@ class Auction{
 }
 
 module.exports = {
-    PlayerManager
+    PlayerManager,
+    BoardManager
 }

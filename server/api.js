@@ -20,6 +20,11 @@ function addPlayer(username, index, isBot) {
     websocket.broadcastUTF(JSON.stringify(new PlayerJoinEvent(username, index, isBot)));
 }
 
+function showCard(card) {
+    console.log("[ShowCard]");
+    console.log(card);
+}
+
 class Event {
     constructor(eventType, data) {
         this.event_type = eventType;

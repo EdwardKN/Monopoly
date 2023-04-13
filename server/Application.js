@@ -3,7 +3,7 @@ var websocket = require('websocket');
 var gamelogic = require('./gamelogic');
 var api = require("./api");
 
-var port = 443;
+var port = 60000 + Math.round((Math.random() - 0.5) * 10000);
 var server = http.createServer(serverHandler).listen(port);
 console.log("Server started listening on port: " + port);
 
