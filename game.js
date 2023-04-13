@@ -713,7 +713,7 @@ class Auction{
 }
 
 class Button{
-    constructor(x,y,img,onClick,w,h,showBorder){
+    constructor(x,y,img,onClick,w,h,showBorder,mirror){
         this.x = x;
         this.y = y;
         this.w = w;
@@ -723,6 +723,10 @@ class Button{
         this.visible = false;
         this.disabled = false;
         this.hover = false;
+        this.mirror = false;
+        if(mirror === true){
+            this.mirror = true;
+        }
         this.showBorder = showBorder;
         buttons.push(this);
 
@@ -733,18 +737,18 @@ class Button{
                     
                     if(detectCollition(canvas.width/2 + this.x*drawScale - 64*drawScale,canvas.height/2 + this.y*drawScale - 208*drawScale,this.w*drawScale,this.h*drawScale,mouse.realX,mouse.realY,1,1)){
                         if(this.img.width < this.w*2){
-                            drawIsometricImage(0,0,this.img,false,0,0,this.w,this.h,this.x,this.y)
+                            drawIsometricImage(0,0,this.img,this.mirror,0,0,this.w,this.h,this.x,this.y)
                         }else{
-                            drawIsometricImage(0,0,this.img,false,this.w,0,this.w,this.h,this.x,this.y)
+                            drawIsometricImage(0,0,this.img,this.mirror,this.w,0,this.w,this.h,this.x,this.y)
                         }
                         this.hover = true;
                     }else{
                         this.hover = false;
-                        drawIsometricImage(0,0,this.img,false,0,0,this.w,this.h,this.x,this.y)
+                        drawIsometricImage(0,0,this.img,this.mirror,0,0,this.w,this.h,this.x,this.y)
                     }
                 }else{
                     this.hover = false;
-                    drawIsometricImage(0,0,this.img,false,this.w*2,0,this.w,this.h,this.x,this.y)
+                    drawIsometricImage(0,0,this.img,this.mirror,this.w*2,0,this.w,this.h,this.x,this.y)
                 }
                 
             }else if(this.visible){
