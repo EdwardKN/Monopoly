@@ -1437,8 +1437,8 @@ class Player{
                             this.rolls = true;
                             this.getOutOfJail();
                         }else{
-                            let dice1 = randomIntFromRange(3,3);
-                            let dice2 = randomIntFromRange(3,3);
+                            let dice1 = randomIntFromRange(1,6);
+                            let dice2 = randomIntFromRange(1,6);
                             this.rolls = true;
 
                             board.animateDices = true;
