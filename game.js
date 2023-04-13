@@ -1171,7 +1171,6 @@ class BoardPiece{
         this.level = 0;
         this.hover = false;
         this.currentPlayer = [];
-        this.inJail = false;
         this.mortgaged = false;
         
         this.setImg = function(){
