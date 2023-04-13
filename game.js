@@ -173,7 +173,7 @@ const pieces = [
         card:4
     },
     {
-        name:"Fängelse",
+        name:"§ängelse",
         img:1
     },
     {
@@ -1831,10 +1831,10 @@ class Player{
                             board.randomizeDice();
                             board.dice1 = randomIntFromRange(1,6)
                             board.dice2 = randomIntFromRange(1,6)
-                            playSound(sounds.dice,0.5)
+                            playSound(sounds.dice,0.25)
                             counter *= 1.2;
                             if(counter > 1000){
-                                playSound(sounds.dice,0.5)
+                                playSound(sounds.dice,0.25)
                                 board.dice1 = dice1;
                                 board.dice2 = dice2;
                                 setTimeout(() => {
