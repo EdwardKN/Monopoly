@@ -8,7 +8,7 @@ const drawScale = 2;
 
 const fastLoad = true;
 
-var f = new FontFace('Arcade', 'url(./fonts/ARCADECLASSIC.TTF)');
+var f = new FontFace('Arcade', 'url(./fonts/Verdana.ttf)');
 
 f.load().then(function(font) {
       document.fonts.add(font);
