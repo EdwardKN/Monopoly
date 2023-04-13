@@ -69,10 +69,13 @@ function loadSounds(soundObject){
         }
     });
 }
-function drawRotatedImage(x,y,w,h,img,angle,mirrored,cropX,cropY,cropW,cropH){
+function drawRotatedImage(x,y,w,h,img,angle,mirrored,cropX,cropY,cropW,cropH,offset){
     let degree = angle * Math.PI / 180;
-    x+= offsets.x;
-    y+= offsets.y
+    if(offset){
+        x+= offsets.x;
+        y+= offsets.y
+    }
+
     let middlePoint = {
         x:x+w/2,
         y:y+h/2
@@ -157,7 +160,7 @@ function drawIsometricImage(x,y,img,mirror,cropX,cropY,cropW,cropH,offsetX,offse
     if(sizeOveride !== undefined){
         scaleOfThis = sizeOveride*drawScale;
     }
-    drawRotatedImage(to_screen_coordinate(x*drawScale,y*drawScale).x + 832/2*drawScale - 64*drawScale + offsetX*drawScale,to_screen_coordinate(x*drawScale,y*drawScale).y + offsetY*drawScale,cropW*scaleOfThis,cropH*scaleOfThis,img,0,mirror,cropX,cropY,cropW,cropH)
+    drawRotatedImage(to_screen_coordinate(x*drawScale,y*drawScale).x + 832/2*drawScale - 64*drawScale + offsetX*drawScale,to_screen_coordinate(x*drawScale,y*drawScale).y + offsetY*drawScale,cropW*scaleOfThis,cropH*scaleOfThis,img,0,mirror,cropX,cropY,cropW,cropH,true)
 }
 
 
@@ -257,6 +260,7 @@ function init(){
         players.push(new Player(images.player.img[playerImages[random]],playerImages[random],"Bot " + (i+1),true))
         playerImages.splice(random,1)
     }
+    players.forEach(e=> e.playerBorder.init())
 
 }
 
@@ -266,46 +270,8 @@ function update(){
 
     c.clearRect(0,0,canvas.width,canvas.height);
     showBackground();
-
-    c.fillStyle = "white";
-    c.font = "80px calibri";
-    players.forEach(function(player,i,a) { 
-        if(i === 0){
-            c.textAlign = "left";
-            c.fillText(player.name + ": " + player.money + "kr", 10, 80);
-        }
-        if(i === 1){
-            c.textAlign = "right";
-            c.fillText(player.name + ": " + player.money + "kr", canvas.width-10, 80);
-        }
-        if(i === 2){
-            c.textAlign = "left";
-            c.fillText(player.name + ": " + player.money + "kr", 10, canvas.height-30);
-        }
-        if(i === 3){
-            c.textAlign = "right";
-            c.fillText(player.name + ": " + player.money + "kr", canvas.width-10, canvas.height-30);
-        }
-        if(i === 4){
-            c.textAlign = "left";
-            c.fillText(player.name + ": " + player.money + "kr", 10, 160);
-        }
-        if(i === 5){
-            c.textAlign = "right";
-            c.fillText(player.name + ": " + player.money + "kr", canvas.width-10, 160);
-        }
-        if(i === 6){
-            c.textAlign = "left";
-            c.fillText(player.name + ": " + player.money + "kr", 10, canvas.height-110);
-        }
-        if(i === 7){
-            c.textAlign = "right";
-            c.fillText(player.name + ": " + player.money + "kr", canvas.width-10, canvas.height-110);
-        }
-    })
-
     c.fillStyle = "black";
-    c.font = "50px Brush Script MT";
+    c.font = "50px Arcade";
     c.textAlign = "center";
     c.fillText("Just nu:" + players[turn].name, canvas.width/2, canvas.height/2 + 50);
     board.update();
@@ -446,7 +412,7 @@ class Board{
                 this.cardCloseButton.draw();
                 c.fillStyle = "black";
                 c.textAlign = "center";
-                c.font ="20px Brush Script MT";
+                c.font ="20px Arcade";
                 
                 if(this.currentCard.owner !== undefined){
                     if(this.currentCard.piece.type !== "utility" && this.currentCard.piece.type !== "station"){
@@ -578,6 +544,152 @@ class Board{
     }
 }
 
+class PlayerBorder{
+    constructor(player){
+        this.player = player;
+        this.index = players.length;
+        this.x = 0;
+        this.y = 0;
+        this.realIndex = this.index
+
+        
+        
+        
+        this.button = new Button(this.x,this.y,images.playerOverlay.img[8],function(){
+
+        },260,54,false,false,true)
+
+        this.init = function(){
+            if(players.length === 5 && this.realIndex === 4){
+                this.index = 3
+            }
+            if(players.length === 5 && this.realIndex === 2){
+                this.index = 4
+            }
+            if(players.length === 5 && this.realIndex === 3){
+                this.index = 2
+            }
+            
+            if(players.length === 6 && this.realIndex === 4){
+                this.index = 2
+            }
+            if(players.length === 6 && this.realIndex === 2){
+                this.index = 4
+            }
+            if(players.length === 6 && this.realIndex === 3){
+                this.index = 6
+            }
+            if(players.length === 6 && this.realIndex === 5){
+                this.index = 3
+            }     
+
+            if(players.length === 7 && this.realIndex === 4){
+                this.index = 5
+            }
+            if(players.length === 7 && this.realIndex === 2){
+                this.index = 4
+            }
+            if(players.length === 7 && this.realIndex === 3){
+                this.index = 6
+            }
+            if(players.length === 7 && this.realIndex === 5){
+                this.index = 3
+            }   
+            if(players.length === 7 && this.realIndex === 6){
+                this.index = 2
+            }       
+
+            if(players.length === 8 && this.realIndex === 4){
+                this.index = 5
+            }
+            if(players.length === 8 && this.realIndex === 2){
+                this.index = 4
+            }
+            if(players.length === 8 && this.realIndex === 3){
+                this.index = 6
+            }
+            if(players.length === 8 && this.realIndex === 5){
+                this.index = 7
+            }   
+            if(players.length === 8 && this.realIndex === 6){
+                this.index = 2
+            }      
+            if(players.length === 8 && this.realIndex === 7){
+                this.index = 3
+            }      
+        }
+        
+        this.draw = function() {
+            if(this.index === 0){
+                this.x = 0
+                this.y = 0;
+                this.button.mirror = true;
+            }
+            if(this.index === 1){
+                this.x = canvas.width/2 - 260
+                this.y = 0;
+                this.button.mirror = false;
+            }
+            if(this.index === 2){
+                this.x = 0
+                this.y = canvas.height/2 -54;
+                this.button.mirror = true;
+                
+            }
+            if(this.index === 3){
+                this.x = canvas.width/2 - 260
+                this.y = canvas.height/2 -54;
+                this.button.mirror = false;
+            }
+            if(this.index === 4){
+                this.x = 0
+                this.y = 54;
+                this.button.mirror = true;
+            }
+            if(this.index === 5){
+                this.x = 0
+                this.y = canvas.height/2 -54*2;
+                this.button.mirror = true;
+            }
+            if(this.index === 6){
+                this.x = canvas.width/2 - 260
+                this.y = 54;
+                this.button.mirror = false;
+            }
+            if(this.index === 7){
+                this.x = canvas.width/2 - 260
+                this.y = canvas.height/2 -108;
+                this.button.mirror = false;
+            }
+            this.button.y = this.y
+            this.button.x = this.x
+            this.button.visible = true;
+            this.button.draw()
+            if(this.button.mirror === false){
+                drawRotatedImage(this.x*drawScale+466,this.y*drawScale+5,48,96,images.player.img[this.player.colorIndex],0,false,0,0,24,48,false)
+                c.font = "40px Arcade";
+                c.fillStyle ="black"
+                c.textAlign = "right"
+                c.fillText(this.player.name,this.x*drawScale+450,this.y*drawScale+68)
+                c.textAlign = "left"
+                c.fillText(this.player.money + "kr",this.x*drawScale+80,this.y*drawScale+68)
+            }else{
+                drawRotatedImage(this.x*drawScale+6,this.y*drawScale+5,48,96,images.player.img[this.player.colorIndex],0,false,0,0,24,48,false)
+                c.font = "40px Arcade";
+                c.fillStyle ="black"
+                c.textAlign = "left"
+                c.fillText(this.player.name,this.x+80,this.y*drawScale+68)
+                c.textAlign = "right"
+                c.fillText(this.player.money + "kr",this.x+450,this.y*drawScale+68)
+
+            }
+            if(this.index === 0){
+            }
+        }
+    }
+
+}
+
 class Auction{
     constructor(card){
         this.card = card;
@@ -609,10 +721,10 @@ class Auction{
             drawIsometricImage(0,0,images.card.img[card.piece.card],false,0,0,images.card.img[this.card.piece.card].width,images.card.img[this.card.piece.card].height,images.card.img[this.card.piece.card].width/3,images.card.img[this.card.piece.card].height/7.5,1)
             drawIsometricImage(0,0,images.auction.img[0],false,0,0,images.auction.img[0].width,images.card.img[this.card.piece.card].height,-images.card.img[this.card.piece.card].width/1.5,images.card.img[this.card.piece.card].height/7.5,1)
             c.fillStyle = "black";
-            c.font = "80px calibri";
+            c.font = "80px Arcade";
             c.textAlign = "center";
             c.fillText(this.auctionMoney + "kr", canvas.width/2-190, canvas.height/2 - 75);
-            c.font = "80px calibri";
+            c.font = "80px Arcade";
             c.fillText(this.playerlist[this.turn].name, canvas.width/2-190, canvas.height/2 - 150);
 
             if(this.started){
@@ -713,7 +825,7 @@ class Auction{
 }
 
 class Button{
-    constructor(x,y,img,onClick,w,h,showBorder,mirror){
+    constructor(x,y,img,onClick,w,h,showBorder,mirror,screencenter){
         this.x = x;
         this.y = y;
         this.w = w;
@@ -724,9 +836,14 @@ class Button{
         this.disabled = false;
         this.hover = false;
         this.mirror = false;
+        this.screencenter = false;
         if(mirror === true){
             this.mirror = true;
         }
+        if(screencenter === true){
+            this.screencenter = true;
+        }
+
         this.showBorder = showBorder;
         buttons.push(this);
 
@@ -734,21 +851,46 @@ class Button{
             
             if(this.visible && this.img !== undefined){
                 if(!this.disabled){
-                    
-                    if(detectCollition(canvas.width/2 + this.x*drawScale - 64*drawScale,canvas.height/2 + this.y*drawScale - 208*drawScale,this.w*drawScale,this.h*drawScale,mouse.realX,mouse.realY,1,1)){
-                        if(this.img.width < this.w*2){
-                            drawIsometricImage(0,0,this.img,this.mirror,0,0,this.w,this.h,this.x,this.y)
+                    if(this.screencenter){
+                        if(detectCollition(this.x*drawScale,this.y*drawScale,this.w*drawScale,this.h*drawScale,mouse.realX,mouse.realY,1,1)){
+                            if(this.img.width < this.w*2){
+                                drawRotatedImage(this.x*drawScale,this.y*drawScale,this.w*drawScale,this.h*drawScale,this.img,0,this.mirror,0,0,this.w,this.h,false)
+                            }else{
+                                drawRotatedImage(this.x,this.y,this.w*drawScale,this.h*drawScale,this.img,0,this.mirror,0,this.w,this.w,this.h,false)
+                            }
+                            this.hover = true;
                         }else{
-                            drawIsometricImage(0,0,this.img,this.mirror,this.w,0,this.w,this.h,this.x,this.y)
+                            this.hover = false;
+                            if(this.screencenter){
+                                drawRotatedImage(this.x*drawScale,this.y*drawScale,this.w*drawScale,this.h*drawScale,this.img,0,this.mirror,0,0,this.w,this.h,false)
+                            }else{
+                                drawIsometricImage(0,0,this.img,this.mirror,0,0,this.w,this.h,this.x,this.y)
+                            }
                         }
-                        this.hover = true;
                     }else{
-                        this.hover = false;
-                        drawIsometricImage(0,0,this.img,this.mirror,0,0,this.w,this.h,this.x,this.y)
+                        if(detectCollition(canvas.width/2 + this.x*drawScale - 64*drawScale,canvas.height/2 + this.y*drawScale - 208*drawScale,this.w*drawScale,this.h*drawScale,mouse.realX,mouse.realY,1,1)){
+                            if(this.img.width < this.w*2){
+                                drawIsometricImage(0,0,this.img,this.mirror,0,0,this.w,this.h,this.x,this.y)
+                            }else{
+                                drawIsometricImage(0,0,this.img,this.mirror,this.w,0,this.w,this.h,this.x,this.y)
+                            }
+                            this.hover = true;
+                        }else{
+                            this.hover = false;
+                            if(this.screencenter){
+                                drawRotatedImage(this.x*drawScale,this.y*drawScale,this.w*drawScale,this.h*drawScale,this.img,0,this.mirror,0,0,this.w,this.h,false)
+                            }else{
+                                drawIsometricImage(0,0,this.img,this.mirror,0,0,this.w,this.h,this.x,this.y)
+                            }
+                        }
                     }
                 }else{
                     this.hover = false;
-                    drawIsometricImage(0,0,this.img,this.mirror,this.w*2,0,this.w,this.h,this.x,this.y)
+                    if(this.screencenter){
+                        drawRotatedImage(this.x,this.y,this.w*drawScale,this.h*drawScale,this.img,0,this.mirror,0,this.w*2,this.w,this.h,false)
+                    }else{
+                        drawIsometricImage(0,0,this.img,this.mirror,this.w*2,0,this.w,this.h,this.x,this.y)
+                    }
                 }
                 
             }else if(this.visible){
@@ -760,16 +902,29 @@ class Button{
             }
             if(showBorder){
                 c.strokeStyle = "black";
-                c.strokeRect(canvas.width/2 + this.x*drawScale - 64*drawScale,canvas.height/2 + this.y*drawScale - 208*drawScale,this.w*drawScale,this.h*drawScale)
+                if(this.screencenter){
+                    c.strokeRect(this.x*drawScale,this.y*drawScale,this.w*drawScale,this.h*drawScale)
+                }else{
+                    c.strokeRect(canvas.width/2 + this.x*drawScale - 64*drawScale,canvas.height/2 + this.y*drawScale - 208*drawScale,this.w*drawScale,this.h*drawScale)
+                }
             }
         }
         this.click = function(){
             if(this.visible && !this.disabled){
-                if(detectCollition(canvas.width/2 + this.x*drawScale - 64*drawScale,canvas.height/2 + this.y*drawScale - 208*drawScale,this.w*drawScale,this.h*drawScale,mouse.realX,mouse.realY,1,1)){
-                    playSound(sounds.release,1)
-                    this.onClick();
-                    this.hover = false;
+                if(this.screencenter){
+                    if(detectCollition(this.x*drawScale,this.y*drawScale,this.w*drawScale,this.h*drawScale,mouse.realX,mouse.realY,1,1)){
+                        playSound(sounds.release,1)
+                        this.onClick();
+                        this.hover = false;
+                    }
+                }else{
+                    if(detectCollition(canvas.width/2 + this.x*drawScale - 64*drawScale,canvas.height/2 + this.y*drawScale - 208*drawScale,this.w*drawScale,this.h*drawScale,mouse.realX,mouse.realY,1,1)){
+                        playSound(sounds.release,1)
+                        this.onClick();
+                        this.hover = false;
+                    }
                 }
+                
             }
         }
         
@@ -1183,6 +1338,8 @@ class Player{
         this.timer = undefined;
         this.negative = false;
         this.bot = undefined;
+
+        this.playerBorder = new PlayerBorder(this)
         if(bot == true ){
             this.bot = new Bot(this);
         }
@@ -1199,6 +1356,7 @@ class Player{
             if(this.bot !== undefined){
                 this.bot.update();
             }
+            this.playerBorder.draw();
         }
 
         this.checkMoney = function(){

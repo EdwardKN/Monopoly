@@ -8,6 +8,13 @@ const drawScale = 2;
 
 const fastLoad = true;
 
+var f = new FontFace('Arcade', 'url(./fonts/ARCADECLASSIC.TTF)');
+
+f.load().then(function(font) {
+      document.fonts.add(font);
+  
+  });
+
 var buttons = [];
 
 var offsets = {
@@ -46,7 +53,8 @@ var images = {
     },
     playerOverlay:{
         src:["./images/players/redowned","./images/players/pinkowned","./images/players/purpleowned","./images/players/blueowned",
-        "./images/players/lightblueowned","./images/players/greenowned","./images/players/yellowowned","./images/players/orangeowned"
+        "./images/players/lightblueowned","./images/players/greenowned","./images/players/yellowowned","./images/players/orangeowned",
+        "./images/buttons/playerborder"
     ]
     },
     background:{
