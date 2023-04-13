@@ -399,21 +399,34 @@ class Board{
         }
 
         this.update = function () {
+            
             this.boardPieces.forEach(g => g.update())
+
             this.showDice()
             this.rollDiceButton.draw();
             this.nextPlayerButton.draw();
             this.boardPieces.forEach(g => g.drawHouses())
-            if(this.win === false){ this.boardPieces.forEach(g => {
-                if(g.side == 0 || g.side === 3){
-                    g.currentPlayer.forEach(p => p.update())
-                }else{
-                    for(let i = (g.currentPlayer.length-1); i>-1; i--){                        
-                        g.currentPlayer[i].update()
+
+            if(this.win === false){ 
+                for(let i = 20; i >= 0; i--){
+                    if(this.boardPieces[i].side == 0 || this.boardPieces[i].side === 3){
+                        this.boardPieces[i].currentPlayer.forEach(p => p.update())
+                    }else{
+                        for(let g = (this.boardPieces[i].currentPlayer.length-1); g>-1; g--){                        
+                            this.boardPieces[i].currentPlayer[g].update()
+                        }
                     }
                 }
-            }
-                ) 
+                for(let i = 20; i < 40; i++){
+                    if(this.boardPieces[i].side == 0 || this.boardPieces[i].side === 3){
+                        this.boardPieces[i].currentPlayer.forEach(p => p.update())
+                    }else{
+                        for(let g = (this.boardPieces[i].currentPlayer.length-1); g>-1; g--){                        
+                            this.boardPieces[i].currentPlayer[g].update()
+                        }
+                    }
+                }
+                
             }
             this.prisonExtra.currentPlayer.forEach(p => p.update())
             this.showCard();
@@ -700,7 +713,7 @@ class Auction{
 }
 
 class Button{
-    constructor(x,y,img,onClick,w,h,showBorder){
+    constructor(x,y,img,onClick,w,h,showBorder,mirror){
         this.x = x;
         this.y = y;
         this.w = w;
@@ -710,6 +723,10 @@ class Button{
         this.visible = false;
         this.disabled = false;
         this.hover = false;
+        this.mirror = false;
+        if(mirror === true){
+            this.mirror = true;
+        }
         this.showBorder = showBorder;
         buttons.push(this);
 
@@ -720,18 +737,18 @@ class Button{
                     
                     if(detectCollition(canvas.width/2 + this.x*drawScale - 64*drawScale,canvas.height/2 + this.y*drawScale - 208*drawScale,this.w*drawScale,this.h*drawScale,mouse.realX,mouse.realY,1,1)){
                         if(this.img.width < this.w*2){
-                            drawIsometricImage(0,0,this.img,false,0,0,this.w,this.h,this.x,this.y)
+                            drawIsometricImage(0,0,this.img,this.mirror,0,0,this.w,this.h,this.x,this.y)
                         }else{
-                            drawIsometricImage(0,0,this.img,false,this.w,0,this.w,this.h,this.x,this.y)
+                            drawIsometricImage(0,0,this.img,this.mirror,this.w,0,this.w,this.h,this.x,this.y)
                         }
                         this.hover = true;
                     }else{
                         this.hover = false;
-                        drawIsometricImage(0,0,this.img,false,0,0,this.w,this.h,this.x,this.y)
+                        drawIsometricImage(0,0,this.img,this.mirror,0,0,this.w,this.h,this.x,this.y)
                     }
                 }else{
                     this.hover = false;
-                    drawIsometricImage(0,0,this.img,false,this.w*2,0,this.w,this.h,this.x,this.y)
+                    drawIsometricImage(0,0,this.img,this.mirror,this.w*2,0,this.w,this.h,this.x,this.y)
                 }
                 
             }else if(this.visible){
@@ -777,6 +794,7 @@ class BoardPiece{
         this.hover = false;
         this.currentPlayer = [];
         this.mortgaged = false;
+        buttons.push(this);
         
         this.setImg = function(){
             if(this.side === 0){
@@ -1432,28 +1450,44 @@ class Player{
                 }else{
                     if(this.rolls === false){
                         if(this.bot === undefined){
-                            if(confirm("Vill du betala 50kr för att komma ut eller slå dubbelt?")){
-                                this.money -= 50;
-                                this.rolls = true;
-                                this.getOutOfJail();
-                            }else{
-                                let dice1 = randomIntFromRange(1,6);
-                                let dice2 = randomIntFromRange(1,6);
+                        if(confirm("Vill du betala 50kr för att komma ut eller slå dubbelt?")){
+                            this.money -= 50;
+                            this.rolls = true;
+                            this.getOutOfJail();
+                        }else{
+                            let dice1 = randomIntFromRange(1,6);
+                            let dice2 = randomIntFromRange(1,6);
+                            this.rolls = true;
+
+                            board.animateDices = true;
+
+                            let counter = 25;
+                            let self = this;
+                            var myFunction = function() {
                                 board.randomizeDice();
-                                board.dice1 = dice1;
-                                board.dice2 = dice2;
-                                board.showDices = true;
-    
-                                if(dice1 === dice2){
-                                    this.getOutOfJail()
-                                    this.teleportTo(this.steps + dice1 + dice2);
+                                board.dice1 = randomIntFromRange(1,6)
+                                board.dice2 = randomIntFromRange(1,6)
+                                playSound(sounds.dice,0.25)
+                                counter *= 1.2;
+                                if(counter > 1000){
+                                    playSound(sounds.dice,0.25)
+                                    board.dice1 = dice1;
+                                    board.dice2 = dice2;
+                                    setTimeout(() => {
+                                        board.animateDices = false; 
+                                        if(dice1 === dice2){
+                                            self.getOutOfJail()
+                                            self.teleportTo(self.steps + dice1 + dice2);
+                                        }
+                                        
+                                    }, 1000);                  
+                                }else{
+                                    setTimeout(myFunction, counter);
                                 }
-                                this.rolls = true;
-                                setTimeout(() => {
-                                    board.showDices = false;
-                                }, 1000);
                             }
-                        } 
+                            setTimeout(myFunction, counter);
+                            }
+                        }
                     }else{
                         turn = (turn+1)%players.length;
                         this.rolls = false;
