@@ -1436,22 +1436,38 @@ class Player{
                             this.rolls = true;
                             this.getOutOfJail();
                         }else{
-                            let dice1 = randomIntFromRange(1,6);
-                            let dice2 = randomIntFromRange(1,6);
-                            board.randomizeDice();
-                            board.dice1 = dice1;
-                            board.dice2 = dice2;
-                            board.showDices = true;
-
-                            if(dice1 === dice2){
-                                this.getOutOfJail()
-                                this.teleportTo(this.steps + dice1 + dice2);
-                            }
+                            let dice1 = randomIntFromRange(3,3);
+                            let dice2 = randomIntFromRange(3,3);
                             this.rolls = true;
-                            setTimeout(() => {
-                                board.showDices = false;
-                            }, 1000);
-                        }
+
+                            board.animateDices = true;
+
+                            let counter = 25;
+                            let self = this;
+                            var myFunction = function() {
+                                board.randomizeDice();
+                                board.dice1 = randomIntFromRange(1,6)
+                                board.dice2 = randomIntFromRange(1,6)
+                                playSound(sounds.dice,0.25)
+                                counter *= 1.2;
+                                if(counter > 1000){
+                                    playSound(sounds.dice,0.25)
+                                    board.dice1 = dice1;
+                                    board.dice2 = dice2;
+                                    setTimeout(() => {
+                                        board.animateDices = false; 
+                                        if(dice1 === dice2){
+                                            self.getOutOfJail()
+                                            self.teleportTo(self.steps + dice1 + dice2);
+                                        }
+                                        
+                                    }, 1000);                  
+                                }else{
+                                    setTimeout(myFunction, counter);
+                                }
+                            }
+                            setTimeout(myFunction, counter);
+                            }
                     }else{
                         turn = (turn+1)%players.length;
                         this.rolls = false;
