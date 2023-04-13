@@ -10,7 +10,7 @@ var players = [];
 
 const drawScale = 2;
 
-const fastLoad = true;
+const fastLoad = false;
 
 var offsets = {
     x:Math.floor(window.innerWidth/2) - 832*drawScale/2,
@@ -599,11 +599,11 @@ function init(){
 
     board = new Board(); 
     let playerAmount = 0;
-    let botAmount = 0;
+    let botAmount = -1;
 
     if(fastLoad === true){
         playerAmount = 2;
-        botAmount = 2
+        botAmount = -1
     }
 
     let playerImages = [0,1,2,3,4,5,6,7]
@@ -1862,6 +1862,7 @@ class Player{
 
                             if(dice1 === dice2){
                                 this.getOutOfJail()
+                                this.teleportTo(this.steps + dice1 + dice2);
                             }
                             this.rolls = true;
                             setTimeout(() => {
