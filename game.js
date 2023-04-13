@@ -194,7 +194,7 @@ function init(){
     let botAmount = -2;
 
     if(fastLoad === true){
-        playerAmount = 8;
+        playerAmount = 2;
         botAmount = -1
     }
 
@@ -790,6 +790,7 @@ class BoardPiece{
         this.hover = false;
         this.currentPlayer = [];
         this.mortgaged = false;
+        buttons.push(this);
         
         this.setImg = function(){
             if(this.side === 0){
