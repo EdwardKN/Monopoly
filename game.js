@@ -10,7 +10,7 @@ var players = [];
 
 const drawScale = 2;
 
-const fastLoad = false;
+const fastLoad = true;
 
 var offsets = {
     x:Math.floor(window.innerWidth/2) - 832*drawScale/2,
@@ -937,7 +937,7 @@ class Board{
         }
 
         this.showDice = function () {
-            if(players[turn].animationOffset > 0 ||this.showDices === true || this.animateDices === true){
+            if(players[turn].animationOffset !== 0 ||this.showDices === true || this.animateDices === true){
             drawIsometricImage(500,500,images.dice.img[0],false,this.dice1Type*64,(this.dice1-1)*64,64,64,0,0)
             drawIsometricImage(550,400,images.dice.img[0],false,this.dice2Type*64,(this.dice2-1)*64,64,64,0,0)
             this.nextPlayerButton.visible = false;
@@ -1244,7 +1244,11 @@ class BoardPiece{
             if(this.n%10 !== 0){
                 drawIsometricImage(this.x,this.y,this.img,false,96*this.imgSide,0,96,48,this.offsetX,this.offsetY);
                 if(this.owner !== undefined){
-                    drawIsometricImage(this.x,this.y,images.playerOverlay.img[this.owner.colorIndex],false,96*this.imgSide,0,96,48,this.offsetX,this.offsetY);
+                    if(this.side === 2){
+                        drawIsometricImage(this.x-10,this.y,images.playerOverlay.img[this.owner.colorIndex],false,96*this.imgSide,0,96,48,this.offsetX,this.offsetY);
+                    }else{
+                        drawIsometricImage(this.x,this.y,images.playerOverlay.img[this.owner.colorIndex],false,96*this.imgSide,0,96,48,this.offsetX,this.offsetY);
+                    }
                 }
             }else{
                 drawIsometricImage(this.x,this.y,this.img,false,0,0,128,64,this.offsetX,this.offsetY);
@@ -1444,7 +1448,7 @@ class BoardPiece{
                     }
                     if(random === 7){
                         alert("Gå bak tre steg")
-                        player.teleportTo(player.steps-3)
+                        player.teleportTo(-(player.steps-3))
                     }
                     if(random === 8){
                         alert("Gå till finkan!")
@@ -1727,24 +1731,34 @@ class Player{
         }
         this.teleportTo = function(step){
             let oldStep = this.steps;
+            let direction = 1;
+            if(step < 0){
+                direction = -1;
+                step = -step
+            }
 
             this.steps = step;
             this.rolls = true;
 
-            this.animateSteps(oldStep,this.steps,0)
+            this.animateSteps(oldStep,this.steps,0,direction)
         }
-        this.animateSteps = function(from,to,dicesum){
+        this.animateSteps = function(from,to,dicesum,direction){
             let self = this;
             clearInterval(this.timer)
-            if(to < from){
+            if(to < from && direction === 1){
                 to += 40
             }
             let to2 = to
-            this.animationOffset = to-from;
+            if(direction < 0){
+                this.animationOffset = -(from-to);
+            }else{
+                this.animationOffset = to-from;
+            }
+
             to = to%40
             board.showDices = true;
             self.timer = setInterval(function(){
-                if(self.animationOffset <= 0){
+                if(self.animationOffset <= 0 && direction === 1 || self.animationOffset >= 0 && direction === -1){
                     clearInterval(self.timer);
                     
                     board.boardPieces.forEach(function(b,i2) {b.currentPlayer.forEach(function(d,i3) {
@@ -1777,7 +1791,7 @@ class Player{
                         }
                     })})
 
-                    self.animationOffset--;
+                    self.animationOffset -= 1*direction;
                     playSound(sounds.movement,1)
                     if(((to-self.animationOffset)%40-1) === -1){
                         board.boardPieces[0].playerStep(true,self);
