@@ -599,7 +599,7 @@ function init(){
 
     board = new Board(); 
     let playerAmount = 0;
-    let botAmount = -1;
+    let botAmount = 0;
 
     if(fastLoad === true){
         playerAmount = 2;
