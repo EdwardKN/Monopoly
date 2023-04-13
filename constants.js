@@ -7,7 +7,7 @@ var players = [];
 
 const drawScale = 2;
 
-const fastLoad = true;
+const fastLoad = false;
 
 var offsets = {
     x:Math.floor(window.innerWidth/2) - 832*drawScale/2,

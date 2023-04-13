@@ -201,11 +201,11 @@ function init(){
 
     board = new Board(); 
     let playerAmount = 0;
-    let botAmount = 0;
+    let botAmount = -2;
 
     if(fastLoad === true){
         playerAmount = 2;
-        botAmount = -1
+        botAmount = -2
     }
 
     let playerImages = [0,1,2,3,4,5,6,7]
@@ -222,17 +222,25 @@ function init(){
             playerAmount = 0;
         }
     }
-    while(botAmount == 0){
+    while(botAmount == -2){
         if(playerAmount < 8){
             let promptText = prompt("Hur många bots?") 
             if(isNumeric(promptText)){
-                if(JSON.parse(promptText) <= 8-playerAmount){
-                    botAmount = JSON.parse(promptText)
+                if(JSON.parse(promptText) > 8-playerAmount){
+                    botAmount = -2;
                 }else{
-                    botAmount = 0;
+                    if(playerAmount === 1){
+                        if(JSON.parse(promptText) === 0){
+                            botAmount = -2
+                        }else{
+                            botAmount = JSON.parse(promptText) 
+                        }
+                    }else{
+                        botAmount = JSON.parse(promptText)
+                    }
                 }
             }else{
-                botAmount = 0;
+                botAmount = -2;
             }
         }else{
             botAmount = -1
