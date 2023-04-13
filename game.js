@@ -886,52 +886,14 @@ class BoardPiece{
                 }
             }
         }
-        this.info = function() {
-            let message = "";
-            if(this.piece.name !== undefined){
-                message += this.piece.name + "\n"
-            }
-
-            if(this.piece.price !== undefined){
-                message += "Pris:" + this.piece.price + "kr\n" + "\n" 
-            }
-
-            if(this.owner !== undefined){
-                message += "Ägare:" + this.owner.name + "\n" + "\n"
-            }
-            
-            if(this.piece.rent !== undefined){
-                this.piece.rent.forEach(function(e,i){
-                    if(i === 0){
-                        message += "Inga hus:" + e + "kr\n"
-                    }
-                    if(i === 1){
-                        message += "Ett hus:" + e + "kr\n"
-                    }
-                    if(i === 2){
-                        message += "Två hus:" + e + "kr\n"
-                    }
-                    if(i === 3){
-                        message += "Tre hus:" + e + "kr\n"
-                    }
-                    if(i === 4){
-                        message += "Fyra hus:" + e + "kr\n"
-                    }
-                    if(i === 5){
-                        message += "Hotell:" + e + "kr\n"
-                    }
-                })
-                message += "\n"
-            }
-            return message;
-        }
+       
 
         this.click = function(){
             if(this.hover === true && players[turn].bot === undefined){
                 playSound(sounds.release,1)
 
                 if(this.piece.card === undefined){
-                    alert(this.info())
+                    alert()
                 }else{
                     board.currentCard = this;
                 }
@@ -948,7 +910,7 @@ class BoardPiece{
                 }else if(this.piece.price > 0 && this.owner === undefined){
                     setTimeout(() => {
                         if(this.piece.card === undefined){
-                            if(confirm("Vill du köpa " + this.piece.name + " för " + this.piece.price + "kr?" + "\n" + "\n"+ this.info())){
+                            if(confirm("Vill du köpa " + this.piece.name + " för " + this.piece.price + "kr?" + "\n" + "\n")){
                                 player.money -= this.piece.price;
                                 this.owner = player;
                                 player.ownedPlaces.push(this);

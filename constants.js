@@ -17,7 +17,7 @@ var offsets = {
 var images = {
     part:{
         src:["./images/plates/brown","./images/plates/light_blue",
-        "./images/plates/pink","./imagexws/plates/orange",
+        "./images/plates/pink","./images/plates/orange",
         "./images/plates/red","./images/plates/yellow",
         "./images/plates/green","./images/plates/blue",
         "./images/plates/chance","./images/plates/chance2","./images/plates/chance3",
