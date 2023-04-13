@@ -1134,8 +1134,8 @@ class BoardPiece{
                         alert("Betala 200kr skatt")
                         player.money -= 200;
                     }else{
-                        alert("Betala " + player.money * 0.1 + "kr skatt")
-                        player.money = player.money * 0.9;
+                        alert("Betala " + Math.round(player.money * 0.1) + "kr skatt")
+                        player.money =  Math.round(player.money * 0.9);
                     }
                 }
             }
@@ -1431,27 +1431,29 @@ class Player{
                     }
                 }else{
                     if(this.rolls === false){
-                        if(confirm("Vill du betala 50kr för att komma ut eller slå dubbelt?")){
-                            this.money -= 50;
-                            this.rolls = true;
-                            this.getOutOfJail();
-                        }else{
-                            let dice1 = randomIntFromRange(1,6);
-                            let dice2 = randomIntFromRange(1,6);
-                            board.randomizeDice();
-                            board.dice1 = dice1;
-                            board.dice2 = dice2;
-                            board.showDices = true;
-
-                            if(dice1 === dice2){
-                                this.getOutOfJail()
-                                this.teleportTo(this.steps + dice1 + dice2);
+                        if(this.bot === undefined){
+                            if(confirm("Vill du betala 50kr för att komma ut eller slå dubbelt?")){
+                                this.money -= 50;
+                                this.rolls = true;
+                                this.getOutOfJail();
+                            }else{
+                                let dice1 = randomIntFromRange(1,6);
+                                let dice2 = randomIntFromRange(1,6);
+                                board.randomizeDice();
+                                board.dice1 = dice1;
+                                board.dice2 = dice2;
+                                board.showDices = true;
+    
+                                if(dice1 === dice2){
+                                    this.getOutOfJail()
+                                    this.teleportTo(this.steps + dice1 + dice2);
+                                }
+                                this.rolls = true;
+                                setTimeout(() => {
+                                    board.showDices = false;
+                                }, 1000);
                             }
-                            this.rolls = true;
-                            setTimeout(() => {
-                                board.showDices = false;
-                            }, 1000);
-                        }
+                        } 
                     }else{
                         turn = (turn+1)%players.length;
                         this.rolls = false;
