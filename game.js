@@ -194,7 +194,7 @@ function init(){
     let botAmount = -2;
 
     if(fastLoad === true){
-        playerAmount = 2;
+        playerAmount = 8;
         botAmount = -1
     }
 
@@ -399,21 +399,34 @@ class Board{
         }
 
         this.update = function () {
+            
             this.boardPieces.forEach(g => g.update())
+
             this.showDice()
             this.rollDiceButton.draw();
             this.nextPlayerButton.draw();
             this.boardPieces.forEach(g => g.drawHouses())
-            if(this.win === false){ this.boardPieces.forEach(g => {
-                if(g.side == 0 || g.side === 3){
-                    g.currentPlayer.forEach(p => p.update())
-                }else{
-                    for(let i = (g.currentPlayer.length-1); i>-1; i--){                        
-                        g.currentPlayer[i].update()
+
+            if(this.win === false){ 
+                for(let i = 20; i >= 0; i--){
+                    if(this.boardPieces[i].side == 0 || this.boardPieces[i].side === 3){
+                        this.boardPieces[i].currentPlayer.forEach(p => p.update())
+                    }else{
+                        for(let g = (this.boardPieces[i].currentPlayer.length-1); g>-1; g--){                        
+                            this.boardPieces[i].currentPlayer[g].update()
+                        }
                     }
                 }
-            }
-                ) 
+                for(let i = 20; i < 40; i++){
+                    if(this.boardPieces[i].side == 0 || this.boardPieces[i].side === 3){
+                        this.boardPieces[i].currentPlayer.forEach(p => p.update())
+                    }else{
+                        for(let g = (this.boardPieces[i].currentPlayer.length-1); g>-1; g--){                        
+                            this.boardPieces[i].currentPlayer[g].update()
+                        }
+                    }
+                }
+                
             }
             this.prisonExtra.currentPlayer.forEach(p => p.update())
             this.showCard();
