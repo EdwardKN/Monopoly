@@ -51,7 +51,7 @@ var images = {
     playerOverlay:{
         src:["./images/players/redowned","./images/players/pinkowned","./images/players/purpleowned","./images/players/blueowned",
         "./images/players/lightblueowned","./images/players/greenowned","./images/players/yellowowned","./images/players/orangeowned",
-        "./images/buttons/playerborder"
+        "./images/buttons/playerborder","./images/menus/playerinfobottom","./images/menus/playerinfomiddle","./images/menus/playerinfotop"
     ]
     },
     background:{

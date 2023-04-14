@@ -197,7 +197,7 @@ function init(){
     let botAmount = -2;
 
     if(fastLoad === true){
-        playerAmount = 2;
+        playerAmount = 8;
         botAmount = -1
     }
 
@@ -278,6 +278,9 @@ function update(){
     c.fillText("Just nu: " + players[turn].name, canvas.width/2, 50);
     board.update();
 
+    for(let i = players.length-1; i>-1; i--){
+        players[i].playerBorder.draw()
+    }
     let tmp = false;
 
     buttons.forEach(e =>{
@@ -553,13 +556,18 @@ class PlayerBorder{
         this.x = 0;
         this.y = 0;
         this.realIndex = this.index
+        this.showInfo = false;
 
-        
+        let self = this;
         
         
         this.button = new Button(this.x,this.y,images.playerOverlay.img[8],function(){
-
-        },260,54,false,false,true)
+            if(!self.showInfo){
+                self.showInfo = true;
+            }else{
+                self.showInfo = false;
+            }
+        },260,54,false,false,true) 
 
         this.init = function(){
             if(players.length === 5 && this.realIndex === 4){
@@ -685,8 +693,21 @@ class PlayerBorder{
                 c.fillText(this.player.money + "kr",this.x+480,this.y*drawScale+68)
 
             }
-            if(this.index === 0){
+            if(this.showInfo){
+                if(this.index === 0 || this.index === 1 || this.index === 4 || this.index === 6){
+                    drawRotatedImage(this.x*drawScale,this.y*drawScale + 54*drawScale,260*drawScale,27*drawScale,images.playerOverlay.img[11],0,this.button.mirror,0,0,260,27,false)
+                    for(let i = 0; i < this.player.ownedPlaces.length; i++){
+                        drawRotatedImage(this.x*drawScale,this.y*drawScale + 54 *drawScale + 27*drawScale*i + 27,260*drawScale,27*drawScale,images.playerOverlay.img[10],0,this.button.mirror,0,0,260,27,false)
+                        c.font = "30px Arcade";
+                        c.fillStyle ="black"
+                        c.textAlign = "left"
+                        c.fillText(this.player.ownedPlaces[i].piece.name + "  " + this.player.ownedPlaces[i].piece.rent[this.player.ownedPlaces[i].level] + "kr",this.x+80,this.y*drawScale + 54*1.35*drawScale + 27*drawScale*i + 27)
+                    }
+                    drawRotatedImage(this.x*drawScale,this.y*drawScale + 54*drawScale*1.5 +27*this.player.ownedPlaces.length,260*drawScale ,27*drawScale,images.playerOverlay.img[9],0,this.button.mirror,0,0,260,27,false)
+                }
             }
+            
+            
         }
     }
 
@@ -855,7 +876,7 @@ class Button{
                 if(!this.disabled){
                     if(this.screencenter){
                         if(detectCollition(this.x*drawScale,this.y*drawScale,this.w*drawScale,this.h*drawScale,mouse.realX,mouse.realY,1,1)){
-                            if(this.img.width < this.w*2){
+                            if(this.img.width <= this.w*2){
                                 drawRotatedImage(this.x*drawScale,this.y*drawScale,this.w*drawScale,this.h*drawScale,this.img,0,this.mirror,0,0,this.w,this.h,false)
                             }else{
                                 drawRotatedImage(this.x,this.y,this.w*drawScale,this.h*drawScale,this.img,0,this.mirror,0,this.w,this.w,this.h,false)
@@ -1358,7 +1379,6 @@ class Player{
             if(this.bot !== undefined){
                 this.bot.update();
             }
-            this.playerBorder.draw();
         }
 
         this.checkMoney = function(){
