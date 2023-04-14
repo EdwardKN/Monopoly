@@ -241,14 +241,16 @@ function init(){
     }
 
     for(i = 0; i < playerAmount; i++){
+        let lastPlayername = "";
         let random = randomIntFromRange(0,playerImages.length-1)
         let playername = "";
         if(fastLoad === true){
             playername = "Spelare " + (i+1);
         }
         while(playername == ""){
-            playername = prompt("Vad heter spelare " + (i+1) + "?")
-            if(playername.length > 15 || playername.length < 2){
+            playername = prompt("Vad heter spelare " + (i+1) + "?",lastPlayername)
+            lastPlayername = playername
+            if(playername.length > 9 || playername.length < 2){
                 playername = ""
             }
         }
@@ -672,7 +674,7 @@ class PlayerBorder{
                 c.textAlign = "right"
                 c.fillText(this.player.name,this.x*drawScale+450,this.y*drawScale+68)
                 c.textAlign = "left"
-                c.fillText(this.player.money + "kr",this.x*drawScale+80,this.y*drawScale+68)
+                c.fillText(this.player.money + "kr",this.x*drawScale+50,this.y*drawScale+68)
             }else{
                 drawRotatedImage(this.x*drawScale+6,this.y*drawScale+5,48,96,images.player.img[this.player.colorIndex],0,false,0,0,24,48,false)
                 c.font = "40px Arcade";
@@ -680,7 +682,7 @@ class PlayerBorder{
                 c.textAlign = "left"
                 c.fillText(this.player.name,this.x+80,this.y*drawScale+68)
                 c.textAlign = "right"
-                c.fillText(this.player.money + "kr",this.x+450,this.y*drawScale+68)
+                c.fillText(this.player.money + "kr",this.x+480,this.y*drawScale+68)
 
             }
             if(this.index === 0){
