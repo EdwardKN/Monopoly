@@ -27,21 +27,11 @@ window.addEventListener("mousedown",function(e){
     board.boardPieces.forEach(function(piece){
         piece.click();
     })
-    board.nextPlayerButton.click();
-    board.rollDiceButton.click();
-    board.cardCloseButton.click();
-    board.buyButton.click();
-    board.sellButton.click();
-    board.mortgageButton.click();
-    board.upgradeButton.click();
-    board.downgradeButton.click();
-    board.auctionButton.click();
-    if(board.auction !== undefined){
-        board.auction.addMoneyButton2.click()
-        board.auction.addMoneyButton10.click()
-        board.auction.addMoneyButton100.click()
-        board.auction.startAuctionButton.click();
-    }
+
+    buttons.forEach(e =>{
+        e.click();
+    })
+
 })
 
 window.addEventListener("keydown",function(e){
@@ -79,10 +69,13 @@ function loadSounds(soundObject){
         }
     });
 }
-function drawRotatedImage(x,y,w,h,img,angle,mirrored,cropX,cropY,cropW,cropH){
+function drawRotatedImage(x,y,w,h,img,angle,mirrored,cropX,cropY,cropW,cropH,offset){
     let degree = angle * Math.PI / 180;
-    x+= offsets.x;
-    y+= offsets.y
+    if(offset){
+        x+= offsets.x;
+        y+= offsets.y
+    }
+
     let middlePoint = {
         x:x+w/2,
         y:y+h/2
@@ -167,7 +160,7 @@ function drawIsometricImage(x,y,img,mirror,cropX,cropY,cropW,cropH,offsetX,offse
     if(sizeOveride !== undefined){
         scaleOfThis = sizeOveride*drawScale;
     }
-    drawRotatedImage(to_screen_coordinate(x*drawScale,y*drawScale).x + 832/2*drawScale - 64*drawScale + offsetX*drawScale,to_screen_coordinate(x*drawScale,y*drawScale).y + offsetY*drawScale,cropW*scaleOfThis,cropH*scaleOfThis,img,0,mirror,cropX,cropY,cropW,cropH)
+    drawRotatedImage(to_screen_coordinate(x*drawScale,y*drawScale).x + 832/2*drawScale - 64*drawScale + offsetX*drawScale,to_screen_coordinate(x*drawScale,y*drawScale).y + offsetY*drawScale,cropW*scaleOfThis,cropH*scaleOfThis,img,0,mirror,cropX,cropY,cropW,cropH,true)
 }
 
 
@@ -201,7 +194,7 @@ function init(){
 
     board = new Board(); 
     let playerAmount = 0;
-    let botAmount = 0;
+    let botAmount = -2;
 
     if(fastLoad === true){
         playerAmount = 2;
@@ -222,17 +215,25 @@ function init(){
             playerAmount = 0;
         }
     }
-    while(botAmount == 0){
+    while(botAmount == -2){
         if(playerAmount < 8){
             let promptText = prompt("Hur många bots?") 
             if(isNumeric(promptText)){
-                if(JSON.parse(promptText) <= 8-playerAmount){
-                    botAmount = JSON.parse(promptText)
+                if(JSON.parse(promptText) > 8-playerAmount){
+                    botAmount = -2;
                 }else{
-                    botAmount = 0;
+                    if(playerAmount === 1){
+                        if(JSON.parse(promptText) === 0){
+                            botAmount = -2
+                        }else{
+                            botAmount = JSON.parse(promptText) 
+                        }
+                    }else{
+                        botAmount = JSON.parse(promptText)
+                    }
                 }
             }else{
-                botAmount = 0;
+                botAmount = -2;
             }
         }else{
             botAmount = -1
@@ -240,14 +241,16 @@ function init(){
     }
 
     for(i = 0; i < playerAmount; i++){
+        let lastPlayername = "";
         let random = randomIntFromRange(0,playerImages.length-1)
         let playername = "";
         if(fastLoad === true){
             playername = "Spelare " + (i+1);
         }
         while(playername == ""){
-            playername = prompt("Vad heter spelare " + (i+1) + "?")
-            if(playername.length > 15 || playername.length < 2){
+            playername = prompt("Vad heter spelare " + (i+1) + "?",lastPlayername)
+            lastPlayername = playername
+            if(playername.length > 9 || playername.length < 2){
                 playername = ""
             }
         }
@@ -259,6 +262,7 @@ function init(){
         players.push(new Player(images.player.img[playerImages[random]],playerImages[random],"Bot " + (i+1),true))
         playerImages.splice(random,1)
     }
+    players.forEach(e=> e.playerBorder.init())
 
 }
 
@@ -268,55 +272,30 @@ function update(){
 
     c.clearRect(0,0,canvas.width,canvas.height);
     showBackground();
-
     c.fillStyle = "white";
-    c.font = "80px calibri";
-    players.forEach(function(player,i,a) { 
-        if(i === 0){
-            c.textAlign = "left";
-            c.fillText(player.name + ": " + player.money + "kr", 10, 80);
-        }
-        if(i === 1){
-            c.textAlign = "right";
-            c.fillText(player.name + ": " + player.money + "kr", canvas.width-10, 80);
-        }
-        if(i === 2){
-            c.textAlign = "left";
-            c.fillText(player.name + ": " + player.money + "kr", 10, canvas.height-30);
-        }
-        if(i === 3){
-            c.textAlign = "right";
-            c.fillText(player.name + ": " + player.money + "kr", canvas.width-10, canvas.height-30);
-        }
-        if(i === 4){
-            c.textAlign = "left";
-            c.fillText(player.name + ": " + player.money + "kr", 10, 160);
-        }
-        if(i === 5){
-            c.textAlign = "right";
-            c.fillText(player.name + ": " + player.money + "kr", canvas.width-10, 160);
-        }
-        if(i === 6){
-            c.textAlign = "left";
-            c.fillText(player.name + ": " + player.money + "kr", 10, canvas.height-110);
-        }
-        if(i === 7){
-            c.textAlign = "right";
-            c.fillText(player.name + ": " + player.money + "kr", canvas.width-10, canvas.height-110);
+    c.font = "50px Arcade";
+    c.textAlign = "center";
+    c.fillText("Just nu: " + players[turn].name, canvas.width/2, 50);
+    board.update();
+
+    let tmp = false;
+
+    buttons.forEach(e =>{
+        if(e.hover){
+            tmp = true;
         }
     })
-
-    c.fillStyle = "black";
-    c.font = "50px Brush Script MT";
-    c.textAlign = "center";
-    c.fillText("Just nu:" + players[turn].name, canvas.width/2, canvas.height/2 + 50);
-    board.update();
+    if(tmp === true){
+        canvas.style.cursor = "pointer"
+    }else{
+        canvas.style.cursor = "auto"
+    }
     
 }
 
 function showBackground(){
-    for(let x = -2; x < 4; x++){
-        for(let y = -2; y < 4; y++){
+    for(let x = -1; x < 4; x++){
+        for(let y = -1; y < 4; y++){
             drawIsometricImage(-352*2 + 832*x,+832*y,images.background.img[1],false,0,0,832,416,0,0)
 
         }
@@ -388,44 +367,43 @@ class Board{
         }
 
         this.update = function () {
+            
             this.boardPieces.forEach(g => g.update())
+
             this.showDice()
             this.rollDiceButton.draw();
             this.nextPlayerButton.draw();
             this.boardPieces.forEach(g => g.drawHouses())
-            if(this.win === false){ this.boardPieces.forEach(g => {
-                if(g.side == 0 || g.side === 3){
-                    g.currentPlayer.forEach(p => p.update())
-                }else{
-                    for(let i = (g.currentPlayer.length-1); i>-1; i--){                        
-                        g.currentPlayer[i].update()
+
+            if(this.win === false){ 
+                for(let i = 20; i >= 0; i--){
+                    if(this.boardPieces[i].side == 0 || this.boardPieces[i].side === 3){
+                        this.boardPieces[i].currentPlayer.forEach(p => p.update())
+                    }else{
+                        for(let g = (this.boardPieces[i].currentPlayer.length-1); g>-1; g--){                        
+                            this.boardPieces[i].currentPlayer[g].update()
+                        }
                     }
                 }
-            }
-                ) 
+                for(let i = 20; i < 40; i++){
+                    if(this.boardPieces[i].side == 0 || this.boardPieces[i].side === 3){
+                        this.boardPieces[i].currentPlayer.forEach(p => p.update())
+                    }else{
+                        for(let g = (this.boardPieces[i].currentPlayer.length-1); g>-1; g--){                        
+                            this.boardPieces[i].currentPlayer[g].update()
+                        }
+                    }
+                }
+                
             }
             this.prisonExtra.currentPlayer.forEach(p => p.update())
             this.showCard();
-            this.fixCursor();
             if(this.auction !== undefined){
                 this.auction.update();
             }
         }  
 
-        this.fixCursor = function (){
-            try{
-                if(this.rollDiceButton.hover || this.nextPlayerButton.hover || this.cardCloseButton.hover || this.sellButton.hover || this.mortgageButton.hover 
-                    || this.upgradeButton.hover || this.downgradeButton.hover || this.buyButton.hover|| this.auctionButton.hover|| 
-                    this.auction.addMoneyButton2.hover || this.auction.addMoneyButton10.hover || this.auction.addMoneyButton100.hover){
-                    canvas.style.cursor = "pointer"
-                }else{
-                    canvas.style.cursor = "auto"
-                }
-            }catch{
-                canvas.style.cursor = "auto"
-            }
-            
-        }
+        
         this.randomizeDice = function () {
             this.dice1Type = randomIntFromRange(0,3);
             this.dice2Type = randomIntFromRange(0,3);
@@ -436,7 +414,7 @@ class Board{
                 this.cardCloseButton.draw();
                 c.fillStyle = "black";
                 c.textAlign = "center";
-                c.font ="20px Brush Script MT";
+                c.font ="20px Arcade";
                 
                 if(this.currentCard.owner !== undefined){
                     if(this.currentCard.piece.type !== "utility" && this.currentCard.piece.type !== "station"){
@@ -568,6 +546,152 @@ class Board{
     }
 }
 
+class PlayerBorder{
+    constructor(player){
+        this.player = player;
+        this.index = players.length;
+        this.x = 0;
+        this.y = 0;
+        this.realIndex = this.index
+
+        
+        
+        
+        this.button = new Button(this.x,this.y,images.playerOverlay.img[8],function(){
+
+        },260,54,false,false,true)
+
+        this.init = function(){
+            if(players.length === 5 && this.realIndex === 4){
+                this.index = 3
+            }
+            if(players.length === 5 && this.realIndex === 2){
+                this.index = 4
+            }
+            if(players.length === 5 && this.realIndex === 3){
+                this.index = 2
+            }
+            
+            if(players.length === 6 && this.realIndex === 4){
+                this.index = 2
+            }
+            if(players.length === 6 && this.realIndex === 2){
+                this.index = 4
+            }
+            if(players.length === 6 && this.realIndex === 3){
+                this.index = 6
+            }
+            if(players.length === 6 && this.realIndex === 5){
+                this.index = 3
+            }     
+
+            if(players.length === 7 && this.realIndex === 4){
+                this.index = 5
+            }
+            if(players.length === 7 && this.realIndex === 2){
+                this.index = 4
+            }
+            if(players.length === 7 && this.realIndex === 3){
+                this.index = 6
+            }
+            if(players.length === 7 && this.realIndex === 5){
+                this.index = 3
+            }   
+            if(players.length === 7 && this.realIndex === 6){
+                this.index = 2
+            }       
+
+            if(players.length === 8 && this.realIndex === 4){
+                this.index = 5
+            }
+            if(players.length === 8 && this.realIndex === 2){
+                this.index = 4
+            }
+            if(players.length === 8 && this.realIndex === 3){
+                this.index = 6
+            }
+            if(players.length === 8 && this.realIndex === 5){
+                this.index = 7
+            }   
+            if(players.length === 8 && this.realIndex === 6){
+                this.index = 2
+            }      
+            if(players.length === 8 && this.realIndex === 7){
+                this.index = 3
+            }      
+        }
+        
+        this.draw = function() {
+            if(this.index === 0){
+                this.x = 0
+                this.y = 0;
+                this.button.mirror = true;
+            }
+            if(this.index === 1){
+                this.x = canvas.width/2 - 260
+                this.y = 0;
+                this.button.mirror = false;
+            }
+            if(this.index === 2){
+                this.x = 0
+                this.y = canvas.height/2 -54;
+                this.button.mirror = true;
+                
+            }
+            if(this.index === 3){
+                this.x = canvas.width/2 - 260
+                this.y = canvas.height/2 -54;
+                this.button.mirror = false;
+            }
+            if(this.index === 4){
+                this.x = 0
+                this.y = 54;
+                this.button.mirror = true;
+            }
+            if(this.index === 5){
+                this.x = 0
+                this.y = canvas.height/2 -54*2;
+                this.button.mirror = true;
+            }
+            if(this.index === 6){
+                this.x = canvas.width/2 - 260
+                this.y = 54;
+                this.button.mirror = false;
+            }
+            if(this.index === 7){
+                this.x = canvas.width/2 - 260
+                this.y = canvas.height/2 -108;
+                this.button.mirror = false;
+            }
+            this.button.y = this.y
+            this.button.x = this.x
+            this.button.visible = true;
+            this.button.draw()
+            if(this.button.mirror === false){
+                drawRotatedImage(this.x*drawScale+466,this.y*drawScale+5,48,96,images.player.img[this.player.colorIndex],0,false,0,0,24,48,false)
+                c.font = "40px Arcade";
+                c.fillStyle ="black"
+                c.textAlign = "right"
+                c.fillText(this.player.name,this.x*drawScale+450,this.y*drawScale+68)
+                c.textAlign = "left"
+                c.fillText(this.player.money + "kr",this.x*drawScale+50,this.y*drawScale+68)
+            }else{
+                drawRotatedImage(this.x*drawScale+6,this.y*drawScale+5,48,96,images.player.img[this.player.colorIndex],0,false,0,0,24,48,false)
+                c.font = "40px Arcade";
+                c.fillStyle ="black"
+                c.textAlign = "left"
+                c.fillText(this.player.name,this.x+80,this.y*drawScale+68)
+                c.textAlign = "right"
+                c.fillText(this.player.money + "kr",this.x+480,this.y*drawScale+68)
+
+            }
+            if(this.index === 0){
+            }
+        }
+    }
+
+}
+
 class Auction{
     constructor(card){
         this.card = card;
@@ -599,10 +723,10 @@ class Auction{
             drawIsometricImage(0,0,images.card.img[card.piece.card],false,0,0,images.card.img[this.card.piece.card].width,images.card.img[this.card.piece.card].height,images.card.img[this.card.piece.card].width/3,images.card.img[this.card.piece.card].height/7.5,1)
             drawIsometricImage(0,0,images.auction.img[0],false,0,0,images.auction.img[0].width,images.card.img[this.card.piece.card].height,-images.card.img[this.card.piece.card].width/1.5,images.card.img[this.card.piece.card].height/7.5,1)
             c.fillStyle = "black";
-            c.font = "80px calibri";
+            c.font = "80px Arcade";
             c.textAlign = "center";
             c.fillText(this.auctionMoney + "kr", canvas.width/2-190, canvas.height/2 - 75);
-            c.font = "80px calibri";
+            c.font = "80px Arcade";
             c.fillText(this.playerlist[this.turn].name, canvas.width/2-190, canvas.height/2 - 150);
 
             if(this.started){
@@ -654,6 +778,10 @@ class Auction{
                                 players[i].money -= this.auctionMoney;
                                 board.auction.card.owner = players[i];
                                 players[i].ownedPlaces.push(this.card);
+                                buttons.splice(buttons.indexOf(this.addMoneyButton2),1)
+                                buttons.splice(buttons.indexOf(this.addMoneyButton10),1)
+                                buttons.splice(buttons.indexOf(this.addMoneyButton100),1)
+                                buttons.splice(buttons.indexOf(this.startAuctionButton),1)
                                 board.currentCard = undefined;
                                 board.buyButton.visible = false;
                                 board.auction = undefined;
@@ -699,7 +827,7 @@ class Auction{
 }
 
 class Button{
-    constructor(x,y,img,onClick,w,h,showBorder){
+    constructor(x,y,img,onClick,w,h,showBorder,mirror,screencenter){
         this.x = x;
         this.y = y;
         this.w = w;
@@ -709,26 +837,62 @@ class Button{
         this.visible = false;
         this.disabled = false;
         this.hover = false;
+        this.mirror = false;
+        this.screencenter = false;
+        if(mirror === true){
+            this.mirror = true;
+        }
+        if(screencenter === true){
+            this.screencenter = true;
+        }
+
         this.showBorder = showBorder;
+        buttons.push(this);
+
         this.draw = function(){
             
             if(this.visible && this.img !== undefined){
                 if(!this.disabled){
-                    
-                    if(detectCollition(canvas.width/2 + this.x*drawScale - 64*drawScale,canvas.height/2 + this.y*drawScale - 208*drawScale,this.w*drawScale,this.h*drawScale,mouse.realX,mouse.realY,1,1)){
-                        if(this.img.width < this.w*2){
-                            drawIsometricImage(0,0,this.img,false,0,0,this.w,this.h,this.x,this.y)
+                    if(this.screencenter){
+                        if(detectCollition(this.x*drawScale,this.y*drawScale,this.w*drawScale,this.h*drawScale,mouse.realX,mouse.realY,1,1)){
+                            if(this.img.width < this.w*2){
+                                drawRotatedImage(this.x*drawScale,this.y*drawScale,this.w*drawScale,this.h*drawScale,this.img,0,this.mirror,0,0,this.w,this.h,false)
+                            }else{
+                                drawRotatedImage(this.x,this.y,this.w*drawScale,this.h*drawScale,this.img,0,this.mirror,0,this.w,this.w,this.h,false)
+                            }
+                            this.hover = true;
                         }else{
-                            drawIsometricImage(0,0,this.img,false,this.w,0,this.w,this.h,this.x,this.y)
+                            this.hover = false;
+                            if(this.screencenter){
+                                drawRotatedImage(this.x*drawScale,this.y*drawScale,this.w*drawScale,this.h*drawScale,this.img,0,this.mirror,0,0,this.w,this.h,false)
+                            }else{
+                                drawIsometricImage(0,0,this.img,this.mirror,0,0,this.w,this.h,this.x,this.y)
+                            }
                         }
-                        this.hover = true;
                     }else{
-                        this.hover = false;
-                        drawIsometricImage(0,0,this.img,false,0,0,this.w,this.h,this.x,this.y)
+                        if(detectCollition(canvas.width/2 + this.x*drawScale - 64*drawScale,canvas.height/2 + this.y*drawScale - 208*drawScale,this.w*drawScale,this.h*drawScale,mouse.realX,mouse.realY,1,1)){
+                            if(this.img.width < this.w*2){
+                                drawIsometricImage(0,0,this.img,this.mirror,0,0,this.w,this.h,this.x,this.y)
+                            }else{
+                                drawIsometricImage(0,0,this.img,this.mirror,this.w,0,this.w,this.h,this.x,this.y)
+                            }
+                            this.hover = true;
+                        }else{
+                            this.hover = false;
+                            if(this.screencenter){
+                                drawRotatedImage(this.x*drawScale,this.y*drawScale,this.w*drawScale,this.h*drawScale,this.img,0,this.mirror,0,0,this.w,this.h,false)
+                            }else{
+                                drawIsometricImage(0,0,this.img,this.mirror,0,0,this.w,this.h,this.x,this.y)
+                            }
+                        }
                     }
                 }else{
                     this.hover = false;
-                    drawIsometricImage(0,0,this.img,false,this.w*2,0,this.w,this.h,this.x,this.y)
+                    if(this.screencenter){
+                        drawRotatedImage(this.x,this.y,this.w*drawScale,this.h*drawScale,this.img,0,this.mirror,0,this.w*2,this.w,this.h,false)
+                    }else{
+                        drawIsometricImage(0,0,this.img,this.mirror,this.w*2,0,this.w,this.h,this.x,this.y)
+                    }
                 }
                 
             }else if(this.visible){
@@ -740,16 +904,29 @@ class Button{
             }
             if(showBorder){
                 c.strokeStyle = "black";
-                c.strokeRect(canvas.width/2 + this.x*drawScale - 64*drawScale,canvas.height/2 + this.y*drawScale - 208*drawScale,this.w*drawScale,this.h*drawScale)
+                if(this.screencenter){
+                    c.strokeRect(this.x*drawScale,this.y*drawScale,this.w*drawScale,this.h*drawScale)
+                }else{
+                    c.strokeRect(canvas.width/2 + this.x*drawScale - 64*drawScale,canvas.height/2 + this.y*drawScale - 208*drawScale,this.w*drawScale,this.h*drawScale)
+                }
             }
         }
         this.click = function(){
             if(this.visible && !this.disabled){
-                if(detectCollition(canvas.width/2 + this.x*drawScale - 64*drawScale,canvas.height/2 + this.y*drawScale - 208*drawScale,this.w*drawScale,this.h*drawScale,mouse.realX,mouse.realY,1,1)){
-                    playSound(sounds.release,1)
-                    this.onClick();
-                    this.hover = false;
+                if(this.screencenter){
+                    if(detectCollition(this.x*drawScale,this.y*drawScale,this.w*drawScale,this.h*drawScale,mouse.realX,mouse.realY,1,1)){
+                        playSound(sounds.release,1)
+                        this.onClick();
+                        this.hover = false;
+                    }
+                }else{
+                    if(detectCollition(canvas.width/2 + this.x*drawScale - 64*drawScale,canvas.height/2 + this.y*drawScale - 208*drawScale,this.w*drawScale,this.h*drawScale,mouse.realX,mouse.realY,1,1)){
+                        playSound(sounds.release,1)
+                        this.onClick();
+                        this.hover = false;
+                    }
                 }
+                
             }
         }
         
@@ -774,6 +951,7 @@ class BoardPiece{
         this.hover = false;
         this.currentPlayer = [];
         this.mortgaged = false;
+        buttons.push(this);
         
         this.setImg = function(){
             if(this.side === 0){
@@ -1131,8 +1309,8 @@ class BoardPiece{
                         alert("Betala 200kr skatt")
                         player.money -= 200;
                     }else{
-                        alert("Betala " + player.money * 0.1 + "kr skatt")
-                        player.money = player.money * 0.9;
+                        alert("Betala " + Math.round(player.money * 0.1) + "kr skatt")
+                        player.money =  Math.round(player.money * 0.9);
                     }
                 }
             }
@@ -1162,6 +1340,8 @@ class Player{
         this.timer = undefined;
         this.negative = false;
         this.bot = undefined;
+
+        this.playerBorder = new PlayerBorder(this)
         if(bot == true ){
             this.bot = new Bot(this);
         }
@@ -1178,6 +1358,7 @@ class Player{
             if(this.bot !== undefined){
                 this.bot.update();
             }
+            this.playerBorder.draw();
         }
 
         this.checkMoney = function(){
@@ -1277,7 +1458,7 @@ class Player{
         }
         this.goToPrison = function(){
             alert("Gå till finkan!")
-            this.teleportTo(10)
+            this.teleportTo(10,false)
             this.inJail = true;
             this.rolls = true;
         }
@@ -1292,20 +1473,23 @@ class Player{
             self.steps = 10;
             board.boardPieces[10].playerStep(true,self);
         }
-        this.teleportTo = function(step){
+        this.teleportTo = function(step,getMoney){
             let oldStep = this.steps;
             let direction = 1;
             if(step < 0){
                 direction = -1;
                 step = -step
             }
+            if(getMoney === undefined){
+                getMoney = true;
+            }
 
             this.steps = step;
             this.rolls = true;
 
-            this.animateSteps(oldStep,this.steps,0,direction)
+            this.animateSteps(oldStep,this.steps,0,direction,getMoney)
         }
-        this.animateSteps = function(from,to,dicesum,direction){
+        this.animateSteps = function(from,to,dicesum,direction,getMoney){
             let self = this;
             clearInterval(this.timer)
             if(to < from && direction === 1){
@@ -1329,7 +1513,7 @@ class Player{
                             b.currentPlayer.splice(i3,1)
                         }
                     })})
-                    if(to2 >= 40 && self.inJail === false){
+                    if(to2 >= 40 && self.inJail === false && getMoney === true){
                         alert(self.name + " gick förbi start och fick då 200kr")
                         self.money += 200;
                     }
@@ -1425,6 +1609,7 @@ class Player{
                     }
                 }else{
                     if(this.rolls === false){
+                        if(this.bot === undefined){
                         if(confirm("Vill du betala 50kr för att komma ut eller slå dubbelt?")){
                             this.money -= 50;
                             this.rolls = true;
@@ -1432,19 +1617,36 @@ class Player{
                         }else{
                             let dice1 = randomIntFromRange(1,6);
                             let dice2 = randomIntFromRange(1,6);
-                            board.randomizeDice();
-                            board.dice1 = dice1;
-                            board.dice2 = dice2;
-                            board.showDices = true;
-
-                            if(dice1 === dice2){
-                                this.getOutOfJail()
-                                this.teleportTo(this.steps + dice1 + dice2);
-                            }
                             this.rolls = true;
-                            setTimeout(() => {
-                                board.showDices = false;
-                            }, 1000);
+
+                            board.animateDices = true;
+
+                            let counter = 25;
+                            let self = this;
+                            var myFunction = function() {
+                                board.randomizeDice();
+                                board.dice1 = randomIntFromRange(1,6)
+                                board.dice2 = randomIntFromRange(1,6)
+                                playSound(sounds.dice,0.25)
+                                counter *= 1.2;
+                                if(counter > 1000){
+                                    playSound(sounds.dice,0.25)
+                                    board.dice1 = dice1;
+                                    board.dice2 = dice2;
+                                    setTimeout(() => {
+                                        board.animateDices = false; 
+                                        if(dice1 === dice2){
+                                            self.getOutOfJail()
+                                            self.teleportTo(self.steps + dice1 + dice2);
+                                        }
+                                        
+                                    }, 1000);                  
+                                }else{
+                                    setTimeout(myFunction, counter);
+                                }
+                            }
+                            setTimeout(myFunction, counter);
+                            }
                         }
                     }else{
                         turn = (turn+1)%players.length;

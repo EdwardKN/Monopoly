@@ -1,4 +1,3 @@
-
 var board;
 
 var turn = 0;
@@ -8,6 +7,12 @@ var players = [];
 const drawScale = 2;
 
 const fastLoad = true;
+
+var f = new FontFace('Arcade', 'url(./fonts/SFPixelate-Bold.ttf)');
+
+f.load().then(function(font){document.fonts.add(font);});
+
+var buttons = [];
 
 var offsets = {
     x:Math.floor(window.innerWidth/2) - 832*drawScale/2,
@@ -26,16 +31,16 @@ var images = {
         ]
     },
     card:{
-        src:["./images/cards/browncard1","./images/cards/browncard2","./images/cards/lightbluecard1","./images/cards/lightbluecard2","./images/cards/lightbluecard3"
-            ,"./images/cards/pinkcard1","./images/cards/pinkcard2","./images/cards/pinkcard3","./images/cards/orangecard1","./images/cards/orangecard2","./images/cards/orangecard3"
-            ,"./images/cards/redcard1","./images/cards/redcard2","./images/cards/redcard3","./images/cards/yellowcard1","./images/cards/yellowcard2","./images/cards/yellowcard3"
-            ,"./images/cards/greencard1","./images/cards/greencard2","./images/cards/greencard3","./images/cards/bluecard1","./images/cards/bluecard2"
-            ,"./images/cards/electricitycard","./images/cards/waterworkscard"
-            ,"./images/cards/eaststation","./images/cards/northstation","./images/cards/centralstation","./images/cards/southstation"
+        src:["./images/Cards/browncard1","./images/Cards/browncard2","./images/Cards/lightbluecard1","./images/Cards/lightbluecard2","./images/Cards/lightbluecard3"
+            ,"./images/Cards/pinkcard1","./images/Cards/pinkcard2","./images/Cards/pinkcard3","./images/Cards/orangecard1","./images/Cards/orangecard2","./images/Cards/orangecard3"
+            ,"./images/Cards/redcard1","./images/Cards/redcard2","./images/Cards/redcard3","./images/Cards/yellowcard1","./images/Cards/yellowcard2","./images/Cards/yellowcard3"
+            ,"./images/Cards/greencard1","./images/Cards/greencard2","./images/Cards/greencard3","./images/Cards/bluecard1","./images/Cards/bluecard2"
+            ,"./images/Cards/electricitycard","./images/Cards/waterworkscard"
+            ,"./images/Cards/eaststation","./images/Cards/northstation","./images/Cards/centralstation","./images/Cards/southstation"
         ]
     },
     corner:{
-        src:["./images/corners/go","./images/corners/prison","./images/corners/parking","./images/corners/gotoprison"
+        src:["./images/corners/Go","./images/corners/prison","./images/corners/parking","./images/corners/gotoprison"
         ]
     },
     player:{
@@ -45,7 +50,8 @@ var images = {
     },
     playerOverlay:{
         src:["./images/players/redowned","./images/players/pinkowned","./images/players/purpleowned","./images/players/blueowned",
-        "./images/players/lightblueowned","./images/players/greenowned","./images/players/yellowowned","./images/players/orangeowned"
+        "./images/players/lightblueowned","./images/players/greenowned","./images/players/yellowowned","./images/players/orangeowned",
+        "./images/buttons/playerborder"
     ]
     },
     background:{
