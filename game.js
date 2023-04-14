@@ -735,8 +735,10 @@ class Auction{
         },54,54,false)
         this.startAuctionButton = new Button(-150,220,images.auction.img[5],function(){
             board.auction.started = true;
+            board.auction.duration = 10 * 1000;
+            board.auction.startTime = performance.now();
             board.auction.timer = setInterval(function(){
-                board.auction.time--;
+                board.auction.time = 472 * (1 - (performance.now() - board.auction.startTime) / board.auction.duration);
             },10);
         },240,40,false)
 
@@ -792,6 +794,7 @@ class Auction{
                     this.playerlist.splice(this.playerlist.indexOf(this.playerlist[this.turn]),1)
                     this.turn = (this.turn)%this.playerlist.length;
                     this.time = 472;
+                    this.startTime = performance.now();
                     if(this.playerlist.length === 1){
                         for(let i = 0; i<players.length; i++){
                             if(this.playerlist[0].colorIndex == players[i].colorIndex){
@@ -843,6 +846,7 @@ class Auction{
             this.auctionMoney += money;
             this.turn = (this.turn+1)%this.playerlist.length;
             this.time = 472;
+            this.startTime = performance.now();
         }
     }
 }
