@@ -275,7 +275,7 @@ function update(){
     c.fillStyle = "white";
     c.font = "50px Arcade";
     c.textAlign = "center";
-    c.fillText("Just nu:" + players[turn].name, canvas.width/2, 50);
+    c.fillText("Just nu: " + players[turn].name, canvas.width/2, 50);
     board.update();
 
     let tmp = false;
@@ -294,8 +294,8 @@ function update(){
 }
 
 function showBackground(){
-    for(let x = -2; x < 4; x++){
-        for(let y = -2; y < 4; y++){
+    for(let x = -1; x < 4; x++){
+        for(let y = -1; y < 4; y++){
             drawIsometricImage(-352*2 + 832*x,+832*y,images.background.img[1],false,0,0,832,416,0,0)
 
         }
