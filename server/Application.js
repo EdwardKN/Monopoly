@@ -9,28 +9,25 @@ console.log("Server started listening on port: " + port);
 
 /**
  * 
- * @param {server.ClientRequest} request 
- * @param {server.ServerResponse} response 
+ * @param {http.ClientRequest} request 
+ * @param {http.ServerResponse} response 
  */
 function serverHandler(request, response) {
-    console.log(new Date() + " - " + request.method + " - " + request.url);
+    // This shouldn't be used at all, as this application uses websockets, not a REST API.
+    response.setHeader("Connection", "Upgrade");
+    response.setHeader("Upgrade", "websocket");
 
-    response.writeHead(200).end("");
+    response.writeHead(426).end();
 }
 
 var websocketServer = new websocket.server({
     httpServer: server,
-    // You should not use autoAcceptConnections for production
-    // applications, as it defeats all standard cross-origin protection
-    // facilities built into the protocol and the browser.  You should
-    // *always* verify the connection's origin and decide whether or not
-    // to accept it.
     autoAcceptConnections: false
 });
 
 function originIsAllowed(origin) {
     // Official github page and testing
-  return origin.includes("edwardkn.github.io") || origin.includes("localhost");
+    return origin.includes("edwardkn.github.io") || origin.includes("localhost");
 }
 
 websocketServer.on('request', websocketHandler);
@@ -51,8 +48,7 @@ function websocketHandler(request) {
 
     
     var connection = request.accept('', request.origin);
-    console.log((new Date()) + ' Websocket connection accepted.');
-
+    
     // Send message with info about the game
     var boardInfo  = gamelogic. BoardManager.getJoinInfo();
     var playerInfo = gamelogic.PlayerManager.playerJoined();
@@ -60,15 +56,21 @@ function websocketHandler(request) {
         board: boardInfo,
         players: playerInfo
     }));
-
+    
+    var thisPlayer = playerInfo.length - 1;
+    console.log("<" + gamelogic.PlayerManager.players[thisPlayer].name + '> Player joined');
     connection.on('message', function(message) {
         if (message.type === 'utf8') {
-            console.log(JSON.parse(message.utf8Data));
-            connection.sendUTF(message.utf8Data);
+            var event = JSON.parse(message.utf8Data);
+            console.log(event);
+            if (event.event_type == "move") {
+                gamelogic.PlayerManager.players[thisPlayer].teleportTo(event.tiles_moved);
+            }
         }
     });
+
     connection.on('close', function(reasonCode, description) {
-        console.log((new Date()) + ' Peer ' + connection.remoteAddress + ' disconnected.');
+        console.log("<" + gamelogic.PlayerManager.players[thisPlayer].name + '> Player left');
     });
 }
 
