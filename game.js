@@ -272,10 +272,10 @@ function update(){
 
     c.clearRect(0,0,canvas.width,canvas.height);
     showBackground();
-    c.fillStyle = "black";
+    c.fillStyle = "white";
     c.font = "50px Arcade";
     c.textAlign = "center";
-    c.fillText("Just nu:" + players[turn].name, canvas.width/2, canvas.height/2 + 50);
+    c.fillText("Just nu:" + players[turn].name, canvas.width/2, 50);
     board.update();
 
     let tmp = false;
