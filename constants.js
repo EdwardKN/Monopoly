@@ -35,8 +35,8 @@ var images = {
             ,"./images/Cards/pinkcard1","./images/Cards/pinkcard2","./images/Cards/pinkcard3","./images/Cards/orangecard1","./images/Cards/orangecard2","./images/Cards/orangecard3"
             ,"./images/Cards/redcard1","./images/Cards/redcard2","./images/Cards/redcard3","./images/Cards/yellowcard1","./images/Cards/yellowcard2","./images/Cards/yellowcard3"
             ,"./images/Cards/greencard1","./images/Cards/greencard2","./images/Cards/greencard3","./images/Cards/bluecard1","./images/Cards/bluecard2"
-            ,"./images/Cards/electricitycard","./images/Cards/waterworkscard"
-            ,"./images/Cards/eaststation","./images/Cards/northstation","./images/Cards/centralstation","./images/Cards/southstation"
+            ,"./images/cards/electricitycard","./images/cards/waterworkscard"
+            ,"./images/cards/eaststation","./images/cards/northstation","./images/cards/centralstation","./images/cards/southstation"
         ]
     },
     corner:{
