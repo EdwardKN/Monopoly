@@ -169,6 +169,7 @@ function randomIntFromRange(min, max) {
 };
 
 function playSound(sound,volume){
+    return
     if(sound.type === "single"){
         let myClonedAudio = sound.sound.cloneNode();
         myClonedAudio.volume = volume;
@@ -197,8 +198,8 @@ function init(){
     let botAmount = -2;
 
     if(fastLoad === true){
-        playerAmount = 2;
-        botAmount = -1
+        playerAmount = -1;
+        botAmount = 2
     }
 
     let playerImages = [0,1,2,3,4,5,6,7]
