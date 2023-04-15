@@ -197,7 +197,7 @@ function init(){
     let botAmount = -2;
 
     if(fastLoad === true){
-        playerAmount = 8;
+        playerAmount = 3;
         botAmount = -1
     }
 
@@ -279,7 +279,14 @@ function update(){
     board.update();
 
     for(let i = players.length-1; i>-1; i--){
-        players[i].playerBorder.draw()
+        if(players[i].playerBorder.index !== 2 && players[i].playerBorder.index !== 3){
+            players[i].playerBorder.draw()
+        }
+    }
+    for(let i = players.length-1; i>-1; i--){
+        if(players[i].playerBorder.index == 2 || players[i].playerBorder.index == 3){
+            players[i].playerBorder.draw()
+        }
     }
     let tmp = false;
 
@@ -675,6 +682,11 @@ class PlayerBorder{
             this.button.x = this.x
             this.button.visible = true;
             this.button.draw()
+            
+            let mirrorAdder = 0;
+            if(!this.button.mirror){
+                mirrorAdder = 280;
+            }
             if(this.button.mirror === false){
                 drawRotatedImage(this.x*drawScale+466,this.y*drawScale+5,48,96,images.player.img[this.player.colorIndex],0,false,0,0,24,48,false)
                 c.font = "40px Arcade";
@@ -697,13 +709,67 @@ class PlayerBorder{
                 if(this.index === 0 || this.index === 1 || this.index === 4 || this.index === 6){
                     drawRotatedImage(this.x*drawScale,this.y*drawScale + 54*drawScale,260*drawScale,27*drawScale,images.playerOverlay.img[11],0,this.button.mirror,0,0,260,27,false)
                     for(let i = 0; i < this.player.ownedPlaces.length; i++){
-                        drawRotatedImage(this.x*drawScale,this.y*drawScale + 54 *drawScale + 27*drawScale*i + 27,260*drawScale,27*drawScale,images.playerOverlay.img[10],0,this.button.mirror,0,0,260,27,false)
+                        drawRotatedImage(this.x*drawScale,this.y*drawScale + 67 *drawScale + 27*drawScale*i + 27,260*drawScale,27*drawScale,images.playerOverlay.img[10],0,this.button.mirror,0,0,260,27,false)
                         c.font = "30px Arcade";
                         c.fillStyle ="black"
                         c.textAlign = "left"
-                        c.fillText(this.player.ownedPlaces[i].piece.name + "  " + this.player.ownedPlaces[i].piece.rent[this.player.ownedPlaces[i].level] + "kr",this.x+80,this.y*drawScale + 54*1.35*drawScale + 27*drawScale*i + 27)
+                        if(this.player.ownedPlaces[i].piece.type !== "station" && this.player.ownedPlaces[i].piece.type !== "utility"){
+                            c.fillText(this.player.ownedPlaces[i].piece.name + "  " + this.player.ownedPlaces[i].piece.rent[this.player.ownedPlaces[i].level] + "kr",this.x+80+ mirrorAdder*drawScale,this.y*drawScale + 54*1.35*drawScale + 27*drawScale*i + 54)
+                        }else if(this.player.ownedPlaces[i].piece.type === "station"){
+                            let tmp = -1;
+                            this.player.ownedPlaces.forEach(e => {
+                                if(e.piece.type === "station"){
+                                    tmp++;
+                                }
+                            })
+                            
+                            c.fillText(this.player.ownedPlaces[i].piece.name + "  " + 25 * Math.pow(2,tmp) + "kr",this.x+80+ mirrorAdder*drawScale,this.y*drawScale + 54*1.35*drawScale + 27*drawScale*i + 54)
+                        }else{
+                            let tmp = 0;
+                            let multiply = 0;
+                            this.owner.ownedPlaces.forEach(e => {
+                                if(e.piece.type === "utility"){
+                                    tmp++;
+                                }
+                            })
+                            if(tmp === 1){multiply = 4;}
+                            if(tmp === 2){multiply = 10}
+                            c.fillText(this.player.ownedPlaces[i].piece.name + "  " + multiply + " gånger tärning kr",this.x+80+ mirrorAdder*drawScale,this.y*drawScale + 54*1.35*drawScale + 27*drawScale*i + 54)
+                        }
                     }
-                    drawRotatedImage(this.x*drawScale,this.y*drawScale + 54*drawScale*1.5 +27*this.player.ownedPlaces.length,260*drawScale ,27*drawScale,images.playerOverlay.img[9],0,this.button.mirror,0,0,260,27,false)
+                    drawRotatedImage(this.x*drawScale,this.y*drawScale + 53*drawScale*1.5 +27*drawScale*this.player.ownedPlaces.length,260*drawScale ,27*drawScale,images.playerOverlay.img[9],0,this.button.mirror,0,0,260,27,false)
+                }else{
+                    drawRotatedImage(this.x*drawScale,this.y*drawScale - 27*drawScale,260*drawScale,27*drawScale,images.playerOverlay.img[11],180,!this.button.mirror,0,0,260,27,false)
+                    for(let i = 0; i < this.player.ownedPlaces.length; i++){
+                        drawRotatedImage(this.x*drawScale,this.y*drawScale - 67 *drawScale - 27*drawScale*i + 27,260*drawScale,27*drawScale,images.playerOverlay.img[10],180,!this.button.mirror,0,0,260,27,false)
+                        c.font = "30px Arcade";
+                        c.fillStyle ="black"
+                        c.textAlign = "left"
+                        if(this.player.ownedPlaces[i].piece.type !== "station" && this.player.ownedPlaces[i].piece.type !== "utility"){
+                            c.fillText(this.player.ownedPlaces[i].piece.name + "  " + this.player.ownedPlaces[i].piece.rent[this.player.ownedPlaces[i].level] + "kr",this.x+80+ mirrorAdder*drawScale,this.y*drawScale - 27*1.35*drawScale - 27*drawScale*i)
+                        }else if(this.player.ownedPlaces[i].piece.type === "station"){
+                            let tmp = -1;
+                            this.player.ownedPlaces.forEach(e => {
+                                if(e.piece.type === "station"){
+                                    tmp++;
+                                }
+                            })
+                            
+                            c.fillText(this.player.ownedPlaces[i].piece.name + "  " + 25 * Math.pow(2,tmp) + "kr",this.x+80+ mirrorAdder*drawScale,this.y*drawScale - 27*1.35*drawScale - 27*drawScale*i)
+                        }else{
+                            let tmp = 0;
+                            let multiply = 0;
+                            this.owner.ownedPlaces.forEach(e => {
+                                if(e.piece.type === "utility"){
+                                    tmp++;
+                                }
+                            })
+                            if(tmp === 1){multiply = 4;}
+                            if(tmp === 2){multiply = 10}
+                            c.fillText(this.player.ownedPlaces[i].piece.name + "  " + multiply + " gånger tärning kr",this.x+80+ mirrorAdder*drawScale,this.y*drawScale - 27*1.35*drawScale - 27*drawScale*i)
+                        }                    
+                    }
+                    drawRotatedImage(this.x*drawScale,this.y*drawScale - 35*drawScale*1.5 -27*drawScale*this.player.ownedPlaces.length,260*drawScale ,27*drawScale,images.playerOverlay.img[9],180,!this.button.mirror,0,0,260,27,false)
                 }
             }
             
