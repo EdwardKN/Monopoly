@@ -196,6 +196,7 @@ class Bot{
 
         // Average Income - Average Loss
         const shareLost = (averageIncome - averageLoss) / this.player.money
+
         importance += 100 * (1 - shareLost)
         if (importance + currentPrice > originalPrice) { importance -= 10 }
         
@@ -210,6 +211,24 @@ class Bot{
             this.thinking = false
         }, randomIntFromRange(1000, 2000))
     }
+
+    async bidOnAuction2() {
+        const bP = board.auction.card
+        const originalPrice = bP.piece.price
+        const currentPrice = board.auction.auctionMoney
+
+        for (const option of [100, 10, 2]) {
+            if (this.player.money - currentPrice < option) { continue }
+
+            const remainingMoney = this.player.money - currentPrice - option
+            if (remainingMoney < this.getAvergePrice(40)) {
+                
+            }
+
+        }
+
+    }
+
 
 
 
