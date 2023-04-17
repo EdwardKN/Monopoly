@@ -10,13 +10,18 @@ const groups = {
     'station': [5, 15, 25, 35],
     'utility': [12, 28]
 }
-let play = false
+let play = true
 class Bot{
     constructor(player) {
         this.player = player
+        this.thinking = false
     }
 
     async update() {
+        if (this.thinking) { return }
+        if (board.auction && board.auction.playerlist[board.auction.turn] === this.player) {
+            this.bidOnAuction(); return }
+
         if (this.player !== players[turn] || players.some(pl => pl.animationOffset !== 0) ||
             board.showDices === true || board.animateDices === true || !play) { return }
 
@@ -101,8 +106,9 @@ class Bot{
             return 0
         } else {
             let r = 0
-            return await this.animateasdasd()
-            
+            await this.animateasdasd(function(dice1, dice2) {
+                r = dice1 === dice2 ? dice1 + dice2 : false
+            })
             return r
         }
     }
@@ -116,7 +122,7 @@ class Bot{
             for (const bP of this.player.ownedPlaces) {
                 /* TEMPORARY FIX */
                 if (this.player.money < 0) {
-                    sellPiece(bP)
+                    this.sellPiece(bP)
                 }
             }
         }
@@ -162,7 +168,9 @@ class Bot{
         return true
     }
 
-    bidOnAuction() {
+    async bidOnAuction() {
+
+
         const bP = board.auction.card
         const originalPrice = bP.piece.price
         const currentPrice = board.auction.auctionMoney
@@ -185,15 +193,25 @@ class Bot{
         const difference = currentPrice / originalPrice
         importance += 100 * (1 - difference)
 
+
         // Average Income - Average Loss
         const shareLost = (averageIncome - averageLoss) / this.player.money
         importance += 100 * (1 - shareLost)
+        if (importance + currentPrice > originalPrice) { importance -= 10 }
+        
 
-        for (let i = options.length - 1; i >= 0; i--) {
-            if (options[i] < importance) { board.auction.addMoney(options[i]) }
-        }
 
+
+        this.thinking = true
+        setTimeout(() => {
+            for (let i = options.length - 1; i >= 0; i--) {
+                if (options[i] < importance) { board.auction.addMoney(options[i]); return }
+            }
+            this.thinking = false
+        }, randomIntFromRange(1000, 2000))
     }
+
+
 
     async animateasdasd(callback) {
         return new Promise(resolve => {

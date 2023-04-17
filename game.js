@@ -197,8 +197,8 @@ function init(){
     let botAmount = -2;
 
     if(fastLoad === true){
-        playerAmount = -1;
-        botAmount = 2;
+        playerAmount = 1;
+        botAmount = 1;
     }
 
     let playerImages = [0,1,2,3,4,5,6,7]
