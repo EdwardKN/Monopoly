@@ -263,7 +263,6 @@ function init(){
         playerImages.splice(random,1)
     }
     players.forEach(e=> e.playerBorder.init())
-    currentPlayer = players[0]
 }
 
 function update(){
@@ -1649,7 +1648,7 @@ class Player{
                     
 
                 }
-            },100);
+            },300);
         }
         
         this.rollDice = function(){
