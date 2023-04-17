@@ -1691,7 +1691,7 @@ class Player{
                                     board.animateDices = false;
                                     self.steps += dice1+dice2;
                                     self.steps = self.steps%40;
-                                    self.animateSteps(oldStep,self.steps,diceSum,1)
+                                    self.animateSteps(oldStep,self.steps,diceSum,1,true)
                                 }, 1000);                  
                             }else{
                                 setTimeout(myFunction, counter);
