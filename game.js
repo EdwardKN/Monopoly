@@ -1668,7 +1668,7 @@ class Player{
                             this.rolls = true;
                         }
                         let diceSum = dice1+dice2;
-                        this.dS = diceSum
+
                         
                         board.animateDices = true;
 
@@ -1756,6 +1756,7 @@ class Player{
                     
                 }
             }
+            
         }
         board.boardPieces[0].currentPlayer.push(this);
 
