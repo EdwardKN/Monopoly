@@ -1300,8 +1300,8 @@ class BoardPiece{
                         })
                     }
                     if(random === 10){
-                        alert("Inte inlagd för att jag inte riktigt vet vad det ska vara")
-                        // konstig
+                        alert("Gå till södra stationen")
+                        player.teleportTo(5);
                     }
                     if(random === 11){
                         alert("Gå till Malmö")
