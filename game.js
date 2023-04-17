@@ -264,7 +264,7 @@ function init(){
         playerImages.splice(random,1)
     }
     players.forEach(e=> e.playerBorder.init())
-
+    currentPlayer = players[0]
 }
 
 function update(){
@@ -279,6 +279,9 @@ function update(){
     c.fillText("Just nu: " + players[turn].name, canvas.width/2, 50);
     board.update();
 
+    for(let i = players.length-1; i>-1; i--){
+        players[i].playerBorder.draw()
+    }
     let tmp = false;
 
     buttons.forEach(e =>{
@@ -554,13 +557,18 @@ class PlayerBorder{
         this.x = 0;
         this.y = 0;
         this.realIndex = this.index
+        this.showInfo = false;
 
-        
+        let self = this;
         
         
         this.button = new Button(this.x,this.y,images.playerOverlay.img[8],function(){
-
-        },260,54,false,false,true)
+            if(!self.showInfo){
+                self.showInfo = true;
+            }else{
+                self.showInfo = false;
+            }
+        },260,54,false,false,true) 
 
         this.init = function(){
             if(players.length === 5 && this.realIndex === 4){
@@ -686,8 +694,21 @@ class PlayerBorder{
                 c.fillText(this.player.money + "kr",this.x+480,this.y*drawScale+68)
 
             }
-            if(this.index === 0){
+            if(this.showInfo){
+                if(this.index === 0 || this.index === 1 || this.index === 4 || this.index === 6){
+                    drawRotatedImage(this.x*drawScale,this.y*drawScale + 54*drawScale,260*drawScale,27*drawScale,images.playerOverlay.img[11],0,this.button.mirror,0,0,260,27,false)
+                    for(let i = 0; i < this.player.ownedPlaces.length; i++){
+                        drawRotatedImage(this.x*drawScale,this.y*drawScale + 54 *drawScale + 27*drawScale*i + 27,260*drawScale,27*drawScale,images.playerOverlay.img[10],0,this.button.mirror,0,0,260,27,false)
+                        c.font = "30px Arcade";
+                        c.fillStyle ="black"
+                        c.textAlign = "left"
+                        c.fillText(this.player.ownedPlaces[i].piece.name + "  " + this.player.ownedPlaces[i].piece.rent[this.player.ownedPlaces[i].level] + "kr",this.x+80,this.y*drawScale + 54*1.35*drawScale + 27*drawScale*i + 27)
+                    }
+                    drawRotatedImage(this.x*drawScale,this.y*drawScale + 54*drawScale*1.5 +27*this.player.ownedPlaces.length,260*drawScale ,27*drawScale,images.playerOverlay.img[9],0,this.button.mirror,0,0,260,27,false)
+                }
             }
+            
+            
         }
     }
 
@@ -715,8 +736,10 @@ class Auction{
         },54,54,false)
         this.startAuctionButton = new Button(-150,220,images.auction.img[5],function(){
             board.auction.started = true;
+            board.auction.duration = 10 * 1000;
+            board.auction.startTime = performance.now();
             board.auction.timer = setInterval(function(){
-                board.auction.time--;
+                board.auction.time = 472 * (1 - (performance.now() - board.auction.startTime) / board.auction.duration);
             },10);
         },240,40,false)
 
@@ -772,6 +795,7 @@ class Auction{
                     this.playerlist.splice(this.playerlist.indexOf(this.playerlist[this.turn]),1)
                     this.turn = (this.turn)%this.playerlist.length;
                     this.time = 472;
+                    this.startTime = performance.now();
                     if(this.playerlist.length === 1){
                         for(let i = 0; i<players.length; i++){
                             if(this.playerlist[0].colorIndex == players[i].colorIndex){
@@ -823,6 +847,7 @@ class Auction{
             this.auctionMoney += money;
             this.turn = (this.turn+1)%this.playerlist.length;
             this.time = 472;
+            this.startTime = performance.now();
         }
     }
 }
@@ -856,7 +881,7 @@ class Button{
                 if(!this.disabled){
                     if(this.screencenter){
                         if(detectCollition(this.x*drawScale,this.y*drawScale,this.w*drawScale,this.h*drawScale,mouse.realX,mouse.realY,1,1)){
-                            if(this.img.width < this.w*2){
+                            if(this.img.width <= this.w*2){
                                 drawRotatedImage(this.x*drawScale,this.y*drawScale,this.w*drawScale,this.h*drawScale,this.img,0,this.mirror,0,0,this.w,this.h,false)
                             }else{
                                 drawRotatedImage(this.x,this.y,this.w*drawScale,this.h*drawScale,this.img,0,this.mirror,0,this.w,this.w,this.h,false)
@@ -1334,7 +1359,7 @@ class Player{
         this.offsetY = 0;
         this.stepsWithOffset = (this.steps)
         this.rolls = false;
-        this.numberOfRolls = false;
+        this.numberOfRolls = 0;
         this.inJail = false;
         this.ownedPlaces = [];
         this.animationOffset = 0;
@@ -1359,7 +1384,6 @@ class Player{
             if(this.bot !== undefined){
                 this.bot.update();
             }
-            this.playerBorder.draw();
         }
 
         this.checkMoney = function(){
@@ -1549,7 +1573,7 @@ class Player{
                     
 
                 }
-            },300);
+            },100);
         }
         
         this.rollDice = function(){
@@ -1569,8 +1593,9 @@ class Player{
                             this.rolls = true;
                         }
                         let diceSum = dice1+dice2;
-                        this.dS = diceSum
-                        
+                        this.dice1 = dice1
+                        this.dice2 = dice2
+
                         board.animateDices = true;
 
                         let counter = 25;
