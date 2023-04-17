@@ -169,6 +169,7 @@ function randomIntFromRange(min, max) {
 };
 
 function playSound(sound,volume){
+    return
     if(sound.type === "single"){
         let myClonedAudio = sound.sound.cloneNode();
         myClonedAudio.volume = volume;
@@ -1659,7 +1660,7 @@ class Player{
                             this.rolls = true;
                         }
                         let diceSum = dice1+dice2;
-
+                        this.dS = diceSum
                         
                         board.animateDices = true;
 
@@ -1747,7 +1748,6 @@ class Player{
                     
                 }
             }
-            
         }
         board.boardPieces[0].currentPlayer.push(this);
 
