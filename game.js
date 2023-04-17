@@ -1558,7 +1558,6 @@ class Player{
             
         }
         this.goToPrison = function(){
-            alert("Gå till finkan!")
             this.teleportTo(10,false)
             this.inJail = true;
             this.rolls = true;
@@ -1629,6 +1628,7 @@ class Player{
                         }
                     }
                     if(to === 30){
+                        alert("Gå till finkan!")
                         self.goToPrison()
                     }
                     board.showDices = false;
@@ -1661,6 +1661,7 @@ class Player{
                         let dice2 = randomIntFromRange(1,6);
                         if(dice1 === dice2){
                             if(this.numberOfRolls === 3){
+                                alert("Gå till finkan!")
                                 this.goToPrison();
                             }
                             this.numberOfRolls++;
