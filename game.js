@@ -828,6 +828,11 @@ class Auction{
                     this.addMoneyButton10.draw();
                     this.addMoneyButton100.visible = true;
                     this.addMoneyButton100.draw();
+                }else{
+                    this.startAuctionButton.visible = false;
+                    this.addMoneyButton2.visible = false;
+                    this.addMoneyButton10.visible = false;
+                    this.addMoneyButton100.visible = false;
                 }
                 drawIsometricImage(0,0,images.auction.img[4],false,0,30,240,30,-150,220,1)
                 if(this.time > 472){
@@ -910,6 +915,7 @@ class Auction{
             
         }
         this.addMoney = function(money){
+            
             this.auctionMoney += money;
             this.turn = (this.turn+1)%this.playerlist.length;
             this.time = 472;
