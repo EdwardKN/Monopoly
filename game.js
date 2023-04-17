@@ -333,6 +333,7 @@ class Board{
             if(board.currentCard.mortgaged === false){
                 players[turn].money+= board.currentCard.piece.price/2
             }
+            players[turn].ownedPlaces.splice(players[turn].ownedPlaces.indexOf(board.currentCard),1);
             board.currentCard.owner = undefined;
         },40,40);
         this.mortgageButton = new Button(80,300,images.buttons.img[3],function(){
