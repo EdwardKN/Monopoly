@@ -36,7 +36,6 @@ class Bot{
             let result = await this.handleJail()
     
             if (result != false) { // Out
-                this.player.numberOfRolls = 0
                 this.player.getOutOfJail()
                 this.player.rolls = false
                 this.player.teleportTo(this.player.steps + result)
@@ -97,16 +96,13 @@ class Bot{
     }
 
     async handleJail() {
-        if (this.player.numberOfRolls === 3) { return 0 }
-
-        if (this.player.money > 50000 * 10) { // Less Than 1 / 10 Of Money Is Needed To Get Out Of Jail
+        if (this.player.money > 50 * 10) { // Less Than 1 / 10 Of Money Is Needed To Get Out Of Jail
             this.player.money -= 50
             return 0
         } else {
             let r = 0
-            await this.animateasdasd(function(dice1, dice2){
-                r = dice1 === dice2 ? dice1 + dice2 : false
-            })
+            return await this.animateasdasd()
+            
             return r
         }
     }
