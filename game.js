@@ -100,305 +100,7 @@ var mouse = {
     realX:0,
     realY:0
 }
-const pieces = [
-    {
-        name:"Start",
-        img:0
-    },
-    {
-        name:"Brun 1",
-        price:60,
-        rent:[2,10,30,90,160,250],
-        housePrice:50,
-        group:"Brown",
-        img:0,
-        card:0
-    },
-    {
-        name:"Allmänning",
-        type:"community Chest",
-        img:15
-    },
-    {
-        name:"Brun 2",
-        price:60,
-        rent:[4,20,60,180,320,450],
-        housePrice:50,
-        group:"Brown",
-        img:0,
-        card:1
-    },
-    {
-        name:"Inkomstskatt",
-        type:"income tax",
-        img:16,
-    },
-    {
-        name:"Södra stationen",
-        price:200,
-        type:"station",
-        img:11,
-        card:27
-    },
-    {
-        name:"Ljusblå 1",
-        price:100,
-        rent:[6,30,90,270,400,550],
-        housePrice:50,
-        group:"light blue",
-        img:1,
-        card:2
-    },
-    {
-        name:"Chans",
-        type:"chance",
-        img:10
-    },
-    {
-        name:"Ljusblå 2",
-        price:100,
-        rent:[6,30,90,270,400,550],
-        housePrice:50,
-        group:"light blue",
-        img:1,
-        card:3
-    },
-    {
-        name:"Ljusblå 3",
-        price:120,
-        rent:[8,40,100,300,450,600],
-        housePrice:50,
-        group:"light blue",
-        img:1,
-        card:4
-    },
-    {
-        name:"Fängelse",
-        img:1
-    },
-    {
-        name:"Rosa 1",
-        price:140,
-        rent:[10,50,150,450,625,750],
-        housePrice:100,
-        group:"pink",
-        img:2,
-        card:5
-    },
-    {
-        name:"Elverket",
-        price:150,
-        type:"utility",
-        img:13,
-        card:22
-    },
-    {
-        name:"Rosa 2",
-        price:140,
-        rent:[10,50,150,450,625,750],
-        housePrice:100,
-        group:"pink",
-        img:2,
-        card:6
-    },
-    {
-        name:"Rosa 3",
-        price:160,
-        rent:[12,60,180,500,700,900],
-        housePrice:100,
-        group:"pink",
-        img:2,
-        card:7
-    },
-    {
-        name:"Östra Stationen",
-        price:200,
-        type:"station",
-        img:11,
-        card:24
-    },
-    {
-        name:"Orange 1",
-        price:180,
-        rent:[14,70,200,550,750,950],
-        housePrice:100,
-        group:"orange",
-        img:3,
-        card:8
-    },
-    {
-        name:"Allmänning",
-        type:"community Chest",
-        img:15
-    },
-    {
-        name:"Orange 2",
-        price:180,
-        rent:[14,70,200,550,750,950],
-        housePrice:100,
-        group:"orange",
-        img:3,
-        card:9
-    },
-    {
-        name:"Orange 3",
-        price:200,
-        rent:[16,80,220,600,800,1000],
-        housePrice:100,
-        group:"orange",
-        img:3,
-        card:10
-    },
-    {
-        name:"Fri parkering",
-        img:2
-    },
-    {
-        name:"Röd 1",
-        price:220,
-        rent:[18,90,250,700,875,1050],
-        housePrice:150,
-        group:"red",
-        img:4,
-        card:11
-    },
-    {
-        name:"Chans",
-        type:"chance",
-        img:8
-    },
-    {
-        name:"Röd 2",
-        price:220,
-        rent:[18,90,250,700,875,1050],
-        housePrice:150,
-        group:"red",
-        img:4,
-        card:12
-    },
-    {
-        name:"Röd 3",
-        price:240,
-        rent:[20,100,300,750,925,1100],
-        housePrice:150,
-        group:"red",
-        img:4,
-        card:13
-    },
-    {
-        name:"Centralstationen",
-        price:200,
-        type:"station",
-        img:11,
-        card:26
-    },
-    {
-        name:"Gul 1",
-        price:260,
-        rent:[22,110,330,800,975,1150],
-        housePrice:150,
-        group:"yellow",
-        img:5,
-        card:14
-    },
-    {
-        name:"Gul 2",
-        price:260,
-        rent:[22,110,330,800,975,1150],
-        housePrice:150,
-        group:"yellow",
-        img:5,
-        card:15
-    },
-    {
-        name:"Vattenledningsverket",
-        price: 150,
-        type:"utility",
-        img:12,
-        card:23
-    },
-    {
-        name:"Gul 3",
-        price:280,
-        rent:[24,120,360,850,1025,1200],
-        housePrice:150,
-        group:"yellow",
-        img:5,
-        card:16
-    },
-    {
-        name:"Gå till finkan",
-        img:3
-    },
-    {
-        name:"Grön 1",
-        price:300,
-        rent:[26,130,390,900,1100,1275],
-        housePrice:200,
-        group:"green",
-        img:6,
-        card:17
-    },
-    {
-        name:"Grön 2",
-        price:300,
-        rent:[26,130,390,900,1100,1275],
-        housePrice:200,
-        group:"green",
-        img:6,
-        card:18
-    },
-    {
-        name:"Allmänning",
-        type:"community Chest",
-        img:15
-    },
-    {
-        name:"Grön 3",
-        price:320,
-        rent:[28,150,450,1000,1200,1400],
-        housePrice:200,
-        group:"green",
-        img:6,
-        card:19
-    },
-    {
-        name:"Norra stationen",
-        price:200,
-        type:"station",
-        img:11,
-        card:25
-    },
-    {
-        name:"Chans",
-        type:"chance",
-        img:9
-    },
-    {
-        name:"Blå 1",
-        price:350,
-        rent:[35,175,500,1100,1300,1500],
-        housePrice:200,
-        group:"blue",
-        img:7,
-        card:20
-    },
-    {
-        name:"Lyxskatt",
-        price:-100,
-        img:14,
-        type:"tax"
-    },
-    {
-        name:"Blå 2", 
-        price:400,
-        rent:[50,200,600,1400,1700,2000],
-        housePrice:200,
-        group:"blue",
-        img:7,
-        card:21
-    }
-]
+const pieces = [{"name":"Start","img":0},{"name":"Brun 1","price":60,"rent":[2,10,30,90,160,250],"housePrice":50,"group":"Brown","img":0,"card":0},{"name":"Allmänning","type":"community Chest","img":15},{"name":"Brun 2","price":60,"rent":[4,20,60,180,320,450],"housePrice":50,"group":"Brown","img":0,"card":1},{"name":"Inkomstskatt","type":"income tax","img":16},{"name":"Södra stationen","price":200,"type":"station","img":11,"card":27},{"name":"Ljusblå 1","price":100,"rent":[6,30,90,270,400,550],"housePrice":50,"group":"light blue","img":1,"card":2},{"name":"Chans","type":"chance","img":10},{"name":"Ljusblå 2","price":100,"rent":[6,30,90,270,400,550],"housePrice":50,"group":"light blue","img":1,"card":3},{"name":"Ljusblå 3","price":120,"rent":[8,40,100,300,450,600],"housePrice":50,"group":"light blue","img":1,"card":4},{"name":"Fängelse","img":1},{"name":"Rosa 1","price":140,"rent":[10,50,150,450,625,750],"housePrice":100,"group":"pink","img":2,"card":5},{"name":"Elverket","price":150,"type":"utility","img":13,"card":22},{"name":"Rosa 2","price":140,"rent":[10,50,150,450,625,750],"housePrice":100,"group":"pink","img":2,"card":6},{"name":"Rosa 3","price":160,"rent":[12,60,180,500,700,900],"housePrice":100,"group":"pink","img":2,"card":7},{"name":"Östra Stationen","price":200,"type":"station","img":11,"card":24},{"name":"Orange 1","price":180,"rent":[14,70,200,550,750,950],"housePrice":100,"group":"orange","img":3,"card":8},{"name":"Allmänning","type":"community Chest","img":15},{"name":"Orange 2","price":180,"rent":[14,70,200,550,750,950],"housePrice":100,"group":"orange","img":3,"card":9},{"name":"Orange 3","price":200,"rent":[16,80,220,600,800,1000],"housePrice":100,"group":"orange","img":3,"card":10},{"name":"Fri parkering","img":2},{"name":"Röd 1","price":220,"rent":[18,90,250,700,875,1050],"housePrice":150,"group":"red","img":4,"card":11},{"name":"Chans","type":"chance","img":8},{"name":"Röd 2","price":220,"rent":[18,90,250,700,875,1050],"housePrice":150,"group":"red","img":4,"card":12},{"name":"Röd 3","price":240,"rent":[20,100,300,750,925,1100],"housePrice":150,"group":"red","img":4,"card":13},{"name":"Centralstationen","price":200,"type":"station","img":11,"card":26},{"name":"Gul 1","price":260,"rent":[22,110,330,800,975,1150],"housePrice":150,"group":"yellow","img":5,"card":14},{"name":"Gul 2","price":260,"rent":[22,110,330,800,975,1150],"housePrice":150,"group":"yellow","img":5,"card":15},{"name":"Vattenledningsverket","price":150,"type":"utility","img":12,"card":23},{"name":"Gul 3","price":280,"rent":[24,120,360,850,1025,1200],"housePrice":150,"group":"yellow","img":5,"card":16},{"name":"Gå till finkan","img":3},{"name":"Grön 1","price":300,"rent":[26,130,390,900,1100,1275],"housePrice":200,"group":"green","img":6,"card":17},{"name":"Grön 2","price":300,"rent":[26,130,390,900,1100,1275],"housePrice":200,"group":"green","img":6,"card":18},{"name":"Allmänning","type":"community Chest","img":15},{"name":"Grön 3","price":320,"rent":[28,150,450,1000,1200,1400],"housePrice":200,"group":"green","img":6,"card":19},{"name":"Norra stationen","price":200,"type":"station","img":11,"card":25},{"name":"Chans","type":"chance","img":9},{"name":"Blå 1","price":350,"rent":[35,175,500,1100,1300,1500],"housePrice":200,"group":"blue","img":7,"card":20},{"name":"Lyxskatt","price":-100,"img":14,"type":"tax"},{"name":"Blå 2","price":400,"rent":[50,200,600,1400,1700,2000],"housePrice":200,"group":"blue","img":7,"card":21}];
 
 window.addEventListener("resize", e=> {
     canvas.width = window.innerWidth;
@@ -586,78 +288,171 @@ function playSound(sound,volume){
 
 };
 
-function init(){
+async function init(){
     document.body.appendChild(canvas);
     canvas.style.zIndex = -100;
 
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
 
-    preRender(images);
+    
+    // Would be preferable to have the background rendered before all of the alerts,
+    // as the white background isn't that nice to look at
+    Api.online = location.search != "" ? true : confirm("Do you want to play online?");
+    if (Api.online) {
+        var serverURL = location.search == "" ? prompt("If you're the host, then start the server.\nAfter that everyone should be able to join in a LAN.\nEnter the address shown by the server") : atob(location.search.substring(1));
+        history.replaceState(undefined, undefined, location.href.replace(location.search, ""));
+        try {
+            var interval = -1;
+            document.body.addEventListener("start_game", (evt) => {
+                var data = evt.detail;
+                
+                clearInterval(interval);
+                document.getElementById("lobby").style.display = "none";
+                
+                data.players.forEach((player) => {
+                    players.push(new Player(images.player.img[player.colorIndex], player.colorIndex, player.name, false));
+                });
+                
+                if (Api.currentPlayer == 0) {
+                    board.rollDiceButton.visible = true;
+                    board.nextPlayerButton.visible = false;
+                }
 
-    loadSounds(sounds);
+                update();
+            });
 
-    board = new Board(); 
-    let playerAmount = 0;
-    let botAmount = 0;
+            document.body.addEventListener("join_info", (evt) => {
+                var data = evt.detail;
+                var countdownElement = document.querySelector("#lobby>center");
 
-    if(fastLoad === true){
-        playerAmount = 2;
-        botAmount = -1
-    }
+                Api.currentPlayer = data.thisPlayer;
+                
+                if (data.countdown == -1) {
+                    countdownElement.innerText = "Waiting for more players";
+                    countdownElement.className = "waiting";
+                    
+                    function onPlayerJoin() {
+                        document.body.removeEventListener("player_joined", onPlayerJoin);
+                        var startTime = performance.now();
+                        var duration = 30 * 1000;
+                        
+                        countdownElement.className = "countdown";
+                        interval = setInterval(() => { countdownElement.innerText = Math.floor((duration - (performance.now() - startTime)) / 1000); }, 100);
+                    }
+                    
+                    document.body.addEventListener("player_joined", onPlayerJoin);
+                } else {
+                    var startTime = performance.now() - data.countdown;
+                    var duration = 30 * 1000;
+                    
+                    countdownElement.className = "countdown";
+                    interval = setInterval(() => { countdownElement.innerText = Math.floor((duration - (performance.now() - startTime)) / 1000); }, 100);
+                }
+            });
 
-    let playerImages = [0,1,2,3,4,5,6,7]
+            
+            document.body.addEventListener("move_event", (evt) => {
+                var data = evt.detail;
+                console.log("Player %s moved to %d", data.player, data.steps);
+                players[data.player].teleportTo(data.steps, false);
+            });
 
-    while(playerAmount == 0){
-        let promptText = prompt("Hur många spelare?") 
-        if(isNumeric(promptText)){
-            if(JSON.parse(promptText) < 1 || JSON.parse(promptText) > 8){
-                playerAmount = 0;
-            }else{
-                playerAmount = JSON.parse(promptText)
-            }
-        }else{
-            playerAmount = 0;
+            document.body.addEventListener("new_turn_event", (evt) => {
+                turn = evt.detail.id;
+                if (Api.currentPlayer == turn) {
+                    board.rollDiceButton.visible = true;
+                    board.nextPlayerButton.visible = true;
+                } else {
+                    board.rollDiceButton.visible = false;
+                    board.nextPlayerButton.visible = false;
+                }
+            });
+            
+            await Api.openWebsocketConnection(serverURL);
+
+            // Lobby
+            // 2 minutes after the first player joined (or when there's 8 players), start the game
+            // Meanwhile show some menu with the other players and a countdown for how long there's left until the game starts
+        } catch(err) {
+            alert("IMPORTANT\nYou will now be redirected to another page\nIt's important that you click on Advanced...>Accept the Risk and Continue\nIf you don't, you won't be able to connect to the game");
+            location = "https://" + serverURL + "/" + btoa(location.href);
         }
     }
-    while(botAmount == 0){
-        if(playerAmount < 8){
-            let promptText = prompt("Hur många bots?") 
+
+    preRender(images);
+    loadSounds(sounds);
+
+    board = new Board();
+
+    if (!Api.online) {
+        document.getElementById("lobby").style.display = "none";
+        let playerAmount = 0;
+        let botAmount = 0;
+
+        let playerImages = [0,1,2,3,4,5,6,7]
+    
+        if (fastLoad === true){
+            playerAmount = 2;
+            botAmount = -1
+        }
+
+        while(playerAmount == 0){
+            let promptText = prompt("Hur många spelare?") 
             if(isNumeric(promptText)){
-                if(JSON.parse(promptText) <= 8-playerAmount){
-                    botAmount = JSON.parse(promptText)
+                if(JSON.parse(promptText) < 1 || JSON.parse(promptText) > 8){
+                    playerAmount = 0;
+                }else{
+                    playerAmount = JSON.parse(promptText)
+                }
+            }else{
+                playerAmount = 0;
+            }
+        }
+
+        while(botAmount == 0){
+            if(playerAmount < 8) {
+                let promptText = prompt("Hur många bots?");
+                if(isNumeric(promptText)) {
+                    if(JSON.parse(promptText) <= 8-playerAmount){
+                        botAmount = JSON.parse(promptText)
+                    }else{
+                        botAmount = 0;
+                    }
                 }else{
                     botAmount = 0;
                 }
-            }else{
-                botAmount = 0;
-            }
-        }else{
-            botAmount = -1
-        }
-    }
-
-    for(i = 0; i < playerAmount; i++){
-        let random = randomIntFromRange(0,playerImages.length-1)
-        let playername = "";
-        if(fastLoad === true){
-            playername = "Spelare " + (i+1);
-        }
-        while(playername == ""){
-            playername = prompt("Vad heter spelare " + (i+1) + "?")
-            if(playername.length > 15 || playername.length < 2){
-                playername = ""
+            } else {
+                botAmount = -1
             }
         }
-        players.push(new Player(images.player.img[playerImages[random]],playerImages[random],playername,false))
-        playerImages.splice(random,1)
-    }
-    for(i = 0; i < botAmount; i++){
-        let random = randomIntFromRange(0,playerImages.length-1)
-        players.push(new Player(images.player.img[playerImages[random]],playerImages[random],"Bot " + (i+1),true))
-        playerImages.splice(random,1)
-    }
+        
+        // Add all players
+        for(i = 0; i < playerAmount; i++){
+            let random = randomIntFromRange(0,playerImages.length-1)
+            let playername = "";
+            if(fastLoad === true){
+                playername = "Spelare " + (i+1);
+            }
+            while(playername == ""){
+                playername = prompt("Vad heter spelare " + (i+1) + "?")
+                if(playername.length > 15 || playername.length < 2){
+                    playername = ""
+                }
+            }
+            players.push(new Player(images.player.img[playerImages[random]],playerImages[random],playername,false))
+            playerImages.splice(random,1)
+        }
 
+        // Add all bots
+        for(i = 0; i < botAmount; i++){
+            let random = randomIntFromRange(0,playerImages.length-1)
+            players.push(new Player(images.player.img[playerImages[random]],playerImages[random],"Bot " + (i+1),true))
+            playerImages.splice(random,1)
+        }
+
+        update();
+    }
 }
 
 function update(){
@@ -734,8 +529,12 @@ class Board{
         this.animateDices = false;
         this.win = false;
         this.auction = undefined;
-        this.rollDiceButton = new Button(10,250,images.buttons.img[0],function(){players[turn].rollDice()},107,23)
-        this.nextPlayerButton = new Button(10,250,images.buttons.img[1],function(){players[turn].rollDice()},107,23)
+        this.rollDiceButton = new Button(10,250,images.buttons.img[0],function(){players[turn].rollDice(); board.nextPlayerButton.visible = true; },107,23)
+        this.nextPlayerButton = new Button(10,250,images.buttons.img[1],function(){players[turn].rollDice(); this.visible = false; },107,23)
+
+        this.rollDiceButton.visible = Api.online && Api.currentPlayer == 0;
+        this.nextPlayerButton.visible = Api.online && Api.currentPlayer == 0;
+
         this.currentCard = undefined;
         this.cardCloseButton = new Button(174,43,images.buttons.img[7],function(){board.currentCard = undefined;},18,18)
         this.sellButton = new Button(130,300,images.buttons.img[2],function(){
@@ -780,7 +579,6 @@ class Board{
                 if(n%10 === 0){
                     this.boardPieces.push(new BoardPiece(n,images.corner.img))
                 }else{
-
                     this.boardPieces.push(new BoardPiece(n,images.part.img))
                 }
         }
@@ -896,8 +694,6 @@ class Board{
                     this.cardCloseButton.visible = true;
 
                     if(this.currentCard === board.boardPieces[(players[turn].steps)] && this.auction === undefined){
-                            
-                        
                         this.buyButton.draw();
                         this.buyButton.visible = true;
                         this.cardCloseButton.visible = false;
@@ -907,6 +703,7 @@ class Board{
                         this.sellButton.visible = false;
                         this.downgradeButton.visible = false;
                         this.upgradeButton.visible = false;
+
                         if(this.currentCard.piece.type === "station"){
                             this.buyButton.y = 310;
                             this.auctionButton.y = 310;
@@ -938,11 +735,13 @@ class Board{
 
         this.showDice = function () {
             if(players[turn].animationOffset > 0 ||this.showDices === true || this.animateDices === true){
-            drawIsometricImage(500,500,images.dice.img[0],false,this.dice1Type*64,(this.dice1-1)*64,64,64,0,0)
-            drawIsometricImage(550,400,images.dice.img[0],false,this.dice2Type*64,(this.dice2-1)*64,64,64,0,0)
-            this.nextPlayerButton.visible = false;
-            this.rollDiceButton.visible = false;
+                drawIsometricImage(500,500,images.dice.img[0],false,this.dice1Type*64,(this.dice1-1)*64,64,64,0,0)
+                drawIsometricImage(550,400,images.dice.img[0],false,this.dice2Type*64,(this.dice2-1)*64,64,64,0,0)
+                this.nextPlayerButton.visible = false;
+                this.rollDiceButton.visible = false;
             }else{
+                if (Api.online) return;
+
                 if(players[turn].rolls === false){
                     if(players[turn].bot === undefined && this.auction === undefined){
                         this.rollDiceButton.visible = true;
@@ -1614,7 +1413,11 @@ class Player{
 
         this.checkMoney = function(){
             if(this.money < 0 && this.ownedPlaces.length == 0){
-                turn = turn%(players.length-1);
+                if (Api.online) {
+                    Api.changeTurn();
+                } else {
+                    turn = turn%(players.length-1);
+                }
 
                 if(players.length-1 === 1){
                     board.win = true;
@@ -1724,7 +1527,15 @@ class Player{
             self.steps = 10;
             board.boardPieces[10].playerStep(true,self);
         }
-        this.teleportTo = function(step){
+        this.teleportTo = function(step, sendToServer = true){
+            console.log(step, this.steps);
+            if (Api.online && sendToServer) {
+                Api.moveTo(step);
+                return;
+            }
+
+            // The animateSteps function seems to have stopped working. I'll need to look into it more tomorrow.
+
             let oldStep = this.steps;
 
             this.steps = step;
@@ -1824,26 +1635,25 @@ class Player{
                                 board.dice2 = dice2;
                                 setTimeout(() => {
                                     board.animateDices = false;
-                                    self.steps += dice1+dice2;
-                                    self.steps = self.steps%40;
-                                    self.animateSteps(oldStep,self.steps,diceSum)
+                                    self.teleportTo(self.steps + dice1 + dice2);
                                 }, 1000);                  
                             }else{
                                 setTimeout(myFunction, counter);
                             }
                         }
                         setTimeout(myFunction, counter);
-                        
-                            
-                        
-                        
                     }else{
-                        turn = (turn+1)%players.length;
+                        if (Api.online) {
+                            Api.changeTurn();
+                        } else {
+                            turn = (turn+1)%players.length;
+                        }
+
                         this.rolls = false;
                         this.numberOfRolls = 0;
+
                         board.dice1 = 0;
                         board.dice2 = 0;
-                        
                     }
                 }else{
                     if(this.rolls === false){
@@ -1869,7 +1679,11 @@ class Player{
                             }, 1000);
                         }
                     }else{
-                        turn = (turn+1)%players.length;
+                        if (Api.online) {
+                            Api.changeTurn();
+                        } else {
+                            turn = (turn+1)%players.length;
+                        }
                         this.rolls = false;
                         this.numberOfRolls = 0;
                     }
@@ -1885,6 +1699,3 @@ class Player{
 
 
 init();
-update();
-
-

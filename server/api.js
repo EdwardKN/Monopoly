@@ -2,6 +2,13 @@
 var websocket = undefined;
 
 /**
+ * @param {Player[]} players
+ */
+function startGame(players) {
+    websocket.broadcastUTF(JSON.stringify(new StartEvent(players)));
+}
+
+/**
  * @param {number} dice1 A value between 1-6
  * @param {number} dice2 A value between 1-6
  */
@@ -27,10 +34,17 @@ function addPlayer(username, index, isBot) {
 }
 
 /**
+ * 
+ * @param {number} id The id of the player whose turn it will be
+ */
+function newTurn(id) {
+    websocket.broadcastUTF(JSON.stringify(new NewTurnEvent(id)));
+}
+
+/**
  * @param {BoardPiece} card The BoardPiece class.
  */
 function showCard(card) {
-    console.log(card);
     websocket.broadcastUTF(JSON.stringify(new ShowCardEvent(card)));
 }
 
@@ -44,9 +58,23 @@ function randomEvent(id, player) {
 }
 
 class Event {
-    constructor(eventType, data) {
+    /**
+     * 
+     * @param {String} eventType 
+     * @param {{}} data 
+     */
+    constructor(eventType, data = {}) {
         this.event_type = eventType;
         this.data = data;
+    }
+}
+
+class NewTurnEvent extends Event {
+    /**
+     * @param {number} id The id of the player whose turn it will be
+     */
+    constructor(id) {
+        super("new_turn_event", { id });
     }
 }
 
@@ -80,6 +108,15 @@ class PlayerJoinEvent extends Event {
     }
 }
 
+class StartEvent extends Event {
+    /**
+     * @param {Player[]} players 
+     */
+    constructor(players) {
+        super("start_game", { players });
+    }
+}
+
 class DiceEvent extends Event {
     /**
      * @param {number} dice1 
@@ -107,5 +144,7 @@ module.exports = {
     randomEvent,
     showCard,
     diceRoll,
+    startGame,
+    newTurn,
     setWebsocket: wss => { websocket = wss }
 }

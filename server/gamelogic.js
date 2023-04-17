@@ -84,7 +84,7 @@ class BoardPiece{
                 }else if(this.piece.type === "income tax"){
                     // 10% of the player's money, up to a max of 200kr
                     var tax = Math.min(200, player.money * 0.10);
-                    api.randomEvent("PAY_TAX");
+                    api.randomEvent("PAY_TAX", player);
                     console.log("Betala " + tax + "kr i skatt")
                     player.money -= tax;
                 }
@@ -163,12 +163,20 @@ class PlayerManager {
     static players = [];
     static getNumberOfPlayers = () => PlayerManager.players.length;
     static playerJoined = () => {
-        var player = new Player(PlayerManager.getNumberOfPlayers(), (Math.random() * 1e6).toString(16), false);
+        var player = new Player(PlayerManager.getNumberOfPlayers(), Math.round(Math.random() * 1e6).toString(16), false);
 
         PlayerManager.players.push(player);
         api.addPlayer(player.name, player.colorIndex, player.bot != undefined);
 
         return PlayerManager.players;
+    }
+
+    /**
+     * 
+     * @param {Player} player
+     */
+    static playerLeft = (player) => {
+        PlayerManager.players.splice(PlayerManager.players.indexOf(player), 1);
     }
 }
 
