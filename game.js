@@ -1246,7 +1246,7 @@ class BoardPiece{
                     }
                 }else if(this.piece.type === "chance"){
 
-                    let random = randomIntFromRange(1,13)
+                    let random = randomIntFromRange(1,14)
                     if(random === 1){
                         alert("Gå till start!")
                         player.teleportTo(0)
@@ -1260,6 +1260,15 @@ class BoardPiece{
                         player.teleportTo(11)
                     }
                     if(random === 4){
+                        alert("Gå till närmsta anläggning")
+                        if(this.n === 7 || this.n === 36){
+                            player.teleportTo(12)
+                        }
+                        if(this.n === 22){
+                            player.teleportTo(28)
+                        }
+                    }
+                    if(random === 5){
                         alert("Gå till närmsta tågstation")
                         if(this.n === 7){
                             player.teleportTo(15)
@@ -1271,23 +1280,23 @@ class BoardPiece{
                             player.teleportTo(5)
                         }
                     }
-                    if(random === 5){
+                    if(random === 6){
                         alert("Få 50kr")
                         player.money += 50;
                     }
-                    if(random === 6){
+                    if(random === 7){
                         alert("Inte inlagd men ska vara ett GET OUT OF JAIL kort")
                         //get out of jail
                     }
-                    if(random === 7){
+                    if(random === 8){
                         alert("Gå bak tre steg")
                         player.teleportTo(-(player.steps-3))
                     }
-                    if(random === 8){
+                    if(random === 9){
                         alert("Gå till finkan!")
                         player.goToPrison();
                     }
-                    if(random === 9){
+                    if(random === 10){
                         alert("Betala 40 för varje hus man har och 115 för varje hotell")
                         board.boardPieces.forEach(function(e){
                             if(player === e.owner){
@@ -1299,20 +1308,20 @@ class BoardPiece{
                             }
                         })
                     }
-                    if(random === 10){
+                    if(random === 11){
                         alert("Gå till södra stationen")
                         player.teleportTo(5);
                     }
-                    if(random === 11){
+                    if(random === 12){
                         alert("Gå till Malmö")
                         player.teleportTo(39);
                     }
-                    if(random === 12){
+                    if(random === 13){
                         alert("Få 50kr av alla andra spelare")
                         player.money += (players.length-1)*50
                         players.forEach(e=> {if(e !== player){e.money-=50}})
                     }
-                    if(random === 13){
+                    if(random === 14){
                         alert("Få 150kr")
                         player.money += 150
                     }
