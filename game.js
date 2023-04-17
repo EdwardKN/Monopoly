@@ -169,7 +169,6 @@ function randomIntFromRange(min, max) {
 };
 
 function playSound(sound,volume){
-    return
     if(sound.type === "single"){
         let myClonedAudio = sound.sound.cloneNode();
         myClonedAudio.volume = volume;
