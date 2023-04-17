@@ -109,7 +109,7 @@ const pieces = [
         img:0
     },
     {
-        name:"Brun 1",
+        name:"Sjöbo",
         price:60,
         rent:[2,10,30,90,160,250],
         housePrice:50,
@@ -123,7 +123,7 @@ const pieces = [
         img:15
     },
     {
-        name:"Brun 2",
+        name:"Eslöv",
         price:60,
         rent:[4,20,60,180,320,450],
         housePrice:50,
@@ -144,7 +144,7 @@ const pieces = [
         card:27
     },
     {
-        name:"Ljusblå 1",
+        name:"Hörby",
         price:100,
         rent:[6,30,90,270,400,550],
         housePrice:50,
@@ -158,7 +158,7 @@ const pieces = [
         img:10
     },
     {
-        name:"Ljusblå 2",
+        name:"Höör",
         price:100,
         rent:[6,30,90,270,400,550],
         housePrice:50,
@@ -167,7 +167,7 @@ const pieces = [
         card:3
     },
     {
-        name:"Ljusblå 3",
+        name:"Furulund",
         price:120,
         rent:[8,40,100,300,450,600],
         housePrice:50,
@@ -180,7 +180,7 @@ const pieces = [
         img:1
     },
     {
-        name:"Rosa 1",
+        name:"Simrishamn",
         price:140,
         rent:[10,50,150,450,625,750],
         housePrice:100,
@@ -196,7 +196,7 @@ const pieces = [
         card:22
     },
     {
-        name:"Rosa 2",
+        name:"Svedala",
         price:140,
         rent:[10,50,150,450,625,750],
         housePrice:100,
@@ -205,7 +205,7 @@ const pieces = [
         card:6
     },
     {
-        name:"Rosa 3",
+        name:"Staffanstorp",
         price:160,
         rent:[12,60,180,500,700,900],
         housePrice:100,
@@ -221,7 +221,7 @@ const pieces = [
         card:24
     },
     {
-        name:"Orange 1",
+        name:"Lomma",
         price:180,
         rent:[14,70,200,550,750,950],
         housePrice:100,
@@ -235,7 +235,7 @@ const pieces = [
         img:15
     },
     {
-        name:"Orange 2",
+        name:"Kävlinge",
         price:180,
         rent:[14,70,200,550,750,950],
         housePrice:100,
@@ -244,7 +244,7 @@ const pieces = [
         card:9
     },
     {
-        name:"Orange 3",
+        name:"Vellinge",
         price:200,
         rent:[16,80,220,600,800,1000],
         housePrice:100,
@@ -257,7 +257,7 @@ const pieces = [
         img:2
     },
     {
-        name:"Röd 1",
+        name:"Båstad",
         price:220,
         rent:[18,90,250,700,875,1050],
         housePrice:150,
@@ -271,7 +271,7 @@ const pieces = [
         img:8
     },
     {
-        name:"Röd 2",
+        name:"Höganäs",
         price:220,
         rent:[18,90,250,700,875,1050],
         housePrice:150,
@@ -280,7 +280,7 @@ const pieces = [
         card:12
     },
     {
-        name:"Röd 3",
+        name:"Hässleholm",
         price:240,
         rent:[20,100,300,750,925,1100],
         housePrice:150,
@@ -296,7 +296,7 @@ const pieces = [
         card:26
     },
     {
-        name:"Gul 1",
+        name:"Ystad",
         price:260,
         rent:[22,110,330,800,975,1150],
         housePrice:150,
@@ -305,7 +305,7 @@ const pieces = [
         card:14
     },
     {
-        name:"Gul 2",
+        name:"Ängelholm",
         price:260,
         rent:[22,110,330,800,975,1150],
         housePrice:150,
@@ -321,7 +321,7 @@ const pieces = [
         card:23
     },
     {
-        name:"Gul 3",
+        name:"Trelleborg",
         price:280,
         rent:[24,120,360,850,1025,1200],
         housePrice:150,
@@ -334,7 +334,7 @@ const pieces = [
         img:3
     },
     {
-        name:"Grön 1",
+        name:"Landskrona",
         price:300,
         rent:[26,130,390,900,1100,1275],
         housePrice:200,
@@ -343,7 +343,7 @@ const pieces = [
         card:17
     },
     {
-        name:"Grön 2",
+        name:"Kristianstad",
         price:300,
         rent:[26,130,390,900,1100,1275],
         housePrice:200,
@@ -357,7 +357,7 @@ const pieces = [
         img:15
     },
     {
-        name:"Grön 3",
+        name:"Lund",
         price:320,
         rent:[28,150,450,1000,1200,1400],
         housePrice:200,
@@ -378,7 +378,7 @@ const pieces = [
         img:9
     },
     {
-        name:"Blå 1",
+        name:"Helsingborg",
         price:350,
         rent:[35,175,500,1100,1300,1500],
         housePrice:200,
@@ -393,7 +393,7 @@ const pieces = [
         type:"tax"
     },
     {
-        name:"Blå 2", 
+        name:"Malmö", 
         price:400,
         rent:[50,200,600,1400,1700,2000],
         housePrice:200,
