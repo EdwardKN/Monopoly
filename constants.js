@@ -6,7 +6,7 @@ var players = [];
 
 const drawScale = 2;
 
-const fastLoad = true;
+const fastLoad = false;
 
 var f = new FontFace('Arcade', 'url(./fonts/SFPixelate-Bold.ttf)');
 
@@ -113,7 +113,7 @@ const pieces = [
         price:60,
         rent:[2,10,30,90,160,250],
         housePrice:50,
-        group:"Brown",
+        group:"brown",
         img:0,
         card:0
     },
@@ -127,7 +127,7 @@ const pieces = [
         price:60,
         rent:[4,20,60,180,320,450],
         housePrice:50,
-        group:"Brown",
+        group:"brown",
         img:0,
         card:1
     },
