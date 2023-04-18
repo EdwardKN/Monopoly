@@ -324,6 +324,7 @@ class Board{
         this.animateDices = false;
         this.win = false;
         this.auction = undefined;
+        this.trade = undefined;
         this.rollDiceButton = new Button(10,250,images.buttons.img[0],function(){players[turn].rollDice()},107,23)
         this.nextPlayerButton = new Button(10,250,images.buttons.img[1],function(){players[turn].rollDice()},107,23)
         this.currentCard = undefined;
@@ -411,6 +412,9 @@ class Board{
             if(this.auction !== undefined){
                 this.auction.update();
             }
+            if(this.trade !== undefined){
+                this.trade.update();
+            }
         }  
 
         
@@ -434,7 +438,7 @@ class Board{
                     }
 
 
-                    if(this.currentCard.owner === players[turn]){
+                    if(this.currentCard.owner === players[turn] && players[turn].bot === undefined){
                         this.cardCloseButton.visible = true;
                         this.sellButton.draw();
                         this.sellButton.visible = true;
@@ -485,7 +489,7 @@ class Board{
                 }else{
                     this.cardCloseButton.visible = true;
 
-                    if(this.currentCard === board.boardPieces[(players[turn].steps)] && this.auction === undefined){
+                    if(this.currentCard === board.boardPieces[(players[turn].steps)] && this.auction === undefined && players[turn].bot === undefined){
                             
                         
                         this.buyButton.draw();
@@ -559,6 +563,13 @@ class Trade{
     constructor(p1,p2){
         this.p1 = p1;
         this.p2 = p2;
+        this.closeButton = new Button(301,44,images.buttons.img[7],function(){board.trade = undefined;},18,18)
+        this.closeButton.visible = true;
+
+        this.update = function(){
+            drawIsometricImage(0,0,images.trade.img[0],false,0,0,images.trade.img[0].width,images.trade.img[0].height,-192,images.trade.img[0].height/7.5,1)
+            this.closeButton.draw();
+        }
     }
 }
 
@@ -584,7 +595,8 @@ class PlayerBorder{
         },260,54,false,false,true) 
 
         this.createTradebutton = new Button(this.x,this.y,images.buttons.img[9],function(){
-
+            self.showInfo = false;
+            board.trade = new Trade(players[turn],self.player);
         },219,34,false,false,true)
 
         this.init = function(){
@@ -752,7 +764,7 @@ class PlayerBorder{
                     }
                     drawRotatedImage(this.x*drawScale,this.y*drawScale + 53*drawScale*1.5 +27*drawScale*this.player.ownedPlaces.length,260*drawScale ,27*drawScale,images.playerOverlay.img[10],0,this.button.mirror,0,0,260,27,false)
                     drawRotatedImage(this.x*drawScale,this.y*drawScale + 53*drawScale*1.5 +27*drawScale*(this.player.ownedPlaces.length+1),260*drawScale ,27*drawScale,images.playerOverlay.img[9],0,this.button.mirror,0,0,260,27,false)
-                    if(players[turn] !== this.player){
+                    if(players[turn] !== this.player && board.trade === undefined){
                         this.createTradebutton.visible = true;
                     }else{
                         this.createTradebutton.visible = false;
@@ -792,7 +804,7 @@ class PlayerBorder{
                     drawRotatedImage(this.x*drawScale,this.y*drawScale - 35*drawScale*1.5 -27*drawScale*this.player.ownedPlaces.length,260*drawScale ,27*drawScale,images.playerOverlay.img[10],0,this.button.mirror,0,0,260,27,false)
                     drawRotatedImage(this.x*drawScale,this.y*drawScale - 35*drawScale*1.5 -27*drawScale*(this.player.ownedPlaces.length+1),260*drawScale ,27*drawScale,images.playerOverlay.img[9],180,!this.button.mirror,0,0,260,27,false)
                     this.createTradebutton.y = this.y - 60 - 27*this.player.ownedPlaces.length;
-                    if(players[turn] !== this.player){
+                    if(players[turn] !== this.player && board.trade === undefined){
                         this.createTradebutton.visible = true;
                     }else{
                         this.createTradebutton.visible = false;
@@ -952,7 +964,7 @@ class Auction{
 }
 
 class Button{
-    constructor(x,y,img,onClick,w,h,showBorder,mirror,screencenter){
+    constructor(x,y,img,onClick,w,h,showBorder,mirror,screencenter,text,textSize){
         this.x = x;
         this.y = y;
         this.w = w;
@@ -964,6 +976,8 @@ class Button{
         this.hover = false;
         this.mirror = false;
         this.screencenter = false;
+        this.text = text;
+        this.textSize = textSize;
         if(mirror === true){
             this.mirror = true;
         }
@@ -1118,7 +1132,7 @@ class BoardPiece{
         this.update = function () {
             let mouseSquareX = (to_grid_coordinate(mouse.x-416*drawScale,mouse.y).x/64) 
             let mouseSquareY = (to_grid_coordinate(mouse.x-416*drawScale,mouse.y).y/64)
-            if(board.currentCard !== undefined || this.piece.type === "chance" || this.piece.type === "community Chest" || this.piece.type === "income tax" || this.piece.type === "tax" ||this.n%10 === 0 || board.auction !== undefined ){
+            if(board.currentCard !== undefined || this.piece.type === "chance" || this.piece.type === "community Chest" || this.piece.type === "income tax" || this.piece.type === "tax" ||this.n%10 === 0 || board.auction !== undefined || board.trade !== undefined){
                 this.offsetY = 0;
                 this.hover = false;
             }else if(this.x/64*drawScale > mouseSquareX-1*drawScale && this.x/64*drawScale < mouseSquareX && this.side === 2 && this.n%10 !== 0 && mouseSquareY >= 0*drawScale && mouseSquareY < 2*drawScale
@@ -1192,7 +1206,7 @@ class BoardPiece{
        
 
         this.click = function(){
-            if(this.hover === true && players[turn].bot === undefined){
+            if(this.hover === true){
                 playSound(sounds.release,1)
 
                 if(this.piece.card === undefined){
