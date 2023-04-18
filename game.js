@@ -197,7 +197,7 @@ function init(){
     let botAmount = -2;
 
     if(fastLoad === true){
-        playerAmount = 2;
+        playerAmount = 1;
         botAmount = 1;
     }
 
@@ -575,11 +575,14 @@ class Trade{
         this.closeButton.visible = true;
 
         this.p1ConfirmButton = new Button(true,-145,350,images.trade.img[1],function(){},150,50)
-        this.p1ConfirmButton.visible = true;
+        if(this.p1.bot === undefined){
+            this.p1ConfirmButton.visible = true;
+        }
 
         this.p2ConfirmButton = new Button(true,120,350,images.trade.img[1],function(){},150,50)
-        this.p2ConfirmButton.visible = true;
-
+        if(this.p2.bot === undefined){
+            this.p2ConfirmButton.visible = true;
+        }
         this.p1PropertyButtons = [];
         this.p2PropertyButtons = [];
 
@@ -588,19 +591,29 @@ class Trade{
             if(i >= 14){
                 tmp = 107
             }
-            self.p1PropertyButtons.push(new Button(true,-170 + tmp,100 + 18*(i%14),images.trade.img[2],function(){
+            let but = (new Button(true,-170 + tmp,100 + 18*(i%14),images.trade.img[2],function(){
 
             },106,17,false,false,false,false,e.piece.name + " " + e.piece.price + "kr","13px Arcade"))
+
+            if(self.p1.bot !== undefined){
+                but.disabled = true;
+            }
+            self.p1PropertyButtons.push(but);
         })
+        
         this.p2.ownedPlaces.forEach(function(e,i){
             let tmp = 0;
-            let tmpI = i;
             if(i >= 14){
                 tmp = 107
             }
-            self.p2PropertyButtons.push(new Button(true,90 + tmp,100 + 18*(i%14),images.trade.img[2],function(){
+            let but = (new Button(true,90 + tmp,100 + 18*(i%14),images.trade.img[2],function(){
 
             },106,17,false,false,false,false,e.piece.name + " " + e.piece.price + "kr","13px Arcade"))
+
+            if(self.p2.bot !== undefined){
+                but.disabled = true;
+            }
+            self.p2PropertyButtons.push(but);
         })
         this.update = function(){
             drawIsometricImage(0,0,images.trade.img[0],false,0,0,images.trade.img[0].width,images.trade.img[0].height,-192,images.trade.img[0].height/50,1)
@@ -1110,7 +1123,11 @@ class Button{
                         if(this.screencenter){
                             drawRotatedImage(this.x,this.y,this.w*drawScale,this.h*drawScale,this.img,0,this.mirror,0,this.w*2,this.w,this.h,false)
                         }else{
-                            drawIsometricImage(0,0,this.img,this.mirror,this.w*2,0,this.w,this.h,this.x,this.y)
+                            if(this.select === false){
+                                drawIsometricImage(0,0,this.img,this.mirror,this.w*2,0,this.w,this.h,this.x,this.y)
+                            }else{
+                                drawIsometricImage(0,0,this.img,this.mirror,0,0,this.w,this.h,this.x,this.y)
+                            }
                         }
                     }else{
                         if(detectCollition(canvas.width/2 + this.x*drawScale - 64*drawScale,canvas.height/2 + this.y*drawScale - 208*drawScale,this.w*drawScale,this.h*drawScale,mouse.realX,mouse.realY,1,1)){
