@@ -1711,7 +1711,7 @@ class Player{
                     
 
                 }
-            },300);
+            },250);
         }
 
         this.animateDice = function(dice1,dice2,callback){
