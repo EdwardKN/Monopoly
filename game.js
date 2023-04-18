@@ -694,8 +694,8 @@ class PlayerBorder{
             this.button.x = this.x
             this.button.visible = true;
             this.button.draw()
-            this.createTradebutton.y = this.y + 80
-            this.createTradebutton.x = this.x + 20
+            this.createTradebutton.y = this.y + 80 + 27*this.player.ownedPlaces.length;
+            this.createTradebutton.x = this.x + 20 
             
             let mirrorAdder = 0;
             if(!this.button.mirror){
