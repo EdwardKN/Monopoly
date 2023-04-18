@@ -23,7 +23,7 @@ if (network == undefined) {
 }
 
 var port = 60000 + Math.round((Math.random() - 0.5) * 10000);
-var server = https.createServer({ key: readFileSync("./certs/domain.key"), cert: readFileSync("./certs/domain.crt"), passphrase: readFileSync("./certs/passphrase").toString("utf-8") }, serverHandler).listen(port, () => console.log("Clients can now connect at the Address:\n%s:%s\n", network, port));
+var server = https.createServer({ key: readFileSync("./certs/monopoly.key"), cert: readFileSync("./certs/monopoly.crt"), passphrase: readFileSync("./certs/passphrase").toString("utf-8") }, serverHandler).listen(port, () => console.log("Clients can now connect at the Address:\n%s:%s\n", network, port));
 
 const COUNTDOWN_DURATION = 30 * 1000;
 var startGameTimer = undefined;
