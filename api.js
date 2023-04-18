@@ -4,6 +4,7 @@
  * shouldn't be accessed from outside this class.
  */
 class Api {
+    // Websocket used to communicate to the server
     static _websocket = undefined;
 
     // Whether or not this is in multiplayer mode
@@ -13,35 +14,65 @@ class Api {
     static currentPlayer = -1;
 
     /**
-     * 
-     * @param {number} amountOfTilesMoved 
+     * Move to some location
+     * @param {number} location 
      */
-    static moveTo(amountOfTilesMoved) {
-        var data = {
-            "event_type": "move",
-            "tiles_moved": amountOfTilesMoved
-        }
-        Api.getWebSocket().send(JSON.stringify(data));
+    static moveTo(location) {
+        Api.getWebSocket().send(JSON.stringify({ "event_type": "move", "tiles_moved": location }));
     }
 
     /**
-     * 
-     * @param {number} bidAmount The amount of money to bid, (-1 is the same as the the player giving up)
+     * Bid in an auction
+     * @param {number} bid The amount of money to bid, (-1 is the same as the the player giving up)
+     * @param {BoardPiece} tile The boardpiece which is up for auction
+     * @param {boolean} isOut Whether or not this player is out
      */
-    static auctionBid(bidAmount) {
-
+    static auctionBid(tile, bid, isOut) {
+        Api.getWebSocket().send(JSON.stringify({ event_type: "auction_bid", tile: tile.piece, bid, is_out: isOut }));
     }
 
+    /**
+     * Start an auction
+     * @param {BoardPiece} tile The boardpiece which is up for auction
+     */
+    static auctionStart(tile) {
+        Api.getWebSocket().send(JSON.stringify({ event_type: "auction_start", tile: tile.piece }));
+    }
+
+    /**
+     * Show an auction
+     * @param {BoardPiece} tile The boardpiece which is up for auction
+     */
+    static auctionShow(tile) {
+        Api.getWebSocket().send(JSON.stringify({ event_type: "auction_show", tile: tile.piece }));
+    }
+
+    /**
+     * @Unimplemented
+     * @param {String} type Either CHANCE_CARD or COMMUNITY_CHEST
+     * @param {number} id The id of the event
+     */
+    static randomEvent(type, id) {
+        if (!/^(CHANCE_CARD|COMMUNITY_CHEST)$/.test(type)) throw "Invalid event type";
+        
+        // ID system should work, given that both clients play the same version of the game
+        Api.getWebSocket().send(JSON.stringify({ event_type: "random_event", type, id }));
+    }
+
+    /**
+     * Change turn to the next player
+     */
     static changeTurn() {
         Api.getWebSocket().send(JSON.stringify({ event_type: "change_turn" }));
     }
 
     /**
-     * 
+     * Purchase a tile
      * @param {BoardPiece} tile The boardpiece that has been purchased
+     * @param {number|undefined} price If this was purchased through an auction, this is the price paid for it.
      */
-    static tilePurchased(tile) {
-        Api.getWebSocket().send(JSON.stringify({ event_type: "tile_purchased", tile: tile.piece }))
+    static tilePurchased(tile, price) {
+        Api.getWebSocket().send(JSON.stringify({ event_type: "tile_purchased", tile: tile.piece, price }));
     }
 
     /**

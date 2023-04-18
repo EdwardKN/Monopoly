@@ -108,13 +108,29 @@ function websocketHandler(request) {
                     api.newTurn(newPlayer.colorIndex);
                     break;
                 case "tile_purchased":
-                    // This players id, money, which tile
-                    player.money -= event.tile.price;
+                    player.money -= event.price || event.tile.price;
                     console.log("[S<-C] Player (%s) purchased the tile: (%s). Remaining balance: %dkr", player.name, event.tile.name, player.money);
 
                     // BoardPiece.piece.card is the image it should be, therefore this can be used as an id in the same manner that Player.colorIndex is used as an id.
                     api.tilePurchased(player.colorIndex, player.money, event.tile.card);
-                    break;            
+                    break;
+                case "random_event":
+                    console.log("[S<-C] Random event with id: (%s; %s) happened to player (%s)", event.id, event.type, player.name);
+                    api.randomEvent(event.id, player, event.type);
+                    break;
+                case "auction_start":
+                    console.log("[S<-C] Auction of tile (%s) started", event.tile.name);
+                    api.auctionStart(event.tile.card);
+                    break;
+                case "auction_show":
+                    console.log("[S<-C] Auction of tile (%s) shown", event.tile.name);
+                    api.auctionShow(event.tile.card);
+                    break;
+                case "auction_bid":
+                    var newPlayer = gamelogic.PlayerManager.players[(gamelogic.PlayerManager.players.indexOf(player) + 1) % gamelogic.PlayerManager.getNumberOfPlayers()];
+                    console.log("[S<-C] Player (%s) bid %dkr on tile (%s)", player.name, event.bid, event.tile.name);
+                    api.auctionBid(player.colorIndex, newPlayer.colorIndex, event.bid, event.tile.card, event.is_out);
+                    break;
                 default:
                     console.log(event);
                     console.error("<Warning> Event (%s) doesn't have any handler", event.event_type);

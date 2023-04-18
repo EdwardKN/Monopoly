@@ -377,13 +377,61 @@ async function init(){
 
                 currentCard.owner = player;
                 board.currentCard = undefined;
+
+                clearInterval(board?.auction?.timer);
+                board.auction = undefined;
+
+                board.buyButton.visible = false;
+                board.auctionButton.visible = false;
+            });
+
+            document.body.addEventListener("auction_show_event", (evt) => {
+                var data = evt.detail;
+                var currentCard = board.boardPieces.find(x => x.piece.card == data.tile);
+
+                board.auction = new Auction(currentCard);
+                board.currentCard = undefined;
+                board.buyButton.visible = false;
+                board.auctionButton.visible = false;
+            });
+
+            document.body.addEventListener("auction_start_event", (evt) => {
+                board.auction.started = true;
+                board.auction.timer = setInterval(() => {
+                    board.auction.time -= 1;
+                }, 10);
             })
+
+            document.body.addEventListener("auction_bid_event", (evt) => {
+                var data = evt.detail;
+
+                if (data.is_out) {
+                    if (board.auction == undefined) return;
+
+                    board.auction.playerlist.splice(board.auction.playerlist.findIndex(x => x.colorIndex == data.player), 1);
+                    if (board.auction.playerlist.length == 1 && board.auction.playerlist[0].colorIndex == Api.currentPlayer) {
+                        Api.tilePurchased(board.auction.card, board.auction.auctionMoney);
+                    }
+                } else {
+                    board.auction.auctionMoney = data.money;
+                    board.auction.turn = board.auction.playerlist.findIndex(x => x.colorIndex == data.nextPlayer);
+                }
+                board.auction.time = 472;
+
+
+                if (data.player == Api.currentPlayer) {
+                    // Remove buttons
+                    board.auction.addMoneyButton2.visible = false;
+                    board.auction.addMoneyButton10.visible = false;
+                    board.auction.addMoneyButton100.visible = false;
+                }
+            });
             
             await Api.openWebsocketConnection(serverURL);
 
             // Lobby
-            // 2 minutes after the first player joined (or when there's 8 players), start the game
-            // Meanwhile show some menu with the other players and a countdown for how long there's left until the game starts
+            // 1 minute after the first player joined (or when there's 8 players), start the game
+            // Meanwhile show some menu with the other players and a countdown for how long there's left until the game starts, maybe some settings should be available to set for the host
         } catch(err) {
             alert("IMPORTANT\nYou will now be redirected to another page\nIt's important that you click on Advanced...>Accept the Risk and Continue\nIf you don't, you won't be able to connect to the game");
             location = "https://" + serverURL + "/" + btoa(location.href);
@@ -588,6 +636,11 @@ class Board{
         },97,40);
 
         this.auctionButton = new Button(-43 + 117,300,images.buttons.img[8],function(){
+            if (Api.online) {
+                Api.auctionShow(board.currentCard);
+                return;
+            }
+
             board.auction = new Auction(board.currentCard)
             board.currentCard = undefined;
             board.buyButton.visible = false;
@@ -785,7 +838,7 @@ class Board{
 }
 
 class Auction{
-    constructor(card){
+    constructor(card) {
         this.card = card;
         this.turn = 0;
         this.auctionMoney = 0;
@@ -805,12 +858,16 @@ class Auction{
             board.auction.addMoney(100);
         },54,54,false)
         this.startAuctionButton = new Button(-150,220,images.auction.img[5],function(){
+            if (Api.online) {
+                Api.auctionStart(board.auction.card);
+                return;
+            }
             board.auction.started = true;
             board.auction.timer = setInterval(function(){
                 board.auction.time--;
             },10);
         },240,40,false)
-
+        
         this.draw = function(){
             drawIsometricImage(0,0,images.card.img[card.piece.card],false,0,0,images.card.img[this.card.piece.card].width,images.card.img[this.card.piece.card].height,images.card.img[this.card.piece.card].width/3,images.card.img[this.card.piece.card].height/7.5,1)
             drawIsometricImage(0,0,images.auction.img[0],false,0,0,images.auction.img[0].width,images.card.img[this.card.piece.card].height,-images.card.img[this.card.piece.card].width/1.5,images.card.img[this.card.piece.card].height/7.5,1)
@@ -820,9 +877,9 @@ class Auction{
             c.fillText(this.auctionMoney + "kr", canvas.width/2-190, canvas.height/2 - 75);
             c.font = "80px calibri";
             c.fillText(this.playerlist[this.turn].name, canvas.width/2-190, canvas.height/2 - 150);
-
+            
             if(this.started){
-                if(this.playerlist[this.turn].bot === undefined){
+                if ((!Api.online && this.playerlist[this.turn].bot === undefined) || (Api.online && Api.currentPlayer == this.playerlist[this.turn].colorIndex)) {
                     this.startAuctionButton.visible = false;
                     this.addMoneyButton2.visible = true;
                     this.addMoneyButton2.draw();
@@ -831,6 +888,7 @@ class Auction{
                     this.addMoneyButton100.visible = true;
                     this.addMoneyButton100.draw();
                 }
+                
                 drawIsometricImage(0,0,images.auction.img[4],false,0,30,240,30,-150,220,1)
                 if(this.time > 472){
                     this.time = 472
@@ -860,6 +918,8 @@ class Auction{
                     c.fillRect(canvas.width/2+ 48,canvas.height/2 + 32,2,44)
                 }
                 if(this.time < -6){
+                    if (Api.online && this.playerlist[this.turn].colorIndex == Api.currentPlayer) Api.auctionBid(this.card, -1, true);
+                    
                     this.playerlist.splice(this.playerlist.indexOf(this.playerlist[this.turn]),1)
                     this.turn = (this.turn)%this.playerlist.length;
                     this.time = 472;
@@ -875,40 +935,41 @@ class Auction{
                                 board.auction = undefined;
                             }
                         }
-
+                        
                     }
                 }
-    
-                
             }else{
-                this.startAuctionButton.visible = true;
+                if (Api.online) {
+                    this.startAuctionButton.visible = Api.currentPlayer == turn;
+                } else {
+                    this.startAuctionButton.visible = true;
+                }
+                
                 this.startAuctionButton.draw();
             }
-            
+        }
 
-        }
-        this.update = function(){
-        if(this.playerlist[this.turn].money < (this.auctionMoney+2)){
-            this.addMoneyButton2.disabled = true;
-        }else{
-            this.addMoneyButton2.disabled = false;
-        }
-        if(this.playerlist[this.turn].money < (this.auctionMoney+10)){
-            this.addMoneyButton10.disabled = true;
-        }else{
-            this.addMoneyButton10.disabled = false;
-        }
-        if(this.playerlist[this.turn].money < (this.auctionMoney+100)){
-            this.addMoneyButton100.disabled = true;
-        }else{
-            this.addMoneyButton100.disabled = false;
-        }
+        this.update = function() {
+            if (Api.online) {
+                this.addMoneyButton2.disabled = players[Api.currentPlayer].money < this.auctionMoney + 2;
+                this.addMoneyButton10.disabled = players[Api.currentPlayer].money < this.auctionMoney + 10;
+                this.addMoneyButton100.disabled = players[Api.currentPlayer].money < this.auctionMoney + 100;
+            } else {
+                this.addMoneyButton2.disabled = this.playerlist[this.turn].money < this.auctionMoney + 2;
+                this.addMoneyButton10.disabled = this.playerlist[this.turn].money < this.auctionMoney + 10;
+                this.addMoneyButton100.disabled = this.playerlist[this.turn].money < this.auctionMoney + 100;
+            }
             this.draw();
-            
         }
-        this.addMoney = function(money){
+
+        this.addMoney = function(money) {
+            if (Api.online) {
+                Api.auctionBid(this.card, this.auctionMoney + money, false);
+                return;
+            }
+
             this.auctionMoney += money;
-            this.turn = (this.turn+1)%this.playerlist.length;
+            this.turn = (this.turn+1) % this.playerlist.length;
             this.time = 472;
         }
     }

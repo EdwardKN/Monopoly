@@ -1,2 +1,4 @@
 # Don't expose SSL certificates publicly on github
-certs/
+# You need to create your own certificate to be able to run the server
+# One alternative to do that is OpenSSL.
+/server/certs/

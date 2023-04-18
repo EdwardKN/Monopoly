@@ -50,21 +50,51 @@ function newTurn(id) {
  * Send an event to the clients that another player drew a chance card or community chest
  * @param {String} id The id of the event
  * @param {Player} player The player this event happened to
+ * @param {String} type Whether this is CHANCE_CARD or COMMUNITY_CHEST
  */
-function randomEvent(id, player) {
-    console.log("[S->C] Random event with id: (%s) happened to player (%s)", id, player.name);
-    websocket.broadcastUTF(JSON.stringify(new RandomEvent(id, player.colorIndex)));
+function randomEvent(id, player, type) {
+    console.log("[S->C] Random event with id: (%s; %s) happened to player (%s)", id, type, player.name);
+    websocket.broadcastUTF(JSON.stringify(new RandomEvent(id, type, player.colorIndex)));
 }
 
 /**
- * 
+ * This is sent both when an auction is won and when a tile is purchased
  * @param {number} player The id of the player
  * @param {number} money The remaining balance of this player
  * @param {number} tile The id of the tile
  */
 function tilePurchased(player, money, tile) {
-    console.log("[S<-C] Player (%s) purchased the tile: (%d). Remaining balance: %dkr", player, tile, money);
+    console.log("[S->C] Player (%s) purchased the tile: (%d). Remaining balance: %dkr", player, tile, money);
     websocket.broadcastUTF(JSON.stringify(new TilePurchasedEvent(player, money, tile)));
+}
+
+/**
+ * 
+ * @param {number} player The id of the player who bid
+ * @param {number} nextPlayer The id of the next player
+ * @param {number} bid The amount of money bid
+ * @param {number} tile The id of the tile which is up for auction
+ * @param {boolean} isOut Whether or not this player is out of the auction
+ */
+function auctionBid(player, nextPlayer, bid, tile, isOut) {
+    console.log("[S->C] Player (%s) bid: %dkr on the tile: (%d)", player, bid, tile);
+    websocket.broadcastUTF(JSON.stringify(new AuctionBidEvent(player, nextPlayer, bid, tile, isOut)));
+}
+
+/**
+ * @param {number} tile The tile which was put up for auction
+ */
+function auctionStart(tile) {
+    console.log("[S->C] Auction of tile (%s) started", tile);
+    websocket.broadcastUTF(JSON.stringify(new AuctionStartEvent(tile)));
+}
+
+/**
+ * @param {number} tile The tile which was put up for auction
+ */
+function auctionShow(tile) {
+    console.log("[S->C] Auction of tile (%s) shown", tile);
+    websocket.broadcastUTF(JSON.stringify(new AuctionShowEvent(tile)));
 }
 
 class Event {
@@ -76,6 +106,37 @@ class Event {
     constructor(eventType, data = {}) {
         this.event_type = eventType;
         this.data = data;
+    }
+}
+
+class AuctionShowEvent extends Event {
+    /**
+     * @param {number} tile The tile which was put up for auction
+     */
+    constructor(tile) {
+        super("auction_show_event", { tile });
+    }
+}
+
+class AuctionBidEvent extends Event {
+    /**
+     * 
+     * @param {number} player The id of the player who bid
+     * @param {number} nextPlayer The id of the next player
+     * @param {number} bid The amount of money bid
+     * @param {number} tile The id of the tile which is up for auction
+     */
+    constructor(player, nextPlayer, money, tile, isOut) {
+        super("auction_bid_event", { player, nextPlayer, money, tile, is_out: isOut });
+    }
+}
+
+class AuctionStartEvent extends Event {
+    /**
+     * @param {number} tile The tile which was put up for auction
+     */
+    constructor(tile) {
+        super("auction_start_event", { tile });
     }
 }
 
@@ -104,9 +165,10 @@ class RandomEvent extends Event {
     /**
      * @param {String} id 
      * @param {number} player
+     * @param {String} type
      */
-    constructor(id, player) {
-        super("random_card", { id, player });
+    constructor(id, type, player) {
+        super("random_card", { id, type, player });
     }
 }
 
@@ -154,9 +216,11 @@ class MoveEvent extends Event {
 module.exports = {
     teleportTo,
     addPlayer,
-    randomEvent, // Unused
+    randomEvent,
     tilePurchased,
-    diceRoll, // Unused
+    auctionStart,
+    auctionShow,
+    auctionBid,
     startGame,
     newTurn,
     setWebsocket: wss => { websocket = wss; }
