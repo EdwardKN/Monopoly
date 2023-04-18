@@ -97,6 +97,8 @@ function websocketHandler(request) {
             var event = JSON.parse(message.utf8Data);
             switch(event.event_type) {
                 case "move":
+                    // There's only 39 tiles on the board
+                    event.tiles_moved %= 40;
                     console.log("[S<-C] Player (%s) moved to tile: %d", player.name, event.tiles_moved);
                     player.teleportTo(event.tiles_moved);
                     break;
