@@ -574,10 +574,10 @@ class Trade{
         this.closeButton = new Button(301,44,images.buttons.img[7],function(){self.closeButton.visible = false;board.trade = undefined;},18,18)
         this.closeButton.visible = true;
 
-        this.p1ConfirmButton = new Button(-110,320,images.trade.img[1],function(){},85,22)
+        this.p1ConfirmButton = new Button(-145,310,images.trade.img[1],function(){},150,50)
         this.p1ConfirmButton.visible = true;
 
-        this.p2ConfirmButton = new Button(150,320,images.trade.img[1],function(){},85,22)
+        this.p2ConfirmButton = new Button(120,310,images.trade.img[1],function(){},150,50)
         this.p2ConfirmButton.visible = true;
 
         this.p1PropertyButtons = [];
@@ -585,7 +585,7 @@ class Trade{
         this.p1.ownedPlaces.forEach(function(e,i){
             self.p1PropertyButtons.push(new Button(-170,150,images.trade.img[2],function(){
 
-            },211,27,false,false,false,false,e.piece.name + " " + e.piece.price + "kr","30px Arcade"))
+            },106,17,false,false,false,false,e.piece.name + " " + e.piece.price + "kr","15px Arcade"))
         })
         this.update = function(){
             drawIsometricImage(0,0,images.trade.img[0],false,0,0,images.trade.img[0].width,images.trade.img[0].height,-192,images.trade.img[0].height/7.5,1)
@@ -594,8 +594,7 @@ class Trade{
             this.p2ConfirmButton.draw();
             drawRotatedText(canvas.width/2-300,200,this.p1.name,"50px Arcade",0,"black",false)
             drawRotatedText(canvas.width/2+300-30,200,this.p2.name,"50px Arcade",0,"black",false)
-            this.p1PropertyButtons.forEach(e => {e.visible=true;e.draw()})
-            
+            this.p1PropertyButtons.forEach(e => {e.visible=true;e.draw()});
         }
     }
 }
@@ -1067,7 +1066,7 @@ class Button{
                     c.font = this.font;
                     c.fillStyle = "black"
                     c.textAlign = "left"
-                    c.fillText(this.text,canvas.width/2 + this.x*drawScale - 64*drawScale + 20,canvas.height/2 + this.y*drawScale - 208*drawScale + this.h+10)
+                    c.fillText(this.text,canvas.width/2 + this.x*drawScale - 64*drawScale + 20,canvas.height/2 + this.y*drawScale - 208*drawScale + this.h + 2)
                 }
                 
             }else if(this.visible){
