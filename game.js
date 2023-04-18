@@ -853,7 +853,7 @@ class PlayerBorder{
                     }
                     drawRotatedImage(this.x*drawScale,this.y*drawScale + 53*drawScale*1.5 +27*drawScale*this.player.ownedPlaces.length,260*drawScale ,27*drawScale,images.playerOverlay.img[10],0,this.button.mirror,0,0,260,27,false)
                     drawRotatedImage(this.x*drawScale,this.y*drawScale + 53*drawScale*1.5 +27*drawScale*(this.player.ownedPlaces.length+1),260*drawScale ,27*drawScale,images.playerOverlay.img[9],0,this.button.mirror,0,0,260,27,false)
-                    if(players[turn] !== this.player && board.trade === undefined){
+                    if(players[turn] !== this.player && board.trade === undefined && players[turn].bot === undefined){
                         this.createTradebutton.visible = true;
                     }else{
                         this.createTradebutton.visible = false;
