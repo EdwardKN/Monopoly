@@ -583,17 +583,22 @@ class Trade{
         this.p1PropertyButtons = [];
 
         this.p1.ownedPlaces.forEach(function(e,i){
-            self.p1PropertyButtons.push(new Button(false,true,-170,150,images.trade.img[2],function(){
+            let tmp = 0;
+            let tmpI = i;
+            if(i >= 10){
+                tmp = 110
+            }
+            self.p1PropertyButtons.push(new Button(true,-170 + tmp,150 + 20*(i%10),images.trade.img[2],function(){
 
-            },106,17,false,false,false,false,e.piece.name + " " + e.piece.price + "kr","15px Arcade"))
+            },106,17,false,false,false,false,e.piece.name + " " + e.piece.price + "kr","13px Arcade"))
         })
         this.update = function(){
             drawIsometricImage(0,0,images.trade.img[0],false,0,0,images.trade.img[0].width,images.trade.img[0].height,-192,images.trade.img[0].height/7.5,1)
             this.closeButton.draw();
             this.p1ConfirmButton.draw();
             this.p2ConfirmButton.draw();
-            drawRotatedText(canvas.width/2-300,200,this.p1.name,"50px Arcade",0,"black",false)
-            drawRotatedText(canvas.width/2+300-30,200,this.p2.name,"50px Arcade",0,"black",false)
+            drawRotatedText(canvas.width/2-300 -offsets.x,200,this.p1.name,"50px Arcade",0,"black",false)
+            drawRotatedText(canvas.width/2+300-30 -offsets.x,200,this.p2.name,"50px Arcade",0,"black",false)
             this.p1PropertyButtons.forEach(e => {e.visible=true;e.draw()});
         }
     }
@@ -611,7 +616,7 @@ class PlayerBorder{
         let self = this;
         
         
-        this.button = new Button(false,false,this.x,this.y,images.playerOverlay.img[8],function(){
+        this.button = new Button(false,this.x,this.y,images.playerOverlay.img[8],function(){
             players.forEach(e =>{if(e.playerBorder.showInfo && e.playerBorder != self){e.playerBorder.showInfo = false}})
             if(!self.showInfo){
                 self.showInfo = true;
