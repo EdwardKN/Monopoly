@@ -76,6 +76,16 @@ class Api {
     }
 
     /**
+     * Purchase a property
+     * @param {BoardPiece} tile The boardpiece that has been modified
+     * @param {number} newLevel The new level of this property
+     * @param {boolean} isUpgrade Whether the level of this went up or down
+     */
+    static propertyChangedLevel(tile, newLevel, isUpgrade) {
+        Api.getWebSocket().send(JSON.stringify({ event_type: "property_changed", tile: { ...tile.piece, side: tile.side }, new_level: newLevel, is_upgrade: isUpgrade }));
+    }    
+
+    /**
      * This works, but only if the user gets redirected to the given url and accepts the self-signed certificate, this may add more complexity than what it's worth...
      * Also, how do I get it to work without exposing passwords and private keys and such stuff on github.
      * @param {String|URL} url The address to the LAN-server (No prefix prepended)

@@ -111,8 +111,12 @@ function websocketHandler(request) {
                     // BoardPiece.piece.card is the image it should be, therefore this can be used as an id in the same manner that Player.colorIndex is used as an id.
                     api.tilePurchased(player.colorIndex, player.money, event.tile.card);
                     break;
-                case "property_purchased":
-                    console.log(event); // <------------------------------------------------------
+                case "property_changed":
+                    // The cost of houses seems to be decided by which side the tile is on, first is 50, then 100, then 150 and lastly 200.
+                    var price = Math.round((event.tile.side + 1) * 50 * (event.is_upgrade ? 1 : -1/2));
+                    player.money -= price;
+                    console.log("[S<-C] Player (%s) purchased property on the tile: (%s). Remaining balance: %dkr, level: %d", player.name, event.tile.name, player.money, event.new_level);
+                    api.propertyChanged(player.colorIndex, event.tile.card, player.money, event.new_level);
                     break;
                 case "random_event":
                     console.log("[S<-C] Random event with id: (%s; %s) happened to player (%s)", event.id, event.type, player.name);

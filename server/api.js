@@ -69,7 +69,17 @@ function tilePurchased(player, money, tile) {
 }
 
 /**
- * 
+ * @param {number} player The id of the player who made the purchase
+ * @param {number} tile The id of the tile
+ * @param {number} money The remaining balance of the player
+ * @param {number} newLevel The new property level of this tile
+ */
+function propertyChanged(player, tile, money, newLevel) {
+    console.log("[S->C] Player (%s) purchased property on the tile: (%d). Remaining balance: %dkr, level: %d", player, tile, money, newLevel);
+    websocket.broadcastUTF(JSON.stringify(new PropertyChangedEvent(player, tile, money, newLevel)));
+}
+
+/**
  * @param {number} player The id of the player who bid
  * @param {number} nextPlayer The id of the next player
  * @param {number} bid The amount of money bid
@@ -106,6 +116,18 @@ class Event {
     constructor(eventType, data = {}) {
         this.event_type = eventType;
         this.data = data;
+    }
+}
+
+class PropertyChangedEvent extends Event {
+    /**
+     * @param {number} player The id of the player who made the purchase
+     * @param {number} tile The id of the tile
+     * @param {number} money The remaining balance of the player
+     * @param {number} newLevel The new property level of this tile
+     */
+    constructor(player, tile, money, newLevel) {
+        super("property_changed_event", { player, tile, money, new_level: newLevel });
     }
 }
 
@@ -218,6 +240,7 @@ module.exports = {
     addPlayer,
     randomEvent,
     tilePurchased,
+    propertyChanged,
     auctionStart,
     auctionShow,
     auctionBid,

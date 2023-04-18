@@ -437,6 +437,14 @@ async function init(){
                     board.boardPieces[player.steps].doCommunityChest(data.id, player);
                 }
             });
+
+            document.body.addEventListener("property_changed_event", (evt) => {
+                var data = evt.detail;
+                var currentCard = board.boardPieces.find(x => x.piece.card == data.tile);
+
+                currentCard.level = data.new_level;
+                currentCard.owner.money = data.money;
+            });
             
             await Api.openWebsocketConnection(serverURL);
 
@@ -624,11 +632,19 @@ class Board{
         },40,40);
 
         this.upgradeButton = new Button(5,300,images.buttons.img[4],function(){
+            if (Api.online) {
+                Api.propertyChangedLevel(board.currentCard, board.currentCard.level + 1, true);
+                return;
+            }
             board.currentCard.level++;
             board.currentCard.owner.money -= board.currentCard.piece.housePrice;
         },40,40);
 
         this.downgradeButton = new Button(-45,300,images.buttons.img[5],function(){
+            if (Api.online) {
+                Api.propertyChangedLevel(board.currentCard, board.currentCard.level - 1, false);
+                return;
+            }
             board.currentCard.level--;
             board.currentCard.owner.money += board.currentCard.piece.housePrice/2;
         },40,40);
