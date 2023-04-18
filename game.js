@@ -1260,19 +1260,19 @@ class BoardPiece{
                     }
                     if(random === 2){
                         alert("Gå till Hässleholm")
-                        player.teleportTo(24)
+                        player.teleportTo(24, true)
                     }
                     if(random === 3){
                         alert("Gå till Simrishamn")
-                        player.teleportTo(11)
+                        player.teleportTo(11, true)
                     }
                     if(random === 4){
                         alert("Gå till närmsta anläggning")
                         if(this.n === 7 || this.n === 36){
-                            player.teleportTo(12)
+                            player.teleportTo(12, true)
                         }
                         if(this.n === 22){
-                            player.teleportTo(28)
+                            player.teleportTo(28, true)
                         }
                     }
                     if(random === 5){
@@ -1470,6 +1470,7 @@ class Player{
 
         this.checkMoney = function(){
             if(this.money < 0 && this.ownedPlaces.length == 0){
+                delete Bot.boardInfo[turn]
                 turn = turn%(players.length-1);
 
                 if(players.length-1 === 1){
