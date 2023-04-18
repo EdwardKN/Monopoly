@@ -325,18 +325,18 @@ class Board{
         this.win = false;
         this.auction = undefined;
         this.trade = undefined;
-        this.rollDiceButton = new Button(10,250,images.buttons.img[0],function(){players[turn].rollDice()},107,23,false,false,false,true)
-        this.nextPlayerButton = new Button(10,250,images.buttons.img[1],function(){players[turn].rollDice()},107,23)
+        this.rollDiceButton = new Button(false,10,250,images.buttons.img[0],function(){players[turn].rollDice()},107,23,false,false,false,true)
+        this.nextPlayerButton = new Button(false,10,250,images.buttons.img[1],function(){players[turn].rollDice()},107,23)
         this.currentCard = undefined;
-        this.cardCloseButton = new Button(174,43,images.buttons.img[7],function(){board.currentCard = undefined;board.sellButton.visible = false;board.mortgageButton.visible = false;board.upgradeButton.visible = false;board.downgradeButton.visible = false;},18,18)
-        this.sellButton = new Button(130,300,images.buttons.img[2],function(){
+        this.cardCloseButton = new Button(false,174,43,images.buttons.img[7],function(){board.currentCard = undefined;board.sellButton.visible = false;board.mortgageButton.visible = false;board.upgradeButton.visible = false;board.downgradeButton.visible = false;},18,18)
+        this.sellButton = new Button(false,130,300,images.buttons.img[2],function(){
             if(board.currentCard.mortgaged === false){
                 players[turn].money+= board.currentCard.piece.price/2
             }
             players[turn].ownedPlaces.splice(players[turn].ownedPlaces.indexOf(board.currentCard),1);
             board.currentCard.owner = undefined;
         },40,40);
-        this.mortgageButton = new Button(80,300,images.buttons.img[3],function(){
+        this.mortgageButton = new Button(false,80,300,images.buttons.img[3],function(){
             if(board.currentCard.mortgaged === true){
                 board.currentCard.mortgaged = false;
                 players[turn].money -= (board.currentCard.piece.price/2)*1.1
@@ -345,15 +345,15 @@ class Board{
                 players[turn].money += board.currentCard.piece.price/2
             }
         },40,40);
-        this.upgradeButton = new Button(5,300,images.buttons.img[4],function(){
+        this.upgradeButton = new Button(false,5,300,images.buttons.img[4],function(){
             board.currentCard.level++;
             board.currentCard.owner.money -= board.currentCard.piece.housePrice;
         },40,40);
-        this.downgradeButton = new Button(-45,300,images.buttons.img[5],function(){
+        this.downgradeButton = new Button(false,-45,300,images.buttons.img[5],function(){
             board.currentCard.level--;
             board.currentCard.owner.money += board.currentCard.piece.housePrice/2;
         },40,40);
-        this.buyButton = new Button(-43,300,images.buttons.img[6],function(){
+        this.buyButton = new Button(false,-43,300,images.buttons.img[6],function(){
             players[turn].money -= board.currentCard.piece.price;
             board.currentCard.owner = players[turn];
             players[turn].ownedPlaces.push(board.currentCard);
@@ -362,7 +362,7 @@ class Board{
             board.auctionButton.visible = false;
         },97,40);
 
-        this.auctionButton = new Button(-43 + 117,300,images.buttons.img[8],function(){
+        this.auctionButton = new Button(false,-43 + 117,300,images.buttons.img[8],function(){
             board.auction = new Auction(board.currentCard)
             board.currentCard = undefined;
             board.buyButton.visible = false;
@@ -571,19 +571,19 @@ class Trade{
         this.p2 = p2;
 
         let self = this;
-        this.closeButton = new Button(301,44,images.buttons.img[7],function(){self.closeButton.visible = false;board.trade = undefined;},18,18)
+        this.closeButton = new Button(false,301,44,images.buttons.img[7],function(){self.closeButton.visible = false;board.trade = undefined;},18,18)
         this.closeButton.visible = true;
 
-        this.p1ConfirmButton = new Button(-145,310,images.trade.img[1],function(){},150,50)
+        this.p1ConfirmButton = new Button(false,-145,310,images.trade.img[1],function(){},150,50)
         this.p1ConfirmButton.visible = true;
 
-        this.p2ConfirmButton = new Button(120,310,images.trade.img[1],function(){},150,50)
+        this.p2ConfirmButton = new Button(false,120,310,images.trade.img[1],function(){},150,50)
         this.p2ConfirmButton.visible = true;
 
         this.p1PropertyButtons = [];
 
         this.p1.ownedPlaces.forEach(function(e,i){
-            self.p1PropertyButtons.push(new Button(-170,150,images.trade.img[2],function(){
+            self.p1PropertyButtons.push(new Button(false,true,-170,150,images.trade.img[2],function(){
 
             },106,17,false,false,false,false,e.piece.name + " " + e.piece.price + "kr","15px Arcade"))
         })
@@ -611,7 +611,7 @@ class PlayerBorder{
         let self = this;
         
         
-        this.button = new Button(this.x,this.y,images.playerOverlay.img[8],function(){
+        this.button = new Button(false,false,this.x,this.y,images.playerOverlay.img[8],function(){
             players.forEach(e =>{if(e.playerBorder.showInfo && e.playerBorder != self){e.playerBorder.showInfo = false}})
             if(!self.showInfo){
                 self.showInfo = true;
@@ -620,7 +620,7 @@ class PlayerBorder{
             }
         },260,54,false,false,true) 
 
-        this.createTradebutton = new Button(this.x,this.y,images.buttons.img[9],function(){
+        this.createTradebutton = new Button(false,this.x,this.y,images.buttons.img[9],function(){
             self.createTradebutton.visible = false;
             self.showInfo = false;
             board.trade = new Trade(players[turn],self.player);
@@ -857,16 +857,16 @@ class Auction{
         this.playerlist = [...players];
 
 
-        this.addMoneyButton2 = new Button(-150,280,images.auction.img[1],function(){     
+        this.addMoneyButton2 = new Button(false,-150,280,images.auction.img[1],function(){     
             board.auction.addMoney(2);
         },54,54,false)
-        this.addMoneyButton10 = new Button(-60,280,images.auction.img[2],function(){
+        this.addMoneyButton10 = new Button(false,-60,280,images.auction.img[2],function(){
             board.auction.addMoney(10);
         },54,54,false)
-        this.addMoneyButton100 = new Button(30,280,images.auction.img[3],function(){
+        this.addMoneyButton100 = new Button(false,30,280,images.auction.img[3],function(){
             board.auction.addMoney(100);
         },54,54,false)
-        this.startAuctionButton = new Button(-150,220,images.auction.img[5],function(){
+        this.startAuctionButton = new Button(false,-150,220,images.auction.img[5],function(){
             board.auction.started = true;
             board.auction.duration = 10 * 1000;
             board.auction.startTime = performance.now();
@@ -991,7 +991,7 @@ class Auction{
 }
 
 class Button{
-    constructor(x,y,img,onClick,w,h,showBorder,mirror,screencenter,disablesound,text,font){
+    constructor(select,x,y,img,onClick,w,h,showBorder,mirror,screencenter,disablesound,text,font){
         this.x = x;
         this.y = y;
         this.w = w;
