@@ -88,10 +88,13 @@ function drawRotatedImage(x,y,w,h,img,angle,mirrored,cropX,cropY,cropW,cropH,off
     c.restore();
 }
 
-function drawRotatedText(x,y,text,font,angle,color,mirrored){
+function drawRotatedText(x,y,text,font,angle,color,mirrored,overide){
     let degree = angle * Math.PI / 180;
-    x+= offsets.x;
-    y+= offsets.y
+    if(overide !== true){
+        x+= offsets.x;
+        y+= offsets.y
+    }
+   
     let middlePoint = {
         x:x,
         y:y
@@ -472,7 +475,6 @@ class Board{
                             }
                         }
                         if(lowest > this.currentCard.level){lowest = this.currentCard.level}
-                        console.log(lowest)
                         if(this.currentCard.level < 5 && this.currentCard.piece.housePrice !== undefined && ownAll === true && this.currentCard.level === lowest){
                                 this.upgradeButton.disabled = false;
                         }else{
@@ -577,6 +579,14 @@ class Trade{
 
         this.p2ConfirmButton = new Button(150,320,images.trade.img[1],function(){},85,22)
         this.p2ConfirmButton.visible = true;
+
+        this.p1PropertyButtons = [];
+
+        this.p1.ownedPlaces.forEach(function(e,i){
+            self.p1PropertyButtons.push(new Button(-170,150,images.trade.img[2],function(){
+
+            },211,27,false,false,false,false,e.piece.name + " " + e.piece.price + "kr","30px Arcade"))
+        })
         this.update = function(){
             drawIsometricImage(0,0,images.trade.img[0],false,0,0,images.trade.img[0].width,images.trade.img[0].height,-192,images.trade.img[0].height/7.5,1)
             this.closeButton.draw();
@@ -584,7 +594,7 @@ class Trade{
             this.p2ConfirmButton.draw();
             drawRotatedText(canvas.width/2-300,200,this.p1.name,"50px Arcade",0,"black",false)
             drawRotatedText(canvas.width/2+300-30,200,this.p2.name,"50px Arcade",0,"black",false)
-
+            this.p1PropertyButtons.forEach(e => {e.visible=true;e.draw()})
             
         }
     }
@@ -982,7 +992,7 @@ class Auction{
 }
 
 class Button{
-    constructor(x,y,img,onClick,w,h,showBorder,mirror,screencenter,disablesound,text,textSize){
+    constructor(x,y,img,onClick,w,h,showBorder,mirror,screencenter,disablesound,text,font){
         this.x = x;
         this.y = y;
         this.w = w;
@@ -995,7 +1005,7 @@ class Button{
         this.mirror = false;
         this.screencenter = false;
         this.text = text;
-        this.textSize = textSize;
+        this.font = font;
         this.disablesound = disablesound;
         if(mirror === true){
             this.mirror = true;
@@ -1049,8 +1059,15 @@ class Button{
                     if(this.screencenter){
                         drawRotatedImage(this.x,this.y,this.w*drawScale,this.h*drawScale,this.img,0,this.mirror,0,this.w*2,this.w,this.h,false)
                     }else{
+                        
                         drawIsometricImage(0,0,this.img,this.mirror,this.w*2,0,this.w,this.h,this.x,this.y)
                     }
+                }
+                if(this.text !== undefined){
+                    c.font = this.font;
+                    c.fillStyle = "black"
+                    c.textAlign = "left"
+                    c.fillText(this.text,canvas.width/2 + this.x*drawScale - 64*drawScale + 20,canvas.height/2 + this.y*drawScale - 208*drawScale + this.h+10)
                 }
                 
             }else if(this.visible){
