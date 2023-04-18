@@ -5,6 +5,7 @@ var websocket = undefined;
  * @param {Player[]} players
  */
 function startGame(players) {
+    console.log("[S->C] Game started with %d players", players.length);
     websocket.broadcastUTF(JSON.stringify(new StartEvent(players)));
 }
 
@@ -13,6 +14,7 @@ function startGame(players) {
  * @param {number} dice2 A value between 1-6
  */
 function diceRoll(dice1, dice2) {
+    console.log("[S->C] Dice rolled (%d, %d)", dice1, dice2);
     websocket.broadcastUTF(JSON.stringify(new DiceEvent(dice1, dice2)));
 }
 
@@ -21,6 +23,7 @@ function diceRoll(dice1, dice2) {
  * @param {number} currentPlayerIndex
  */
 function teleportTo(steps, currentPlayerIndex) {
+    console.log("[S->C] Player %d moved to tile %d", currentPlayerIndex, steps);
     websocket.broadcastUTF(JSON.stringify(new MoveEvent(steps, currentPlayerIndex)));
 }
 
@@ -30,6 +33,7 @@ function teleportTo(steps, currentPlayerIndex) {
  * @param {boolean} isBot 
  */
 function addPlayer(username, index, isBot) {
+    console.log("[S->C] New %s (%s) joined", isBot ? "bot" : "player", username);
     websocket.broadcastUTF(JSON.stringify(new PlayerJoinEvent(username, index, isBot)));
 }
 
@@ -38,14 +42,8 @@ function addPlayer(username, index, isBot) {
  * @param {number} id The id of the player whose turn it will be
  */
 function newTurn(id) {
+    console.log("[S->C] Changed turn to %d", id);
     websocket.broadcastUTF(JSON.stringify(new NewTurnEvent(id)));
-}
-
-/**
- * @param {BoardPiece} card The BoardPiece class.
- */
-function showCard(card) {
-    websocket.broadcastUTF(JSON.stringify(new ShowCardEvent(card)));
 }
 
 /**
@@ -54,7 +52,19 @@ function showCard(card) {
  * @param {Player} player The player this event happened to
  */
 function randomEvent(id, player) {
+    console.log("[S->C] Random event with id: (%s) happened to player (%s)", id, player.name);
     websocket.broadcastUTF(JSON.stringify(new RandomEvent(id, player.colorIndex)));
+}
+
+/**
+ * 
+ * @param {number} player The id of the player
+ * @param {number} money The remaining balance of this player
+ * @param {number} tile The id of the tile
+ */
+function tilePurchased(player, money, tile) {
+    console.log("[S<-C] Player (%s) purchased the tile: (%d). Remaining balance: %dkr", player, tile, money);
+    websocket.broadcastUTF(JSON.stringify(new TilePurchasedEvent(player, money, tile)));
 }
 
 class Event {
@@ -66,6 +76,18 @@ class Event {
     constructor(eventType, data = {}) {
         this.event_type = eventType;
         this.data = data;
+    }
+}
+
+class TilePurchasedEvent extends Event {
+    /**
+     * 
+     * @param {number} player The id of the player
+     * @param {number} money The remaining balance of this player
+     * @param {number} tile The id of the tile
+     */
+    constructor(player, money, tile) {
+        super("tile_purchased_event", { player, tile, money });
     }
 }
 
@@ -85,15 +107,6 @@ class RandomEvent extends Event {
      */
     constructor(id, player) {
         super("random_card", { id, player });
-    }
-}
-
-class ShowCardEvent extends Event {
-    /**
-     * @param {object} card 
-     */
-    constructor(card) {
-        super("show_card", { card });
     }
 }
 
@@ -141,10 +154,10 @@ class MoveEvent extends Event {
 module.exports = {
     teleportTo,
     addPlayer,
-    randomEvent,
-    showCard,
-    diceRoll,
+    randomEvent, // Unused
+    tilePurchased,
+    diceRoll, // Unused
     startGame,
     newTurn,
-    setWebsocket: wss => { websocket = wss }
+    setWebsocket: wss => { websocket = wss; }
 }

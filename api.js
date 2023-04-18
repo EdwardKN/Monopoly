@@ -37,6 +37,14 @@ class Api {
     }
 
     /**
+     * 
+     * @param {BoardPiece} tile The boardpiece that has been purchased
+     */
+    static tilePurchased(tile) {
+        Api.getWebSocket().send(JSON.stringify({ event_type: "tile_purchased", tile: tile.piece }))
+    }
+
+    /**
      * This works, but only if the user gets redirected to the given url and accepts the self-signed certificate, this may add more complexity than what it's worth...
      * Also, how do I get it to work without exposing passwords and private keys and such stuff on github.
      * @param {String|URL} url The address to the LAN-server (No prefix prepended)

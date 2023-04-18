@@ -1,3 +1,10 @@
+/**
+ * Only the current player should have the alternative to purchase the tile they landed on, then send it to the server for it to relay the decision
+ * Auctions
+ * If one player lands on the "Gå till finkan" tile, both players proceed to go there, since both players get the event to go there
+ * If a player makes it so the turn changes to the next person before the animation is finished, there isn't an alternative to purchase the tile. But it shouldn't even be able to get in this state.
+ */
+
 var https = require('node:https');
 var { ClientRequest, ServerResponse } = require('node:http');
 var { readFileSync } = require('node:fs');
@@ -5,8 +12,6 @@ var os = require('node:os');
 var websocket = require('websocket');
 var gamelogic = require('./gamelogic');
 var api = require("./api");
-
-console.log(os.networkInterfaces());
 
 var network = Object.values(os.networkInterfaces()).map(x => x.filter(y => !y.internal).find(y => y.family == "IPv4")).find(x => x != undefined)?.address;
 if (network == undefined) {
@@ -43,7 +48,7 @@ websocketServer.on('request', websocketHandler);
 
 function originIsAllowed(origin) {
     // Official github page and testing
-    return origin.includes("edwardkn.github.io") || origin.includes("localhost") || origin.includes(network);
+    return true//origin.includes("edwardkn.github.io") || origin.includes("localhost") || origin.includes(network);
 }
 
 /**
@@ -63,7 +68,7 @@ function websocketHandler(request) {
 
     var connection = request.accept('', request.origin);
     if (gamelogic.PlayerManager.getNumberOfPlayers() == 1) {
-        startGameTimer = { id: setTimeout(() => { api.startGame(gamelogic.PlayerManager.players); console.log("<Host> Game started") }, COUNTDOWN_DURATION), time: performance.now() };
+        startGameTimer = { id: setTimeout(() => { api.startGame(gamelogic.PlayerManager.players); }, COUNTDOWN_DURATION), time: performance.now() };
     }
     
     
@@ -83,27 +88,35 @@ function websocketHandler(request) {
     
     var player = gamelogic.PlayerManager.players[playerInfo.length - 1];
 
-    console.log("<%s> Joined lobby", player.name);
+    console.log("[S<-C] Player (%s) joined the lobby", player.name);
     connection.on('message', message => {
         if (message.type === 'utf8') {
+            // I'm thinking about having as little validation on the server itself
+            // It'll only act as a relay and sync the info about players and the board, such as money, owned tiles and position of players.'
+            // This way, it'll go faster and I don't have to recreate the whole game
             var event = JSON.parse(message.utf8Data);
-            console.log(event);
             switch(event.event_type) {
                 case "move":
-                    console.log("<%s> Moved to: %d", player.name, event.tiles_moved);
+                    console.log("[S<-C] Player (%s) moved to tile: %d", player.name, event.tiles_moved);
                     player.teleportTo(event.tiles_moved);
                     break;
                 case "change_turn":
                     var newPlayer = gamelogic.PlayerManager.players[(gamelogic.PlayerManager.players.indexOf(player) + 1) % gamelogic.PlayerManager.getNumberOfPlayers()];
-                    console.log("<%s> Changed turn to: %s", player.name, newPlayer.name);
+                    console.log("[S<-C] Turn changed from player %s to player %s", player.name, newPlayer.name);
                     api.newTurn(newPlayer.colorIndex);
                     break;
+                case "tile_purchased":
+                    // This players id, money, which tile
+                    player.money -= event.tile.price;
+                    console.log("[S<-C] Player (%s) purchased the tile: (%s). Remaining balance: %dkr", player.name, event.tile.name, player.money);
 
+                    // BoardPiece.piece.card is the image it should be, therefore this can be used as an id in the same manner that Player.colorIndex is used as an id.
+                    api.tilePurchased(player.colorIndex, player.money, event.tile.card);
+                    break;            
                 default:
+                    console.log(event);
                     console.error("<Warning> Event (%s) doesn't have any handler", event.event_type);
 
-            }
-            if (event.event_type == "move") {
             }
         }
     });

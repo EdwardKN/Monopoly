@@ -95,38 +95,40 @@ var sounds = {
 }
 
 var mouse = {
-    x:0,
-    y:0,
-    realX:0,
-    realY:0
+    x: 0,
+    y: 0,
+    realX: 0,
+    realY: 0
 }
 const pieces = [{"name":"Start","img":0},{"name":"Brun 1","price":60,"rent":[2,10,30,90,160,250],"housePrice":50,"group":"Brown","img":0,"card":0},{"name":"Allmänning","type":"community Chest","img":15},{"name":"Brun 2","price":60,"rent":[4,20,60,180,320,450],"housePrice":50,"group":"Brown","img":0,"card":1},{"name":"Inkomstskatt","type":"income tax","img":16},{"name":"Södra stationen","price":200,"type":"station","img":11,"card":27},{"name":"Ljusblå 1","price":100,"rent":[6,30,90,270,400,550],"housePrice":50,"group":"light blue","img":1,"card":2},{"name":"Chans","type":"chance","img":10},{"name":"Ljusblå 2","price":100,"rent":[6,30,90,270,400,550],"housePrice":50,"group":"light blue","img":1,"card":3},{"name":"Ljusblå 3","price":120,"rent":[8,40,100,300,450,600],"housePrice":50,"group":"light blue","img":1,"card":4},{"name":"Fängelse","img":1},{"name":"Rosa 1","price":140,"rent":[10,50,150,450,625,750],"housePrice":100,"group":"pink","img":2,"card":5},{"name":"Elverket","price":150,"type":"utility","img":13,"card":22},{"name":"Rosa 2","price":140,"rent":[10,50,150,450,625,750],"housePrice":100,"group":"pink","img":2,"card":6},{"name":"Rosa 3","price":160,"rent":[12,60,180,500,700,900],"housePrice":100,"group":"pink","img":2,"card":7},{"name":"Östra Stationen","price":200,"type":"station","img":11,"card":24},{"name":"Orange 1","price":180,"rent":[14,70,200,550,750,950],"housePrice":100,"group":"orange","img":3,"card":8},{"name":"Allmänning","type":"community Chest","img":15},{"name":"Orange 2","price":180,"rent":[14,70,200,550,750,950],"housePrice":100,"group":"orange","img":3,"card":9},{"name":"Orange 3","price":200,"rent":[16,80,220,600,800,1000],"housePrice":100,"group":"orange","img":3,"card":10},{"name":"Fri parkering","img":2},{"name":"Röd 1","price":220,"rent":[18,90,250,700,875,1050],"housePrice":150,"group":"red","img":4,"card":11},{"name":"Chans","type":"chance","img":8},{"name":"Röd 2","price":220,"rent":[18,90,250,700,875,1050],"housePrice":150,"group":"red","img":4,"card":12},{"name":"Röd 3","price":240,"rent":[20,100,300,750,925,1100],"housePrice":150,"group":"red","img":4,"card":13},{"name":"Centralstationen","price":200,"type":"station","img":11,"card":26},{"name":"Gul 1","price":260,"rent":[22,110,330,800,975,1150],"housePrice":150,"group":"yellow","img":5,"card":14},{"name":"Gul 2","price":260,"rent":[22,110,330,800,975,1150],"housePrice":150,"group":"yellow","img":5,"card":15},{"name":"Vattenledningsverket","price":150,"type":"utility","img":12,"card":23},{"name":"Gul 3","price":280,"rent":[24,120,360,850,1025,1200],"housePrice":150,"group":"yellow","img":5,"card":16},{"name":"Gå till finkan","img":3},{"name":"Grön 1","price":300,"rent":[26,130,390,900,1100,1275],"housePrice":200,"group":"green","img":6,"card":17},{"name":"Grön 2","price":300,"rent":[26,130,390,900,1100,1275],"housePrice":200,"group":"green","img":6,"card":18},{"name":"Allmänning","type":"community Chest","img":15},{"name":"Grön 3","price":320,"rent":[28,150,450,1000,1200,1400],"housePrice":200,"group":"green","img":6,"card":19},{"name":"Norra stationen","price":200,"type":"station","img":11,"card":25},{"name":"Chans","type":"chance","img":9},{"name":"Blå 1","price":350,"rent":[35,175,500,1100,1300,1500],"housePrice":200,"group":"blue","img":7,"card":20},{"name":"Lyxskatt","price":-100,"img":14,"type":"tax"},{"name":"Blå 2","price":400,"rent":[50,200,600,1400,1700,2000],"housePrice":200,"group":"blue","img":7,"card":21}];
 
-window.addEventListener("resize", e=> {
+window.addEventListener("resize", e => {
+    const SIZE = 416;
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
     offsets = {
-        x:Math.floor(window.innerWidth/2) - 832*drawScale/2,
-        y:Math.floor(window.innerHeight/2) - 416*drawScale/2
+        x:Math.floor(window.innerWidth/2) - SIZE*2*drawScale/2,
+        y:Math.floor(window.innerHeight/2) - SIZE*drawScale/2
     }
 })
 
 canvas.addEventListener("mousemove",function(e){
     mouse = {
-        x:e.offsetX - offsets.x,
-        y:e.offsetY - offsets.y,
-        realX:e.x,
-        realY:e.y,
-        offsetX:e.offsetX,
-        offsety:e.offsetY,
-
+        x: e.offsetX - offsets.x,
+        y: e.offsetY - offsets.y,
+        realX: e.x,
+        realY: e.y,
+        offsetX: e.offsetX,
+        offsety: e.offsetY,
     }
 })
 
 window.addEventListener("mousedown",function(e){
+    if (board == undefined) return;
+
     board.boardPieces.forEach(function(piece){
         piece.click();
-    })
+    });
     board.nextPlayerButton.click();
     board.rollDiceButton.click();
     board.cardCloseButton.click();
@@ -181,11 +183,11 @@ function loadSounds(soundObject){
 }
 function drawRotatedImage(x,y,w,h,img,angle,mirrored,cropX,cropY,cropW,cropH){
     let degree = angle * Math.PI / 180;
-    x+= offsets.x;
-    y+= offsets.y
+    x += offsets.x;
+    y += offsets.y;
     let middlePoint = {
-        x:x+w/2,
-        y:y+h/2
+        x: x + w/2,
+        y: y + h/2
     };
 
     c.save();
@@ -194,7 +196,7 @@ function drawRotatedImage(x,y,w,h,img,angle,mirrored,cropX,cropY,cropW,cropH){
     if(mirrored === true){
         c.scale(-1, 1);
     }
-    c.drawImage(img,Math.floor(cropX),Math.floor(cropY),Math.floor(cropW),Math.floor(cropH),Math.floor(-w/2),Math.floor(-h/2),Math.floor(w),Math.floor(h));
+    c.drawImage(img, Math.floor(cropX), Math.floor(cropY), Math.floor(cropW), Math.floor(cropH), -Math.floor(w/2), -Math.floor(h/2), Math.floor(w), Math.floor(h));
     c.restore();
 }
 
@@ -352,22 +354,30 @@ async function init(){
             });
 
             
-            document.body.addEventListener("move_event", (evt) => {
-                var data = evt.detail;
-                console.log("Player %s moved to %d", data.player, data.steps);
-                players[data.player].teleportTo(data.steps, false);
-            });
+            document.body.addEventListener("move_event", (evt) => players[evt.detail.player].teleportTo(evt.detail.steps, false));
 
             document.body.addEventListener("new_turn_event", (evt) => {
                 turn = evt.detail.id;
                 if (Api.currentPlayer == turn) {
                     board.rollDiceButton.visible = true;
-                    board.nextPlayerButton.visible = true;
+                    board.nextPlayerButton.visible = false;
                 } else {
                     board.rollDiceButton.visible = false;
                     board.nextPlayerButton.visible = false;
                 }
             });
+
+            document.body.addEventListener("tile_purchased_event", (evt) => {
+                var data = evt.detail;
+                var player = players.find(x => x.colorIndex == data.player);
+                var currentCard = board.boardPieces.find(x => x.piece.card == data.tile);
+
+                player.money = data.money;
+                player.ownedPlaces.push(currentCard);
+
+                currentCard.owner = player;
+                board.currentCard = undefined;
+            })
             
             await Api.openWebsocketConnection(serverURL);
 
@@ -529,8 +539,8 @@ class Board{
         this.animateDices = false;
         this.win = false;
         this.auction = undefined;
-        this.rollDiceButton = new Button(10,250,images.buttons.img[0],function(){players[turn].rollDice(); board.nextPlayerButton.visible = true; },107,23)
-        this.nextPlayerButton = new Button(10,250,images.buttons.img[1],function(){players[turn].rollDice(); this.visible = false; },107,23)
+        this.rollDiceButton = new Button(10,250,images.buttons.img[0],() => { players[turn].rollDice(); board.nextPlayerButton.visible = true; },107,23)
+        this.nextPlayerButton = new Button(10,250,images.buttons.img[1],() => { players[turn].rollDice(); board.nextPlayerButton.visible = false; },107,23)
 
         this.rollDiceButton.visible = Api.online && Api.currentPlayer == 0;
         this.nextPlayerButton.visible = Api.online && Api.currentPlayer == 0;
@@ -543,6 +553,7 @@ class Board{
             }
             board.currentCard.owner = undefined;
         },40,40);
+
         this.mortgageButton = new Button(80,300,images.buttons.img[3],function(){
             if(board.currentCard.mortgaged === true){
                 board.currentCard.mortgaged = false;
@@ -552,15 +563,23 @@ class Board{
                 players[turn].money += board.currentCard.piece.price/2
             }
         },40,40);
+
         this.upgradeButton = new Button(5,300,images.buttons.img[4],function(){
             board.currentCard.level++;
             board.currentCard.owner.money -= board.currentCard.piece.housePrice;
         },40,40);
+
         this.downgradeButton = new Button(-45,300,images.buttons.img[5],function(){
             board.currentCard.level--;
             board.currentCard.owner.money += board.currentCard.piece.housePrice/2;
         },40,40);
+
         this.buyButton = new Button(-43,300,images.buttons.img[6],function(){
+            if (Api.online) {
+                Api.tilePurchased(board.currentCard);
+                return;
+            }
+
             players[turn].money -= board.currentCard.piece.price;
             board.currentCard.owner = players[turn];
             players[turn].ownedPlaces.push(board.currentCard);
@@ -642,7 +661,7 @@ class Board{
                     }
 
 
-                    if(this.currentCard.owner === players[turn]){
+                    if(this.currentCard.owner === players[Api.online ? Api.currentPlayer : turn]){
                         this.cardCloseButton.visible = true;
                         this.sellButton.draw();
                         this.sellButton.visible = true;
@@ -693,7 +712,7 @@ class Board{
                 }else{
                     this.cardCloseButton.visible = true;
 
-                    if(this.currentCard === board.boardPieces[(players[turn].steps)] && this.auction === undefined){
+                    if(this.currentCard === board.boardPieces[(players[Api.online ? Api.currentPlayer : turn].steps)] && this.auction === undefined){
                         this.buyButton.draw();
                         this.buyButton.visible = true;
                         this.cardCloseButton.visible = false;
@@ -740,7 +759,7 @@ class Board{
                 this.nextPlayerButton.visible = false;
                 this.rollDiceButton.visible = false;
             }else{
-                if (Api.online) return;
+                if (Api.online && turn != Api.currentPlayer) return;
 
                 if(players[turn].rolls === false){
                     if(players[turn].bot === undefined && this.auction === undefined){

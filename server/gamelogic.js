@@ -41,11 +41,6 @@ class BoardPiece{
                     // Why would the price be negative?
                     player.money += this.piece.price;
                     console.log(player.name + " betalade " + -this.piece.price + "kr")
-                } else if (this.piece.price > 0 && this.owner === undefined) {
-                    // If this isn't owned by anyone (and the price is more than 0kr; Why?)
-                    if (player.bot === undefined) {
-                        api.showCard(this);
-                    }
                 } else if(this.owner !== player && this.owner !== undefined) {
                     // The owner isn't this player, but there is an owner.
 
