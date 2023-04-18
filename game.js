@@ -197,8 +197,8 @@ function init(){
     let botAmount = -2;
 
     if(fastLoad === true){
-        playerAmount = 3;
-        botAmount = -1
+        playerAmount = 1;
+        botAmount = 1;
     }
 
     let playerImages = [0,1,2,3,4,5,6,7]
@@ -263,7 +263,6 @@ function init(){
         playerImages.splice(random,1)
     }
     players.forEach(e=> e.playerBorder.init())
-
 }
 
 function update(){
@@ -845,6 +844,11 @@ class Auction{
                     this.addMoneyButton10.draw();
                     this.addMoneyButton100.visible = true;
                     this.addMoneyButton100.draw();
+                }else{
+                    this.startAuctionButton.visible = false;
+                    this.addMoneyButton2.visible = false;
+                    this.addMoneyButton10.visible = false;
+                    this.addMoneyButton100.visible = false;
                 }
                 drawIsometricImage(0,0,images.auction.img[4],false,0,30,240,30,-150,220,1)
                 if(this.time > 472){
@@ -927,6 +931,7 @@ class Auction{
             
         }
         this.addMoney = function(money){
+            
             this.auctionMoney += money;
             this.turn = (this.turn+1)%this.playerlist.length;
             this.time = 472;
@@ -1451,7 +1456,7 @@ class Player{
         this.offsetY = 0;
         this.stepsWithOffset = (this.steps)
         this.rolls = false;
-        this.numberOfRolls = false;
+        this.numberOfRolls = 0;
         this.inJail = false;
         this.ownedPlaces = [];
         this.animationOffset = 0;
@@ -1686,8 +1691,9 @@ class Player{
                             this.rolls = true;
                         }
                         let diceSum = dice1+dice2;
+                        this.dice1 = dice1
+                        this.dice2 = dice2
 
-                        
                         board.animateDices = true;
 
                         let counter = 25;
@@ -1706,7 +1712,7 @@ class Player{
                                     board.animateDices = false;
                                     self.steps += dice1+dice2;
                                     self.steps = self.steps%40;
-                                    self.animateSteps(oldStep,self.steps,diceSum,1)
+                                    self.animateSteps(oldStep,self.steps,diceSum,1,true)
                                 }, 1000);                  
                             }else{
                                 setTimeout(myFunction, counter);
