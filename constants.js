@@ -76,7 +76,7 @@ var images = {
         src:["./images/menus/auctionmenubackground","./images/buttons/auction+2","./images/buttons/auction+10","./images/buttons/auction+100","./images/menus/auctionloadingbar","./images/buttons/startauction"]
     },
     trade:{
-        src:["./images/menus/trade"]
+        src:["./images/menus/tradingmenu","./images/buttons/accept"]
     }
 };
 
