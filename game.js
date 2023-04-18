@@ -395,6 +395,9 @@ class Board{
                             this.boardPieces[i].currentPlayer[g].update()
                         }
                     }
+                    if(i === 10){
+                        this.prisonExtra.currentPlayer.forEach(p => p.update())
+                    }
                 }
                 for(let i = 20; i < 40; i++){
                     if(this.boardPieces[i].side == 0 || this.boardPieces[i].side === 3){
@@ -407,7 +410,6 @@ class Board{
                 }
                 
             }
-            this.prisonExtra.currentPlayer.forEach(p => p.update())
             this.showCard();
             if(this.auction !== undefined){
                 this.auction.update();
