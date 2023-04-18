@@ -638,6 +638,8 @@ class Trade{
                 this.closeButton.visible = false;
                 this.p1ConfirmButton.visible = false;
                 this.p2ConfirmButton.visible = false;
+                this.p1ConfirmButton.hover = false;
+                this.p2ConfirmButton.hover = false;
                 this.p1PropertyButtons.forEach(e => {e.visible=false});
                 this.p2PropertyButtons.forEach(e => {e.visible=false});
                 board.trade = undefined;
