@@ -322,7 +322,7 @@ class Board{
         this.win = false;
         this.auction = undefined;
         this.trade = undefined;
-        this.rollDiceButton = new Button(10,250,images.buttons.img[0],function(){players[turn].rollDice()},107,23)
+        this.rollDiceButton = new Button(10,250,images.buttons.img[0],function(){players[turn].rollDice()},107,23,false,false,false,true)
         this.nextPlayerButton = new Button(10,250,images.buttons.img[1],function(){players[turn].rollDice()},107,23)
         this.currentCard = undefined;
         this.cardCloseButton = new Button(174,43,images.buttons.img[7],function(){board.currentCard = undefined;board.sellButton.visible = false;board.mortgageButton.visible = false;board.upgradeButton.visible = false;board.downgradeButton.visible = false;},18,18)
@@ -971,7 +971,7 @@ class Auction{
 }
 
 class Button{
-    constructor(x,y,img,onClick,w,h,showBorder,mirror,screencenter,text,textSize){
+    constructor(x,y,img,onClick,w,h,showBorder,mirror,screencenter,disablesound,text,textSize){
         this.x = x;
         this.y = y;
         this.w = w;
@@ -985,6 +985,7 @@ class Button{
         this.screencenter = false;
         this.text = text;
         this.textSize = textSize;
+        this.disablesound = disablesound;
         if(mirror === true){
             this.mirror = true;
         }
@@ -1063,13 +1064,17 @@ class Button{
                     if(detectCollition(this.x*drawScale,this.y*drawScale,this.w*drawScale,this.h*drawScale,mouse.realX,mouse.realY,1,1)){
                         this.onClick();
                         this.hover = false;
-                        playSound(sounds.release,1)
+                        if(!this.disablesound){
+                            playSound(sounds.release,1)
+                        }
                     }
                 }else{
                     if(detectCollition(canvas.width/2 + this.x*drawScale - 64*drawScale,canvas.height/2 + this.y*drawScale - 208*drawScale,this.w*drawScale,this.h*drawScale,mouse.realX,mouse.realY,1,1)){
                         this.onClick();
                         this.hover = false;
-                        playSound(sounds.release,1)
+                        if(!this.disablesound){
+                            playSound(sounds.release,1)
+                        }
                     }
                 }
                 
