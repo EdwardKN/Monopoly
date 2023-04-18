@@ -637,7 +637,7 @@ class Trade{
         this.closeButton = new Button(false,302,9,images.buttons.img[7],function(){self.closeButton.visible = false;board.trade = undefined;},18,18,false)
         this.closeButton.visible = true;
 
-        this.p1Slider = new Slider(-450,-270,400,60,0,this.p1.money,true,"30px Arcade","kr")
+        this.p1Slider = new Slider(-470,-270,400,60,0,this.p1.money,true,"30px Arcade","kr")
         this.p1ConfirmButton = new Button(true,-145,350,images.trade.img[1],function(){},150,50)
         if(this.p1.bot === undefined){
             this.p1ConfirmButton.visible = true;
@@ -655,12 +655,12 @@ class Trade{
 
         this.p1.ownedPlaces.forEach(function(e,i){
             let tmp = 0;
-            if(i >= 14){
+            if(i%2 === 1){
                 tmp = 107
             }
-            let but = (new Button(true,-170 + tmp,110 + 18*(i%14),images.trade.img[2],function(){
+            let but = (new Button(true,-170 + tmp,110 + 18*Math.floor(i/2),images.trade.img[2],function(){
 
-            },106,17,false,false,false,false,e.piece.name + " " + e.piece.price + "kr","13px Arcade"))
+            },106,17,false,false,false,false,e.piece.name + " " + e.piece.price + "kr","13px Arcade",e.piece.color))
 
             if(self.p1.bot !== undefined){
                 but.disabled = true;
@@ -670,12 +670,12 @@ class Trade{
         
         this.p2.ownedPlaces.forEach(function(e,i){
             let tmp = 0;
-            if(i >= 14){
+            if(i%2 === 1){
                 tmp = 107
             }
-            let but = (new Button(true,90 + tmp,100 + 18*(i%14),images.trade.img[2],function(){
+            let but = (new Button(true,90 + tmp,110 + 18*Math.floor(i/2),images.trade.img[2],function(){
 
-            },106,17,false,false,false,false,e.piece.name + " " + e.piece.price + "kr","13px Arcade"))
+            },106,17,false,false,false,false,e.piece.name + " " + e.piece.price + "kr","13px Arcade",e.piece.color))
 
             if(self.p2.bot !== undefined){
                 but.disabled = true;
@@ -687,10 +687,15 @@ class Trade{
             this.closeButton.draw();
             this.p1ConfirmButton.draw();
             this.p2ConfirmButton.draw();
-            this.p1Slider.visible = true;
-            this.p1Slider.draw();
-            this.p2Slider.visible = true;
-            this.p2Slider.draw();
+            if(p1.bot === undefined){
+                this.p1Slider.visible = true;
+                this.p1Slider.draw();
+            }
+            if(p2.bot === undefined){
+                this.p2Slider.visible = true;
+                this.p2Slider.draw();
+            }
+            
             drawRotatedText(canvas.width/2-300 -offsets.x,120,this.p1.name,"50px Arcade",0,"black",false)
             drawRotatedText(canvas.width/2+300-30 -offsets.x,120,this.p2.name,"50px Arcade",0,"black",false)
             this.p1PropertyButtons.forEach(e => {e.visible=true;e.draw()});
@@ -1130,7 +1135,7 @@ class Auction{
 }
 
 class Button{
-    constructor(select,x,y,img,onClick,w,h,showBorder,mirror,screencenter,disablesound,text,font){
+    constructor(select,x,y,img,onClick,w,h,showBorder,mirror,screencenter,disablesound,text,font,textcolor){
         this.x = x;
         this.y = y;
         this.w = w;
@@ -1147,6 +1152,10 @@ class Button{
         this.selected = false;
         this.select = select
         this.disablesound = disablesound;
+        this.textcolor = textcolor
+        if(textcolor == undefined){
+            this.textcolor = "black"
+        }    
         if(mirror === true){
             this.mirror = true;
         }
@@ -1227,7 +1236,7 @@ class Button{
                 }
                 if(this.text !== undefined){
                     c.font = this.font;
-                    c.fillStyle = "black"
+                    c.fillStyle = this.textcolor
                     c.textAlign = "left"
                     c.fillText(this.text,canvas.width/2 + this.x*drawScale - 64*drawScale + 20,canvas.height/2 + this.y*drawScale - 208*drawScale + this.h + 2)
                 }
