@@ -562,7 +562,9 @@ class Trade{
     constructor(p1,p2){
         this.p1 = p1;
         this.p2 = p2;
-        this.closeButton = new Button(301,44,images.buttons.img[7],function(){board.trade = undefined;},18,18)
+
+        let self = this;
+        this.closeButton = new Button(301,44,images.buttons.img[7],function(){self.closeButton.visible = false;board.trade = undefined;},18,18)
         this.closeButton.visible = true;
 
         this.update = function(){
@@ -594,6 +596,7 @@ class PlayerBorder{
         },260,54,false,false,true) 
 
         this.createTradebutton = new Button(this.x,this.y,images.buttons.img[9],function(){
+            self.createTradebutton.visible = false;
             self.showInfo = false;
             board.trade = new Trade(players[turn],self.player);
         },219,34,false,false,true)
@@ -1053,15 +1056,15 @@ class Button{
             if(this.visible && !this.disabled){
                 if(this.screencenter){
                     if(detectCollition(this.x*drawScale,this.y*drawScale,this.w*drawScale,this.h*drawScale,mouse.realX,mouse.realY,1,1)){
-                        playSound(sounds.release,1)
                         this.onClick();
                         this.hover = false;
+                        playSound(sounds.release,1)
                     }
                 }else{
                     if(detectCollition(canvas.width/2 + this.x*drawScale - 64*drawScale,canvas.height/2 + this.y*drawScale - 208*drawScale,this.w*drawScale,this.h*drawScale,mouse.realX,mouse.realY,1,1)){
-                        playSound(sounds.release,1)
                         this.onClick();
                         this.hover = false;
+                        playSound(sounds.release,1)
                     }
                 }
                 
