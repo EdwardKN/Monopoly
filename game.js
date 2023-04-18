@@ -571,35 +571,77 @@ class Trade{
         this.p2 = p2;
 
         let self = this;
-        this.closeButton = new Button(false,301,44,images.buttons.img[7],function(){self.closeButton.visible = false;board.trade = undefined;},18,18)
+        this.closeButton = new Button(false,302,9,images.buttons.img[7],function(){self.closeButton.visible = false;board.trade = undefined;},18,18,false)
         this.closeButton.visible = true;
 
-        this.p1ConfirmButton = new Button(false,-145,310,images.trade.img[1],function(){},150,50)
+        this.p1ConfirmButton = new Button(true,-145,350,images.trade.img[1],function(){},150,50)
         this.p1ConfirmButton.visible = true;
 
-        this.p2ConfirmButton = new Button(false,120,310,images.trade.img[1],function(){},150,50)
+        this.p2ConfirmButton = new Button(true,120,350,images.trade.img[1],function(){},150,50)
         this.p2ConfirmButton.visible = true;
 
         this.p1PropertyButtons = [];
+        this.p2PropertyButtons = [];
 
         this.p1.ownedPlaces.forEach(function(e,i){
             let tmp = 0;
-            let tmpI = i;
-            if(i >= 10){
-                tmp = 110
+            if(i >= 14){
+                tmp = 107
             }
-            self.p1PropertyButtons.push(new Button(true,-170 + tmp,150 + 20*(i%10),images.trade.img[2],function(){
+            self.p1PropertyButtons.push(new Button(true,-170 + tmp,100 + 18*(i%14),images.trade.img[2],function(){
+
+            },106,17,false,false,false,false,e.piece.name + " " + e.piece.price + "kr","13px Arcade"))
+        })
+        this.p2.ownedPlaces.forEach(function(e,i){
+            let tmp = 0;
+            let tmpI = i;
+            if(i >= 14){
+                tmp = 107
+            }
+            self.p2PropertyButtons.push(new Button(true,90 + tmp,100 + 18*(i%14),images.trade.img[2],function(){
 
             },106,17,false,false,false,false,e.piece.name + " " + e.piece.price + "kr","13px Arcade"))
         })
         this.update = function(){
-            drawIsometricImage(0,0,images.trade.img[0],false,0,0,images.trade.img[0].width,images.trade.img[0].height,-192,images.trade.img[0].height/7.5,1)
+            drawIsometricImage(0,0,images.trade.img[0],false,0,0,images.trade.img[0].width,images.trade.img[0].height,-192,images.trade.img[0].height/50,1)
             this.closeButton.draw();
             this.p1ConfirmButton.draw();
             this.p2ConfirmButton.draw();
-            drawRotatedText(canvas.width/2-300 -offsets.x,200,this.p1.name,"50px Arcade",0,"black",false)
-            drawRotatedText(canvas.width/2+300-30 -offsets.x,200,this.p2.name,"50px Arcade",0,"black",false)
+            drawRotatedText(canvas.width/2-300 -offsets.x,120,this.p1.name,"50px Arcade",0,"black",false)
+            drawRotatedText(canvas.width/2+300-30 -offsets.x,120,this.p2.name,"50px Arcade",0,"black",false)
             this.p1PropertyButtons.forEach(e => {e.visible=true;e.draw()});
+            this.p2PropertyButtons.forEach(e => {e.visible=true;e.draw()});
+
+            if(this.p1ConfirmButton.selected && this.p2ConfirmButton.selected){
+                let p1New = [];
+                let p2New = [];
+                this.p1PropertyButtons.forEach(function(e,i){
+                    if(e.selected === true){
+                        p2New.push(self.p1.ownedPlaces[i])
+                    }
+                })
+                this.p2PropertyButtons.forEach(function(e,i){
+                    if(e.selected === true){
+                        p1New.push(self.p2.ownedPlaces[i])
+                    }
+                })
+                p1New.forEach(e =>{
+                    self.p2.ownedPlaces.splice(self.p2.ownedPlaces.indexOf(e),1);
+                    self.p1.ownedPlaces.push(e);
+                    e.owner = self.p1;
+                })
+                p2New.forEach(e =>{
+                    self.p1.ownedPlaces.splice(self.p1.ownedPlaces.indexOf(e),1);
+                    self.p2.ownedPlaces.push(e);
+                    e.owner = self.p2;
+                })
+                this.closeButton.visible = false;
+                this.p1ConfirmButton.visible = false;
+                this.p2ConfirmButton.visible = false;
+                this.p1PropertyButtons.forEach(e => {e.visible=false});
+                this.p2PropertyButtons.forEach(e => {e.visible=false});
+                board.trade = undefined;
+            }
         }
     }
 }
@@ -1010,6 +1052,8 @@ class Button{
         this.screencenter = false;
         this.text = text;
         this.font = font;
+        this.selected = false;
+        this.select = select
         this.disablesound = disablesound;
         if(mirror === true){
             this.mirror = true;
@@ -1024,7 +1068,7 @@ class Button{
         this.draw = function(){
             
             if(this.visible && this.img !== undefined){
-                if(!this.disabled){
+                if(!this.disabled && this.selected === false){
                     if(this.screencenter){
                         if(detectCollition(this.x*drawScale,this.y*drawScale,this.w*drawScale,this.h*drawScale,mouse.realX,mouse.realY,1,1)){
                             if(this.img.width <= this.w*2){
@@ -1059,13 +1103,31 @@ class Button{
                         }
                     }
                 }else{
-                    this.hover = false;
-                    if(this.screencenter){
-                        drawRotatedImage(this.x,this.y,this.w*drawScale,this.h*drawScale,this.img,0,this.mirror,0,this.w*2,this.w,this.h,false)
+                    if(this.disabled){
+                        this.hover = false;
+                        if(this.screencenter){
+                            drawRotatedImage(this.x,this.y,this.w*drawScale,this.h*drawScale,this.img,0,this.mirror,0,this.w*2,this.w,this.h,false)
+                        }else{
+                            drawIsometricImage(0,0,this.img,this.mirror,this.w*2,0,this.w,this.h,this.x,this.y)
+                        }
                     }else{
-                        
-                        drawIsometricImage(0,0,this.img,this.mirror,this.w*2,0,this.w,this.h,this.x,this.y)
+                        if(detectCollition(canvas.width/2 + this.x*drawScale - 64*drawScale,canvas.height/2 + this.y*drawScale - 208*drawScale,this.w*drawScale,this.h*drawScale,mouse.realX,mouse.realY,1,1)){
+                            if(this.img.width < this.w*2){
+                                drawIsometricImage(0,0,this.img,this.mirror,this.w*2,0,this.w,this.h,this.x,this.y)
+                            }else{
+                                drawIsometricImage(0,0,this.img,this.mirror,this.w,0,this.w,this.h,this.x,this.y)
+                            }
+                            this.hover = true;
+                        }else{
+                            this.hover = false;
+                            if(this.screencenter){
+                                drawRotatedImage(this.x*drawScale,this.y*drawScale,this.w*drawScale,this.h*drawScale,this.img,0,this.mirror,0,0,this.w,this.h,false)
+                            }else{
+                                drawIsometricImage(0,0,this.img,this.mirror,this.w*2,0,this.w,this.h,this.x,this.y)
+                            }
+                        }
                     }
+                    
                 }
                 if(this.text !== undefined){
                     c.font = this.font;
@@ -1094,7 +1156,15 @@ class Button{
             if(this.visible && !this.disabled){
                 if(this.screencenter){
                     if(detectCollition(this.x*drawScale,this.y*drawScale,this.w*drawScale,this.h*drawScale,mouse.realX,mouse.realY,1,1)){
-                        this.onClick();
+                        if(this.select === false){
+                            this.onClick();
+                        }else{
+                            if(this.selected){
+                                this.selected = false;
+                            }else{
+                                this.selected = true;
+                            }
+                        }
                         this.hover = false;
                         if(!this.disablesound){
                             playSound(sounds.release,1)
@@ -1102,7 +1172,15 @@ class Button{
                     }
                 }else{
                     if(detectCollition(canvas.width/2 + this.x*drawScale - 64*drawScale,canvas.height/2 + this.y*drawScale - 208*drawScale,this.w*drawScale,this.h*drawScale,mouse.realX,mouse.realY,1,1)){
-                        this.onClick();
+                        if(this.select === false){
+                            this.onClick();
+                        }else{
+                            if(this.selected){
+                                this.selected = false;
+                            }else{
+                                this.selected = true;
+                            }
+                        }
                         this.hover = false;
                         if(!this.disablesound){
                             playSound(sounds.release,1)
