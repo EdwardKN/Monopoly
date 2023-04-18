@@ -30,6 +30,15 @@ window.addEventListener("mousedown",function(e){
     })
 
 })
+window.addEventListener("mouseup",function(e){
+
+    buttons.forEach(e =>{
+        if(e.release !== undefined){
+            e.release();
+        }
+    })
+
+})
 
 window.addEventListener("keydown",function(e){
     if(e.keyCode === 27){
@@ -197,8 +206,8 @@ function init(){
     let botAmount = -2;
 
     if(fastLoad === true){
-        playerAmount = 1;
-        botAmount = 1;
+        playerAmount = 2;
+        botAmount = 0;
     }
 
     let playerImages = [0,1,2,3,4,5,6,7]
@@ -565,6 +574,60 @@ class Board{
         }
     }
 }
+class Slider{
+    constructor(x,y,w,h,from,to,showtext,font,unit){
+        this.x = x;
+        this.y = y;
+        this.w = w;
+        this.h = h;
+        this.visible = false;
+        this.disabled = false;
+        this.percentage = 0;
+        this.value = 0;
+        this.follow = false;
+        this.showtext = showtext;
+        this.font = font;
+        this.unit = unit;
+
+        buttons.push(this);
+        this.draw = function(){
+            if(this.visible){
+                this.value = Math.round(((to-from)*this.percentage) + from);
+                c.fillStyle = "black";
+                c.fillRect(canvas.width /2 +this.x,canvas.height /2 +this.y,this.w,this.h)
+                c.fillStyle = "white";
+                c.fillRect(canvas.width /2 +this.x + 4,canvas.height /2 +this.y + 4,this.w-8,this.h-8)
+                c.fillStyle = "black";
+                c.font = this.font;
+                c.textAlign = "center";
+                c.fillText(this.value+this.unit,canvas.width /2 +this.x + this.w/2,canvas.height /2 +this.y + this.h/2)
+                c.fillRect(canvas.width /2 +this.x + (this.percentage*(this.w-8)),canvas.height /2 +this.y,10,this.h)
+            }
+            if(detectCollition(canvas.width /2 +this.x,canvas.height /2 +this.y,this.w,this.h,mouse.realX,mouse.realY,1,1)){
+                this.hover = true;
+            }else{
+                this.hover = false;
+            }
+            if(this.follow === true){
+                this.percentage = (mouse.realX-(canvas.width /2 +this.x))/(this.w-4);
+            }
+            if(this.percentage <= 0){
+                this.percentage = 0;
+            }
+            if(this.percentage >= 1){
+                this.percentage = 1;
+            }
+        }
+        this.click = function(){
+            if(this.hover === true){
+                this.follow = true;
+            }
+        }
+        this.release = function(){
+            this.follow = false;
+        }   
+    }
+}
 class Trade{
     constructor(p1,p2){
         this.p1 = p1;
@@ -574,6 +637,7 @@ class Trade{
         this.closeButton = new Button(false,302,9,images.buttons.img[7],function(){self.closeButton.visible = false;board.trade = undefined;},18,18,false)
         this.closeButton.visible = true;
 
+        this.p1Slider = new Slider(-450,-270,400,60,0,this.p1.money,true,"30px Arcade","kr")
         this.p1ConfirmButton = new Button(true,-145,350,images.trade.img[1],function(){},150,50)
         if(this.p1.bot === undefined){
             this.p1ConfirmButton.visible = true;
@@ -583,6 +647,9 @@ class Trade{
         if(this.p2.bot === undefined){
             this.p2ConfirmButton.visible = true;
         }
+        this.p2Slider = new Slider(50,-270,400,60,0,this.p2.money,true,"30px Arcade","kr")
+
+        
         this.p1PropertyButtons = [];
         this.p2PropertyButtons = [];
 
@@ -591,7 +658,7 @@ class Trade{
             if(i >= 14){
                 tmp = 107
             }
-            let but = (new Button(true,-170 + tmp,100 + 18*(i%14),images.trade.img[2],function(){
+            let but = (new Button(true,-170 + tmp,110 + 18*(i%14),images.trade.img[2],function(){
 
             },106,17,false,false,false,false,e.piece.name + " " + e.piece.price + "kr","13px Arcade"))
 
@@ -620,6 +687,10 @@ class Trade{
             this.closeButton.draw();
             this.p1ConfirmButton.draw();
             this.p2ConfirmButton.draw();
+            this.p1Slider.visible = true;
+            this.p1Slider.draw();
+            this.p2Slider.visible = true;
+            this.p2Slider.draw();
             drawRotatedText(canvas.width/2-300 -offsets.x,120,this.p1.name,"50px Arcade",0,"black",false)
             drawRotatedText(canvas.width/2+300-30 -offsets.x,120,this.p2.name,"50px Arcade",0,"black",false)
             this.p1PropertyButtons.forEach(e => {e.visible=true;e.draw()});
@@ -648,9 +719,15 @@ class Trade{
                     self.p2.ownedPlaces.push(e);
                     e.owner = self.p2;
                 })
+                this.p1.money += this.p2Slider.value;
+                this.p2.money += this.p1Slider.value;
+                this.p1.money -= this.p1Slider.value;
+                this.p2.money -= this.p2Slider.value;
                 this.closeButton.visible = false;
                 this.p1ConfirmButton.visible = false;
                 this.p2ConfirmButton.visible = false;
+                this.p1Slider.visible = false;
+                this.p1Slider.visible = false;
                 this.p1ConfirmButton.hover = false;
                 this.p2ConfirmButton.hover = false;
                 this.p1PropertyButtons.forEach(e => {e.visible=false});

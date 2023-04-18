@@ -6,7 +6,7 @@ var players = [];
 
 const drawScale = 2;
 
-const fastLoad = false;
+const fastLoad = true;
 
 var f = new FontFace('Arcade', 'url(./fonts/SFPixelate-Bold.ttf)');
 
