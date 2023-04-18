@@ -197,7 +197,7 @@ function init(){
     let botAmount = -2;
 
     if(fastLoad === true){
-        playerAmount = 1;
+        playerAmount = 2;
         botAmount = 1;
     }
 
@@ -575,8 +575,8 @@ class PlayerBorder{
         
         
         this.button = new Button(this.x,this.y,images.playerOverlay.img[8],function(){
-            let tmp = false;players.forEach(e =>{if(e.playerBorder.showInfo){tmp = true}})
-            if(!self.showInfo && !tmp){
+            players.forEach(e =>{if(e.playerBorder.showInfo && e.playerBorder != self){e.playerBorder.showInfo = false}})
+            if(!self.showInfo){
                 self.showInfo = true;
             }else{
                 self.showInfo = false;
@@ -693,7 +693,6 @@ class PlayerBorder{
             this.button.x = this.x
             this.button.visible = true;
             this.button.draw()
-            this.createTradebutton.y = this.y + 80 + 27*this.player.ownedPlaces.length;
             this.createTradebutton.x = this.x + 20 
             
             let mirrorAdder = 0;
@@ -720,6 +719,7 @@ class PlayerBorder{
             }
             if(this.showInfo){
                 if(this.index === 0 || this.index === 1 || this.index === 4 || this.index === 6){
+                    this.createTradebutton.y = this.y + 80 + 27*this.player.ownedPlaces.length;
                     drawRotatedImage(this.x*drawScale,this.y*drawScale + 54*drawScale,260*drawScale,27*drawScale,images.playerOverlay.img[11],0,this.button.mirror,0,0,260,27,false)
                     for(let i = 0; i < this.player.ownedPlaces.length; i++){
                         drawRotatedImage(this.x*drawScale,this.y*drawScale + 67 *drawScale + 27*drawScale*i + 27,260*drawScale,27*drawScale,images.playerOverlay.img[10],0,this.button.mirror,0,0,260,27,false)
@@ -786,7 +786,11 @@ class PlayerBorder{
                             c.fillText(this.player.ownedPlaces[i].piece.name + "  " + multiply + " gånger tärning kr",this.x+80+ mirrorAdder*drawScale,this.y*drawScale - 27*1.35*drawScale - 27*drawScale*i)
                         }                    
                     }
-                    drawRotatedImage(this.x*drawScale,this.y*drawScale - 35*drawScale*1.5 -27*drawScale*this.player.ownedPlaces.length,260*drawScale ,27*drawScale,images.playerOverlay.img[9],180,!this.button.mirror,0,0,260,27,false)
+                    drawRotatedImage(this.x*drawScale,this.y*drawScale - 35*drawScale*1.5 -27*drawScale*this.player.ownedPlaces.length,260*drawScale ,27*drawScale,images.playerOverlay.img[10],0,this.button.mirror,0,0,260,27,false)
+                    drawRotatedImage(this.x*drawScale,this.y*drawScale - 35*drawScale*1.5 -27*drawScale*(this.player.ownedPlaces.length+1),260*drawScale ,27*drawScale,images.playerOverlay.img[9],180,!this.button.mirror,0,0,260,27,false)
+                    this.createTradebutton.y = this.y - 60 - 27*this.player.ownedPlaces.length;
+                    this.createTradebutton.visible = true;
+                    this.createTradebutton.draw();
                 }
             }
             
