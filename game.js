@@ -197,7 +197,7 @@ function init(){
     let botAmount = -2;
 
     if(fastLoad === true){
-        playerAmount = 2;
+        playerAmount = 1;
         botAmount = 1;
     }
 
