@@ -69,11 +69,14 @@ var images = {
     buttons:{
         src:["./images/buttons/rolldice","./images/buttons/nextplayer",
         "./images/buttons/sellbutton","./images/buttons/mortgage","./images/buttons/arrowup","./images/buttons/arrowdown",
-        "./images/buttons/buythislawn","./images/buttons/exitCard","./images/buttons/auction"
+        "./images/buttons/buythislawn","./images/buttons/exitCard","./images/buttons/auction","./images/buttons/suggestatrade"
         ]
     },
     auction:{
         src:["./images/menus/auctionmenubackground","./images/buttons/auction+2","./images/buttons/auction+10","./images/buttons/auction+100","./images/menus/auctionloadingbar","./images/buttons/startauction"]
+    },
+    trade:{
+        src:["./images/menus/tradingmenu","./images/buttons/accept","./images/buttons/tradingcityname"]
     }
 };
 
