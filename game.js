@@ -432,9 +432,9 @@ async function init(){
                 var player = players.find(x => x.colorIndex == data.player);
 
                 if (data.type == "CHANCE_CARD") {
-                    board.boardPieces[player.steps].doChanceCard(data.id);
+                    board.boardPieces[player.steps].doChanceCard(data.id, player);
                 } else {
-                    board.boardPieces[player.steps].doCommunityChest(data.id);
+                    board.boardPieces[player.steps].doCommunityChest(data.id, player);
                 }
             });
             
@@ -1301,14 +1301,14 @@ class BoardPiece{
                     if (Api.online) {
                         if (players[turn].colorIndex == Api.currentPlayer) Api.randomEvent("CHANCE_CARD", random);
                     } else {
-                        this.doChanceCard(random);
+                        this.doChanceCard(random, player);
                     }
                 }else if(this.piece.type === "community Chest"){
                     let random = randomIntFromRange(1,16);
                     if (Api.online) {
                         if (players[turn].colorIndex == Api.currentPlayer) Api.randomEvent("COMMUNITY_CHEST", random);
                     } else {
-                        this.doCommunityChest(random);
+                        this.doCommunityChest(random, player);
                     }
                 }else if(this.piece.type === "income tax"){
                     if(player.money > 2000){
@@ -1322,7 +1322,7 @@ class BoardPiece{
             }
         }
 
-        this.doChanceCard = (random) => {
+        this.doChanceCard = (random, player) => {
             if(random === 1){
                 alert("Gå till start!")
                 player.teleportTo(0)
@@ -1394,7 +1394,7 @@ class BoardPiece{
             }
         }
 
-        this.doCommunityChest = (random) => {
+        this.doCommunityChest = (random, player) => {
             if(random === 1){
                 alert("Gå till start")
                 player.teleportTo(0)
