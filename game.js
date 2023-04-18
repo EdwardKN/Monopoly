@@ -325,7 +325,7 @@ class Board{
         this.rollDiceButton = new Button(10,250,images.buttons.img[0],function(){players[turn].rollDice()},107,23)
         this.nextPlayerButton = new Button(10,250,images.buttons.img[1],function(){players[turn].rollDice()},107,23)
         this.currentCard = undefined;
-        this.cardCloseButton = new Button(174,43,images.buttons.img[7],function(){board.currentCard = undefined;},18,18)
+        this.cardCloseButton = new Button(174,43,images.buttons.img[7],function(){board.currentCard = undefined;board.sellButton.visible = false;board.mortgageButton.visible = false;board.upgradeButton.visible = false;board.downgradeButton.visible = false;},18,18)
         this.sellButton = new Button(130,300,images.buttons.img[2],function(){
             if(board.currentCard.mortgaged === false){
                 players[turn].money+= board.currentCard.piece.price/2
@@ -356,6 +356,7 @@ class Board{
             players[turn].ownedPlaces.push(board.currentCard);
             board.currentCard = undefined;
             board.buyButton.visible = false;
+            board.auctionButton.visible = false;
         },97,40);
 
         this.auctionButton = new Button(-43 + 117,300,images.buttons.img[8],function(){
@@ -459,16 +460,20 @@ class Board{
                         
                         this.buyButton.visible = false;
                         let ownAll = true;
+                        let lowest = 5;
                         for(let i = 0; i<board.boardPieces.length; i++){
                             if(board.boardPieces[i] !== this.currentCard){
                                 if(board.boardPieces[i].piece.group === this.currentCard.piece.group){
+                                    if(lowest > board.boardPieces[i].level){lowest = board.boardPieces[i].level}
                                     if(this.currentCard.owner !== board.boardPieces[i].owner){
                                         ownAll = false;
                                     }
                                 }
                             }
                         }
-                        if(this.currentCard.level < 5 && this.currentCard.piece.housePrice !== undefined && ownAll === true){
+                        if(lowest > this.currentCard.level){lowest = this.currentCard.level}
+                        console.log(lowest)
+                        if(this.currentCard.level < 5 && this.currentCard.piece.housePrice !== undefined && ownAll === true && this.currentCard.level === lowest){
                                 this.upgradeButton.disabled = false;
                         }else{
                             this.upgradeButton.disabled = true; 
@@ -824,7 +829,7 @@ class PlayerBorder{
 class Auction{
     constructor(card){
         this.card = card;
-        this.turn = 0;
+        this.turn = turn;
         this.auctionMoney = 0;
         this.time = 472;
         this.started = false;
