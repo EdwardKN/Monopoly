@@ -556,6 +556,12 @@ class Board{
         }
     }
 }
+class Trade{
+    constructor(p1,p2){
+        this.p1 = p1;
+        this.p2 = p2;
+    }
+}
 
 class PlayerBorder{
     constructor(player){
@@ -577,6 +583,10 @@ class PlayerBorder{
                 self.showInfo = false;
             }
         },260,54,false,false,true) 
+
+        this.createTradebutton = new Button(this.x,this.y,images.buttons.img[9],function(){
+
+        },219,34,false,false,true)
 
         this.init = function(){
             if(players.length === 5 && this.realIndex === 4){
@@ -684,10 +694,12 @@ class PlayerBorder{
             this.button.x = this.x
             this.button.visible = true;
             this.button.draw()
+            this.createTradebutton.y = this.y + 80
+            this.createTradebutton.x = this.x + 20
             
             let mirrorAdder = 0;
             if(!this.button.mirror){
-                mirrorAdder = 280;
+                mirrorAdder = canvas.width/4-120;
             }
             if(this.button.mirror === false){
                 drawRotatedImage(this.x*drawScale+466,this.y*drawScale+5,48,96,images.player.img[this.player.colorIndex],0,false,0,0,24,48,false)
@@ -739,7 +751,11 @@ class PlayerBorder{
                             c.fillText(this.player.ownedPlaces[i].piece.name + "  " + multiply + " gånger tärning kr",this.x+80+ mirrorAdder*drawScale,this.y*drawScale + 54*1.35*drawScale + 27*drawScale*i + 54)
                         }
                     }
-                    drawRotatedImage(this.x*drawScale,this.y*drawScale + 53*drawScale*1.5 +27*drawScale*this.player.ownedPlaces.length,260*drawScale ,27*drawScale,images.playerOverlay.img[9],0,this.button.mirror,0,0,260,27,false)
+                    drawRotatedImage(this.x*drawScale,this.y*drawScale + 53*drawScale*1.5 +27*drawScale*this.player.ownedPlaces.length,260*drawScale ,27*drawScale,images.playerOverlay.img[10],0,this.button.mirror,0,0,260,27,false)
+                    drawRotatedImage(this.x*drawScale,this.y*drawScale + 53*drawScale*1.5 +27*drawScale*(this.player.ownedPlaces.length+1),260*drawScale ,27*drawScale,images.playerOverlay.img[9],0,this.button.mirror,0,0,260,27,false)
+
+                    this.createTradebutton.visible = true;
+                    this.createTradebutton.draw();
                 }else{
                     drawRotatedImage(this.x*drawScale,this.y*drawScale - 27*drawScale,260*drawScale,27*drawScale,images.playerOverlay.img[11],180,!this.button.mirror,0,0,260,27,false)
                     for(let i = 0; i < this.player.ownedPlaces.length; i++){
@@ -949,7 +965,7 @@ class Button{
                     if(this.screencenter){
                         if(detectCollition(this.x*drawScale,this.y*drawScale,this.w*drawScale,this.h*drawScale,mouse.realX,mouse.realY,1,1)){
                             if(this.img.width <= this.w*2){
-                                drawRotatedImage(this.x*drawScale,this.y*drawScale,this.w*drawScale,this.h*drawScale,this.img,0,this.mirror,0,0,this.w,this.h,false)
+                                drawRotatedImage(this.x*drawScale,this.y*drawScale,this.w*drawScale,this.h*drawScale,this.img,0,this.mirror,this.w,0,this.w,this.h,false)
                             }else{
                                 drawRotatedImage(this.x,this.y,this.w*drawScale,this.h*drawScale,this.img,0,this.mirror,0,this.w,this.w,this.h,false)
                             }

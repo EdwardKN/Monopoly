@@ -69,7 +69,7 @@ var images = {
     buttons:{
         src:["./images/buttons/rolldice","./images/buttons/nextplayer",
         "./images/buttons/sellbutton","./images/buttons/mortgage","./images/buttons/arrowup","./images/buttons/arrowdown",
-        "./images/buttons/buythislawn","./images/buttons/exitCard","./images/buttons/auction"
+        "./images/buttons/buythislawn","./images/buttons/exitCard","./images/buttons/auction","./images/buttons/suggestatrade"
         ]
     },
     auction:{
