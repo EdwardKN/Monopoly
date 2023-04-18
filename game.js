@@ -197,7 +197,7 @@ function init(){
     let botAmount = -2;
 
     if(fastLoad === true){
-        playerAmount = 1;
+        playerAmount = 2;
         botAmount = 1;
     }
 
@@ -263,6 +263,7 @@ function init(){
         playerImages.splice(random,1)
     }
     players.forEach(e=> e.playerBorder.init())
+    Bot.boardInfo = players.reduce((dict, player, i) => { dict[i] = player.ownedPlaces; return dict }, {})
 }
 
 function update(){
@@ -1255,7 +1256,7 @@ class BoardPiece{
                     let random = randomIntFromRange(1,14)
                     if(random === 1){
                         alert("Gå till start!")
-                        player.teleportTo(0)
+                        player.teleportTo(0, true)
                     }
                     if(random === 2){
                         alert("Gå till Hässleholm")
