@@ -1,5 +1,4 @@
 /**
- * Only the current player should have the alternative to purchase the tile they landed on, then send it to the server for it to relay the decision
  * Auctions
  * If one player lands on the "Gå till finkan" tile, both players proceed to go there, since both players get the event to go there
  * If a player makes it so the turn changes to the next person before the animation is finished, there isn't an alternative to purchase the tile. But it shouldn't even be able to get in this state.
@@ -10,7 +9,7 @@ var { ClientRequest, ServerResponse } = require('node:http');
 var { readFileSync } = require('node:fs');
 var os = require('node:os');
 var websocket = require('websocket');
-var gamelogic = require('./gamelogic');
+var { PlayerManager } = require('./player');
 var api = require("./api");
 
 var network = Object.values(os.networkInterfaces()).map(x => x.filter(y => !y.internal).find(y => y.family == "IPv4")).find(x => x != undefined)?.address;
@@ -67,18 +66,16 @@ function websocketHandler(request) {
     }
 
     var connection = request.accept('', request.origin);
-    if (gamelogic.PlayerManager.getNumberOfPlayers() == 1) {
-        startGameTimer = { id: setTimeout(() => { api.startGame(gamelogic.PlayerManager.players); }, COUNTDOWN_DURATION), time: performance.now() };
+    if (PlayerManager.getNumberOfPlayers() == 1) {
+        startGameTimer = { id: setTimeout(() => { api.startGame(PlayerManager.players); }, COUNTDOWN_DURATION), time: performance.now() };
     }
     
     
     // Send message with info about the game
-    var boardInfo  = gamelogic.BoardManager.getJoinInfo();
-    var playerInfo = gamelogic.PlayerManager.playerJoined();
+    var playerInfo = PlayerManager.playerJoined();
     connection.sendUTF(JSON.stringify({
         event_type: "join_info",
         data: {
-            board: boardInfo,
             players: playerInfo,
             thisPlayer: playerInfo.length - 1,
             countdown: startGameTimer?.time == undefined ? -1 : Math.floor(performance.now() - startGameTimer.time),
@@ -86,13 +83,13 @@ function websocketHandler(request) {
         }
     }));
     
-    var player = gamelogic.PlayerManager.players[playerInfo.length - 1];
+    var player = PlayerManager.players[playerInfo.length - 1];
 
     console.log("[S<-C] Player (%s) joined the lobby", player.name);
     connection.on('message', message => {
         if (message.type === 'utf8') {
             // I'm thinking about having as little validation on the server itself
-            // It'll only act as a relay and sync the info about players and the board, such as money, owned tiles and position of players.'
+            // It'll only act as a relay and sync the info about players and the board, such as money, owned tiles and position of players.
             // This way, it'll go faster and I don't have to recreate the whole game
             var event = JSON.parse(message.utf8Data);
             switch(event.event_type) {
@@ -103,7 +100,7 @@ function websocketHandler(request) {
                     player.teleportTo(event.tiles_moved);
                     break;
                 case "change_turn":
-                    var newPlayer = gamelogic.PlayerManager.players[(gamelogic.PlayerManager.players.indexOf(player) + 1) % gamelogic.PlayerManager.getNumberOfPlayers()];
+                    var newPlayer = PlayerManager.players[(PlayerManager.players.indexOf(player) + 1) % PlayerManager.getNumberOfPlayers()];
                     console.log("[S<-C] Turn changed from player %s to player %s", player.name, newPlayer.name);
                     api.newTurn(newPlayer.colorIndex);
                     break;
@@ -127,7 +124,7 @@ function websocketHandler(request) {
                     api.auctionShow(event.tile.card);
                     break;
                 case "auction_bid":
-                    var newPlayer = gamelogic.PlayerManager.players[(gamelogic.PlayerManager.players.indexOf(player) + 1) % gamelogic.PlayerManager.getNumberOfPlayers()];
+                    var newPlayer = PlayerManager.players[(PlayerManager.players.indexOf(player) + 1) % PlayerManager.getNumberOfPlayers()];
                     console.log("[S<-C] Player (%s) bid %dkr on tile (%s)", player.name, event.bid, event.tile.name);
                     api.auctionBid(player.colorIndex, newPlayer.colorIndex, event.bid, event.tile.card, event.is_out);
                     break;
@@ -140,7 +137,7 @@ function websocketHandler(request) {
     });
 
     connection.on('close', (reasonCode, description) => {
-        gamelogic.PlayerManager.playerLeft(player);
+        PlayerManager.playerLeft(player);
     });
 }
 
