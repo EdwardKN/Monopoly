@@ -426,6 +426,17 @@ async function init(){
                     board.auction.addMoneyButton100.visible = false;
                 }
             });
+
+            document.body.addEventListener("random_card", (evt) => {
+                var data = evt.detail;
+                var player = players.find(x => x.colorIndex == data.player);
+
+                if (data.type == "CHANCE_CARD") {
+                    board.boardPieces[player.steps].doChanceCard(data.id);
+                } else {
+                    board.boardPieces[player.steps].doCommunityChest(data.id);
+                }
+            });
             
             await Api.openWebsocketConnection(serverURL);
 
@@ -1286,156 +1297,18 @@ class BoardPiece{
 
                     }
                 }else if(this.piece.type === "chance"){
-
-                    let random = randomIntFromRange(1,13)
-                    if(random === 1){
-                        alert("Gå till start!")
-                        player.teleportTo(0)
-                    }
-                    if(random === 2){
-                        alert("Gå till Hässleholm")
-                        player.teleportTo(24)
-                    }
-                    if(random === 3){
-                        alert("Gå till Simrishamn")
-                        player.teleportTo(11)
-                    }
-                    if(random === 4){
-                        alert("Gå till närmsta tågstation")
-                        if(this.n === 7){
-                            player.teleportTo(15)
-                        }
-                        if(this.n === 22){
-                            player.teleportTo(25)
-                        }
-                        if(this.n === 36){
-                            player.teleportTo(5)
-                        }
-                    }
-                    if(random === 5){
-                        alert("Få 50kr")
-                        player.money += 50;
-                    }
-                    if(random === 6){
-                        alert("Inte inlagd men ska vara ett GET OUT OF JAIL kort")
-                        //get out of jail
-                    }
-                    if(random === 7){
-                        alert("Gå bak tre steg")
-                        player.teleportTo(player.steps-3)
-                    }
-                    if(random === 8){
-                        alert("Gå till finkan!")
-                        player.goToPrison();
-                    }
-                    if(random === 9){
-                        alert("Betala 40 för varje hus man har och 115 för varje hotell")
-                        board.boardPieces.forEach(function(e){
-                            if(player === e.owner){
-                                if(e.level < 5){
-                                    player.money -= 25*e.level
-                                }else{
-                                    player.money -= 100
-                                }
-                            }
-                        })
-                    }
-                    if(random === 10){
-                        alert("Inte inlagd för att jag inte riktigt vet vad det ska vara")
-                        // konstig
-                    }
-                    if(random === 11){
-                        alert("Gå till Malmö")
-                        player.teleportTo(39);
-                    }
-                    if(random === 12){
-                        alert("Få 50kr av alla andra spelare")
-                        player.money += (players.length-1)*50
-                        players.forEach(e=> {if(e !== player){e.money-=50}})
-                    }
-                    if(random === 13){
-                        alert("Få 150kr")
-                        player.money += 150
+                    let random = randomIntFromRange(1,13);
+                    if (Api.online) {
+                        if (players[turn].colorIndex == Api.currentPlayer) Api.randomEvent("CHANCE_CARD", random);
+                    } else {
+                        this.doChanceCard(random);
                     }
                 }else if(this.piece.type === "community Chest"){
                     let random = randomIntFromRange(1,16);
-                    if(random === 1){
-                        alert("Gå till start")
-                        player.teleportTo(0)
-                    }
-                    if(random === 2){
-                        alert("Få 200kr")
-                        player.money += 200;
-                    }
-                    if(random === 3){
-                        alert("Förlora 50kr")
-                        player.money -= 50;
-                    }
-                    if(random === 4){
-                        alert("Få 50kr")
-                        player.money += 50;
-                    }
-                    if(random === 4){
-                        alert("Inte inlagd men ska vara ett GET OUT OF JAIL kort")
-                        //jail free
-                    }
-                    if(random === 5){
-                        alert("Gå till finkan")
-                        player.goToPrison()
-                    }
-                    if(random === 6){
-                        alert("Få 50kr av alla andra spelare")
-                        player.money += (players.length-1)*50
-                        players.forEach(e=> {if(e !== player){e.money-=50}})
-                    }
-                    if(random === 7){
-                        alert("Få 100kr")
-                        player.money += 100;
-                    }
-                    if(random === 8){
-                        alert("Få 20kr")
-                        player.money += 20;
-                    }
-                    if(random === 9){
-                        alert("Få 10kr av alla andra spelare")
-                        player.money += (players.length-1)*10
-                        players.forEach(e=> {if(e !== player){e.money-=10}})
-                    }
-                    if(random === 10){
-                        alert("Få 100kr")
-                        player.money += 100;
-                    }
-                    if(random === 11){
-                        alert("Förlora 50kr")
-                        player.money -= 50;
-                    }
-                    if(random === 12){
-                        alert("Förlora 50kr")
-                        player.money -= 50;
-                    }
-                    if(random === 13){
-                        alert("Förlora 25kr")
-                        player.money -= 25;
-                    }
-                    if(random === 14){
-                        alert("Betala 40 för varje hus man har och 115 för varje hotell")
-                        board.boardPieces.forEach(function(e){
-                            if(player === e.owner){
-                                if(e.level < 5){
-                                    player.money -= 40*e.level
-                                }else{
-                                    player.money -= 115
-                                }
-                            }
-                        })
-                    }
-                    if(random === 15){
-                        alert("Få 10kr")
-                        player.money += 10;
-                    }
-                    if(random === 16){
-                        alert("Få 100kr")
-                        player.money += 100;
+                    if (Api.online) {
+                        if (players[turn].colorIndex == Api.currentPlayer) Api.randomEvent("COMMUNITY_CHEST", random);
+                    } else {
+                        this.doCommunityChest(random);
                     }
                 }else if(this.piece.type === "income tax"){
                     if(player.money > 2000){
@@ -1448,9 +1321,160 @@ class BoardPiece{
                 }
             }
         }
-        
+
+        this.doChanceCard = (random) => {
+            if(random === 1){
+                alert("Gå till start!")
+                player.teleportTo(0)
+            }
+            if(random === 2){
+                alert("Gå till Hässleholm")
+                player.teleportTo(24)
+            }
+            if(random === 3){
+                alert("Gå till Simrishamn")
+                player.teleportTo(11)
+            }
+            if(random === 4){
+                alert("Gå till närmsta tågstation")
+                if(this.n === 7){
+                    player.teleportTo(15)
+                }
+                if(this.n === 22){
+                    player.teleportTo(25)
+                }
+                if(this.n === 36){
+                    player.teleportTo(5)
+                }
+            }
+            if(random === 5){
+                alert("Få 50kr")
+                player.money += 50;
+            }
+            if(random === 6){
+                alert("Inte inlagd men ska vara ett GET OUT OF JAIL kort")
+                //get out of jail
+            }
+            if(random === 7){
+                alert("Gå bak tre steg")
+                player.teleportTo(player.steps-3)
+            }
+            if(random === 8){
+                alert("Gå till finkan!")
+                player.goToPrison();
+            }
+            if(random === 9){
+                alert("Betala 40 för varje hus man har och 115 för varje hotell")
+                board.boardPieces.forEach(function(e){
+                    if(player === e.owner){
+                        if(e.level < 5){
+                            player.money -= 25*e.level
+                        }else{
+                            player.money -= 100
+                        }
+                    }
+                })
+            }
+            if(random === 10){
+                alert("Inte inlagd för att jag inte riktigt vet vad det ska vara")
+                // konstig
+            }
+            if(random === 11){
+                alert("Gå till Malmö")
+                player.teleportTo(39);
+            }
+            if(random === 12){
+                alert("Få 50kr av alla andra spelare")
+                player.money += (players.length-1)*50
+                players.forEach(e=> {if(e !== player){e.money-=50}})
+            }
+            if(random === 13){
+                alert("Få 150kr")
+                player.money += 150
+            }
+        }
+
+        this.doCommunityChest = (random) => {
+            if(random === 1){
+                alert("Gå till start")
+                player.teleportTo(0)
+            }
+            if(random === 2){
+                alert("Få 200kr")
+                player.money += 200;
+            }
+            if(random === 3){
+                alert("Förlora 50kr")
+                player.money -= 50;
+            }
+            if(random === 4){
+                alert("Få 50kr")
+                player.money += 50;
+            }
+            if(random === 4){
+                alert("Inte inlagd men ska vara ett GET OUT OF JAIL kort")
+                //jail free
+            }
+            if(random === 5){
+                alert("Gå till finkan")
+                player.goToPrison()
+            }
+            if(random === 6){
+                alert("Få 50kr av alla andra spelare")
+                player.money += (players.length-1)*50
+                players.forEach(e=> {if(e !== player){e.money-=50}})
+            }
+            if(random === 7){
+                alert("Få 100kr")
+                player.money += 100;
+            }
+            if(random === 8){
+                alert("Få 20kr")
+                player.money += 20;
+            }
+            if(random === 9){
+                alert("Få 10kr av alla andra spelare")
+                player.money += (players.length-1)*10
+                players.forEach(e=> {if(e !== player){e.money-=10}})
+            }
+            if(random === 10){
+                alert("Få 100kr")
+                player.money += 100;
+            }
+            if(random === 11){
+                alert("Förlora 50kr")
+                player.money -= 50;
+            }
+            if(random === 12){
+                alert("Förlora 50kr")
+                player.money -= 50;
+            }
+            if(random === 13){
+                alert("Förlora 25kr")
+                player.money -= 25;
+            }
+            if(random === 14){
+                alert("Betala 40 för varje hus man har och 115 för varje hotell")
+                board.boardPieces.forEach(function(e){
+                    if(player === e.owner){
+                        if(e.level < 5){
+                            player.money -= 40*e.level
+                        }else{
+                            player.money -= 115
+                        }
+                    }
+                })
+            }
+            if(random === 15){
+                alert("Få 10kr")
+                player.money += 10;
+            }
+            if(random === 16){
+                alert("Få 100kr")
+                player.money += 100;
+            }
+        }
     }
-    
 }
 
 class Player{

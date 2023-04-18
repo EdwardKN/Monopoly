@@ -111,6 +111,9 @@ function websocketHandler(request) {
                     // BoardPiece.piece.card is the image it should be, therefore this can be used as an id in the same manner that Player.colorIndex is used as an id.
                     api.tilePurchased(player.colorIndex, player.money, event.tile.card);
                     break;
+                case "property_purchased":
+                    console.log(event); // <------------------------------------------------------
+                    break;
                 case "random_event":
                     console.log("[S<-C] Random event with id: (%s; %s) happened to player (%s)", event.id, event.type, player.name);
                     api.randomEvent(event.id, player, event.type);
