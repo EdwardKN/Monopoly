@@ -494,7 +494,7 @@ class Board{
                         }else{
                             this.downgradeButton.disabled = true;
                         }
-                        if(this.currentCard.mortgaged === true && players[turn].money <= ((this.currentCard.piece.price/2)*1.1)){
+                        if(this.currentCard.mortgaged === true && players[turn].money <= ((this.currentCard.piece.price/2)*1.1) || this.currentCard.level !== 0){
                             this.mortgageButton.disabled = true;
                         }else{
                             this.mortgageButton.disabled = false;
@@ -537,7 +537,7 @@ class Board{
                 this.nextPlayerButton.visible = false;
                 this.rollDiceButton.visible = false;
                 if(this.currentCard.mortgaged === true){
-                    drawRotatedText(canvas.width/2 + 50,canvas.height/2 - 100,"Intecknad","150px Brush Script MT",45,"black",false)
+                    drawRotatedText(800,canvas.height/2 - 100,"Intecknad","150px Brush Script MT",45,"black",false)
                 }
             }else{
                 this.cardCloseButton.visible = true;
@@ -663,6 +663,9 @@ class Trade{
             },106,17,false,false,false,false,e.piece.name + " " + e.piece.price + "kr","13px Arcade",e.piece.color))
 
             if(self.p1.bot !== undefined){
+                but.disabled = true;
+            }
+            if(e.level !== 0){
                 but.disabled = true;
             }
             self.p1PropertyButtons.push(but);
