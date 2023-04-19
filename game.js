@@ -349,10 +349,14 @@ class Board{
 
             let self = players[turn];
 
+            players[turn].timeInJail++;
+
             players[turn].animateDice(dice1,dice2,function(){
                 board.animateDices = false; 
-                if(dice1 === dice2){
+                if(dice1 === dice2|| players[turn].timeInJail === 3){
                     self.getOutOfJail()
+                }
+                if(dice1 === dice2){
                     self.teleportTo(self.steps + dice1 + dice2);
                 }
             })
@@ -364,6 +368,7 @@ class Board{
         },82,35);
         this.rollDiceButton = new Button(false,10,250,images.buttons.img[0],function(){players[turn].rollDice()},107,23,false,false,false,true)
         this.nextPlayerButton = new Button(false,10,250,images.buttons.img[1],function(){
+            players[turn].numberOfRolls = 0;
             players[turn].rolls = false;
             players[turn].numberOfRolls = 0;
             turn = (turn+1)%players.length;
@@ -1799,6 +1804,7 @@ class Player{
         this.inDebtTo = undefined;
         this.lastMoneyInDebt = 0;
         this.jailcardAmount = 0;
+        this.timeInJail = 0;
 
         this.playerBorder = new PlayerBorder(this)
         if(bot == true ){
@@ -1942,6 +1948,7 @@ class Player{
             })
             self.inJail = false;
             self.steps = 10;
+            self.timeInJail = 0;
             board.boardPieces[10].playerStep(true,self);
         }
         this.teleportTo = function(step,getMoney){
@@ -1995,6 +2002,7 @@ class Player{
                             board.prisonExtra.playerStep(true,self);
                         }else{
                             board.boardPieces[to].playerStep(false,self,dicesum);
+                            console.log(to)
                         }
                     }
                     if(to === 30){
@@ -2052,22 +2060,24 @@ class Player{
                         let oldStep = this.steps;
                         let dice1 = randomIntFromRange(1,6);
                         let dice2 = randomIntFromRange(1,6);
+                        this.numberOfRolls++;
                         if(dice1 === dice2){
-                            if(this.numberOfRolls === 3){
-                                alert("Gå till finkan!")
-                                this.goToPrison();
-                            }
-                            this.numberOfRolls++;
                             this.rolls = false;
                         }else{
                             this.rolls = true;
                         }
+                        
                         let diceSum = dice1+dice2;
                         this.dice1 = dice1
                         this.dice2 = dice2
                         let self = this;
 
                         this.animateDice(dice1,dice2,function(){
+                            if(self.numberOfRolls === 3){
+                                alert("Olagligt att slå dubbla tärningar tre gånger!")
+                                self.goToPrison();
+                                return;
+                            }
                             board.animateDices = false;
                             self.steps += dice1+dice2;
                             self.steps = self.steps%40;
