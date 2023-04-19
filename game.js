@@ -1108,8 +1108,13 @@ class Auction{
     
                 
             }else{
-                this.startAuctionButton.visible = true;
-                this.startAuctionButton.draw();
+                if(this.playerlist[this.turn].bot === undefined){
+                    this.startAuctionButton.visible = true;
+                    this.startAuctionButton.draw();
+                }else{
+                    this.startAuctionButton.visible = false;
+                }
+
             }
             
 
