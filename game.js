@@ -197,7 +197,7 @@ function init(){
     let botAmount = -2;
 
     if(fastLoad === true){
-        playerAmount = 2;
+        playerAmount = 1;
         botAmount = 1;
     }
 
@@ -595,7 +595,6 @@ class Trade{
         })
         this.p2.ownedPlaces.forEach(function(e,i){
             let tmp = 0;
-            let tmpI = i;
             if(i >= 14){
                 tmp = 107
             }
@@ -918,7 +917,7 @@ class Auction{
         },54,54,false)
         this.startAuctionButton = new Button(false,-150,220,images.auction.img[5],function(){
             board.auction.started = true;
-            board.auction.duration = 10 * 1000;
+            board.auction.duration = 10 * 500;
             board.auction.startTime = performance.now();
             board.auction.timer = setInterval(function(){
                 board.auction.time = 472 * (1 - (performance.now() - board.auction.startTime) / board.auction.duration);
