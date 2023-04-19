@@ -12,8 +12,6 @@ const groups = {
 }
 const buyable = [1, 3, 5, 6, 8, 9, 11, 12, 13, 14, 15, 16, 18, 19, 21, 23, 24, 25, 26, 27, 28, 29, 31, 32, 34, 35, 37, 39]
 
-var play = false
-
 class Bot{
     static boardInfo = {}
     static thinking = false
@@ -23,7 +21,6 @@ class Bot{
     }
 
     async update() {
-        if (!play) { return }
         if (Bot.thinking) { return }
         if (board.auction) {
             if (board.auction.playerlist[board.auction.turn] === this.player) {
@@ -31,9 +28,7 @@ class Bot{
                     board.auction.started = true;
                     board.auction.duration = 10 * speeds.auctionSpeed;
                     board.auction.startTime = performance.now();
-                    board.auction.timer = setInterval(function(){
-                    board.auction.time = 472 * (1 - (performance.now() - board.auction.startTime) / board.auction.duration);
-            },10);
+                    board.auction.timer = setInterval(() => { board.auction.time = 472 * (1 - (performance.now() - board.auction.startTime) / board.auction.duration) },10);
                 }
                 this.bidOnAuction()
             }
@@ -42,16 +37,17 @@ class Bot{
         if (this.player !== players[turn] || players.some(pl => pl.animationOffset !== 0) ||
             board.showDices || board.animateDices) { return }
         
-        Bot.thinking = true
-        await new Promise(resolve => setTimeout(resolve, randomIntFromRange(speeds.botMin, speeds.botMax)))
-        Bot.thinking = false
-        /* Logic Before */
+        Bot.thinking = true; await new Promise(resolve => setTimeout(resolve, randomIntFromRange(speeds.botMin, speeds.botMax))); Bot.thinking = false
+
         if (this.player.negative) {
             if (!this.handleBankrupt()) {
                 this.player.ownedPlaces.forEach(bP => {
                     bP.owner = undefined
                 })
                 this.player.ownedPlaces = []
+                players.splice(players.indexOf(this.player), 1)
+                turn = turn >= players.length ? 0 : turn
+                delete this.player, this
                 return
             }
         }
@@ -70,10 +66,17 @@ class Bot{
                 this.player.teleportTo(this.player.steps + result)
             }
         }
-        /* -------------------- */
-        // Wait For All Animations To Finish
+
         this.player.rollDice()
+        
         while (board.animateDices || this.player.animationOffset !== 0) { await new Promise(requestAnimationFrame) }
+        
+        players[turn].rolls = false;
+        players[turn].numberOfRolls = 0;
+        turn = (turn+1)%players.length;
+        board.dice1 = 0;
+        board.dice2 = 0;
+        
         if (this.player.inJail) { return }
 
         let bP = board.boardPieces[this.player.steps]
@@ -82,12 +85,11 @@ class Bot{
             this.handleBankrupt()
         }
 
-        // Trade, Buy House
 
 
         // Buy or Auction
         if (!((bP.piece.type || bP.piece.group) in groups)) { return }
-        if (bP.owner && bP.owner !== this.player) { this.player.checkDebt(bP.owner) }
+        if (bP.owner && bP.owner !== this.player) { this.player.checkDebt(bP.owner); return }
 
         let moneyLeft = this.player.money - bP.piece.price
         if (moneyLeft < this.getAverageLoss(12)) { 
@@ -107,8 +109,8 @@ class Bot{
                 this.buyPiece(bP)  
             }
         }
-        
     }
+
 
     buyPiece(boardPiece) {
         this.player.money -= boardPiece.piece.price

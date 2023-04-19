@@ -2036,6 +2036,7 @@ class Player{
                     board.dice1 = dice1;
                     board.dice2 = dice2;
                     setTimeout(() => {
+                        board.animateDices = false;
                         callback()
                     }, speeds.diceSpeed.delay);
                 }else{

@@ -6,9 +6,15 @@ var players = [];
 
 const drawScale = 2;
 
-const fastLoad = true;
+const fastLoad = false;
 
-const fastSpeed = true;
+const fastSpeed = false;
+
+const disableAlert = false;
+
+if(disableAlert){
+    window.alert = function(){}
+}
 
 
 var f = new FontFace('Arcade', 'url(./fonts/SFPixelate-Bold.ttf)');
@@ -27,7 +33,7 @@ if(fastSpeed === true){
     speeds = {
         botMin: 100,
         botMax: 200,
-        stepSpeed: 50,
+        stepSpeed: 100,
         auctionSpeed: 100,
         diceSpeed:{
             counter:1,
