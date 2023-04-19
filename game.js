@@ -1613,23 +1613,26 @@ class BoardPiece{
                     }
                     if(random === 4){
                         alert("Gå till närmsta anläggning")
-                        if(this.n === 7 || this.n === 36){
+                        if(this.n === 7 ){
                             player.teleportTo(12)
                         }
                         if(this.n === 22){
                             player.teleportTo(28)
                         }
+                        if(this.n === 36){
+                            player.teleportTo(-28)
+                        }
                     }
                     if(random === 5){
                         alert("Gå till närmsta tågstation")
                         if(this.n === 7){
-                            player.teleportTo(15)
+                            player.teleportTo(-5)
                         }
                         if(this.n === 22){
                             player.teleportTo(25)
                         }
                         if(this.n === 36){
-                            player.teleportTo(5)
+                            player.teleportTo(-35)
                         }
                     }
                     if(random === 6){
@@ -1953,7 +1956,6 @@ class Player{
             }
 
             this.steps = step;
-            this.rolls = true;
 
             this.animateSteps(oldStep,this.steps,0,direction,getMoney)
         }
