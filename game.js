@@ -358,7 +358,6 @@ class Board{
         },82,35);
         this.jailCardButton = new Button(false,111,239,images.jailMenu.img[3],function(){
             players[turn].jailcardAmount--;
-            players[turn].rolls = false;
             players[turn].getOutOfJail();
         },82,35);
         this.rollDiceButton = new Button(false,10,250,images.buttons.img[0],function(){players[turn].rollDice()},107,23,false,false,false,true)
