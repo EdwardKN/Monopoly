@@ -338,10 +338,11 @@ class Board{
             players[turn].money -= 50;
             players[turn].rolls = true;
             players[turn].getOutOfJail();
-                
+            board.payJailButton.visible = false;
                 
         },82,35);
         this.rollJailButton = new Button(false,19,239,images.jailMenu.img[2],function(){
+            board.rollJailButton.visible = false;
             let dice1 = randomIntFromRange(1,6);
             let dice2 = randomIntFromRange(1,6);
             players[turn].rolls = true;
@@ -359,9 +360,16 @@ class Board{
         this.jailCardButton = new Button(false,111,239,images.jailMenu.img[3],function(){
             players[turn].jailcardAmount--;
             players[turn].getOutOfJail();
+            board.jailCardButton.visible = false;
         },82,35);
         this.rollDiceButton = new Button(false,10,250,images.buttons.img[0],function(){players[turn].rollDice()},107,23,false,false,false,true)
-        this.nextPlayerButton = new Button(false,10,250,images.buttons.img[1],function(){players[turn].rollDice()},107,23)
+        this.nextPlayerButton = new Button(false,10,250,images.buttons.img[1],function(){
+            players[turn].rolls = false;
+            players[turn].numberOfRolls = 0;
+            turn = (turn+1)%players.length;
+            board.dice1 = 0;
+            board.dice2 = 0;
+        },107,23)
         this.currentCard = undefined;
         this.cardCloseButton = new Button(false,174,43,images.buttons.img[7],function(){board.currentCard = undefined;board.sellButton.visible = false;board.mortgageButton.visible = false;board.upgradeButton.visible = false;board.downgradeButton.visible = false;},18,18)
         this.sellButton = new Button(false,130,300,images.buttons.img[2],function(){
@@ -2063,26 +2071,8 @@ class Player{
                             self.steps = self.steps%40;
                             self.animateSteps(oldStep,self.steps,diceSum,1,true)
                         })
-                        
-                        
-                            
-                        
-                        
-                    }else{
-                        turn = (turn+1)%players.length;
-                        this.rolls = false;
-                        this.numberOfRolls = 0;
-                        board.dice1 = 0;
-                        board.dice2 = 0;
-                        
+                           
                     }
-                }else{
-                    if(this.rolls){
-                        turn = (turn+1)%players.length;
-                        this.rolls = false;
-                        this.numberOfRolls = 0;
-                    }
-                    
                 }
             }
             
