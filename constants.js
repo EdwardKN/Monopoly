@@ -113,6 +113,9 @@ var images = {
     },
     trade:{
         src:["./images/menus/tradingmenu","./images/buttons/accept","./images/buttons/tradingcityname"]
+    },
+    jailMenu:{
+        src:["./images/menus/prisonmenu","./images/buttons/prisonpay","./images/buttons/prisonrolldice","./images/buttons/prisongetoutofjail"]
     }
 };
 

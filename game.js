@@ -335,8 +335,42 @@ class Board{
         this.win = false;
         this.auction = undefined;
         this.trade = undefined;
+        this.payJailButton = new Button(false,-74,239,images.jailMenu.img[1],function(){
+            players[turn].money -= 50;
+            players[turn].rolls = true;
+            players[turn].getOutOfJail();
+            board.payJailButton.visible = false;
+                
+        },82,35);
+        this.rollJailButton = new Button(false,19,239,images.jailMenu.img[2],function(){
+            board.rollJailButton.visible = false;
+            let dice1 = randomIntFromRange(1,6);
+            let dice2 = randomIntFromRange(1,6);
+            players[turn].rolls = true;
+
+            let self = players[turn];
+
+            players[turn].animateDice(dice1,dice2,function(){
+                board.animateDices = false; 
+                if(dice1 === dice2){
+                    self.getOutOfJail()
+                    self.teleportTo(self.steps + dice1 + dice2);
+                }
+            })
+        },82,35);
+        this.jailCardButton = new Button(false,111,239,images.jailMenu.img[3],function(){
+            players[turn].jailcardAmount--;
+            players[turn].getOutOfJail();
+            board.jailCardButton.visible = false;
+        },82,35);
         this.rollDiceButton = new Button(false,10,250,images.buttons.img[0],function(){players[turn].rollDice()},107,23,false,false,false,true)
-        this.nextPlayerButton = new Button(false,10,250,images.buttons.img[1],function(){players[turn].rollDice()},107,23)
+        this.nextPlayerButton = new Button(false,10,250,images.buttons.img[1],function(){
+            players[turn].rolls = false;
+            players[turn].numberOfRolls = 0;
+            turn = (turn+1)%players.length;
+            board.dice1 = 0;
+            board.dice2 = 0;
+        },107,23)
         this.currentCard = undefined;
         this.cardCloseButton = new Button(false,174,43,images.buttons.img[7],function(){board.currentCard = undefined;board.sellButton.visible = false;board.mortgageButton.visible = false;board.upgradeButton.visible = false;board.downgradeButton.visible = false;},18,18)
         this.sellButton = new Button(false,130,300,images.buttons.img[2],function(){
@@ -430,6 +464,9 @@ class Board{
             }
             if(this.trade !== undefined){
                 this.trade.update();
+            }
+            if(players[turn].inJail === true && players[turn].bot === undefined && this.auction === undefined && players[turn].rolls === false && players[turn].animationOffset === 0 && this.showDices === false && this.animateDices === false){
+                this.showJailmenu();
             }
             }else{
                 drawRotatedText(820,450,"Grattis " + players[0].name + "! Du vann!", "80px Arcade",0,"black",false,false)
@@ -551,6 +588,26 @@ class Board{
             }
             
         }
+        this.showJailmenu = function(){
+            drawIsometricImage(0,0,images.jailMenu.img[0],false,0,0,300,90,-90,198)
+
+            this.payJailButton.visible = true;
+            this.payJailButton.draw();
+            this.rollJailButton.visible = true;
+            this.rollJailButton.draw();
+            this.jailCardButton.visible = true;
+            this.jailCardButton.draw();
+            if(players[turn].money >= 50){
+                this.payJailButton.disabled = false;
+            }else{
+                this.payJailButton.disabled = true;
+            }
+            if(players[turn].jailcardAmount >= 1){
+                this.jailCardButton.disabled = false;
+            }else{
+                this.jailCardButton.disabled = true;
+            }
+        }
 
         this.showDice = function () {
             if(players[turn].animationOffset !== 0 ||this.showDices === true || this.animateDices === true){
@@ -560,7 +617,7 @@ class Board{
             this.rollDiceButton.visible = false;
             }else{
                 if(players[turn].rolls === false){
-                    if(players[turn].bot === undefined && this.auction === undefined){
+                    if(players[turn].bot === undefined && this.auction === undefined && players[turn].inJail === false){
                         this.rollDiceButton.visible = true;
                         this.nextPlayerButton.visible = false;
                     }else{
@@ -1109,8 +1166,13 @@ class Auction{
     
                 
             }else{
-                this.startAuctionButton.visible = true;
-                this.startAuctionButton.draw();
+                if(this.playerlist[this.turn].bot === undefined){
+                    this.startAuctionButton.visible = true;
+                    this.startAuctionButton.draw();
+                }else{
+                    this.startAuctionButton.visible = false;
+                }
+
             }
             
 
@@ -1369,7 +1431,7 @@ class BoardPiece{
         this.update = function () {
             let mouseSquareX = (to_grid_coordinate(mouse.x-416*drawScale,mouse.y).x/64) 
             let mouseSquareY = (to_grid_coordinate(mouse.x-416*drawScale,mouse.y).y/64)
-            if(board.currentCard !== undefined && this !== board.currentCard || this.piece.type === "chance" || this.piece.type === "community Chest" || this.piece.type === "income tax" || this.piece.type === "tax" ||this.n%10 === 0 || board.auction !== undefined || board.trade !== undefined){
+            if(board.currentCard !== undefined && this !== board.currentCard || this.piece.type === "chance" || this.piece.type === "community Chest" || this.piece.type === "income tax" || this.piece.type === "tax" ||this.n%10 === 0 || board.auction !== undefined || board.trade !== undefined || players[turn].inJail === true){
                 this.offsetY = 0;
                 this.hover = false;
             }else if(this.x/64*drawScale > mouseSquareX-1*drawScale && this.x/64*drawScale < mouseSquareX && this.side === 2 && this.n%10 !== 0 && mouseSquareY >= 0*drawScale && mouseSquareY < 2*drawScale
@@ -1576,8 +1638,8 @@ class BoardPiece{
                         player.money += 50;
                     }
                     if(random === 7){
-                        alert("Inte inlagd men ska vara ett GET OUT OF JAIL kort")
-                        //get out of jail
+                        alert("Get out of jail card")
+                        player.jailcardAmount++;
                     }
                     if(random === 8){
                         alert("Gå bak tre steg")
@@ -1635,8 +1697,8 @@ class BoardPiece{
                         player.money += 50;
                     }
                     if(random === 4){
-                        alert("Inte inlagd men ska vara ett GET OUT OF JAIL kort")
-                        //jail free
+                        alert("Get out of jail card")
+                        player.jailcardAmount++;
                     }
                     if(random === 5){
                         alert("Gå till finkan")
@@ -1734,6 +1796,7 @@ class Player{
         this.bot = undefined;
         this.inDebtTo = undefined;
         this.lastMoneyInDebt = 0;
+        this.jailcardAmount = 0;
 
         this.playerBorder = new PlayerBorder(this)
         if(bot == true ){
@@ -2010,49 +2073,8 @@ class Player{
                             self.steps = self.steps%40;
                             self.animateSteps(oldStep,self.steps,diceSum,1,true)
                         })
-                        
-                        
-                            
-                        
-                        
-                    }else{
-                        turn = (turn+1)%players.length;
-                        this.rolls = false;
-                        this.numberOfRolls = 0;
-                        board.dice1 = 0;
-                        board.dice2 = 0;
-                        
+                           
                     }
-                }else{
-                    if(this.rolls === false){
-                        if(this.bot === undefined){
-                        if(confirm("Vill du betala 50kr för att komma ut eller slå dubbelt?")){
-                            this.money -= 50;
-                            this.rolls = true;
-                            this.getOutOfJail();
-                        }else{
-                            let dice1 = randomIntFromRange(1,6);
-                            let dice2 = randomIntFromRange(1,6);
-                            this.rolls = true;
-
-                            let self = this;
-
-                            this.animateDice(dice1,dice2,function(){
-                                board.animateDices = false; 
-                                if(dice1 === dice2){
-                                    self.getOutOfJail()
-                                    self.teleportTo(self.steps + dice1 + dice2);
-                                }
-                            })
-                            }
-                            
-                        }
-                    }else{
-                        turn = (turn+1)%players.length;
-                        this.rolls = false;
-                        this.numberOfRolls = 0;
-                    }
-                    
                 }
             }
             
