@@ -2077,12 +2077,7 @@ class Player{
                         
                     }
                 }else{
-                    if(this.rolls === false){
-                        if(this.bot === undefined){
-                        
-                            
-                        }
-                    }else{
+                    if(this.rolls){
                         turn = (turn+1)%players.length;
                         this.rolls = false;
                         this.numberOfRolls = 0;
