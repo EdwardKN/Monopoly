@@ -8,6 +8,15 @@ const drawScale = 2;
 
 const fastLoad = false;
 
+const fastSpeed = false;
+
+const disableAlert = false;
+
+if(disableAlert){
+    window.alert = function(){}
+}
+
+
 var f = new FontFace('Arcade', 'url(./fonts/SFPixelate-Bold.ttf)');
 
 f.load().then(function(font){document.fonts.add(font);});
@@ -18,6 +27,39 @@ var offsets = {
     x:Math.floor(window.innerWidth/2) - 832*drawScale/2,
     y:Math.floor(window.innerHeight/2) - 416*drawScale/2
 }
+
+var speeds;
+if(fastSpeed === true){
+    speeds = {
+        botMin: 100,
+        botMax: 200,
+        stepSpeed: 100,
+        auctionSpeed: 100,
+        diceSpeed:{
+            counter:1,
+            factor:10,
+            threshold:0,
+            delay:0,
+        }
+        
+    }
+}else{
+    speeds = {
+        botMin: 500,
+        botMax: 1000,
+        stepSpeed:250,
+        auctionSpeed: 500,
+        diceSpeed:{
+            counter:10,
+            factor:1.4,
+            threshold:150,
+            delay:1000
+        }
+        
+    }
+}
+
+
 
 var images = {
     part:{

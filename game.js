@@ -206,8 +206,8 @@ function init(){
     let botAmount = -2;
 
     if(fastLoad === true){
-        playerAmount = 2;
-        botAmount = 0;
+        playerAmount = -1;
+        botAmount = 2;
     }
 
     let playerImages = [0,1,2,3,4,5,6,7]
@@ -272,6 +272,7 @@ function init(){
         playerImages.splice(random,1)
     }
     players.forEach(e=> e.playerBorder.init())
+    Bot.boardInfo = players.reduce((dict, player, i) => { dict[i] = player.ownedPlaces; return dict }, {})
 }
 
 function update(){
@@ -1078,7 +1079,7 @@ class Auction{
         },54,54,false)
         this.startAuctionButton = new Button(false,-150,220,images.auction.img[5],function(){
             board.auction.started = true;
-            board.auction.duration = 10 * 1000;
+            board.auction.duration = 10 * speeds.auctionSpeed;
             board.auction.startTime = performance.now();
             board.auction.timer = setInterval(function(){
                 board.auction.time = 472 * (1 - (performance.now() - board.auction.startTime) / board.auction.duration);
@@ -1601,23 +1602,23 @@ class BoardPiece{
                     let random = randomIntFromRange(1,14)
                     if(random === 1){
                         alert("Gå till start!")
-                        player.teleportTo(0)
+                        player.teleportTo(0, true)
                     }
                     if(random === 2){
                         alert("Gå till Hässleholm")
-                        player.teleportTo(24)
+                        player.teleportTo(24, true)
                     }
                     if(random === 3){
                         alert("Gå till Simrishamn")
-                        player.teleportTo(11)
+                        player.teleportTo(11, true)
                     }
                     if(random === 4){
                         alert("Gå till närmsta anläggning")
                         if(this.n === 7 || this.n === 36){
-                            player.teleportTo(12)
+                            player.teleportTo(12, true)
                         }
                         if(this.n === 22){
-                            player.teleportTo(28)
+                            player.teleportTo(28, true)
                         }
                     }
                     if(random === 5){
@@ -1818,6 +1819,7 @@ class Player{
 
         this.checkMoney = function(){
             if(this.money < 0 && this.ownedPlaces.length == 0){
+                delete Bot.boardInfo[turn]
                 turn = turn%(players.length-1);
 
                 if(players.length-1 === 1){
@@ -2017,25 +2019,26 @@ class Player{
                     
 
                 }
-            },250);
+            },speeds.stepSpeed);
         }
 
         this.animateDice = function(dice1,dice2,callback){
             board.animateDices = true;
 
-            let counter = 10;
+            let counter = speeds.diceSpeed.counter;
             playSound(sounds.dice,1)
             var myFunction = function() {
                 board.randomizeDice();
                 board.dice1 = randomIntFromRange(1,6)
                 board.dice2 = randomIntFromRange(1,6)
-                counter *= 1.4
-                if(counter > 150){
+                counter *= speeds.diceSpeed.factor
+                if(counter > speeds.diceSpeed.threshold){
                     board.dice1 = dice1;
                     board.dice2 = dice2;
                     setTimeout(() => {
+                        board.animateDices = false;
                         callback()
-                    }, 1000);                  
+                    }, speeds.diceSpeed.delay);
                 }else{
                     setTimeout(myFunction, counter);
                 }
@@ -2051,11 +2054,11 @@ class Player{
                         let dice1 = randomIntFromRange(1,6);
                         let dice2 = randomIntFromRange(1,6);
                         if(dice1 === dice2){
+                            this.numberOfRolls++;
                             if(this.numberOfRolls === 3){
                                 alert("Gå till finkan!")
                                 this.goToPrison();
                             }
-                            this.numberOfRolls++;
                             this.rolls = false;
                         }else{
                             this.rolls = true;
