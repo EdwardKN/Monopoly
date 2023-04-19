@@ -6,7 +6,7 @@ var players = [];
 
 const drawScale = 2;
 
-const fastLoad = false;
+const fastLoad = true;
 
 var f = new FontFace('Arcade', 'url(./fonts/SFPixelate-Bold.ttf)');
 
@@ -77,6 +77,9 @@ var images = {
     },
     trade:{
         src:["./images/menus/tradingmenu","./images/buttons/accept","./images/buttons/tradingcityname"]
+    },
+    jailMenu:{
+        src:["./images/menus/prisonmenu","./images/buttons/prisonpay","./images/buttons/prisonrolldice","./images/buttons/prisongetoutofjail"]
     }
 };
 
