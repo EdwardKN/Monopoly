@@ -206,7 +206,7 @@ function init(){
     let botAmount = -2;
 
     if(fastLoad === true){
-        playerAmount = 2;
+        playerAmount = 3;
         botAmount = 0;
     }
 
@@ -390,13 +390,13 @@ class Board{
         this.update = function () {
             
             this.boardPieces.forEach(g => g.update())
+            if(this.win === false){ 
 
             this.showDice()
             this.rollDiceButton.draw();
             this.nextPlayerButton.draw();
             this.boardPieces.forEach(g => g.drawHouses())
 
-            if(this.win === false){ 
                 for(let i = 20; i >= 0; i--){
                     if(this.boardPieces[i].side == 0 || this.boardPieces[i].side === 3){
                         this.boardPieces[i].currentPlayer.forEach(p => p.update())
@@ -419,13 +419,16 @@ class Board{
                     }
                 }
                 
-            }
+            
             this.showCard();
             if(this.auction !== undefined){
                 this.auction.update();
             }
             if(this.trade !== undefined){
                 this.trade.update();
+            }
+            }else{
+                drawRotatedText(820,450,"Grattis " + players[0].name + "! Du vann!", "80px Arcade",0,"black",false,false)
             }
         }  
 
@@ -1749,7 +1752,7 @@ class Player{
                 if(players.length-1 === 1){
                     board.win = true;
                 }
-                this.money = 0;
+                board.boardPieces[this.steps].currentPlayer.splice(board.boardPieces[this.steps].currentPlayer.indexOf(this),1)
                 players.splice(players.indexOf(this),1)
 
             }else if(this.money < 0){
