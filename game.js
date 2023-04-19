@@ -341,6 +341,7 @@ class Board{
         this.sellButton = new Button(false,130,300,images.buttons.img[2],function(){
             if(board.currentCard.mortgaged === false){
                 players[turn].money+= board.currentCard.piece.price/2
+                players[turn].checkDebt();
             }
             players[turn].ownedPlaces.splice(players[turn].ownedPlaces.indexOf(board.currentCard),1);
             board.currentCard.owner = undefined;
@@ -352,6 +353,7 @@ class Board{
             }else{
                 board.currentCard.mortgaged = true;
                 players[turn].money += board.currentCard.piece.price/2
+                players[turn].checkDebt();
             }
         },40,40);
         this.upgradeButton = new Button(false,5,300,images.buttons.img[4],function(){
@@ -361,6 +363,7 @@ class Board{
         this.downgradeButton = new Button(false,-45,300,images.buttons.img[5],function(){
             board.currentCard.level--;
             board.currentCard.owner.money += board.currentCard.piece.housePrice/2;
+            players[turn].checkDebt();
         },40,40);
         this.buyButton = new Button(false,-43,300,images.buttons.img[6],function(){
             players[turn].money -= board.currentCard.piece.price;
@@ -487,7 +490,7 @@ class Board{
                             }
                         }
                         if(lowest > this.currentCard.level){lowest = this.currentCard.level}
-                        if(this.currentCard.level < 5 && this.currentCard.piece.housePrice !== undefined && ownAll === true && this.currentCard.level === lowest){
+                        if(this.currentCard.level < 5 && this.currentCard.piece.housePrice !== undefined && ownAll === true && this.currentCard.level === lowest && players[turn].money >= this.currentCard.piece.housePrice){
                                 this.upgradeButton.disabled = false;
                         }else{
                             this.upgradeButton.disabled = true; 
@@ -1495,6 +1498,7 @@ class BoardPiece{
                         }
                         player.money -=  diceRoll * multiply;
                         this.owner.money += diceRoll * multiply;
+                        player.checkDebt(this.owner);
                         alert(this.owner.name + " fick precis " + (diceRoll * multiply) + "kr av " + player.name)
                         
                     }else if(this.piece.type === "station"){
@@ -1506,6 +1510,7 @@ class BoardPiece{
                         })
                         player.money -=  25 * Math.pow(2,tmp);
                         this.owner.money += 25 * Math.pow(2,tmp);
+                        player.checkDebt(this.owner);
                         alert(this.owner.name + " fick precis " + (25 * Math.pow(2,tmp)) + "kr av " + player.name)
 
                     }else{
@@ -1525,6 +1530,7 @@ class BoardPiece{
                         }
                         player.money -= this.piece.rent[this.level] * multiply;
                         this.owner.money += this.piece.rent[this.level] * multiply;
+                        player.checkDebt(this.owner);
                         alert(this.owner.name + " fick precis " + (this.piece.rent[this.level] * multiply) + "kr av " + player.name)
 
                     }
@@ -1725,6 +1731,8 @@ class Player{
         this.timer = undefined;
         this.negative = false;
         this.bot = undefined;
+        this.inDebtTo = undefined;
+        this.lastMoneyInDebt = 0;
 
         this.playerBorder = new PlayerBorder(this)
         if(bot == true ){
@@ -1759,6 +1767,20 @@ class Player{
                 this.negative = true;
             }  else{
                 this.negative = false;
+            }
+        }
+        this.checkDebt = function(player){
+            if(this.money < 0 && this.lastMoneyInDebt === 0){
+                player.money += this.money;
+                this.inDebtTo = player;
+                this.lastMoneyInDebt = this.money;
+            }else if(this.inDebtTo !== undefined){
+                let moneyToAdd =  this.money -this.lastMoneyInDebt;
+                this.inDebtTo.money += moneyToAdd;
+                if(this.money >= 0){
+                    this.inDebtTo.money -= this.money;
+                    this.inDebtTo = undefined;
+                }
             }
         }
         this.updateVisual = function (){
