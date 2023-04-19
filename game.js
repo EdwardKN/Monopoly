@@ -1580,8 +1580,8 @@ class BoardPiece{
                         player.money += 50;
                     }
                     if(random === 7){
-                        alert("Inte inlagd men ska vara ett GET OUT OF JAIL kort")
-                        //get out of jail
+                        alert("Get out of jail card")
+                        player.jailcardAmount++;
                     }
                     if(random === 8){
                         alert("Gå bak tre steg")
@@ -1639,8 +1639,8 @@ class BoardPiece{
                         player.money += 50;
                     }
                     if(random === 4){
-                        alert("Inte inlagd men ska vara ett GET OUT OF JAIL kort")
-                        //jail free
+                        alert("Get out of jail card")
+                        player.jailcardAmount++;
                     }
                     if(random === 5){
                         alert("Gå till finkan")
@@ -1738,6 +1738,7 @@ class Player{
         this.bot = undefined;
         this.inDebtTo = undefined;
         this.lastMoneyInDebt = 0;
+        this.jailcardAmount = 0;
 
         this.playerBorder = new PlayerBorder(this)
         if(bot == true ){
