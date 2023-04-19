@@ -69,11 +69,17 @@ var images = {
     buttons:{
         src:["./images/buttons/rolldice","./images/buttons/nextplayer",
         "./images/buttons/sellbutton","./images/buttons/mortgage","./images/buttons/arrowup","./images/buttons/arrowdown",
-        "./images/buttons/buythislawn","./images/buttons/exitCard","./images/buttons/auction"
+        "./images/buttons/buythislawn","./images/buttons/exitCard","./images/buttons/auction","./images/buttons/suggestatrade"
         ]
     },
     auction:{
         src:["./images/menus/auctionmenubackground","./images/buttons/auction+2","./images/buttons/auction+10","./images/buttons/auction+100","./images/menus/auctionloadingbar","./images/buttons/startauction"]
+    },
+    trade:{
+        src:["./images/menus/tradingmenu","./images/buttons/accept","./images/buttons/tradingcityname"]
+    },
+    jailMenu:{
+        src:["./images/menus/prisonmenu","./images/buttons/prisonpay","./images/buttons/prisonrolldice","./images/buttons/prisongetoutofjail"]
     }
 };
 
@@ -115,7 +121,8 @@ const pieces = [
         housePrice:50,
         group:"brown",
         img:0,
-        card:0
+        card:0,
+        color:"#795548"
     },
     {
         name:"Allmänning",
@@ -129,7 +136,8 @@ const pieces = [
         housePrice:50,
         group:"brown",
         img:0,
-        card:1
+        card:1,
+        color:"#795548"
     },
     {
         name:"Inkomstskatt",
@@ -141,7 +149,8 @@ const pieces = [
         price:200,
         type:"station",
         img:11,
-        card:27
+        card:27,
+        color:"black"
     },
     {
         name:"Hörby",
@@ -150,7 +159,8 @@ const pieces = [
         housePrice:50,
         group:"light blue",
         img:1,
-        card:2
+        card:2,
+        color:"#81d4fa"
     },
     {
         name:"Chans",
@@ -164,7 +174,8 @@ const pieces = [
         housePrice:50,
         group:"light blue",
         img:1,
-        card:3
+        card:3,
+        color:"#81d4fa"
     },
     {
         name:"Furulund",
@@ -173,7 +184,8 @@ const pieces = [
         housePrice:50,
         group:"light blue",
         img:1,
-        card:4
+        card:4,
+        color:"#81d4fa"
     },
     {
         name:"§ängelse",
@@ -186,14 +198,16 @@ const pieces = [
         housePrice:100,
         group:"pink",
         img:2,
-        card:5
+        card:5,
+        color:"#e91e63"
     },
     {
         name:"Elverket",
         price:150,
         type:"utility",
         img:13,
-        card:22
+        card:22,
+        color:"black"
     },
     {
         name:"Svedala",
@@ -202,7 +216,8 @@ const pieces = [
         housePrice:100,
         group:"pink",
         img:2,
-        card:6
+        card:6,
+        color:"#e91e63"
     },
     {
         name:"Staffanstorp",
@@ -211,14 +226,16 @@ const pieces = [
         housePrice:100,
         group:"pink",
         img:2,
-        card:7
+        card:7,
+        color:"#e91e63"
     },
     {
         name:"Östra Stationen",
         price:200,
         type:"station",
         img:11,
-        card:24
+        card:24,
+        color:"black"
     },
     {
         name:"Lomma",
@@ -227,7 +244,8 @@ const pieces = [
         housePrice:100,
         group:"orange",
         img:3,
-        card:8
+        card:8,
+        color:"#ffa000"
     },
     {
         name:"Allmänning",
@@ -241,7 +259,8 @@ const pieces = [
         housePrice:100,
         group:"orange",
         img:3,
-        card:9
+        card:9,
+        color:"#ffa000"
     },
     {
         name:"Vellinge",
@@ -250,7 +269,8 @@ const pieces = [
         housePrice:100,
         group:"orange",
         img:3,
-        card:10
+        card:10,
+        color:"#ffa000"
     },
     {
         name:"Fri parkering",
@@ -263,7 +283,8 @@ const pieces = [
         housePrice:150,
         group:"red",
         img:4,
-        card:11
+        card:11,
+        color:"#e51c23"
     },
     {
         name:"Chans",
@@ -277,7 +298,8 @@ const pieces = [
         housePrice:150,
         group:"red",
         img:4,
-        card:12
+        card:12,
+        color:"#e51c23"
     },
     {
         name:"Hässleholm",
@@ -286,14 +308,16 @@ const pieces = [
         housePrice:150,
         group:"red",
         img:4,
-        card:13
+        card:13,
+        color:"#e51c23"
     },
     {
         name:"Centralstationen",
         price:200,
         type:"station",
         img:11,
-        card:26
+        card:26,
+        color:"black"
     },
     {
         name:"Ystad",
@@ -302,7 +326,8 @@ const pieces = [
         housePrice:150,
         group:"yellow",
         img:5,
-        card:14
+        card:14,
+        color:"#ffeb3b"
     },
     {
         name:"Ängelholm",
@@ -311,14 +336,16 @@ const pieces = [
         housePrice:150,
         group:"yellow",
         img:5,
-        card:15
+        card:15,
+        color:"#ffeb3b"
     },
     {
         name:"Vattenledningsverket",
         price: 150,
         type:"utility",
         img:12,
-        card:23
+        card:23,
+        color:"black"
     },
     {
         name:"Trelleborg",
@@ -327,7 +354,8 @@ const pieces = [
         housePrice:150,
         group:"yellow",
         img:5,
-        card:16
+        card:16,
+        color:"#ffeb3b"
     },
     {
         name:"Gå till finkan",
@@ -340,7 +368,8 @@ const pieces = [
         housePrice:200,
         group:"green",
         img:6,
-        card:17
+        card:17,
+        color:"#42bd41"
     },
     {
         name:"Kristianstad",
@@ -349,7 +378,8 @@ const pieces = [
         housePrice:200,
         group:"green",
         img:6,
-        card:18
+        card:18,
+        color:"#42bd41"
     },
     {
         name:"Allmänning",
@@ -363,14 +393,16 @@ const pieces = [
         housePrice:200,
         group:"green",
         img:6,
-        card:19
+        card:19,
+        color:"#42bd41"
     },
     {
         name:"Norra stationen",
         price:200,
         type:"station",
         img:11,
-        card:25
+        card:25,
+        color:"black"
     },
     {
         name:"Chans",
@@ -384,7 +416,8 @@ const pieces = [
         housePrice:200,
         group:"blue",
         img:7,
-        card:20
+        card:20,
+        color:"#0288d1"
     },
     {
         name:"Lyxskatt",
@@ -399,6 +432,7 @@ const pieces = [
         housePrice:200,
         group:"blue",
         img:7,
-        card:21
+        card:21,
+        color:"#0288d1"
     }
 ]
