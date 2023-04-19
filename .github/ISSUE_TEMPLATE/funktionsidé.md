@@ -1,6 +1,6 @@
 ---
-name: Funktionsidè
-about: Skriv en idè på en ny funktion i spelet
+name: Funktionsidé
+about: Skriv en idé på en ny funktion i spelet
 title: ''
 labels: enhancement
 assignees: ''
