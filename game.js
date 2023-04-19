@@ -206,8 +206,8 @@ function init(){
     let botAmount = -2;
 
     if(fastLoad === true){
-        playerAmount = 3;
-        botAmount = 0;
+        playerAmount = -1;
+        botAmount = 2;
     }
 
     let playerImages = [0,1,2,3,4,5,6,7]
@@ -1022,7 +1022,7 @@ class Auction{
         },54,54,false)
         this.startAuctionButton = new Button(false,-150,220,images.auction.img[5],function(){
             board.auction.started = true;
-            board.auction.duration = 10 * 500;
+            board.auction.duration = 10 * speeds.auctionSpeed;
             board.auction.startTime = performance.now();
             board.auction.timer = setInterval(function(){
                 board.auction.time = 472 * (1 - (performance.now() - board.auction.startTime) / board.auction.duration);
@@ -1956,25 +1956,25 @@ class Player{
                     
 
                 }
-            },250);
+            },speeds.stepSpeed);
         }
 
         this.animateDice = function(dice1,dice2,callback){
             board.animateDices = true;
 
-            let counter = 10;
+            let counter = speeds.diceSpeed.counter;
             playSound(sounds.dice,1)
             var myFunction = function() {
                 board.randomizeDice();
                 board.dice1 = randomIntFromRange(1,6)
                 board.dice2 = randomIntFromRange(1,6)
-                counter *= 1.4
-                if(counter > 150){
+                counter *= speeds.diceSpeed.factor
+                if(counter > speeds.diceSpeed.threshold){
                     board.dice1 = dice1;
                     board.dice2 = dice2;
                     setTimeout(() => {
                         callback()
-                    }, 1000);                  
+                    }, speeds.diceSpeed.delay);
                 }else{
                     setTimeout(myFunction, counter);
                 }
@@ -1990,11 +1990,11 @@ class Player{
                         let dice1 = randomIntFromRange(1,6);
                         let dice2 = randomIntFromRange(1,6);
                         if(dice1 === dice2){
+                            this.numberOfRolls++;
                             if(this.numberOfRolls === 3){
                                 alert("Gå till finkan!")
                                 this.goToPrison();
                             }
-                            this.numberOfRolls++;
                             this.rolls = false;
                         }else{
                             this.rolls = true;
