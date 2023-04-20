@@ -1137,7 +1137,7 @@ class PlayerBorder{
         this.createTradebutton = new Button(false,this.x,this.y,images.buttons.img[9],function(){
             self.createTradebutton.visible = false;
             self.showInfo = false;
-            board.trade = new Trade(players[turn],self.player);
+            board.trade = new Trade(players[turn],self.player); 
         },219,34,false,false,true)
 
         this.startMoneyAnimation = function(money){
@@ -2356,7 +2356,6 @@ class Player{
                             board.prisonExtra.playerStep(true,self);
                         }else{
                             board.boardPieces[to].playerStep(false,self,dicesum);
-                            console.log(to)
                         }
                     }
                     if(to === 30){
