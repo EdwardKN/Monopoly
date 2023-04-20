@@ -265,16 +265,28 @@ class LocalLobby {
             }
             for(let i = 0; i < 8; i++){
                 tmp.colorButtons.push(new Button(true,-210 + (i%4)*47,self.playerInputs.length*55 +15 + Math.floor(i/2)*50,images.colorButtons.img[i],function(){
+                    let select = self.playerInputs[id].colorButtons[i].selected;
                     self.playerInputs[id].colorButtons.forEach(e => {
                         e.selected = false;
                     })
-                    self.playerInputs[id].colorButtons[i].selected = true;
-                    self.playerInputs[id].colorButton.img = images.colorButtons.img[i];
-                    if(self.playerInputs[id].colorId !== undefined){
-                        self.useableColors.push(self.playerInputs[id].colorId)
+                    if(select === true){
+                        self.playerInputs[id].colorButtons[i].selected = true;
+                        self.playerInputs[id].colorButton.img = images.colorButtons.img[i];
+                        if(self.playerInputs[id].colorId !== undefined){
+                            self.useableColors.push(self.playerInputs[id].colorId)
+                        }
+                        self.useableColors.splice(self.useableColors.indexOf(i),1)
+                        self.playerInputs[id].colorId = i;
+                    }else{
+                        self.playerInputs[id].colorButtons[i].selected = false;
+
+                        self.playerInputs[id].colorButton.img = images.colorButtons.img[8];
+                        if(self.playerInputs[id].colorId !== undefined){
+                            self.useableColors.push(self.playerInputs[id].colorId)
+                        }
+                        self.playerInputs[id].colorId = undefined;
                     }
-                    self.useableColors.splice(self.useableColors.indexOf(i),1)
-                    self.playerInputs[id].colorId = i;
+                    
 
 
                 },40,40,false,false))
@@ -389,7 +401,9 @@ class LocalLobby {
                                 }
                             }
                             if(self.useableColors.length == 0){
-                                g.disabled = true;
+                                if(!g.selected){
+                                    g.disabled = true;
+                                }
                             }
                             g.visible = true;
                             g.draw();
