@@ -215,9 +215,15 @@ class LocalLobby {
             let playerlist = []
 
             self.playerInputs.forEach(e =>{
+                let tmpColor = e.colorId;
+                if(e.colorId === undefined){
+                    let random = randomIntFromRange(0,self.useableColors.length-1);
+                    tmpColor = self.useableColors[random];
+                    self.useableColors.splice(random,1)
+                }
                 let tmp = {
                     name:e.textInput.value,
-                    color:e.colorId,
+                    color:tmpColor,
                     bot:e.botButton.selected
                 }
                 playerlist.push(tmp)
@@ -235,18 +241,20 @@ class LocalLobby {
             let id = self.playerInputs.length
             let tmp = {
                 id:id,
-                colorId:self.useableColors[0],
-                textInput: new TextInput(-900,self.playerInputs.length*110 - 480,500,80,true,"50px Arcade",14),
-                botButton: new Button(true,-135 +40,self.playerInputs.length*55 - 32,images.buttons.img[4],function(){
+                colorId:undefined,
+                y:(self.playerInputs.length*110 - 100),
+                textInput: new TextInput(-900,0,500,80,true,"50px Arcade",14),
+                botButton: new Button(true,-135 +42,self.playerInputs.length*55 - 32,images.buttons.img[4],function(){
                     self.playerInputs[id].textInput.value = ""
                     if(self.playerInputs[id].botButton.selected){
                         self.amountBots++;
+                        self.playerInputs[id].colorId = undefined;
                     }else{
                         self.amountBots--;
                         self.playerInputs[id].textInput.value = ""
                     }
                 },40,40,false,false),
-                colorButton: new Button(true,-135,self.playerInputs.length*55 - 32,images.buttons.img[5],function(){
+                colorButton: new Button(true,-135,self.playerInputs.length*55 - 32,images.colorButtons.img[8],function(){
                     if(self.playerInputs[id].colorButton.selected){
                         self.disableAll = true;
                     }else{
@@ -255,16 +263,19 @@ class LocalLobby {
                 },40,40,false,false),
                 colorButtons: []
             }
-            self.useableColors.splice(0,1)
             for(let i = 0; i < 8; i++){
-                tmp.colorButtons.push(new Button(true,-210 + (i%4)*47,self.playerInputs.length*55 +15 + Math.floor(i/4)*50,images.buttons.img[3],function(){
+                tmp.colorButtons.push(new Button(true,-210 + (i%4)*47,self.playerInputs.length*55 +15 + Math.floor(i/2)*50,images.colorButtons.img[i],function(){
                     self.playerInputs[id].colorButtons.forEach(e => {
                         e.selected = false;
                     })
                     self.playerInputs[id].colorButtons[i].selected = true;
-                    self.useableColors.push(self.playerInputs[id].colorId)
-                    self.playerInputs[id].colorId = i;
+                    self.playerInputs[id].colorButton.img = images.colorButtons.img[i];
+                    if(self.playerInputs[id].colorId !== undefined){
+                        self.useableColors.push(self.playerInputs[id].colorId)
+                    }
                     self.useableColors.splice(self.useableColors.indexOf(i),1)
+                    self.playerInputs[id].colorId = i;
+
 
                 },40,40,false,false))
 
@@ -275,8 +286,11 @@ class LocalLobby {
             self.playerInputs.push(tmp)
         }
 
-        this.addPlayer = new Button(false,50,20,images.lobbyMenu.img[0],self.addmorePlayers,40,40,false,false)
-        this.removePlayer = new Button(false,100,20,images.lobbyMenu.img[1],function(){
+        this.addPlayer = new Button(false,-135 +42,20,images.lobbyMenu.img[0],self.addmorePlayers,40,40,false,false)
+        this.removePlayer = new Button(false,-135,20,images.lobbyMenu.img[1],function(){
+            if(self.playerInputs[self.playerInputs.length-1].colorId !== undefined){
+                self.useableColors.push(self.playerInputs[self.playerInputs.length-1].colorId)
+            }
             self.playerInputs.splice(self.playerInputs.length-1,1)
         },40,40,false,false)
         this.addPlayer.visible = true;
@@ -287,6 +301,22 @@ class LocalLobby {
 
         this.draw = function(){
             if(this.current){
+
+                this.playerInputs.forEach(function(e,index) {
+                    e.textInput.y = e.y - self.playerInputs.length*40 + 60;
+                    e.botButton.y = e.y/2 - self.playerInputs.length*40/2 + 238;
+                    e.colorButton.y = e.y/2 - self.playerInputs.length*40/2 + 238;
+                    for(let i = 0; i < 8; i++){
+                        if(index >= 2){
+                            e.colorButtons[i].y = e.y/2 + (i%2)*47 + 286 - self.playerInputs.length*40/2 -146
+                        }else{
+                            e.colorButtons[i].y = e.y/2 + (i%2)*47 + 286 - self.playerInputs.length*40/2
+                        }
+                        e.colorButtons[i].x = Math.floor(i/2)*50 - 215
+                    }
+                })
+                this.addPlayer.y = -8*40/2 + 130;
+                this.removePlayer.y = -8*40/2 + 130;
                 this.ableToStart = true;
 
                 if(this.playerInputs.length >= 8 || this.disableAll){
@@ -332,7 +362,7 @@ class LocalLobby {
                         
 
                     }
-                    if(e.textInput.value.length === 0){
+                    if(e.textInput.value.length === 0 || e.colorId === undefined && !e.botButton.selected){
                         self.ableToStart = false;
                     }
                     e.textInput.draw();
@@ -344,7 +374,11 @@ class LocalLobby {
                         
 
                         c.fillStyle = "black"
-                        c.fillRect(canvas.width/2+e.colorButton.x*drawScale - 300,canvas.height/2 +e.colorButton.y*drawScale -336,400,210)
+                        if(i >= 2){
+                            c.fillRect(canvas.width/2+e.colorButton.x*drawScale - 300,canvas.height/2 +e.colorButton.y*drawScale -336 -294,400,210)
+                        }else{
+                            c.fillRect(canvas.width/2+e.colorButton.x*drawScale - 300,canvas.height/2 +e.colorButton.y*drawScale -336,400,210)
+                        }
                         e.colorButtons.forEach(function(g,h){
                             for (let i = 0; i < self.useableColors.length; i++) {
                                 if(h === self.useableColors[i]){
@@ -474,9 +508,37 @@ function init(){
     loadSounds(sounds);   
 
     board = new Board();
-
-    menus.push(new MainMenu())
-    menus.push(new LocalLobby())
+    
+    if(fastLoad === false){
+        menus.push(new MainMenu())
+        menus.push(new LocalLobby())
+    }else{
+        let playerlist = []
+        let playerAmount = 2;
+        let botAmount = 2;
+        let useableColors = [0,1,2,3,4,5,6,7]
+        for(let i = 0; i < (playerAmount+botAmount); i++){
+            let random = randomIntFromRange(0,useableColors.length-1)
+            if(i < playerAmount){
+                let tmp = {
+                    name:"Spelare " + (i+1),
+                    color:useableColors[random],
+                    bot:false
+                }
+                playerlist.push(tmp)
+            }else{
+                let tmp = {
+                    name:"Bot " + (i-1),
+                    color:useableColors[random],
+                    bot:true
+                }
+                playerlist.push(tmp)
+            }
+            useableColors.splice(random,1)
+            
+        }
+        startGame(playerlist)
+    }
 }
 
 function update(){
