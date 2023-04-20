@@ -15,6 +15,7 @@ const buyable = [1, 3, 5, 6, 8, 9, 11, 12, 13, 14, 15, 16, 18, 19, 21, 23, 24, 2
 class Bot{
     static boardInfo = {}
     static thinking = false
+    static thinking = false
 
     constructor(player) {
         this.player = player
@@ -35,9 +36,24 @@ class Bot{
             }
             return
         }
+        if (Bot.thinking) { return }
+        if (board.auction) {
+            if (board.auction.playerlist[board.auction.turn] === this.player) {
+                if (!board.auction.started) {
+                    board.auction.started = true;
+                    board.auction.duration = 10 * speeds.auctionSpeed;
+                    board.auction.startTime = performance.now();
+                    board.auction.timer = setInterval(() => { board.auction.time = 472 * (1 - (performance.now() - board.auction.startTime) / board.auction.duration) },10);
+                }
+                this.bidOnAuction()
+            }
+            return
+        }
         if (this.player !== players[turn] || players.some(pl => pl.animationOffset !== 0) ||
             board.showDices || board.animateDices) { return }
         
+        Bot.thinking = true; await new Promise(resolve => setTimeout(resolve, randomIntFromRange(speeds.botMin, speeds.botMax))); Bot.thinking = false
+
         Bot.thinking = true; await new Promise(resolve => setTimeout(resolve, randomIntFromRange(speeds.botMin, speeds.botMax))); Bot.thinking = false
 
         if (this.player.negative) {
@@ -46,6 +62,9 @@ class Bot{
                     bP.owner = undefined
                 })
                 this.player.ownedPlaces = []
+                players.splice(players.indexOf(this.player), 1)
+                turn = turn >= players.length ? 0 : turn
+                delete this.player, this
                 players.splice(players.indexOf(this.player), 1)
                 turn = turn >= players.length ? 0 : turn
                 delete this.player, this
@@ -68,9 +87,18 @@ class Bot{
             }
         }
 
+
         this.player.rollDice()
         
+        
         while (board.animateDices || this.player.animationOffset !== 0) { await new Promise(requestAnimationFrame) }
+        
+        players[turn].rolls = false;
+        players[turn].numberOfRolls = 0;
+        turn = (turn+1)%players.length;
+        board.dice1 = 0;
+        board.dice2 = 0;
+        
         
         players[turn].rolls = false;
         players[turn].numberOfRolls = 0;
@@ -89,6 +117,8 @@ class Bot{
 
 
         // Buy or Auction
+        if (!((bP.piece.type || bP.piece.group) in groups)) { return }
+        if (bP.owner && bP.owner !== this.player) { this.player.checkDebt(bP.owner); return }
         if (!((bP.piece.type || bP.piece.group) in groups)) { return }
         if (bP.owner && bP.owner !== this.player) { this.player.checkDebt(bP.owner); return }
 
@@ -112,6 +142,7 @@ class Bot{
         }
     }
 
+
     buyPiece(boardPiece) {
         this.player.money -= boardPiece.piece.price
         boardPiece.owner = this.player
@@ -122,6 +153,7 @@ class Bot{
         if (!boardPiece.mortgaged) { this.player.money += boardPiece.piece.price / 2 }
         boardPiece.owner = undefined
         this.player.ownedPlaces.splice(this.player.ownedPlaces.indexOf(boardPiece), 1)
+        if (this.player.ownedPlaces.length === 0 && this.player.money < 0) { this.player.checkDept() }
         if (this.player.ownedPlaces.length === 0 && this.player.money < 0) { this.player.checkDept() }
     }
 
@@ -219,11 +251,14 @@ class Bot{
 
             if (moneyToSpend > 0) {
                 Bot.thinking = true
+                Bot.thinking = true
                 await new Promise(resolve => {
                     setTimeout(() => {
                         board.auction.addMoney(option)
                         Bot.thinking = false
+                        Bot.thinking = false
                         resolve()
+                    }, randomIntFromRange(speeds.botMin, speeds.botMax))
                     }, randomIntFromRange(speeds.botMin, speeds.botMax))
                 })
                 break
