@@ -23,6 +23,8 @@ f.load().then(function(font){document.fonts.add(font);});
 
 var buttons = [];
 
+var textInputs = [];
+
 var offsets = {
     x:Math.floor(window.innerWidth/2) - 832*drawScale/2,
     y:Math.floor(window.innerHeight/2) - 416*drawScale/2
@@ -124,6 +126,9 @@ var images = {
     },
     jailMenu:{
         src:["./images/menus/prisonmenu","./images/buttons/prisonpay","./images/buttons/prisonrolldice","./images/buttons/prisongetoutofjail"]
+    },
+    lobbyMenu:{
+        src:["./images/buttons/plus","./images/buttons/minus"]
     }
 };
 
