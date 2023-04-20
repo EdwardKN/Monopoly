@@ -206,8 +206,8 @@ function init(){
     let botAmount = -2;
 
     if(fastLoad === true){
-        playerAmount = -1;
-        botAmount = 2;
+        playerAmount = 2;
+        botAmount = -1;
     }
 
     let playerImages = [0,1,2,3,4,5,6,7]
@@ -369,12 +369,14 @@ class Board{
         },82,35);
         this.rollDiceButton = new Button(false,10,250,images.buttons.img[0],function(){players[turn].rollDice()},107,23,false,false,false,true)
         this.nextPlayerButton = new Button(false,10,250,images.buttons.img[1],function(){
-            players[turn].numberOfRolls = 0;
-            players[turn].rolls = false;
-            players[turn].numberOfRolls = 0;
-            turn = (turn+1)%players.length;
-            board.dice1 = 0;
-            board.dice2 = 0;
+            if(players[turn].money >= 0){
+                players[turn].numberOfRolls = 0;
+                players[turn].rolls = false;
+                players[turn].numberOfRolls = 0;
+                turn = (turn+1)%players.length;
+                board.dice1 = 0;
+                board.dice2 = 0;
+            }
         },107,23)
         this.currentCard = undefined;
         this.cardCloseButton = new Button(false,174,43,images.buttons.img[7],function(){board.currentCard = undefined;board.sellButton.visible = false;board.mortgageButton.visible = false;board.upgradeButton.visible = false;board.downgradeButton.visible = false;},18,18)
@@ -1854,6 +1856,7 @@ class Player{
                 if(this.money >= 0){
                     this.inDebtTo.money -= this.money;
                     this.inDebtTo = undefined;
+                    this.lastMoneyInDebt = 0;
                 }
             }
         }
