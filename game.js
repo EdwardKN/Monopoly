@@ -2344,10 +2344,6 @@ class Player{
                             b.currentPlayer.splice(i3,1)
                         }
                     })})
-                    if(to2 >= 40 && self.inJail === false && getMoney === true){
-                        self.playerBorder.startMoneyAnimation(200)
-                        self.money += 200;
-                    }
                     
                     if(to === 0){
                         board.boardPieces[0].playerStep(false,self);
@@ -2374,6 +2370,8 @@ class Player{
                     playSound(sounds.movement,1)
                     if(((to-self.animationOffset)%40-1) === -1){
                         board.boardPieces[0].playerStep(true,self);
+                        self.playerBorder.startMoneyAnimation(200)
+                            self.money += 200;
                     }else{
                         board.boardPieces[(to2-self.animationOffset)%40].playerStep(true,self);
                     }
