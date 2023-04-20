@@ -236,7 +236,6 @@ class Bot{
 
     async bidOnAuction() {
         const bP = board.auction.card
-        const originalPrice = bP.piece.price
         const currentPrice = board.auction.auctionMoney
        
 
@@ -245,31 +244,23 @@ class Bot{
             const remainingMoney = this.player.money - currentPrice - option
             if (remainingMoney < this.getAverageLoss(12)) { continue }
 
-            let moneyToSpend = originalPrice - currentPrice - option
             let maxValueToSpend = bP.piece.price
 
-            players.forEach(player => {
-                if (player.ownedPlaces.filter(bP2 => bP2.piece.group === bP.piece.group).length / groups[bP.piece.group] > 0.5) {
-                    if (player === this.player) { maxValueToSpend }
+            if (bP.piece.group === 'station') {
+                maxValueToSpend *= ranking.station[ownedStations()]
+            } else if (bP.piece.group === 'utility') {
+                maxValueToSpend *= ranking.utility[ownedUtility()]
+            } else {
+                let owners = {}
+                for (let id of groups[bP.piece.group]) {
+                    let bP = board.boardPieces[id]
+                    if (!bP.owner) { continue }
+                    owners[players.indexOf(bP.owner)] = (owners[players.indexOf(bP.owner)] || 0) + 1
                 }
-            })
-
-            if (bP.piece.group) {
-                let owner
-                groups[bP.piece.group].forEach(id => {
-                    let boardPiece = board.boardPieces[id]
-                    if (boardPiece === bP) { return }
-                    if (!owner) { owner = boardPiece.owner; return }
-                    if (boardPiece.owner !== owner) { owner = null }
-                })
-
-                if (owner) {
-                    let factor = owner === this.player ? 2 : 1.5
-                    moneyToSpend += Math.min(moneyToSpend + factor * bP.piece.price, 1.2 * this.player.money)
-                }
+                if (Object.keys(owners).some(key => owners[key] / groups[bP.piece.group].length >= 0.5)) { maxValueToSpend *= boardWeights[bP.n] }
             }
-
-            if (moneyToSpend > 0) {
+            console.log(maxValueToSpend)
+            if (currentPrice + option <= maxValueToSpend) {
                 Bot.thinking = true
                 await new Promise(resolve => {
                     setTimeout(() => {
@@ -350,14 +341,18 @@ function hasGroup(group, player) {
         && board.boardPieces[pos].owner === player)
 }
 
-function getPieceRent(boardPiece, steps, player) {
-    if (!boardPiece.owner || boardPiece.mortgaged || boardPiece.owner === player) { return 0 }
-    if (boardPiece.piece.type === 'station') {
+function hasMostOfGroup() {
+
+}
+
+function getPieceRent(bP, steps, player) {
+    if (!bP.owner || bP.mortgaged || bP.owner === player) { return 0 }
+    if (bP.piece.type === 'station') {
         return 25 * Math.pow(2, ownedStations(player).length - 1)
-    } else if (boardPiece.piece.type === 'utility') {
+    } else if (bP.piece.type === 'utility') {
         return (7 || steps) * [0, 4, 10][ownedUtility(player).length]
     } else {
-        return boardPiece.piece.rent[boardPiece.level] * (hasGroup(boardPiece.piece.group, boardPiece.owner) ? 2 : 1)
+        return bP.piece.rent[bP.level] * (hasGroup(bP.piece.group, bP.owner) ? 2 : 1)
     }
 }
 

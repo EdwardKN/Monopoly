@@ -528,8 +528,8 @@ function init(){
         menus.push(new LocalLobby())
     }else{
         let playerlist = []
-        let playerAmount = 2;
-        let botAmount = 2;
+        let playerAmount = 1;
+        let botAmount = 1;
         let useableColors = [0,1,2,3,4,5,6,7]
         for(let i = 0; i < (playerAmount+botAmount); i++){
             let random = randomIntFromRange(0,useableColors.length-1)
