@@ -109,12 +109,13 @@ class Bot{
 
     buyPiece(boardPiece) {
         this.player.money -= boardPiece.piece.price
+        this.player.playerBorder.startMoneyAnimation(-boardPiece.piece.price)
         boardPiece.owner = this.player
         this.player.ownedPlaces.push(boardPiece)
     }
 
     sellPiece(boardPiece) {
-        if (!boardPiece.mortgaged) { this.player.money += boardPiece.piece.price / 2 }
+        if (!boardPiece.mortgaged) { this.player.money += boardPiece.piece.price / 2;this.player.playerBorder.startMoneyAnimation(boardPiece.piece.price / 2)}
         boardPiece.owner = undefined
         this.player.ownedPlaces.splice(this.player.ownedPlaces.indexOf(boardPiece), 1)
         if (this.player.ownedPlaces.length === 0 && this.player.money < 0) { this.player.checkDept() }
@@ -148,6 +149,7 @@ class Bot{
     async handleJail() {
         if (this.player.money > 75 * 10) { // Less Than 1 / 15 Of Money Is Needed To Get Out Of Jail
             this.player.money -= 50
+            this.player.playerBorder.startMoneyAnimation(-50);
             return 0
         } else {
             let dice1 = randomIntFromRange(1, 6)

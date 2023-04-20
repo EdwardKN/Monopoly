@@ -23,6 +23,8 @@ f.load().then(function(font){document.fonts.add(font);});
 
 var buttons = [];
 
+var textInputs = [];
+
 var offsets = {
     x:Math.floor(window.innerWidth/2) - 832*drawScale/2,
     y:Math.floor(window.innerHeight/2) - 416*drawScale/2
@@ -40,7 +42,8 @@ if(fastSpeed === true){
             factor:10,
             threshold:0,
             delay:0,
-        }
+        },
+        moneyAnimationSpeed:0.05
         
     }
 }else{
@@ -54,7 +57,8 @@ if(fastSpeed === true){
             factor:1.4,
             threshold:150,
             delay:1000
-        }
+        },
+        moneyAnimationSpeed:0.015
         
     }
 }
@@ -134,6 +138,14 @@ var images = {
     },
     jailMenu:{
         src:["./images/menus/prisonmenu","./images/buttons/prisonpay","./images/buttons/prisonrolldice","./images/buttons/prisongetoutofjail"]
+    },
+    lobbyMenu:{
+        src:["./images/buttons/plus","./images/buttons/minus"]
+    },
+    colorButtons:{
+        src:["./images/playercolorbuttons/player","./images/playercolorbuttons/player2","./images/playercolorbuttons/player3","./images/playercolorbuttons/player4",
+        "./images/playercolorbuttons/player5","./images/playercolorbuttons/player6","./images/playercolorbuttons/player7","./images/playercolorbuttons/player8","./images/playercolorbuttons/unselected"
+        ]
     }
 };
 
@@ -154,6 +166,11 @@ var sounds = {
         type:"multiple",
         src:"./sounds/movement/move-",
         amount:46
+    },
+    cash:{
+        type:"multiple",
+        src:"./sounds/cash/cash-",
+        amount:5
     }
 }
 

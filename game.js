@@ -2,6 +2,8 @@ var canvas = document.createElement("canvas");
 var c = canvas.getContext("2d");
 canvas.id = "game"
 
+var menus = [];
+
 window.addEventListener("resize", e=> {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
@@ -24,7 +26,9 @@ canvas.addEventListener("mousemove",function(e){
 })
 
 window.addEventListener("mousedown",function(e){
-
+    textInputs.forEach(g => {
+        g.follow = false;
+    })
     buttons.forEach(e =>{
         e.click();
     })
@@ -44,6 +48,9 @@ window.addEventListener("keydown",function(e){
     if(e.keyCode === 27){
         board.currentCard = undefined;
     }
+    textInputs.forEach(g => {
+        g.input(e)
+    })
 })
 
 
@@ -189,6 +196,319 @@ function playSound(sound,volume){
     }
 
 };
+function startGame(playerlist){
+    for(i = 0; i < playerlist.length; i++){
+        players.push(new Player(images.player.img[playerlist[i].color],playerlist[i].color,playerlist[i].name,playerlist[i].bot))
+    }
+    turn = randomIntFromRange(0,playerlist.length-1)
+    players.forEach(e=> e.playerBorder.init())
+    Bot.boardInfo = players.reduce((dict, player, i) => { dict[i] = player.ownedPlaces; return dict }, {})
+}
+
+class LocalLobby {
+    constructor() {
+        this.current = false;
+        let self = this;
+        this.playerInputs = [];
+        this.amountBots = 0;
+        this.startButton = new Button(false,0,200,images.buttons.img[10],function(){
+            let playerlist = []
+
+            self.playerInputs.forEach(e =>{
+                let tmpColor = e.colorId;
+                if(e.colorId === undefined){
+                    let random = randomIntFromRange(0,self.useableColors.length-1);
+                    tmpColor = self.useableColors[random];
+                    self.useableColors.splice(random,1)
+                }
+                let tmp = {
+                    name:e.textInput.value,
+                    color:tmpColor,
+                    bot:e.botButton.selected
+                }
+                playerlist.push(tmp)
+            })
+            startGame(playerlist)
+            self.current = false;
+            self.startButton.visible = false;
+        },100,20,true,false)
+        this.disableAll = false;
+        this.ableToStart = true;
+
+        this.useableColors = [0,1,2,3,4,5,6,7]
+
+        this.addmorePlayers = function(){
+            let id = self.playerInputs.length
+            let tmp = {
+                id:id,
+                colorId:undefined,
+                y:(self.playerInputs.length*110 - 100),
+                textInput: new TextInput(-900,0,500,80,true,"50px Arcade",14),
+                botButton: new Button(true,-135 +42,self.playerInputs.length*55 - 32,images.buttons.img[4],function(){
+                    self.playerInputs[id].textInput.value = ""
+                    if(self.playerInputs[id].botButton.selected){
+                        self.amountBots++;
+                        self.playerInputs[id].colorId = undefined;
+                    }else{
+                        self.amountBots--;
+                        self.playerInputs[id].textInput.value = ""
+                    }
+                },40,40,false,false),
+                colorButton: new Button(true,-135,self.playerInputs.length*55 - 32,images.colorButtons.img[8],function(){
+                    if(self.playerInputs[id].colorButton.selected){
+                        self.disableAll = true;
+                    }else{
+                        self.disableAll = false;
+                    }
+                },40,40,false,false),
+                colorButtons: []
+            }
+            for(let i = 0; i < 8; i++){
+                tmp.colorButtons.push(new Button(true,-210 + (i%4)*47,self.playerInputs.length*55 +15 + Math.floor(i/2)*50,images.colorButtons.img[i],function(){
+                    let select = self.playerInputs[id].colorButtons[i].selected;
+                    self.playerInputs[id].colorButtons.forEach(e => {
+                        e.selected = false;
+                    })
+                    if(select === true){
+                        self.playerInputs[id].colorButtons[i].selected = true;
+                        self.playerInputs[id].colorButton.img = images.colorButtons.img[i];
+                        if(self.playerInputs[id].colorId !== undefined){
+                            self.useableColors.push(self.playerInputs[id].colorId)
+                        }
+                        self.useableColors.splice(self.useableColors.indexOf(i),1)
+                        self.playerInputs[id].colorId = i;
+                    }else{
+                        self.playerInputs[id].colorButtons[i].selected = false;
+
+                        self.playerInputs[id].colorButton.img = images.colorButtons.img[8];
+                        if(self.playerInputs[id].colorId !== undefined){
+                            self.useableColors.push(self.playerInputs[id].colorId)
+                        }
+                        self.playerInputs[id].colorId = undefined;
+                    }
+                    
+
+
+                },40,40,false,false))
+
+                if(i === tmp.colorId){
+                    tmp.colorButtons[i].selected = true;
+                }
+            }
+            self.playerInputs.push(tmp)
+        }
+
+        this.addPlayer = new Button(false,-135 +42,20,images.lobbyMenu.img[0],self.addmorePlayers,40,40,false,false)
+        this.removePlayer = new Button(false,-135,20,images.lobbyMenu.img[1],function(){
+            if(self.playerInputs[self.playerInputs.length-1].colorId !== undefined){
+                self.useableColors.push(self.playerInputs[self.playerInputs.length-1].colorId)
+            }
+            self.playerInputs.splice(self.playerInputs.length-1,1)
+        },40,40,false,false)
+        this.addPlayer.visible = true;
+        this.removePlayer.visible = true;
+        this.startButton.visible = true;
+        this.addmorePlayers();
+        this.addmorePlayers();
+
+        this.draw = function(){
+            if(this.current){
+
+                this.playerInputs.forEach(function(e,index) {
+                    e.textInput.y = e.y - self.playerInputs.length*40 + 60;
+                    e.botButton.y = e.y/2 - self.playerInputs.length*40/2 + 238;
+                    e.colorButton.y = e.y/2 - self.playerInputs.length*40/2 + 238;
+                    for(let i = 0; i < 8; i++){
+                        if(index >= 2){
+                            e.colorButtons[i].y = e.y/2 + (i%2)*47 + 286 - self.playerInputs.length*40/2 -146
+                        }else{
+                            e.colorButtons[i].y = e.y/2 + (i%2)*47 + 286 - self.playerInputs.length*40/2
+                        }
+                        e.colorButtons[i].x = Math.floor(i/2)*50 - 215
+                    }
+                })
+                this.addPlayer.y = -8*40/2 + 130;
+                this.removePlayer.y = -8*40/2 + 130;
+                this.ableToStart = true;
+
+                if(this.playerInputs.length >= 8 || this.disableAll){
+                    this.addPlayer.disabled = true;
+                }else{
+                    this.addPlayer.disabled = false;
+                }
+                if(this.playerInputs.length == 2 || this.disableAll){
+                    this.removePlayer.disabled = true;
+                }else{
+                    this.removePlayer.disabled = false;
+                }
+                this.addPlayer.draw()
+                this.removePlayer.draw();
+                this.playerInputs.forEach(e => {e.textInput.visible = true;e.botButton.visible = true;e.colorButton.visible = true})
+                let lastBotId = 0;
+
+                this.playerInputs.forEach(e => {
+                    if((self.amountBots-self.playerInputs.length) == -1 && e.botButton.selected === false){
+                        e.botButton.disabled = true;
+                    }else{
+                        e.botButton.disabled = false;
+                    }
+                    if(e.botButton.selected){
+                        lastBotId++;
+                        e.textInput.value = "Bot " + lastBotId;
+                        e.colorButton.disabled = true;
+                        e.textInput.disabled = true;
+                    }else{
+                        e.colorButton.disabled = false;
+                        e.textInput.disabled = false;
+                    }
+                   
+
+                    if(self.disableAll && !e.colorButton.selected){
+                        e.textInput.disabled = true;
+                        e.botButton.disabled = true;
+                        e.colorButton.disabled = true;
+                        
+                    }else if(self.disableAll){
+                        e.textInput.disabled = true;
+                        e.botButton.disabled = true;
+                        
+
+                    }
+                    if(e.textInput.value.length === 0 || e.colorId === undefined && !e.botButton.selected){
+                        self.ableToStart = false;
+                    }
+                    e.textInput.draw();
+                    e.botButton.draw();
+                    e.colorButton.draw();
+                })
+                this.playerInputs.forEach(function(e,i){
+                    if(e.colorButton.selected){
+                        
+
+                        c.fillStyle = "black"
+                        if(i >= 2){
+                            c.fillRect(canvas.width/2+e.colorButton.x*drawScale - 300,canvas.height/2 +e.colorButton.y*drawScale -336 -294,400,210)
+                        }else{
+                            c.fillRect(canvas.width/2+e.colorButton.x*drawScale - 300,canvas.height/2 +e.colorButton.y*drawScale -336,400,210)
+                        }
+                        e.colorButtons.forEach(function(g,h){
+                            for (let i = 0; i < self.useableColors.length; i++) {
+                                if(h === self.useableColors[i]){
+                                    g.disabled = false;
+                                    i = 10;
+                                }else if(!g.selected){
+                                    g.disabled = true;
+                                }
+                            }
+                            if(self.useableColors.length == 0){
+                                if(!g.selected){
+                                    g.disabled = true;
+                                }
+                            }
+                            g.visible = true;
+                            g.draw();
+                        })
+                    }else{
+                        e.colorButtons.forEach(g =>{
+                            g.visible = false;
+                        })
+                    }
+                })
+                if(this.ableToStart){
+                    this.startButton.disabled = false;
+                }else{
+                    this.startButton.disabled = true;
+                }
+                this.startButton.draw();
+
+            }
+        }
+    }
+}
+
+class MainMenu {
+    constructor(){
+        this.current = true;
+        let self = this;
+
+        this.localButton = new Button(false,0,0,images.buttons.img[10],function(){
+            self.current = false;
+            menus[1].current = true;
+            self.localButton.visible = false;
+        },100,20,true,false)
+
+        this.localButton.visible = true;
+        this.draw = function(){
+            if(this.current){
+                this.localButton.draw();
+            }
+        }
+    }
+}
+
+class TextInput {
+    constructor(x,y,w,h,showtext,font,maxLength){
+        this.x = x;
+        this.y = y;
+        this.w = w;
+        this.h = h;
+        this.visible = false;
+        this.disabled = false;
+        this.showtext = showtext;
+        this.font = font;
+        this.follow = false;
+        this.value = ""
+        this.maxLength = maxLength;
+
+        textInputs.push(this);
+        buttons.push(this)
+
+        this.draw = function(){
+            if(this.visible){
+                c.fillStyle = "black";
+                c.fillRect(canvas.width /2 +this.x,canvas.height /2 +this.y,this.w,this.h)
+                if(this.follow){
+                    c.fillStyle = "lightgray";
+                }else if(this.hover){
+                    c.fillStyle = "gray";
+                }else{
+                    c.fillStyle = "white";
+                }
+                c.fillRect(canvas.width /2 +this.x + 4,canvas.height /2 +this.y + 4,this.w-8,this.h-8)
+                c.fillStyle = "black";
+                c.font = this.font;
+                c.textAlign = "center";
+                c.fillText(this.value,canvas.width /2 +this.x + this.w/2,canvas.height /2 +this.y + this.h/1.5)
+                c.fillRect(canvas.width /2 +this.x + (this.percentage*(this.w-8)),canvas.height /2 +this.y,10,this.h)
+            }
+            if(detectCollition(canvas.width /2 +this.x,canvas.height /2 +this.y,this.w,this.h,mouse.realX,mouse.realY,1,1) && this.disabled === false){
+                this.hover = true;
+            }else{
+                this.hover = false;
+            }
+        }
+        this.click = function(){
+            if(this.hover === true && this.disabled === false){
+                if(this.follow === false){
+                    this.follow = true;
+                }else{
+                    this.follow = false;
+                }
+            }
+        }
+        this.input = function(key){
+            if(this.follow){
+                if(key.keyCode > 46 && key.keyCode < 91 && this.value.length < this.maxLength){
+                    this.value += key.key
+                }
+                if(key.keyCode === 8){
+                    this.value = this.value.substring(0, this.value.length - 1);
+                }
+            }
+        }
+         
+    }
+}
 
 function init(){
     document.body.appendChild(canvas);
@@ -199,80 +519,40 @@ function init(){
 
     preRender(images);
 
-    loadSounds(sounds);
+    loadSounds(sounds);   
 
-    board = new Board(); 
-    let playerAmount = 0;
-    let botAmount = -2;
-
-    if(fastLoad === true){
-        playerAmount = 1;
-        botAmount = 1;
-    }
-
-    let playerImages = [0,1,2,3,4,5,6,7]
-
-    while(playerAmount == 0){
-        let promptText = prompt("Hur många spelare?") 
-        if(isNumeric(promptText)){
-            if(JSON.parse(promptText) < 1 || JSON.parse(promptText) > 8){
-                playerAmount = 0;
-            }else{
-                playerAmount = JSON.parse(promptText)
-            }
-        }else{
-            playerAmount = 0;
-        }
-    }
-    while(botAmount == -2){
-        if(playerAmount < 8){
-            let promptText = prompt("Hur många bots?") 
-            if(isNumeric(promptText)){
-                if(JSON.parse(promptText) > 8-playerAmount){
-                    botAmount = -2;
-                }else{
-                    if(playerAmount === 1){
-                        if(JSON.parse(promptText) === 0){
-                            botAmount = -2
-                        }else{
-                            botAmount = JSON.parse(promptText) 
-                        }
-                    }else{
-                        botAmount = JSON.parse(promptText)
-                    }
+    board = new Board();
+    
+    if(fastLoad === false){
+        menus.push(new MainMenu())
+        menus.push(new LocalLobby())
+    }else{
+        let playerlist = []
+        let playerAmount = 2;
+        let botAmount = 2;
+        let useableColors = [0,1,2,3,4,5,6,7]
+        for(let i = 0; i < (playerAmount+botAmount); i++){
+            let random = randomIntFromRange(0,useableColors.length-1)
+            if(i < playerAmount){
+                let tmp = {
+                    name:"Spelare " + (i+1),
+                    color:useableColors[random],
+                    bot:false
                 }
+                playerlist.push(tmp)
             }else{
-                botAmount = -2;
+                let tmp = {
+                    name:"Bot " + (i-1),
+                    color:useableColors[random],
+                    bot:true
+                }
+                playerlist.push(tmp)
             }
-        }else{
-            botAmount = -1
+            useableColors.splice(random,1)
+            
         }
+        startGame(playerlist)
     }
-
-    for(i = 0; i < playerAmount; i++){
-        let lastPlayername = "";
-        let random = randomIntFromRange(0,playerImages.length-1)
-        let playername = "";
-        if(fastLoad === true){
-            playername = "Spelare " + (i+1);
-        }
-        while(playername == ""){
-            playername = prompt("Vad heter spelare " + (i+1) + "?",lastPlayername)
-            lastPlayername = playername
-            if(playername.length > 9 || playername.length < 2){
-                playername = ""
-            }
-        }
-        players.push(new Player(images.player.img[playerImages[random]],playerImages[random],playername,false))
-        playerImages.splice(random,1)
-    }
-    for(i = 0; i < botAmount; i++){
-        let random = randomIntFromRange(0,playerImages.length-1)
-        players.push(new Player(images.player.img[playerImages[random]],playerImages[random],"Bot " + (i+1),true))
-        playerImages.splice(random,1)
-    }
-    players.forEach(e=> e.playerBorder.init())
-    Bot.boardInfo = players.reduce((dict, player, i) => { dict[i] = player.ownedPlaces; return dict }, {})
 }
 
 function update(){
@@ -280,23 +560,12 @@ function update(){
     c.imageSmoothingEnabled = false;
 
     c.clearRect(0,0,canvas.width,canvas.height);
-    showBackground();
-    c.fillStyle = "white";
-    c.font = "50px Arcade";
-    c.textAlign = "center";
-    c.fillText("Just nu: " + players[turn].name, canvas.width/2, 50);
-    board.update();
+    
+    if(board !== undefined && players.length >0){
+        board.update();
+    }
 
-    for(let i = players.length-1; i>-1; i--){
-        if(players[i].playerBorder.index !== 2 && players[i].playerBorder.index !== 3){
-            players[i].playerBorder.draw()
-        }
-    }
-    for(let i = players.length-1; i>-1; i--){
-        if(players[i].playerBorder.index == 2 || players[i].playerBorder.index == 3){
-            players[i].playerBorder.draw()
-        }
-    }
+    
     let tmp = false;
 
     buttons.forEach(e =>{
@@ -309,6 +578,8 @@ function update(){
     }else{
         canvas.style.cursor = "auto"
     }
+
+    menus.forEach(e => e.draw())
     
 }
 
@@ -340,6 +611,7 @@ class Board{
             players[turn].rolls = true;
             players[turn].getOutOfJail();
             board.payJailButton.visible = false;
+            players[turn].playerBorder.startMoneyAnimation(-50);
                 
         },82,35);
         this.rollJailButton = new Button(false,19,239,images.jailMenu.img[2],function(){
@@ -350,10 +622,14 @@ class Board{
 
             let self = players[turn];
 
+            players[turn].timeInJail++;
+
             players[turn].animateDice(dice1,dice2,function(){
                 board.animateDices = false; 
-                if(dice1 === dice2){
+                if(dice1 === dice2|| players[turn].timeInJail === 3){
                     self.getOutOfJail()
+                }
+                if(dice1 === dice2){
                     self.teleportTo(self.steps + dice1 + dice2);
                 }
             })
@@ -365,11 +641,14 @@ class Board{
         },82,35);
         this.rollDiceButton = new Button(false,10,250,images.buttons.img[0],function(){players[turn].rollDice()},107,23,false,false,false,true)
         this.nextPlayerButton = new Button(false,10,250,images.buttons.img[1],function(){
-            players[turn].rolls = false;
-            players[turn].numberOfRolls = 0;
-            turn = (turn+1)%players.length;
-            board.dice1 = 0;
-            board.dice2 = 0;
+            if(players[turn].money >= 0){
+                players[turn].numberOfRolls = 0;
+                players[turn].rolls = false;
+                players[turn].numberOfRolls = 0;
+                turn = (turn+1)%players.length;
+                board.dice1 = 0;
+                board.dice2 = 0;
+            }
         },107,23)
         this.currentCard = undefined;
         this.cardCloseButton = new Button(false,174,43,images.buttons.img[7],function(){board.currentCard = undefined;board.sellButton.visible = false;board.mortgageButton.visible = false;board.upgradeButton.visible = false;board.downgradeButton.visible = false;},18,18)
@@ -377,6 +656,7 @@ class Board{
             if(board.currentCard.mortgaged === false){
                 players[turn].money+= board.currentCard.piece.price/2
                 players[turn].checkDebt();
+                players[turn].playerBorder.startMoneyAnimation(board.currentCard.piece.price/2);
             }
             players[turn].ownedPlaces.splice(players[turn].ownedPlaces.indexOf(board.currentCard),1);
             board.currentCard.owner = undefined;
@@ -385,23 +665,28 @@ class Board{
             if(board.currentCard.mortgaged === true){
                 board.currentCard.mortgaged = false;
                 players[turn].money -= (board.currentCard.piece.price/2)*1.1
+                players[turn].playerBorder.startMoneyAnimation(-(board.currentCard.piece.price/2)*1.1)
             }else{
                 board.currentCard.mortgaged = true;
                 players[turn].money += board.currentCard.piece.price/2
+                players[turn].playerBorder.startMoneyAnimation((board.currentCard.piece.price/2)*1.1)
                 players[turn].checkDebt();
             }
         },40,40);
         this.upgradeButton = new Button(false,5,300,images.buttons.img[4],function(){
             board.currentCard.level++;
             board.currentCard.owner.money -= board.currentCard.piece.housePrice;
+            players[turn].playerBorder.startMoneyAnimation(-board.currentCard.piece.housePrice)
         },40,40);
         this.downgradeButton = new Button(false,-45,300,images.buttons.img[5],function(){
             board.currentCard.level--;
             board.currentCard.owner.money += board.currentCard.piece.housePrice/2;
+            players[turn].playerBorder.startMoneyAnimation(board.currentCard.piece.housePrice/2)
             players[turn].checkDebt();
         },40,40);
         this.buyButton = new Button(false,-43,300,images.buttons.img[6],function(){
             players[turn].money -= board.currentCard.piece.price;
+            players[turn].playerBorder.startMoneyAnimation(-board.currentCard.piece.price);
             board.currentCard.owner = players[turn];
             players[turn].ownedPlaces.push(board.currentCard);
             board.currentCard = undefined;
@@ -426,7 +711,13 @@ class Board{
         }
 
         this.update = function () {
+            showBackground();
+                c.fillStyle = "white";
+                c.font = "50px Arcade";
+                c.textAlign = "center";
+                c.fillText("Just nu: " + players[turn].name, canvas.width/2, 50);
             
+
             this.boardPieces.forEach(g => g.update())
             if(this.win === false){ 
 
@@ -470,6 +761,16 @@ class Board{
             }
             }else{
                 drawRotatedText(820,450,"Grattis " + players[0].name + "! Du vann!", "80px Arcade",0,"black",false,false)
+            }
+            for(let i = players.length-1; i>-1; i--){
+                if(players[i].playerBorder.index !== 2 && players[i].playerBorder.index !== 3){
+                    players[i].playerBorder.draw()
+                }
+            }
+            for(let i = players.length-1; i>-1; i--){
+                if(players[i].playerBorder.index == 2 || players[i].playerBorder.index == 3){
+                    players[i].playerBorder.draw()
+                }
             }
         }  
 
@@ -818,6 +1119,8 @@ class PlayerBorder{
         this.y = 0;
         this.realIndex = this.index
         this.showInfo = false;
+        this.latestTrancaction;
+        this.moneyTime = 0;
 
         let self = this;
         
@@ -836,6 +1139,31 @@ class PlayerBorder{
             self.showInfo = false;
             board.trade = new Trade(players[turn],self.player);
         },219,34,false,false,true)
+
+        this.startMoneyAnimation = function(money){
+            this.moneyTime = 1;
+            this.latestTrancaction = money;
+            playSound(sounds.cash,1)
+        }
+        this.moneyAnimation = function(){
+            if(this.latestTrancaction < 0){
+                c.fillStyle = "red";
+            }else{
+                c.fillStyle = "green";
+            }
+
+            if(this.button.mirror === false){
+                c.globalAlpha = this.moneyTime;
+                c.textAlign = "left"
+                c.fillText(Math.abs(this.latestTrancaction) + "kr",this.x*drawScale+50,this.y*drawScale+68 - (-this.moneyTime+1)*20)
+                c.globalAlpha = 1;
+            }else{
+                c.globalAlpha = this.moneyTime;
+                c.textAlign = "right"
+                c.fillText(Math.abs(this.latestTrancaction) + "kr",this.x+480,this.y*drawScale+68- (-this.moneyTime+1)*20)
+                c.globalAlpha = 1;
+            }
+        }
 
         this.init = function(){
             if(players.length === 5 && this.realIndex === 4){
@@ -898,6 +1226,8 @@ class PlayerBorder{
         }
         
         this.draw = function() {
+            this.moneyTime -= speeds.moneyAnimationSpeed;
+            
             if(this.index === 0){
                 this.x = 0
                 this.y = 0;
@@ -956,7 +1286,9 @@ class PlayerBorder{
                 c.textAlign = "right"
                 c.fillText(this.player.name,this.x*drawScale+450,this.y*drawScale+68)
                 c.textAlign = "left"
-                c.fillText(this.player.money + "kr",this.x*drawScale+50,this.y*drawScale+68)
+                if(this.moneyTime <= 0){
+                    c.fillText(this.player.money + "kr",this.x*drawScale+50,this.y*drawScale+68)
+                }
             }else{
                 drawRotatedImage(this.x*drawScale+6,this.y*drawScale+5,48,96,images.player.img[this.player.colorIndex],0,false,0,0,24,48,false)
                 c.font = "40px Arcade";
@@ -964,7 +1296,9 @@ class PlayerBorder{
                 c.textAlign = "left"
                 c.fillText(this.player.name,this.x+80,this.y*drawScale+68)
                 c.textAlign = "right"
-                c.fillText(this.player.money + "kr",this.x+480,this.y*drawScale+68)
+                if(this.moneyTime <= 0){
+                    c.fillText(this.player.money + "kr",this.x+480,this.y*drawScale+68)
+                }
 
             }
             if(this.showInfo){
@@ -1050,7 +1384,9 @@ class PlayerBorder{
                     this.createTradebutton.draw();
                 }
             }
-            
+            if(this.moneyTime > 0){
+                this.moneyAnimation()
+            }
             
         }
     }
@@ -1149,6 +1485,7 @@ class Auction{
                             if(this.playerlist[0].colorIndex == players[i].colorIndex){
                                 clearInterval(board.auction.timer)
                                 players[i].money -= this.auctionMoney;
+                                players[i].playerBorder.startMoneyAnimation(-this.auctionMoney)
                                 board.auction.card.owner = players[i];
                                 players[i].ownedPlaces.push(this.card);
                                 buttons.splice(buttons.indexOf(this.addMoneyButton2),1)
@@ -1284,7 +1621,7 @@ class Button{
                             if(this.select === false){
                                 drawIsometricImage(0,0,this.img,this.mirror,this.w*2,0,this.w,this.h,this.x,this.y)
                             }else{
-                                drawIsometricImage(0,0,this.img,this.mirror,0,0,this.w,this.h,this.x,this.y)
+                                drawIsometricImage(0,0,this.img,this.mirror,this.w*3,0,this.w,this.h,this.x,this.y)
                             }
                         }
                     }else{
@@ -1341,6 +1678,7 @@ class Button{
                             }else{
                                 this.selected = true;
                             }
+                            this.onClick();
                         }
                         this.hover = false;
                         if(!this.disablesound){
@@ -1357,6 +1695,7 @@ class Button{
                             }else{
                                 this.selected = true;
                             }
+                            this.onClick();
                         }
                         this.hover = false;
                         if(!this.disablesound){
@@ -1507,18 +1846,13 @@ class BoardPiece{
         this.click = function(){
             if(this.hover === true){
                 playSound(sounds.release,1)
-
-                if(this.piece.card === undefined){
-                    alert()
-                }else{
+                if(this.piece.card !== undefined){
                     if(board.currentCard === this){
                         board.currentCard = undefined;
                     }else{
                         board.currentCard = this;
                     }
                 }
-
-
             }
         }
         this.playerStep = function (onlyStep,player,diceRoll){
@@ -1526,23 +1860,11 @@ class BoardPiece{
             if(!onlyStep && !this.mortgaged){
                 if(this.piece.price < 0){
                     player.money += this.piece.price;
-                    alert(player.name + " betalade " + -this.piece.price + "kr")
+                    player.playerBorder.startMoneyAnimation(this.piece.price)
                 }else if(this.piece.price > 0 && this.owner === undefined){
-                    setTimeout(() => {
-                        if(this.piece.card === undefined){
-                            if(confirm("Vill du köpa " + this.piece.name + " för " + this.piece.price + "kr?" + "\n" + "\n")){
-                                player.money -= this.piece.price;
-                                this.owner = player;
-                                player.ownedPlaces.push(this);
-                            }  
-                        }else{
-                            if(players[turn].bot === undefined){
-                                board.currentCard = this;
-                            }
-                        }
-                        
-                    }, 50);
-
+                    if(players[turn].bot === undefined){
+                                board.currentCard = this;        
+                    }
                 }else if(this.owner !== player && this.owner !== undefined){
                     if(this.piece.type === "utility"){
                         let tmp = 0;
@@ -1561,9 +1883,9 @@ class BoardPiece{
                         }
                         player.money -=  diceRoll * multiply;
                         this.owner.money += diceRoll * multiply;
-                        player.checkDebt(this.owner);
-                        alert(this.owner.name + " fick precis " + (diceRoll * multiply) + "kr av " + player.name)
-                        
+                        player.playerBorder.startMoneyAnimation(-diceRoll * multiply)
+                        this.owner.playerBorder.startMoneyAnimation(diceRoll * multiply)
+                        player.checkDebt(this.owner);                        
                     }else if(this.piece.type === "station"){
                         let tmp = -1;
                         this.owner.ownedPlaces.forEach(e => {
@@ -1573,8 +1895,9 @@ class BoardPiece{
                         })
                         player.money -=  25 * Math.pow(2,tmp);
                         this.owner.money += 25 * Math.pow(2,tmp);
+                        player.playerBorder.startMoneyAnimation(-25 * Math.pow(2,tmp))
+                        this.owner.playerBorder.startMoneyAnimation(25 * Math.pow(2,tmp))
                         player.checkDebt(this.owner);
-                        alert(this.owner.name + " fick precis " + (25 * Math.pow(2,tmp)) + "kr av " + player.name)
 
                     }else{
                         let ownAll = true;
@@ -1593,9 +1916,9 @@ class BoardPiece{
                         }
                         player.money -= this.piece.rent[this.level] * multiply;
                         this.owner.money += this.piece.rent[this.level] * multiply;
+                        player.playerBorder.startMoneyAnimation(-this.piece.rent[this.level] * multiply)
+                        this.owner.playerBorder.startMoneyAnimation(this.piece.rent[this.level] * multiply)
                         player.checkDebt(this.owner);
-                        alert(this.owner.name + " fick precis " + (this.piece.rent[this.level] * multiply) + "kr av " + player.name)
-
                     }
                 }else if(this.piece.type === "chance"){
                                                     
@@ -1614,28 +1937,32 @@ class BoardPiece{
                     }
                     if(random === 4){
                         alert("Gå till närmsta anläggning")
-                        if(this.n === 7 || this.n === 36){
-                            player.teleportTo(12, true)
+                        if(this.n === 7 ){
+                            player.teleportTo(12)
                         }
                         if(this.n === 22){
                             player.teleportTo(28, true)
+                        }
+                        if(this.n === 36){
+                            player.teleportTo(-28)
                         }
                     }
                     if(random === 5){
                         alert("Gå till närmsta tågstation")
                         if(this.n === 7){
-                            player.teleportTo(15)
+                            player.teleportTo(-5)
                         }
                         if(this.n === 22){
                             player.teleportTo(25)
                         }
                         if(this.n === 36){
-                            player.teleportTo(5)
+                            player.teleportTo(-35)
                         }
                     }
                     if(random === 6){
                         alert("Få 50kr")
                         player.money += 50;
+                        player.playerBorder.startMoneyAnimation(50)
                     }
                     if(random === 7){
                         alert("Get out of jail card")
@@ -1650,16 +1977,22 @@ class BoardPiece{
                         player.goToPrison();
                     }
                     if(random === 10){
-                        alert("Betala 40 för varje hus man har och 115 för varje hotell")
+                        alert("Betala 25 för varje hus man har och 100 för varje hotell")
+                        let tmp = 0;
                         board.boardPieces.forEach(function(e){
                             if(player === e.owner){
                                 if(e.level < 5){
                                     player.money -= 25*e.level
+                                    tmp+= 25*e.level
                                 }else{
                                     player.money -= 100
+                                    tmp += 100
                                 }
                             }
                         })
+                        if(tmp !== 0){
+                            player.playerBorder.startMoneyAnimation(-tmp)
+                        }
                     }
                     if(random === 11){
                         alert("Gå till södra stationen")
@@ -1672,11 +2005,13 @@ class BoardPiece{
                     if(random === 13){
                         alert("Få 50kr av alla andra spelare")
                         player.money += (players.length-1)*50
-                        players.forEach(e=> {if(e !== player){e.money-=50}})
+                        player.playerBorder.startMoneyAnimation((player.length-1)*50)
+                        players.forEach(e=> {if(e !== player){e.money-=50;e.playerBorder.startMoneyAnimation(-50)}})
                     }
                     if(random === 14){
                         alert("Få 150kr")
                         player.money += 150
+                        player.playerBorder.startMoneyAnimation(150)
                     }
                 }else if(this.piece.type === "community Chest"){
                     let random = randomIntFromRange(1,16);
@@ -1687,14 +2022,17 @@ class BoardPiece{
                     if(random === 2){
                         alert("Få 200kr")
                         player.money += 200;
+                        player.playerBorder.startMoneyAnimation(200)
                     }
                     if(random === 3){
                         alert("Förlora 50kr")
                         player.money -= 50;
+                        player.playerBorder.startMoneyAnimation(-50)
                     }
                     if(random === 4){
                         alert("Få 50kr")
                         player.money += 50;
+                        player.playerBorder.startMoneyAnimation(50)
                     }
                     if(random === 4){
                         alert("Get out of jail card")
@@ -1707,63 +2045,79 @@ class BoardPiece{
                     if(random === 6){
                         alert("Få 50kr av alla andra spelare")
                         player.money += (players.length-1)*50
-                        players.forEach(e=> {if(e !== player){e.money-=50}})
+                        player.playerBorder.startMoneyAnimation((player.length-1)*50)
+                        players.forEach(e=> {if(e !== player){e.money-=50;e.playerBorder.startMoneyAnimation(-50)}})
                     }
                     if(random === 7){
                         alert("Få 100kr")
                         player.money += 100;
+                        player.playerBorder.startMoneyAnimation(100)
                     }
                     if(random === 8){
                         alert("Få 20kr")
                         player.money += 20;
+                        player.playerBorder.startMoneyAnimation(20)
                     }
                     if(random === 9){
                         alert("Få 10kr av alla andra spelare")
                         player.money += (players.length-1)*10
-                        players.forEach(e=> {if(e !== player){e.money-=10}})
+                        player.playerBorder.startMoneyAnimation((players.length-1)*10)
+                        players.forEach(e=> {if(e !== player){e.money-=10;e.playerBorder.startMoneyAnimation(-50)}})
                     }
                     if(random === 10){
                         alert("Få 100kr")
                         player.money += 100;
+                        player.playerBorder.startMoneyAnimation(100)
                     }
                     if(random === 11){
                         alert("Förlora 50kr")
                         player.money -= 50;
+                        player.playerBorder.startMoneyAnimation(-50)
                     }
                     if(random === 12){
                         alert("Förlora 50kr")
                         player.money -= 50;
+                        player.playerBorder.startMoneyAnimation(-50)
                     }
                     if(random === 13){
                         alert("Förlora 25kr")
                         player.money -= 25;
+                        player.playerBorder.startMoneyAnimation(-25)
                     }
                     if(random === 14){
                         alert("Betala 40 för varje hus man har och 115 för varje hotell")
+                        let tmp = 0;
                         board.boardPieces.forEach(function(e){
                             if(player === e.owner){
                                 if(e.level < 5){
                                     player.money -= 40*e.level
+                                    tmp += 40*e.level
                                 }else{
                                     player.money -= 115
+                                    tmp += 115
                                 }
                             }
                         })
+                        if(tmp != 0){
+                            player.playerBorder.startMoneyAnimation(-tmp)
+                        }
                     }
                     if(random === 15){
                         alert("Få 10kr")
                         player.money += 10;
+                        player.playerBorder.startMoneyAnimation(10)
                     }
                     if(random === 16){
                         alert("Få 100kr")
                         player.money += 100;
+                        player.playerBorder.startMoneyAnimation(100)
                     }
                 }else if(this.piece.type === "income tax"){
                     if(player.money > 2000){
-                        alert("Betala 200kr skatt")
                         player.money -= 200;
+                        player.playerBorder.startMoneyAnimation(-200)
                     }else{
-                        alert("Betala " + Math.round(player.money * 0.1) + "kr skatt")
+                        player.playerBorder.startMoneyAnimation(-Math.round(player.money * 0.1))
                         player.money =  Math.round(player.money * 0.9);
                     }
                 }
@@ -1797,6 +2151,7 @@ class Player{
         this.inDebtTo = undefined;
         this.lastMoneyInDebt = 0;
         this.jailcardAmount = 0;
+        this.timeInJail = 0;
 
         this.playerBorder = new PlayerBorder(this)
         if(bot == true ){
@@ -1847,6 +2202,7 @@ class Player{
                 if(this.money >= 0){
                     this.inDebtTo.money -= this.money;
                     this.inDebtTo = undefined;
+                    this.lastMoneyInDebt = 0;
                 }
             }
         }
@@ -1943,6 +2299,7 @@ class Player{
             })
             self.inJail = false;
             self.steps = 10;
+            self.timeInJail = 0;
             board.boardPieces[10].playerStep(true,self);
         }
         this.teleportTo = function(step,getMoney){
@@ -1957,7 +2314,6 @@ class Player{
             }
 
             this.steps = step;
-            this.rolls = true;
 
             this.animateSteps(oldStep,this.steps,0,direction,getMoney)
         }
@@ -1986,7 +2342,7 @@ class Player{
                         }
                     })})
                     if(to2 >= 40 && self.inJail === false && getMoney === true){
-                        alert(self.name + " gick förbi start och fick då 200kr")
+                        self.playerBorder.startMoneyAnimation(200)
                         self.money += 200;
                     }
                     
@@ -1997,6 +2353,7 @@ class Player{
                             board.prisonExtra.playerStep(true,self);
                         }else{
                             board.boardPieces[to].playerStep(false,self,dicesum);
+                            console.log(to)
                         }
                     }
                     if(to === 30){
@@ -2055,22 +2412,24 @@ class Player{
                         let oldStep = this.steps;
                         let dice1 = randomIntFromRange(1,6);
                         let dice2 = randomIntFromRange(1,6);
+                        this.numberOfRolls++;
                         if(dice1 === dice2){
-                            if(this.numberOfRolls === 3){
-                                alert("Gå till finkan!")
-                                this.goToPrison();
-                            }
-                            this.numberOfRolls++;
                             this.rolls = false;
                         }else{
                             this.rolls = true;
                         }
+                        
                         let diceSum = dice1+dice2;
                         this.dice1 = dice1
                         this.dice2 = dice2
                         let self = this;
 
                         this.animateDice(dice1,dice2,function(){
+                            if(self.numberOfRolls === 3 && dice1 === dice2){
+                                alert("Olagligt att slå dubbla tärningar tre gånger!")
+                                self.goToPrison();
+                                return;
+                            }
                             board.animateDices = false;
                             self.steps += dice1+dice2;
                             self.steps = self.steps%40;
