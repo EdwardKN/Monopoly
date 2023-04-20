@@ -1396,26 +1396,26 @@ class BoardPiece{
         this.doChanceCard = (random, player) => {
             if(random === 1){
                 alert("Gå till start!")
-                player.teleportTo(0)
+                player.teleportTo(0, false)
             }
             if(random === 2){
                 alert("Gå till Hässleholm")
-                player.teleportTo(24)
+                player.teleportTo(24, false)
             }
             if(random === 3){
                 alert("Gå till Simrishamn")
-                player.teleportTo(11)
+                player.teleportTo(11, false)
             }
             if(random === 4){
                 alert("Gå till närmsta tågstation")
                 if(this.n === 7){
-                    player.teleportTo(15)
+                    player.teleportTo(15, false)
                 }
                 if(this.n === 22){
-                    player.teleportTo(25)
+                    player.teleportTo(25, false)
                 }
                 if(this.n === 36){
-                    player.teleportTo(5)
+                    player.teleportTo(5, false)
                 }
             }
             if(random === 5){
@@ -1428,7 +1428,7 @@ class BoardPiece{
             }
             if(random === 7){
                 alert("Gå bak tre steg")
-                player.teleportTo(player.steps-3)
+                player.teleportTo(player.steps-3, false)
             }
             if(random === 8){
                 alert("Gå till finkan!")
@@ -1452,7 +1452,7 @@ class BoardPiece{
             }
             if(random === 11){
                 alert("Gå till Malmö")
-                player.teleportTo(39);
+                player.teleportTo(39, false);
             }
             if(random === 12){
                 alert("Få 50kr av alla andra spelare")
@@ -1461,14 +1461,14 @@ class BoardPiece{
             }
             if(random === 13){
                 alert("Få 150kr")
-                player.money += 150
+                player.money += 150;
             }
         }
 
         this.doCommunityChest = (random, player) => {
             if(random === 1){
                 alert("Gå till start")
-                player.teleportTo(0)
+                player.teleportTo(0, false);
             }
             if(random === 2){
                 alert("Få 200kr")
@@ -1683,8 +1683,7 @@ class Player{
             }
         }
         this.goToPrison = function(){
-            alert("Gå till finkan!")
-            this.teleportTo(10)
+            this.teleportTo(10, false);
             this.inJail = true;
             this.rolls = true;
         }
