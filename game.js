@@ -299,7 +299,8 @@ async function init(){
     
     Api.online = location.search != "" ? true : confirm("Do you want to play online?");
     if (Api.online) {
-        var serverURL = location.search == "" ? prompt("If you're the host, then start the server.\nAfter that everyone should be able to join in a LAN.\nEnter the address shown by the server") : atob(location.search.substring(1));
+        var username = location.search == "" ? prompt("What's your username?") : decodeURI(location.search.split("&")[1]);
+        var serverURL = location.search == "" ? prompt("If you're the host, then start the server.\nAfter that everyone should be able to join in a LAN.\nEnter the address shown by the server") : atob(location.search.substring(1).split("&")[0]);
         history.replaceState(undefined, undefined, location.href.replace(location.search, ""));
         try {
             var interval = -1;
@@ -496,10 +497,10 @@ async function init(){
                 player.money = data.money;
             });
 
-            await Api.openWebsocketConnection(serverURL);
+            await Api.openWebsocketConnection(serverURL, username);
         } catch(err) {
             alert("IMPORTANT\nYou will now be redirected to another page\nIt's important that you click on Advanced...>Accept the Risk and Continue\nIf you don't, you won't be able to connect to the game");
-            location = "https://" + serverURL + "/" + btoa(location.href);
+            location = "https://" + serverURL + "/" + btoa(location.href) + "/" + encodeURI(username);
         }
     }
 

@@ -33,7 +33,7 @@ var gameHasStarted = false;
  * @param {ServerResponse} response 
  */
 function serverHandler(request, response) {
-    response.setHeader("Location", Buffer.from(request.url.split("/")[1], "base64") + "?" + btoa(network + ":" + port));
+    response.setHeader("Location", Buffer.from(request.url.split("/")[1], "base64") + "?" + btoa(network + ":" + port) + "&" + request.url.split("/")[2]);
     response.writeHead(302).end();
 }
 
@@ -70,7 +70,7 @@ function websocketHandler(request) {
     var connection = request.accept('', request.origin);    
     
     // Send message with info about the game
-    var playerInfo = PlayerManager.playerJoined(Math.round(Math.random() * 1e6).toString(16));
+    var playerInfo = PlayerManager.playerJoined(decodeURI(request.resourceURL.search.substring(1)));
     var player = PlayerManager.players[playerInfo.length - 1];
     connection.sendUTF(JSON.stringify({
         event_type: "join_info",

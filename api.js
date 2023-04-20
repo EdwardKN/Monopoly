@@ -105,9 +105,9 @@ class Api {
      * Also, how do I get it to work without exposing passwords and private keys and such stuff on github.
      * @param {String|URL} url The address to the LAN-server (No prefix prepended)
      */
-    static async openWebsocketConnection(url) {
+    static async openWebsocketConnection(url, username) {
         return new Promise((resolve, reject) => {
-            var ws = new WebSocket("wss://" + url);
+            var ws = new WebSocket("wss://" + url + "?" + encodeURI(username));
             
             ws.onmessage = Api._messageHandler;
             ws.onerror = (_, ev) => reject(ev);
