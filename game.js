@@ -296,10 +296,7 @@ async function init(){
 
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
-
     
-    // Would be preferable to have the background rendered before all of the alerts,
-    // as the white background isn't that nice to look at
     Api.online = location.search != "" ? true : confirm("Do you want to play online?");
     if (Api.online) {
         var serverURL = location.search == "" ? prompt("If you're the host, then start the server.\nAfter that everyone should be able to join in a LAN.\nEnter the address shown by the server") : atob(location.search.substring(1));
@@ -312,6 +309,7 @@ async function init(){
                 clearInterval(interval);
                 document.getElementById("lobby").style.display = "none";
                 
+                players = [];
                 data.players.forEach((player) => {
                     players.push(new Player(images.player.img[player.colorIndex], player.colorIndex, player.name, false));
                 });
@@ -326,33 +324,63 @@ async function init(){
 
             document.body.addEventListener("join_info", (evt) => {
                 var data = evt.detail;
-                var countdownElement = document.querySelector("#lobby>center");
+
+                data.players.forEach((player) => {
+                    players.push(new Player(images.player.img[player.colorIndex], player.colorIndex, player.name, false));
+                });
 
                 Api.currentPlayer = data.thisPlayer;
-                
-                if (data.countdown == -1) {
-                    countdownElement.innerText = "Waiting for more players";
-                    countdownElement.className = "waiting";
+
+                data.players.forEach(p => {
+                    var player = document.createElement("div");
+                    var span = document.createElement("span");
+                    var img = document.createElement("img");
+    
+                    player.className = "player";
+                    player.style.color = !p.isReady ? "red" : "green";    
                     
-                    function onPlayerJoin() {
-                        document.body.removeEventListener("player_joined", onPlayerJoin);
-                        var startTime = performance.now();
-                        var duration = 30 * 1000;
-                        
-                        countdownElement.className = "countdown";
-                        interval = setInterval(() => { countdownElement.innerText = Math.floor((duration - (performance.now() - startTime)) / 1000); }, 100);
-                    }
-                    
-                    document.body.addEventListener("player_joined", onPlayerJoin);
+                    span.innerText = p.name;
+                    img.src = images.player.src[p.colorIndex] + ".png";
+    
+                    player.appendChild(span);
+                    player.appendChild(img);
+    
+                    document.getElementById("player-container").appendChild(player);
+                })
+            });
+
+            document.body.addEventListener("player_left", (evt) => {
+                if (document.getElementById("lobby").style.display != "none") {
+                    // If the lobby is visible, remove this player from the list
+                    var playerContainer = document.getElementById("player-container");
+                    var index = players.findIndex(x => x.colorIndex == evt.detail.index);
+                    var player = players.splice(index, 1);
+                    playerContainer.removeChild(playerContainer.children[index]);
                 } else {
-                    var startTime = performance.now() - data.countdown;
-                    var duration = 30 * 1000;
-                    
-                    countdownElement.className = "countdown";
-                    interval = setInterval(() => { countdownElement.innerText = Math.floor((duration - (performance.now() - startTime)) / 1000); }, 100);
+                    // Set the player to a bot if it left
+                    var player = players.find(x => x.colorIndex == evt.detail.player);
+                    player.bot = new Bot(player);
                 }
             });
 
+            document.body.addEventListener("player_joined", (evt) => {
+                if (evt.detail.index == Api.currentPlayer || Api.currentPlayer == -1) return;
+                players.push(new Player(images.player.img[evt.detail.index], evt.detail.index, evt.detail.username, false));
+
+                var player = document.createElement("div");
+                var span = document.createElement("span");
+                var img = document.createElement("img");
+
+                player.className = "player";
+
+                span.innerText = evt.detail.username;
+                img.src = images.player.src[evt.detail.index] + ".png";
+
+                player.appendChild(span);
+                player.appendChild(img);
+
+                document.getElementById("player-container").appendChild(player);
+            });
             
             document.body.addEventListener("move_event", (evt) => players[evt.detail.player].teleportTo(evt.detail.steps, false));
 
@@ -445,12 +473,16 @@ async function init(){
                 currentCard.level = data.new_level;
                 currentCard.owner.money = data.money;
             });
+
+            document.body.addEventListener("player_ready_event", (evt) => {
+                var index =  players.findIndex(x => x.colorIndex == evt.detail.player);
+                if (document.getElementById("lobby").style.display != "none") {
+                    var playerContainer = document.getElementById("player-container");
+                    playerContainer.children[index].style.color = playerContainer.children[index].style.color == "green" ? "red" : "green";
+                }
+            });
             
             await Api.openWebsocketConnection(serverURL);
-
-            // Lobby
-            // 1 minute after the first player joined (or when there's 8 players), start the game
-            // Meanwhile show some menu with the other players and a countdown for how long there's left until the game starts, maybe some settings should be available to set for the host
         } catch(err) {
             alert("IMPORTANT\nYou will now be redirected to another page\nIt's important that you click on Advanced...>Accept the Risk and Continue\nIf you don't, you won't be able to connect to the game");
             location = "https://" + serverURL + "/" + btoa(location.href);
@@ -1816,6 +1848,5 @@ class Player{
 
     }
 }
-
 
 init();

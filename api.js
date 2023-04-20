@@ -83,7 +83,14 @@ class Api {
      */
     static propertyChangedLevel(tile, newLevel, isUpgrade) {
         Api.getWebSocket().send(JSON.stringify({ event_type: "property_changed", tile: { ...tile.piece, side: tile.side }, new_level: newLevel, is_upgrade: isUpgrade }));
-    }    
+    }
+
+    /**
+     * This player is ready to begin the game
+     */
+    static readyUp() {
+        Api.getWebSocket().send(JSON.stringify({ event_type: "ready_up" }));
+    }
 
     /**
      * This works, but only if the user gets redirected to the given url and accepts the self-signed certificate, this may add more complexity than what it's worth...

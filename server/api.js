@@ -38,6 +38,16 @@ function addPlayer(username, index, isBot) {
 }
 
 /**
+ * @param {String} username 
+ * @param {number} index 
+ * @param {boolean} isBot 
+ */
+function removePlayer(username, index, isBot) {
+    console.log("[S->C] %s %s left", username, isBot ? "bot" : "player");
+    websocket.broadcastUTF(JSON.stringify(new PlayerLeaveEvent(username, index, isBot)));
+}
+
+/**
  * 
  * @param {number} id The id of the player whose turn it will be
  */
@@ -105,6 +115,14 @@ function auctionStart(tile) {
 function auctionShow(tile) {
     console.log("[S->C] Auction of tile (%s) shown", tile);
     websocket.broadcastUTF(JSON.stringify(new AuctionShowEvent(tile)));
+}
+
+/**
+ * @param {number} player The id of the player
+ */
+function readyUp(player) {
+    console.log("[S->C] Player (%s) is ready", player);
+    websocket.broadcastUTF(JSON.stringify(new PlayerReadyEvent(player)));
 }
 
 class Event {
@@ -205,6 +223,17 @@ class PlayerJoinEvent extends Event {
     }
 }
 
+class PlayerLeaveEvent extends Event {
+    /**
+     * @param {String} username
+     * @param {number} index 
+     * @param {boolean} isBot 
+     */
+    constructor(username, index, isBot) {
+        super("player_left", { username, index, isBot });
+    }
+}
+
 class StartEvent extends Event {
     /**
      * @param {Player[]} players 
@@ -224,6 +253,15 @@ class DiceEvent extends Event {
     }
 }
 
+class PlayerReadyEvent extends Event {
+    /**
+     * @param {number} player 
+     */
+    constructor(player) {
+        super("player_ready_event", { player });
+    }
+}
+
 class MoveEvent extends Event {
     /**
      * @param {number} steps 
@@ -236,8 +274,9 @@ class MoveEvent extends Event {
 
 
 module.exports = {
-    teleportTo,
     addPlayer,
+    removePlayer,
+    teleportTo,
     randomEvent,
     tilePurchased,
     propertyChanged,
@@ -246,5 +285,6 @@ module.exports = {
     auctionBid,
     startGame,
     newTurn,
+    readyUp,
     setWebsocket: wss => { websocket = wss; }
 }

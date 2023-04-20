@@ -2,9 +2,15 @@ var api = require('./api');
 
 class PlayerManager {
     static players = [];
+    static availableColors = [ 0, 1, 2, 3, 4, 5, 6, 7 ];
     static getNumberOfPlayers = () => PlayerManager.players.length;
-    static playerJoined = () => {
-        var player = new Player(PlayerManager.getNumberOfPlayers(), Math.round(Math.random() * 1e6).toString(16), false);
+
+    /**
+     * @param {String} username The name of this new player
+     * @returns {Player[]} All the players in the game
+     */
+    static playerJoined = (username) => {
+        var player = new Player(PlayerManager.availableColors.shift(), username, false);
 
         PlayerManager.players.push(player);
         api.addPlayer(player.name, player.colorIndex, player.bot != undefined);
@@ -13,10 +19,13 @@ class PlayerManager {
     }
 
     /**
-     * @param {Player} player
+     * @param {Player} player The player who left
      */
     static playerLeft = (player) => {
         PlayerManager.players.splice(PlayerManager.players.indexOf(player), 1);
+        PlayerManager.availableColors.unshift(player.colorIndex);
+
+        api.removePlayer(player.name, player.colorIndex, player.bot != undefined);
     }
 }
 
@@ -56,6 +65,9 @@ class Player {
 
         // Whether or not this is a bot
         this.isBot = bot;
+
+        // Whether or not this player is ready to start the game
+        this.isReady = false;
     }
 
     teleportTo(steps) {

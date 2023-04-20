@@ -25,8 +25,7 @@ if (network == undefined) {
 var port = 60000 + Math.round((Math.random() - 0.5) * 10000);
 var server = https.createServer({ key: readFileSync("./certs/monopoly.key"), cert: readFileSync("./certs/monopoly.crt"), passphrase: readFileSync("./certs/passphrase").toString("utf-8") }, serverHandler).listen(port, () => console.log("Clients can now connect at the Address:\n%s:%s\n", network, port));
 
-const COUNTDOWN_DURATION = 30 * 1000;
-var startGameTimer = undefined;
+var gameHasStarted = false;
 
 /**
  * 
@@ -60,31 +59,27 @@ function websocketHandler(request) {
         // Make sure we only accept requests from an allowed origin
         request.reject(undefined, "INVALID_ORIGIN");
         return;
-    } else if (startGameTimer != undefined && startGameTimer.time + COUNTDOWN_DURATION <= performance.now()) {
+    } else if (gameHasStarted) {
         request.reject(undefined, "GAME_ONGOING");
+        return;
+    } else if (PlayerManager.getNumberOfPlayers() >= 8) {
+        request.reject(undefined, "GAME_FULL");
         return;
     }
 
-    var connection = request.accept('', request.origin);
-    if (PlayerManager.getNumberOfPlayers() == 1) {
-        startGameTimer = { id: setTimeout(() => { api.startGame(PlayerManager.players); }, COUNTDOWN_DURATION), time: performance.now() };
-    }
-    
+    var connection = request.accept('', request.origin);    
     
     // Send message with info about the game
-    var playerInfo = PlayerManager.playerJoined();
+    var playerInfo = PlayerManager.playerJoined(Math.round(Math.random() * 1e6).toString(16));
+    var player = PlayerManager.players[playerInfo.length - 1];
     connection.sendUTF(JSON.stringify({
         event_type: "join_info",
         data: {
             players: playerInfo,
-            thisPlayer: playerInfo.length - 1,
-            countdown: startGameTimer?.time == undefined ? -1 : Math.floor(performance.now() - startGameTimer.time),
-            countdownDuration: COUNTDOWN_DURATION
+            thisPlayer: player.colorIndex
         }
     }));
     
-    var player = PlayerManager.players[playerInfo.length - 1];
-
     console.log("[S<-C] Player (%s) joined the lobby", player.name);
     connection.on('message', message => {
         if (message.type === 'utf8') {
@@ -135,6 +130,16 @@ function websocketHandler(request) {
                     console.log("[S<-C] Player (%s) bid %dkr on tile (%s)", player.name, event.bid, event.tile.name);
                     api.auctionBid(player.colorIndex, newPlayer.colorIndex, event.bid, event.tile.card, event.is_out);
                     break;
+                case "ready_up":
+                    console.log("[S<-C] Player (%s) is ready", player.name);
+                    player.isReady = !player.isReady;
+
+                    if (PlayerManager.getNumberOfPlayers() >= 2 && PlayerManager.players.every(x => x.isReady)) {
+                        api.startGame(PlayerManager.players);
+                    } else {
+                        api.readyUp(player.colorIndex);
+                    }
+                    break;                    
                 default:
                     console.log(event);
                     console.error("<Warning> Event (%s) doesn't have any handler", event.event_type);

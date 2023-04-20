@@ -8,8 +8,12 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div id="lobby" style="position: absolute; left: 0px; top: 0px; width: 100vw; height: 100vh; background-color: #454545;">
-        <center style="font-size: 5vh; font-weight: 1000; color: white;"></center>
+    <div id="lobby">
+        <!-- Players in the lobby -->
+        <div id="player-container"></div>
+
+        <!-- Ready up -->
+        <button class="waiting" onclick="this.className = this.className == 'ready' ? 'waiting' : 'ready';  Api.readyUp();">Ready Up!</button>
     </div>
 
     <script src="api.js"></script>
