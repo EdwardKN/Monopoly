@@ -260,7 +260,7 @@ class LocalLobby {
                     }else{
                         self.disableAll = false;
                     }
-                },40,40,false,false),
+                },40,40,false,false,false,true),
                 colorButtons: []
             }
             for(let i = 0; i < 8; i++){
@@ -1025,7 +1025,7 @@ class Trade{
             }
             let but = (new Button(true,-170 + tmp,110 + 18*Math.floor(i/2),images.trade.img[2],function(){
 
-            },106,17,false,false,false,false,e.piece.name + " " + e.piece.price + "kr","13px Arcade",e.piece.color))
+            },106,17,false,false,false,false,false,e.piece.name + " " + e.piece.price + "kr","13px Arcade",e.piece.color))
 
             if(self.p1.bot !== undefined){
                 but.disabled = true;
@@ -1043,7 +1043,7 @@ class Trade{
             }
             let but = (new Button(true,90 + tmp,110 + 18*Math.floor(i/2),images.trade.img[2],function(){
 
-            },106,17,false,false,false,false,e.piece.name + " " + e.piece.price + "kr","13px Arcade",e.piece.color))
+            },106,17,false,false,false,false,false,e.piece.name + " " + e.piece.price + "kr","13px Arcade",e.piece.color))
 
             if(self.p2.bot !== undefined){
                 but.disabled = true;
@@ -1544,7 +1544,7 @@ class Auction{
 }
 
 class Button{
-    constructor(select,x,y,img,onClick,w,h,showBorder,mirror,screencenter,disablesound,text,font,textcolor){
+    constructor(select,x,y,img,onClick,w,h,showBorder,mirror,screencenter,disableselectTexture,disablesound,text,font,textcolor){
         this.x = x;
         this.y = y;
         this.w = w;
@@ -1562,6 +1562,7 @@ class Button{
         this.select = select
         this.disablesound = disablesound;
         this.textcolor = textcolor
+        this.disableselectTexture = disableselectTexture;
         if(textcolor == undefined){
             this.textcolor = "black"
         }    
@@ -1637,7 +1638,11 @@ class Button{
                             if(this.screencenter){
                                 drawRotatedImage(this.x*drawScale,this.y*drawScale,this.w*drawScale,this.h*drawScale,this.img,0,this.mirror,0,0,this.w,this.h,false)
                             }else{
-                                drawIsometricImage(0,0,this.img,this.mirror,this.w*2,0,this.w,this.h,this.x,this.y)
+                                if(this.disableselectTexture){
+                                    drawIsometricImage(0,0,this.img,this.mirror,0,0,this.w,this.h,this.x,this.y)
+                                }else{
+                                    drawIsometricImage(0,0,this.img,this.mirror,this.w*2,0,this.w,this.h,this.x,this.y)
+                                }
                             }
                         }
                     }
