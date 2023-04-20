@@ -206,8 +206,8 @@ function init(){
     let botAmount = -2;
 
     if(fastLoad === true){
-        playerAmount = -1;
-        botAmount = 2;
+        playerAmount = 1;
+        botAmount = 1;
     }
 
     let playerImages = [0,1,2,3,4,5,6,7]
@@ -1598,8 +1598,8 @@ class BoardPiece{
 
                     }
                 }else if(this.piece.type === "chance"){
-
-                    let random = randomIntFromRange(1,14)
+                                                    
+                    let random = randomIntFromRange(1, 14)
                     if(random === 1){
                         alert("Gå till start!")
                         player.teleportTo(0, true)
@@ -1819,7 +1819,9 @@ class Player{
 
         this.checkMoney = function(){
             if(this.money < 0 && this.ownedPlaces.length == 0){
-                delete Bot.boardInfo[turn]
+                Bot.boardInfo = {}
+                players.forEach((player, i) => Bot.boardInfo[i] = player.ownedPlaces)
+
                 turn = turn%(players.length-1);
 
                 if(players.length-1 === 1){
@@ -2042,7 +2044,7 @@ class Player{
                 }else{
                     setTimeout(myFunction, counter);
                 }
-            }
+            }   
             setTimeout(myFunction, counter);
         }
         
@@ -2054,11 +2056,11 @@ class Player{
                         let dice1 = randomIntFromRange(1,6);
                         let dice2 = randomIntFromRange(1,6);
                         if(dice1 === dice2){
-                            this.numberOfRolls++;
                             if(this.numberOfRolls === 3){
                                 alert("Gå till finkan!")
                                 this.goToPrison();
                             }
+                            this.numberOfRolls++;
                             this.rolls = false;
                         }else{
                             this.rolls = true;
@@ -2084,7 +2086,6 @@ class Player{
 
     }
 }
-
 
 init();
 update();
