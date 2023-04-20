@@ -206,7 +206,7 @@ function init(){
     let botAmount = -2;
 
     if(fastLoad === true){
-        playerAmount = 1;
+        playerAmount = -1;
         botAmount = 2;
     }
 
@@ -939,7 +939,7 @@ class PlayerBorder{
         }
         
         this.draw = function() {
-            this.moneyTime -= 0.01;
+            this.moneyTime -= speeds.moneyAnimationSpeed;
             
             if(this.index === 0){
                 this.x = 0
@@ -1688,8 +1688,8 @@ class BoardPiece{
                         player.goToPrison();
                     }
                     if(random === 10){
-                        alert("Betala 40 för varje hus man har och 115 för varje hotell")
-                        let tmp;
+                        alert("Betala 25 för varje hus man har och 100 för varje hotell")
+                        let tmp = undefined;
                         board.boardPieces.forEach(function(e){
                             if(player === e.owner){
                                 if(e.level < 5){
@@ -1701,7 +1701,7 @@ class BoardPiece{
                                 }
                             }
                         })
-                        if(tmp !== undefined){
+                        if(tmp != undefined && tmp != NaN){
                             player.playerBorder.startMoneyAnimation(-tmp)
                         }
                     }
@@ -1797,7 +1797,7 @@ class BoardPiece{
                     }
                     if(random === 14){
                         alert("Betala 40 för varje hus man har och 115 för varje hotell")
-                        let tmp;
+                        let tmp = undefined;
                         board.boardPieces.forEach(function(e){
                             if(player === e.owner){
                                 if(e.level < 5){
@@ -1809,7 +1809,7 @@ class BoardPiece{
                                 }
                             }
                         })
-                        if(tmp !== undefined){
+                        if(tmp != undefined && tmp != NaN){
                             player.playerBorder.startMoneyAnimation(-tmp)
                         }
                     }
@@ -2051,7 +2051,7 @@ class Player{
                         }
                     })})
                     if(to2 >= 40 && self.inJail === false && getMoney === true){
-                        alert(self.name + " gick förbi start och fick då 200kr")
+                        self.playerBorder.startMoneyAnimation(200)
                         self.money += 200;
                     }
                     

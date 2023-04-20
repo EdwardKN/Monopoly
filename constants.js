@@ -40,7 +40,8 @@ if(fastSpeed === true){
             factor:10,
             threshold:0,
             delay:0,
-        }
+        },
+        moneyAnimationSpeed:0.05
         
     }
 }else{
@@ -54,7 +55,8 @@ if(fastSpeed === true){
             factor:1.4,
             threshold:150,
             delay:1000
-        }
+        },
+        moneyAnimationSpeed:0.015
         
     }
 }
