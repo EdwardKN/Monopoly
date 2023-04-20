@@ -1689,7 +1689,7 @@ class BoardPiece{
                     }
                     if(random === 10){
                         alert("Betala 25 för varje hus man har och 100 för varje hotell")
-                        let tmp = undefined;
+                        let tmp = 0;
                         board.boardPieces.forEach(function(e){
                             if(player === e.owner){
                                 if(e.level < 5){
@@ -1701,7 +1701,7 @@ class BoardPiece{
                                 }
                             }
                         })
-                        if(tmp != undefined && tmp != NaN){
+                        if(tmp !== 0){
                             player.playerBorder.startMoneyAnimation(-tmp)
                         }
                     }
@@ -1797,7 +1797,7 @@ class BoardPiece{
                     }
                     if(random === 14){
                         alert("Betala 40 för varje hus man har och 115 för varje hotell")
-                        let tmp = undefined;
+                        let tmp = 0;
                         board.boardPieces.forEach(function(e){
                             if(player === e.owner){
                                 if(e.level < 5){
@@ -1809,7 +1809,7 @@ class BoardPiece{
                                 }
                             }
                         })
-                        if(tmp != undefined && tmp != NaN){
+                        if(tmp != 0){
                             player.playerBorder.startMoneyAnimation(-tmp)
                         }
                     }
