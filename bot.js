@@ -1,3 +1,9 @@
+const weights = {
+    
+}
+
+
+
 
 class Bot{
     static boardInfo = {}
@@ -246,12 +252,20 @@ function hasGroup(group, player) {
 function getPieceRent(boardPiece, steps, player) {
     if (!boardPiece.owner || boardPiece.mortgaged || boardPiece.owner === player) { return 0 }
     if (boardPiece.piece.type === 'station') {
-        return 25 * Math.pow(2, boardPiece.owner.ownedPlaces.filter(bP => bP.piece.type === 'station').length - 1)
+        return 25 * Math.pow(2, ownedStations(player).length - 1)
     } else if (boardPiece.piece.type === 'utility') {
-        return steps * (boardPiece.owner.ownedPlaces.some(bP => bP.piece.type === 'utility') ? 10 : 4)
+        return (7 || steps) * [0, 4, 10][ownedUtility(player).length]
     } else {
         return boardPiece.piece.rent[boardPiece.level] * (hasGroup(boardPiece.piece.group, boardPiece.owner) ? 2 : 1)
     }
+}
+
+function ownedUtility(player) {
+    return player.ownedPlaces.filter(bP => bP.piece.type === 'utility')
+}
+
+function ownedStations(player) {
+    return player.ownedPlaces.filter(bP => bP.piece.type === 'station')
 }
 
 function getPieceCost(bP, player) {
@@ -263,8 +277,8 @@ function rankPlayers() {
     return players.slice().sort((a,b) => {
         let valueA = 0
         let valueB = 0
-        a.ownedPlaces.forEach(bP => valueA += getPieceRent())
-        b.ownedPlaces.forEach(bP => valueB += getPieceRent())
+        a.ownedPlaces.forEach(bP => valueA += getPieceRent(bP, null, a))
+        b.ownedPlaces.forEach(bP => valueB += getPieceRent(bP, null, b))
         return valueA > valueB
     })
 }
