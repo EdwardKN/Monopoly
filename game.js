@@ -314,6 +314,9 @@ async function init(){
                     players.push(new Player(images.player.img[player.colorIndex], player.colorIndex, player.name, false));
                 });
                 
+                // Got no idea where the extra players come from, as they should be cleared aboved. But here's an extra check to remove them
+                board.boardPieces[0].currentPlayer = board.boardPieces[0].currentPlayer.filter(x => players.indexOf(x) != -1);
+
                 if (Api.currentPlayer == 0) {
                     board.rollDiceButton.visible = true;
                     board.nextPlayerButton.visible = false;
@@ -406,6 +409,8 @@ async function init(){
                 currentCard.owner = player;
                 board.currentCard = undefined;
 
+                currentCard.mortgaged = false;
+
                 clearInterval(board?.auction?.timer);
                 board.auction = undefined;
 
@@ -481,7 +486,16 @@ async function init(){
                     playerContainer.children[index].style.color = playerContainer.children[index].style.color == "green" ? "red" : "green";
                 }
             });
-            
+
+            document.body.addEventListener("tile_mortgaged_event", (evt) => {
+                var data = evt.detail;
+                var currentCard = board.boardPieces.find(x => x.piece.card == data.tile);
+                var player = players.find(x => x.colorIndex == data.player);
+
+                currentCard.mortgaged = true;
+                player.money = data.money;
+            });
+
             await Api.openWebsocketConnection(serverURL);
         } catch(err) {
             alert("IMPORTANT\nYou will now be redirected to another page\nIt's important that you click on Advanced...>Accept the Risk and Continue\nIf you don't, you won't be able to connect to the game");
@@ -655,11 +669,21 @@ class Board{
 
         this.mortgageButton = new Button(80,300,images.buttons.img[3],function(){
             if(board.currentCard.mortgaged === true){
+                if (Api.online) {
+                    Api.tilePurchased(board.currentCard, (board.currentCard.piece.price/2)*1.1);
+                    return;
+                }
+                
                 board.currentCard.mortgaged = false;
                 players[turn].money -= (board.currentCard.piece.price/2)*1.1
             }else{
+                if (Api.online) {
+                    Api.mortagedTile(board.currentCard);
+                    return;
+                }
+
                 board.currentCard.mortgaged = true;
-                players[turn].money += board.currentCard.piece.price/2
+                players[turn].money += board.currentCard.piece.price/2;
             }
         },40,40);
 
@@ -771,7 +795,6 @@ class Board{
                     }else{
                         c.fillText("Ägare: " + this.currentCard.owner.name,canvas.width/2,canvas.height/2-153)
                     }
-
 
                     if(this.currentCard.owner === players[Api.online ? Api.currentPlayer : turn]){
                         this.cardCloseButton.visible = true;
@@ -1658,9 +1681,6 @@ class Player{
                     this.x-=i/1.8
                 }
             }
-
-  
-            
         }
         this.goToPrison = function(){
             alert("Gå till finkan!")
@@ -1686,14 +1706,15 @@ class Player{
                 return;
             }
 
-            // The animateSteps function seems to have stopped working. I'll need to look into it more tomorrow.
-
             let oldStep = this.steps;
 
             this.steps = step;
             this.rolls = true;
 
-            this.animateSteps(oldStep,this.steps,0)
+            var dicesum = this.steps - oldStep;
+            if (this.steps < oldStep) dicesum += 40;
+
+            this.animateSteps(oldStep,this.steps, dicesum)
         }
         this.animateSteps = function(from,to,dicesum){
             let self = this;

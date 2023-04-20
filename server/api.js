@@ -102,6 +102,16 @@ function auctionBid(player, nextPlayer, bid, tile, isOut) {
 }
 
 /**
+ * @param {number} player The id of the player
+ * @param {number} money The remaining balance of this player
+ * @param {number} tile The id of the tile
+ */
+function mortgageTile(player, tile, money) {
+    console.log("[S->C] Player (%s) mortgaged tile: (%s). Balance: %dkr", player, tile, money);
+    websocket.broadcastUTF(JSON.stringify(new MortgageEvent(player, money, tile)));
+}
+
+/**
  * @param {number} tile The tile which was put up for auction
  */
 function auctionStart(tile) {
@@ -182,13 +192,23 @@ class AuctionStartEvent extends Event {
 
 class TilePurchasedEvent extends Event {
     /**
-     * 
      * @param {number} player The id of the player
      * @param {number} money The remaining balance of this player
      * @param {number} tile The id of the tile
      */
     constructor(player, money, tile) {
         super("tile_purchased_event", { player, tile, money });
+    }
+}
+
+class MortgageEvent extends Event {
+    /**
+     * @param {number} player The id of the player
+     * @param {number} money The remaining balance of this player
+     * @param {number} tile The id of the tile
+     */
+    constructor(player, money, tile) {
+        super("tile_mortgaged_event", { player, tile, money });
     }
 }
 
@@ -286,5 +306,6 @@ module.exports = {
     startGame,
     newTurn,
     readyUp,
+    mortgageTile,
     setWebsocket: wss => { websocket = wss; }
 }

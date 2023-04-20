@@ -139,7 +139,13 @@ function websocketHandler(request) {
                     } else {
                         api.readyUp(player.colorIndex);
                     }
-                    break;                    
+                    break;
+                case "tile_mortgaged":
+                    player.money += event.tile.price / 2;
+                    console.log("[S->C] Player (%s) mortgaged tile: (%s). Balance: %dkr", player.name, event.tile.name, player.money);
+
+                    api.mortgageTile(player.colorIndex, event.tile.card, player.money);
+                    break;
                 default:
                     console.log(event);
                     console.error("<Warning> Event (%s) doesn't have any handler", event.event_type);

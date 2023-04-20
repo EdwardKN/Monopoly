@@ -86,6 +86,14 @@ class Api {
     }
 
     /**
+     * Mortgage a tile
+     * @param {BoardPiece} tile 
+     */
+    static mortagedTile(tile) {
+        Api.getWebSocket().send(JSON.stringify({ event_type: "tile_mortgaged", tile: tile.piece }));
+    }
+
+    /**
      * This player is ready to begin the game
      */
     static readyUp() {
