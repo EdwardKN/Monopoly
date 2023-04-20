@@ -319,7 +319,7 @@ class LocalLobby {
                     e.botButton.y = e.y/2 - self.playerInputs.length*40/2 + 238;
                     e.colorButton.y = e.y/2 - self.playerInputs.length*40/2 + 238;
                     for(let i = 0; i < 8; i++){
-                        if(index >= 2){
+                        if(index >= self.playerInputs.length/2){
                             e.colorButtons[i].y = e.y/2 + (i%2)*47 + 286 - self.playerInputs.length*40/2 -146
                         }else{
                             e.colorButtons[i].y = e.y/2 + (i%2)*47 + 286 - self.playerInputs.length*40/2
@@ -386,7 +386,7 @@ class LocalLobby {
                         
 
                         c.fillStyle = "black"
-                        if(i >= 2){
+                        if(i >= self.playerInputs.length/2){
                             c.fillRect(canvas.width/2+e.colorButton.x*drawScale - 300,canvas.height/2 +e.colorButton.y*drawScale -336 -294,400,210)
                         }else{
                             c.fillRect(canvas.width/2+e.colorButton.x*drawScale - 300,canvas.height/2 +e.colorButton.y*drawScale -336,400,210)
