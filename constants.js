@@ -6,7 +6,7 @@ var players = [];
 
 const drawScale = 2;
 
-const fastLoad = false;
+const fastLoad = true;
 
 const fastSpeed = false;
 
@@ -197,7 +197,7 @@ const pieces = [
     },
     {
         name:"Allmänning",
-        type:"community Chest",
+        type:"community chest",
         img:15
     },
     {
@@ -259,7 +259,7 @@ const pieces = [
         color:"#81d4fa"
     },
     {
-        name:"§ängelse",
+        name:"fängelse",
         img:1
     },
     {
@@ -320,7 +320,7 @@ const pieces = [
     },
     {
         name:"Allmänning",
-        type:"community Chest",
+        type:"community chest",
         img:15
     },
     {
@@ -454,7 +454,7 @@ const pieces = [
     },
     {
         name:"Allmänning",
-        type:"community Chest",
+        type:"community chest",
         img:15
     },
     {

@@ -1,7 +1,56 @@
-const weights = {
-    
+const ranking = {
+    group: {
+        'brown': 3,
+        'light blue': 2.5,
+        'pink': 2.6,
+        'orange': 3,
+        'red': 2.8,
+        'yellow': 2.5,
+        'green': 2,
+        'blue': 2.2,
+    },
+    station: {
+        0: 1,
+        1: 1.5,
+        2: 2,
+        3: 2.5
+    },
+    utility: {
+        0: 1,
+        1: 3
+    }
 }
 
+const boardWeights = {
+    1: 1,
+    3: 1.2,
+    5: 2,
+    6: 1.2,
+    8: 1.2,
+    9: 1.4,
+    11: 1,
+    12: 1,
+    13: 1.1,
+    14: 1.1,
+    15: 1,
+    16: 1.7,
+    18: 1.7,
+    19: 1.6,
+    21: 1.5,
+    23: 1.7,
+    24: 2,
+    25: 1,
+    26: 1.2,
+    27: 1.3,
+    28: 1,
+    29: 1.4,
+    31: 1.1,
+    32: 1.2,
+    34: 1.3,
+    35: 1,
+    37: 1.5,
+    39: 2
+}
 
 
 
@@ -62,10 +111,10 @@ class Bot{
         Bot.thinking = true
         this.player.rollDice()
         while (board.animateDices || this.player.animationOffset !== 0) { await new Promise(requestAnimationFrame) }
-        if (board.boardPieces[this.player.steps].type === 'chance') {
+        if (['chance', 'community chest'].includes(board.boardPieces[this.player.steps].type)) {
             await new Promise(resolve => setTimeout(resolve, 250))
         }
-            await new Promise(resolve => setTimeout(resolve, randomIntFromRange(speeds.botMin, speeds.botMax)))
+        await new Promise(resolve => setTimeout(resolve, randomIntFromRange(speeds.botMin, speeds.botMax)))
         while (this.player.animationOffset !== 0) { await new Promise(requestAnimationFrame) } 
         let bP = board.boardPieces[this.player.steps]
         
@@ -189,22 +238,22 @@ class Bot{
         const bP = board.auction.card
         const originalPrice = bP.piece.price
         const currentPrice = board.auction.auctionMoney
-        const rankedPlayers = rankPlayers()
-        const weights = {
-            'ownGroup': 0.2,
-            'enemyGroup': 0.1,
-            'enemyRank': 0.1,
-            'moneyLeft': 0.4,
-            'moneySaved': 0.2
-        }
+       
 
         for (const option of [100, 10, 2]) {
             // Current Money, Current Price, Bid | (Average Income, Average Loss) > Average Money Change Next Cycle
-            const remainingMoney = this.player.money - currentPrice - option// + this.getAverageIncome() - this.getAverageLoss()
-            if (remainingMoney < 0) { continue }
+            const remainingMoney = this.player.money - currentPrice - option
+            if (remainingMoney < this.getAverageLoss(12)) { continue }
 
-            let moneyToSpend = originalPrice - currentPrice - option - 2 * this.getAverageLoss(40) + this.getAverageIncome(40)
-            
+            let moneyToSpend = originalPrice - currentPrice - option
+            let maxValueToSpend = bP.piece.price
+
+            players.forEach(player => {
+                if (player.ownedPlaces.filter(bP2 => bP2.piece.group === bP.piece.group).length / groups[bP.piece.group] > 0.5) {
+                    if (player === this.player) { maxValueToSpend }
+                }
+            })
+
             if (bP.piece.group) {
                 let owner
                 groups[bP.piece.group].forEach(id => {
@@ -234,6 +283,58 @@ class Bot{
         }
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 function probabilityOfNumber(target) {
     let count = 0
