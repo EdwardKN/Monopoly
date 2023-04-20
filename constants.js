@@ -142,6 +142,11 @@ var sounds = {
         type:"multiple",
         src:"./sounds/movement/move-",
         amount:46
+    },
+    cash:{
+        type:"multiple",
+        src:"./sounds/cash/cash-",
+        amount:5
     }
 }
 
