@@ -238,7 +238,7 @@ class LocalLobby {
         let self = this;
         this.playerInputs = [];
         this.amountBots = 0;
-        this.startButton = new Button(false,0,200,images.buttons.img[10],function(){
+        this.startButton = new Button(false,100,500,images.buttons.img[10],function(){
             let playerlist = []
 
             self.playerInputs.forEach(e =>{
@@ -270,8 +270,8 @@ class LocalLobby {
                 id:id,
                 colorId:undefined,
                 y:(self.playerInputs.length*110 - 100),
-                textInput: new TextInput(-900,0,500,80,true,"50px Arcade",14),
-                botButton: new Button(true,-135 +42,self.playerInputs.length*55 - 32,images.buttons.img[4],function(){
+                textInput: new TextInput(100,300,500,80,true,"50px Arcade",14),
+                botButton: new Button(true,-50 +42,self.playerInputs.length*55 - 32,images.buttons.img[4],function(){
                     self.playerInputs[id].textInput.value = ""
                     if(self.playerInputs[id].botButton.selected){
                         self.amountBots++;
@@ -281,7 +281,7 @@ class LocalLobby {
                         self.playerInputs[id].textInput.value = ""
                     }
                 },40,40,false,false),
-                colorButton: new Button(true,-135,self.playerInputs.length*55 - 32,images.colorButtons.img[8],function(){
+                colorButton: new Button(true,-50,self.playerInputs.length*55 - 32,images.colorButtons.img[8],function(){
                     if(self.playerInputs[id].colorButton.selected){
                         self.disableAll = true;
                     }else{
@@ -291,7 +291,7 @@ class LocalLobby {
                 colorButtons: []
             }
             for(let i = 0; i < 8; i++){
-                tmp.colorButtons.push(new Button(true,-210 + (i%4)*47,self.playerInputs.length*55 +15 + Math.floor(i/2)*50,images.colorButtons.img[i],function(){
+                tmp.colorButtons.push(new Button(true,110 + (i%4)*47,self.playerInputs.length*55 +150 + Math.floor(i/2)*50,images.colorButtons.img[i],function(){
                     let select = self.playerInputs[id].colorButtons[i].selected;
                     self.playerInputs[id].colorButtons.forEach(e => {
                         e.selected = false;
@@ -325,8 +325,8 @@ class LocalLobby {
             self.playerInputs.push(tmp)
         }
 
-        this.addPlayer = new Button(false,-135 +42,20,images.lobbyMenu.img[0],self.addmorePlayers,40,40,false,false)
-        this.removePlayer = new Button(false,-135,20,images.lobbyMenu.img[1],function(){
+        this.addPlayer = new Button(false,-50+42,220,images.lobbyMenu.img[0],self.addmorePlayers,40,40,false,false)
+        this.removePlayer = new Button(false,-50,220,images.lobbyMenu.img[1],function(){
             if(self.playerInputs[self.playerInputs.length-1].colorId !== undefined){
                 self.useableColors.push(self.playerInputs[self.playerInputs.length-1].colorId)
             }
@@ -342,20 +342,18 @@ class LocalLobby {
             if(this.current){
 
                 this.playerInputs.forEach(function(e,index) {
-                    e.textInput.y = e.y - self.playerInputs.length*40 + 60;
-                    e.botButton.y = e.y/2 - self.playerInputs.length*40/2 + 238;
-                    e.colorButton.y = e.y/2 - self.playerInputs.length*40/2 + 238;
+                    e.textInput.y = e.y - self.playerInputs.length*40 + 600;
+                    e.botButton.y = e.y/2 - self.playerInputs.length*40/2 + 238 + 262;
+                    e.colorButton.y = e.y/2 - self.playerInputs.length*40/2 + 238 + 262;
                     for(let i = 0; i < 8; i++){
                         if(index >= self.playerInputs.length/2){
-                            e.colorButtons[i].y = e.y/2 + (i%2)*47 + 286 - self.playerInputs.length*40/2 -146
+                            e.colorButtons[i].y = e.y/2 + (i%2)*47 + 286 - self.playerInputs.length*40/2 +118
                         }else{
-                            e.colorButtons[i].y = e.y/2 + (i%2)*47 + 286 - self.playerInputs.length*40/2
+                            e.colorButtons[i].y = e.y/2 + (i%2)*47 + 286 - self.playerInputs.length*40/2 +262
                         }
-                        e.colorButtons[i].x = Math.floor(i/2)*50 - 215
+                        e.colorButtons[i].x = Math.floor(i/2)*50 - 125
                     }
                 })
-                this.addPlayer.y = -8*40/2 + 130;
-                this.removePlayer.y = -8*40/2 + 130;
                 this.ableToStart = true;
 
                 if(this.playerInputs.length >= 8 || this.disableAll){
@@ -419,9 +417,9 @@ class LocalLobby {
 
                         c.fillStyle = "black"
                         if(i >= self.playerInputs.length/2){
-                            c.fillRect(canvas.width/2+e.colorButton.x*drawScale - 300,canvas.height/2 +e.colorButton.y*drawScale -336 -294,400,210)
+                            c.fillRect(e.colorButton.x*drawScale*scale + 550*scale,e.colorButton.y*drawScale*scale -610*scale,410*scale,210*scale)
                         }else{
-                            c.fillRect(canvas.width/2+e.colorButton.x*drawScale - 300,canvas.height/2 +e.colorButton.y*drawScale -336,400,210)
+                            c.fillRect(e.colorButton.x*drawScale*scale +550*scale,e.colorButton.y*drawScale*scale -26*scale -294*scale,410*scale,210*scale)
                         }
                         e.colorButtons.forEach(function(g,h){
                             for (let i = 0; i < self.useableColors.length; i++) {
@@ -463,7 +461,7 @@ class MainMenu {
         this.current = true;
         let self = this;
 
-        this.localButton = new Button(false,0,0,images.buttons.img[10],function(){
+        this.localButton = new Button(false,76,530,images.buttons.img[10],function(){
             self.current = false;
             menus[1].current = true;
             self.localButton.visible = false;
@@ -498,7 +496,7 @@ class TextInput {
         this.draw = function(){
             if(this.visible){
                 c.fillStyle = "black";
-                c.fillRect(canvas.width /2 +this.x,canvas.height /2 +this.y,this.w,this.h)
+                c.fillRect(this.x*scale,this.y*scale,this.w*scale,this.h*scale)
                 if(this.follow){
                     c.fillStyle = "lightgray";
                 }else if(this.hover){
@@ -506,14 +504,13 @@ class TextInput {
                 }else{
                     c.fillStyle = "white";
                 }
-                c.fillRect(canvas.width /2 +this.x + 4,canvas.height /2 +this.y + 4,this.w-8,this.h-8)
+                c.fillRect(this.x*scale + 4*scale,this.y*scale + 4*scale,this.w*scale-8*scale,this.h*scale-8*scale)
                 c.fillStyle = "black";
                 c.font = this.font;
                 c.textAlign = "center";
-                c.fillText(this.value,canvas.width /2 +this.x + this.w/2,canvas.height /2 +this.y + this.h/1.5)
-                c.fillRect(canvas.width /2 +this.x + (this.percentage*(this.w-8)),canvas.height /2 +this.y,10,this.h)
+                c.fillText(this.value,this.x*scale + this.w/2*scale,this.y*scale + this.h/1.5*scale)
             }
-            if(detectCollition(canvas.width /2 +this.x,canvas.height /2 +this.y,this.w,this.h,mouse.realX,mouse.realY,1,1) && this.disabled === false){
+            if(detectCollition(this.x*scale,this.y*scale,this.w*scale,this.h*scale,mouse.realX,mouse.realY,1,1) && this.disabled === false){
                 this.hover = true;
             }else{
                 this.hover = false;
@@ -589,8 +586,8 @@ function init(){
 function update(){
     requestAnimationFrame(update);
     c.imageSmoothingEnabled = false;
-
-    c.clearRect(0,0,canvas.width,canvas.height);
+    c.fillStyle = "lightgray"
+    c.fillRect(0,0,canvas.width,canvas.height);
 
     
     
