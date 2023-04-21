@@ -461,16 +461,23 @@ class MainMenu {
         this.current = true;
         let self = this;
 
-        this.localButton = new Button(false,76,530,images.buttons.img[10],function(){
+        this.localButton = new Button(false,-322,341,images.mainMenu.img[1],function(){
             self.current = false;
             menus[1].current = true;
             self.localButton.visible = false;
-        },100,20,true,false,true)
+        },195,50,false,false,true)
+        this.onlineButton = new Button(false,-322,539,images.mainMenu.img[2],function(){
+        },195,50,false,false,true)
 
         this.localButton.visible = true;
+        this.onlineButton.visible = true;
+        this.onlineButton.disabled = false;
+
         this.draw = function(){
             if(this.current){
+                drawRotatedImage(0,0,960*drawScale,540*drawScale,images.mainMenu.img[0],0,0,0,0,960,540)
                 this.localButton.draw();
+                this.onlineButton.draw();
             }
         }
     }
@@ -586,8 +593,7 @@ function init(){
 function update(){
     requestAnimationFrame(update);
     c.imageSmoothingEnabled = false;
-    c.fillStyle = "lightgray"
-    c.fillRect(0,0,canvas.width,canvas.height);
+    c.clearRect(0,0,canvas.width,canvas.height);
 
     
     
