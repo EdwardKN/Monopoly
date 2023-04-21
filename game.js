@@ -1140,10 +1140,12 @@ class PlayerBorder{
             board.trade = new Trade(players[turn],self.player); 
         },219,34,false,false,true)
 
-        this.startMoneyAnimation = function(money){
+        this.startMoneyAnimation = function(money,disablesound){
             this.moneyTime = 1;
             this.latestTrancaction = money;
-            playSound(sounds.cash,1)
+            if(!disablesound){
+                playSound(sounds.cash,1)
+            }
         }
         this.moneyAnimation = function(){
             if(this.latestTrancaction < 0){
@@ -1888,7 +1890,7 @@ class BoardPiece{
                         }
                         player.money -=  diceRoll * multiply;
                         this.owner.money += diceRoll * multiply;
-                        player.playerBorder.startMoneyAnimation(-diceRoll * multiply)
+                        player.playerBorder.startMoneyAnimation(-diceRoll * multiply,true)
                         this.owner.playerBorder.startMoneyAnimation(diceRoll * multiply)
                         player.checkDebt(this.owner);                        
                     }else if(this.piece.type === "station"){
@@ -1900,7 +1902,7 @@ class BoardPiece{
                         })
                         player.money -=  25 * Math.pow(2,tmp);
                         this.owner.money += 25 * Math.pow(2,tmp);
-                        player.playerBorder.startMoneyAnimation(-25 * Math.pow(2,tmp))
+                        player.playerBorder.startMoneyAnimation(-25 * Math.pow(2,tmp),true)
                         this.owner.playerBorder.startMoneyAnimation(25 * Math.pow(2,tmp))
                         player.checkDebt(this.owner);
 
@@ -1921,7 +1923,7 @@ class BoardPiece{
                         }
                         player.money -= this.piece.rent[this.level] * multiply;
                         this.owner.money += this.piece.rent[this.level] * multiply;
-                        player.playerBorder.startMoneyAnimation(-this.piece.rent[this.level] * multiply)
+                        player.playerBorder.startMoneyAnimation(-this.piece.rent[this.level] * multiply,true)
                         this.owner.playerBorder.startMoneyAnimation(this.piece.rent[this.level] * multiply)
                         player.checkDebt(this.owner);
                     }
@@ -2010,7 +2012,7 @@ class BoardPiece{
                     if(random === 13){
                         alert("Få 50kr av alla andra spelare")
                         player.money += (players.length-1)*50
-                        player.playerBorder.startMoneyAnimation((player.length-1)*50)
+                        player.playerBorder.startMoneyAnimation((player.length-1)*50,true)
                         players.forEach(e=> {if(e !== player){e.money-=50;e.playerBorder.startMoneyAnimation(-50)}})
                     }
                     if(random === 14){
@@ -2051,7 +2053,7 @@ class BoardPiece{
                         alert("Få 50kr av alla andra spelare")
                         player.money += (players.length-1)*50
                         player.playerBorder.startMoneyAnimation((player.length-1)*50)
-                        players.forEach(e=> {if(e !== player){e.money-=50;e.playerBorder.startMoneyAnimation(-50)}})
+                        players.forEach(e=> {if(e !== player){e.money-=50;e.playerBorder.startMoneyAnimation(-50,true)}})
                     }
                     if(random === 7){
                         alert("Få 100kr")
@@ -2067,7 +2069,7 @@ class BoardPiece{
                         alert("Få 10kr av alla andra spelare")
                         player.money += (players.length-1)*10
                         player.playerBorder.startMoneyAnimation((players.length-1)*10)
-                        players.forEach(e=> {if(e !== player){e.money-=10;e.playerBorder.startMoneyAnimation(-50)}})
+                        players.forEach(e=> {if(e !== player){e.money-=10;e.playerBorder.startMoneyAnimation(-50,true)}})
                     }
                     if(random === 10){
                         alert("Få 100kr")
@@ -2202,6 +2204,7 @@ class Player{
             }else if(this.inDebtTo !== undefined){
                 let moneyToAdd =  this.money -this.lastMoneyInDebt;
                 this.inDebtTo.money += moneyToAdd;
+                this.inDebtTo.startMoneyAnimation(moneyToAdd)
                 if(this.money >= 0){
                     this.inDebtTo.money -= this.money;
                     this.inDebtTo = undefined;
