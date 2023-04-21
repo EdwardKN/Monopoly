@@ -197,10 +197,10 @@ async function init(){
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
     
-    Api.online = location.search != "" ? true : confirm("Do you want to play online?");
+    Api.online = location.search != "" ? true : confirm("Vill du spela online?");
     if (Api.online) {
-        var username = location.search == "" ? prompt("What's your username?") : decodeURI(location.search.split("&")[1]);
-        var serverURL = location.search == "" ? prompt("If you're the host, then start the server.\nAfter that everyone should be able to join in a LAN.\nEnter the address shown by the server") : atob(location.search.substring(1).split("&")[0]);
+        var username = location.search == "" ? prompt("Vad vill du ha för namn?") : decodeURI(location.search.split("&")[1]);
+        var serverURL = location.search == "" ? prompt("Ange addressen som servern visar, för att gå med i ett spel.\n(Obs. Om du inte har en server, följ anvisningarna på github)") : atob(location.search.substring(1).split("&")[0]);
         history.replaceState(undefined, undefined, location.href.replace(location.search, ""));
         try {
             var interval = -1;
@@ -399,7 +399,7 @@ async function init(){
 
             await Api.openWebsocketConnection(serverURL, username);
         } catch(err) {
-            alert("IMPORTANT\nYou will now be redirected to another page\nIt's important that you click on Advanced...>Accept the Risk and Continue\nIf you don't, you won't be able to connect to the game");
+            alert("VIKTIGT!\nDu kommer att hamna på en annan webbsida.\nFör att gå med i spelet måste du klicka på:\nAvancerat...>Acceptera risken och fortsätt\nOm du inte gör detta så kommer du inte kunna ansluta till spelet.");
             location = "https://" + serverURL + "/" + btoa(location.href) + "/" + encodeURI(username);
         }
     }
