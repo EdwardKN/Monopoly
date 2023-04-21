@@ -197,8 +197,15 @@ function playSound(sound,volume){
 
 };
 function startGame(playerlist){
+    let tmpArray =[];
     for(i = 0; i < playerlist.length; i++){
-        players.push(new Player(images.player.img[playerlist[i].color],playerlist[i].color,playerlist[i].name,playerlist[i].bot))
+        tmpArray.push(i);
+    }
+    for(i = 0; i < playerlist.length; i++){
+        let tmpI = randomIntFromRange(0,tmpArray.length-1);
+        let correctI = tmpArray[tmpI]
+        players.push(new Player(images.player.img[playerlist[correctI].color],playerlist[correctI].color,playerlist[correctI].name,playerlist[correctI].bot))
+        tmpArray.splice(tmpI,1)
     }
     turn = randomIntFromRange(0,playerlist.length-1)
     players.forEach(e=> e.playerBorder.init())
