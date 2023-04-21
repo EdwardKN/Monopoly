@@ -559,7 +559,7 @@ function init(){
         menus.push(new LocalLobby())
     }else{
         let playerlist = []
-        let playerAmount = 8;
+        let playerAmount = 2;
         let botAmount = 0;
         let useableColors = [0,1,2,3,4,5,6,7]
         for(let i = 0; i < (playerAmount+botAmount); i++){
@@ -591,6 +591,8 @@ function update(){
     c.imageSmoothingEnabled = false;
 
     c.clearRect(0,0,canvas.width,canvas.height);
+
+    
     
     if(board !== undefined && players.length >0){
         board.update();
@@ -637,7 +639,7 @@ class Board{
         this.win = false;
         this.auction = undefined;
         this.trade = undefined;
-        this.payJailButton = new Button(false,-74,239,images.jailMenu.img[1],function(){
+        this.payJailButton = new Button(false,-10,520,images.jailMenu.img[1],function(){
             players[turn].money -= 50;
             players[turn].rolls = true;
             players[turn].getOutOfJail();
@@ -645,7 +647,7 @@ class Board{
             players[turn].playerBorder.startMoneyAnimation(-50);
                 
         },82,35);
-        this.rollJailButton = new Button(false,19,239,images.jailMenu.img[2],function(){
+        this.rollJailButton = new Button(false,85,520,images.jailMenu.img[2],function(){
             board.rollJailButton.visible = false;
             let dice1 = randomIntFromRange(1,6);
             let dice2 = randomIntFromRange(1,6);
@@ -665,7 +667,7 @@ class Board{
                 }
             })
         },82,35);
-        this.jailCardButton = new Button(false,111,239,images.jailMenu.img[3],function(){
+        this.jailCardButton = new Button(false,180,520,images.jailMenu.img[3],function(){
             players[turn].jailcardAmount--;
             players[turn].getOutOfJail();
             board.jailCardButton.visible = false;
@@ -682,8 +684,8 @@ class Board{
             }
         },107,23)
         this.currentCard = undefined;
-        this.cardCloseButton = new Button(false,184,293,images.buttons.img[7],function(){board.currentCard = undefined;board.sellButton.visible = false;board.mortgageButton.visible = false;board.upgradeButton.visible = false;board.downgradeButton.visible = false;},18,18,false)
-        this.sellButton = new Button(false,130,300,images.buttons.img[2],function(){
+        this.cardCloseButton = new Button(false,241,318,images.buttons.img[7],function(){board.currentCard = undefined;board.sellButton.visible = false;board.mortgageButton.visible = false;board.upgradeButton.visible = false;board.downgradeButton.visible = false;},18,18,false)
+        this.sellButton = new Button(false,130,580,images.buttons.img[2],function(){
             if(board.currentCard.mortgaged === false){
                 players[turn].money+= board.currentCard.piece.price/2
                 players[turn].checkDebt();
@@ -692,7 +694,7 @@ class Board{
             players[turn].ownedPlaces.splice(players[turn].ownedPlaces.indexOf(board.currentCard),1);
             board.currentCard.owner = undefined;
         },40,40);
-        this.mortgageButton = new Button(false,80,300,images.buttons.img[3],function(){
+        this.mortgageButton = new Button(false,80,580,images.buttons.img[3],function(){
             if(board.currentCard.mortgaged === true){
                 board.currentCard.mortgaged = false;
                 players[turn].money -= (board.currentCard.piece.price/2)*1.1
@@ -704,18 +706,18 @@ class Board{
                 players[turn].checkDebt();
             }
         },40,40);
-        this.upgradeButton = new Button(false,5,300,images.buttons.img[4],function(){
+        this.upgradeButton = new Button(false,75,580,images.buttons.img[4],function(){
             board.currentCard.level++;
             board.currentCard.owner.money -= board.currentCard.piece.housePrice;
             players[turn].playerBorder.startMoneyAnimation(-board.currentCard.piece.housePrice)
         },40,40);
-        this.downgradeButton = new Button(false,-45,300,images.buttons.img[5],function(){
+        this.downgradeButton = new Button(false,25,580,images.buttons.img[5],function(){
             board.currentCard.level--;
             board.currentCard.owner.money += board.currentCard.piece.housePrice/2;
             players[turn].playerBorder.startMoneyAnimation(board.currentCard.piece.housePrice/2)
             players[turn].checkDebt();
         },40,40);
-        this.buyButton = new Button(false,-34,1000,images.buttons.img[6],function(){
+        this.buyButton = new Button(false,25,580,images.buttons.img[6],function(){
             players[turn].money -= board.currentCard.piece.price;
             players[turn].playerBorder.startMoneyAnimation(-board.currentCard.piece.price);
             board.currentCard.owner = players[turn];
@@ -725,7 +727,7 @@ class Board{
             board.auctionButton.visible = false;
         },97,40);
 
-        this.auctionButton = new Button(false,-34 + 117,1000,images.buttons.img[8],function(){
+        this.auctionButton = new Button(false,25 + 117,580,images.buttons.img[8],function(){
             board.auction = new Auction(board.currentCard)
             board.currentCard = undefined;
             board.buyButton.visible = false;
@@ -784,9 +786,7 @@ class Board{
             if(this.auction !== undefined){
                 this.auction.update();
             }
-            if(this.trade !== undefined){
-                this.trade.update();
-            }
+            
             if(players[turn].inJail === true && players[turn].bot === undefined && this.auction === undefined && players[turn].rolls === false && players[turn].animationOffset === 0 && this.showDices === false && this.animateDices === false){
                 this.showJailmenu();
             }
@@ -802,6 +802,9 @@ class Board{
                 if(players[i].playerBorder.index == 2 || players[i].playerBorder.index == 3){
                     players[i].playerBorder.draw()
                 }
+            }
+            if(this.trade !== undefined){
+                this.trade.update();
             }
         }  
 
@@ -820,9 +823,9 @@ class Board{
                 
                 if(this.currentCard.owner !== undefined){
                     if(this.currentCard.piece.type !== "utility" && this.currentCard.piece.type !== "station"){
-                        c.fillText("Ägare: " + this.currentCard.owner.name,canvas.width/2,canvas.height/2-200)
+                        c.fillText("Ägare: " + this.currentCard.owner.name,985*scale,368*scale)
                     }else{
-                        c.fillText("Ägare: " + this.currentCard.owner.name,canvas.width/2,canvas.height/2-153)
+                        c.fillText("Ägare: " + this.currentCard.owner.name,985*scale,415*scale)
                     }
 
 
@@ -833,13 +836,13 @@ class Board{
                         this.mortgageButton.draw();
                         this.mortgageButton.visible = true;
                         if(this.currentCard.piece.type === "utility" || this.currentCard.piece.type === "station"){
-                            this.sellButton.x = 80;
-                            this.mortgageButton.x = 5;
+                            this.sellButton.x = 150;
+                            this.mortgageButton.x = 60;
                             this.upgradeButton.visible = false;
                             this.downgradeButton.visible = false;
                         }else{
-                            this.sellButton.x = 130;
-                            this.mortgageButton.x = 80;
+                            this.sellButton.x = 200;
+                            this.mortgageButton.x = 150;
                             this.upgradeButton.draw()
                             this.upgradeButton.visible = true;
                             this.downgradeButton.draw();
@@ -892,13 +895,6 @@ class Board{
                         this.sellButton.visible = false;
                         this.downgradeButton.visible = false;
                         this.upgradeButton.visible = false;
-                        if(this.currentCard.piece.type === "station"){
-                            this.buyButton.y = 560;
-                            this.auctionButton.y = 560;
-                        }else{
-                            this.buyButton.y = 550;
-                            this.auctionButton.y = 550;
-                        }
                         if(players[turn].money >= this.currentCard.piece.price){
                             this.buyButton.disabled = false;
                         }else{
@@ -994,9 +990,9 @@ class Slider{
                 c.fillStyle = "white";
                 c.fillRect(this.x*scale + 4*scale,this.y*scale + 4*scale,this.w*scale-8*scale,this.h*scale-8*scale)
                 c.fillStyle = "black";
-                c.font = this.font;
+                c.font = this.font*scale + " Arcade";
                 c.textAlign = "center";
-                //c.fillText(this.value+this.unit,canvas.width /2 +this.x + this.w/2,canvas.height /2 +this.y + this.h/2)
+                c.fillText(this.value+this.unit,this.x*scale+ + this.w/2*scale,this.y*scale + this.h/1.5*scale)
                 c.fillRect(this.x*scale + (this.percentage*(this.w-8))*scale,this.y*scale,10*scale,this.h*scale)
             }
             if(detectCollition(this.x*scale,this.y*scale,this.w*scale,this.h*scale,mouse.realX,mouse.realY,1,1)){
@@ -1005,7 +1001,7 @@ class Slider{
                 this.hover = false;
             }
             if(this.follow === true){
-                this.percentage = (mouse.realX-(canvas.width /2 +this.x))/(this.w-4);
+                this.percentage = (mouse.realX-(this.x*scale))/(this.w*scale-4*scale);
             }
             if(this.percentage <= 0){
                 this.percentage = 0;
@@ -1029,24 +1025,24 @@ class Trade{
         this.p1 = p1;
         this.p2 = p2;
         setTimeout(() => {
-            players.forEach(e => e.playerBorder.button.selected = false)
+            players.forEach(e => {e.playerBorder.button.selected = false;e.playerBorder.button.disabled = true})
         }, 1);
 
         let self = this;
-        this.closeButton = new Button(false,302,9,images.buttons.img[7],function(){self.closeButton.visible = false;board.trade = undefined;},18,18,false)
+        this.closeButton = new Button(false,372,284,images.buttons.img[7],function(){self.closeButton.visible = false;board.trade = undefined;players.forEach(e => {e.playerBorder.button.disabled = false})},18,18,false)
         this.closeButton.visible = true;
 
-        this.p1Slider = new Slider(470,270,400,60,0,this.p1.money,true,"30px Arcade","kr")
-        this.p1ConfirmButton = new Button(true,-145,350,images.trade.img[1],function(){},150,50)
+        this.p1Slider = new Slider(500,300,400,60,0,this.p1.money,true,30,"kr")
+        this.p1ConfirmButton = new Button(true,-70,650,images.trade.img[1],function(){},150,50)
         if(this.p1.bot === undefined){
             this.p1ConfirmButton.visible = true;
         }
 
-        this.p2ConfirmButton = new Button(true,120,350,images.trade.img[1],function(){},150,50)
+        this.p2ConfirmButton = new Button(true,180,650,images.trade.img[1],function(){},150,50)
         if(this.p2.bot === undefined){
             this.p2ConfirmButton.visible = true;
         }
-        this.p2Slider = new Slider(50,-270,400,60,0,this.p2.money,true,"30px Arcade","kr")
+        this.p2Slider = new Slider(1050,300,400,60,0,this.p2.money,true,30,"kr")
 
         
         this.p1PropertyButtons = [];
@@ -1097,9 +1093,12 @@ class Trade{
                 this.p2Slider.visible = true;
                 this.p2Slider.draw();
             }
-            
-            drawRotatedText(canvas.width/2-300 -offsets.x,120,this.p1.name,"50px Arcade",0,"black",false)
-            drawRotatedText(canvas.width/2+300-30 -offsets.x,120,this.p2.name,"50px Arcade",0,"black",false)
+            c.font = 50*scale+"px Arcade";
+            c.fillStyle = "black"
+            c.textAlign = "right"
+            c.fillText(this.p1.name,880*scale,280*scale)
+            c.textAlign = "left"
+            c.fillText(this.p2.name,1070*scale,280*scale)
             this.p1PropertyButtons.forEach(e => {e.visible=true;e.draw()});
             this.p2PropertyButtons.forEach(e => {e.visible=true;e.draw()});
 
@@ -1187,12 +1186,12 @@ class PlayerBorder{
             if(this.button.mirror === false){
                 c.globalAlpha = this.moneyTime;
                 c.textAlign = "left"
-                c.fillText(Math.abs(this.latestTrancaction) + "kr",this.x*drawScale+50,this.y*drawScale+68 - (-this.moneyTime+1)*20)
+                c.fillText(Math.abs(this.latestTrancaction) + "kr",this.x*drawScale*scale+1020*scale,this.y*drawScale*scale-335*scale - (-this.moneyTime+1)*20*scale)
                 c.globalAlpha = 1;
             }else{
                 c.globalAlpha = this.moneyTime;
                 c.textAlign = "right"
-                c.fillText(Math.abs(this.latestTrancaction) + "kr",this.x+480,this.y*drawScale+68- (-this.moneyTime+1)*20)
+                c.fillText(Math.abs(this.latestTrancaction) + "kr",this.x*scale+850*scale,this.y*drawScale*scale-335*scale- (-this.moneyTime+1)*20*scale)
                 c.globalAlpha = 1;
             }
         }
@@ -1316,7 +1315,7 @@ class PlayerBorder{
                 c.font = 40*scale+"px Arcade";
                 c.fillStyle ="black"
                 c.textAlign = "right"
-                c.fillText(this.index,this.x*drawScale*scale+990*scale,this.y*drawScale*scale-335*scale)
+                c.fillText(this.player.name,this.x*drawScale*scale+990*scale,this.y*drawScale*scale-335*scale)
                 c.textAlign = "left"
                 if(this.moneyTime <= 0){
                     c.fillText(this.player.money + "kr",this.x*drawScale*scale+1020*scale,this.y*drawScale*scale-335*scale)
@@ -1326,7 +1325,7 @@ class PlayerBorder{
                 c.font = 40*scale+"px Arcade";
                 c.fillStyle ="black"
                 c.textAlign = "left"
-                c.fillText(this.index,this.x*scale+420*scale,this.y*drawScale*scale-335*scale)
+                c.fillText(this.player.name,this.x*scale+420*scale,this.y*drawScale*scale-335*scale)
                 c.textAlign = "right"
                 if(this.moneyTime <= 0){
                     c.fillText(this.player.money + "kr",this.x*scale+850*scale,this.y*drawScale*scale-335*scale)
@@ -1436,16 +1435,16 @@ class Auction{
         this.playerlist = [...players];
 
 
-        this.addMoneyButton2 = new Button(false,-140,540,images.auction.img[1],function(){     
+        this.addMoneyButton2 = new Button(false,-80,540,images.auction.img[1],function(){     
             board.auction.addMoney(2);
         },54,54,false)
-        this.addMoneyButton10 = new Button(false,-50,540,images.auction.img[2],function(){
+        this.addMoneyButton10 = new Button(false,10,540,images.auction.img[2],function(){
             board.auction.addMoney(10);
         },54,54,false)
-        this.addMoneyButton100 = new Button(false,40,540,images.auction.img[3],function(){
+        this.addMoneyButton100 = new Button(false,100,540,images.auction.img[3],function(){
             board.auction.addMoney(100);
         },54,54,false)
-        this.startAuctionButton = new Button(false,-140,540,images.auction.img[5],function(){
+        this.startAuctionButton = new Button(false,-85,540,images.auction.img[5],function(){
             board.auction.started = true;
             board.auction.duration = 10 * speeds.auctionSpeed;
             board.auction.startTime = performance.now();
@@ -1460,9 +1459,9 @@ class Auction{
             c.fillStyle = "black";
             c.font = 80*scale+"px Arcade";
             c.textAlign = "center";
-            c.fillText(this.auctionMoney + "kr", canvas.width/2-190, canvas.height/2 - 75);
+            c.fillText(this.auctionMoney + "kr", 790*scale, 450*scale);
             c.font = 80*scale+"px Arcade";
-            c.fillText(this.playerlist[this.turn].name, canvas.width/2-190, canvas.height/2 - 150);
+            c.fillText(this.playerlist[this.turn].name, 790*scale, 550*scale);
 
             if(this.started){
                 if(this.playerlist[this.turn].bot === undefined){
@@ -1483,18 +1482,18 @@ class Auction{
                 if(this.time > 472){
                     this.time = 472
                 }
-                c.fillStyle = "white"
+                c.fillStyle = "black"
                 if(this.time < 464 && this.time >6){
-                    c.fillRect(908*scale,542*scale,-this.time*scale,56*scale)
+                    c.fillRect(1028*scale,592*scale,-this.time*scale,56*scale)
                 }
                 if(this.time > 4){
-                    c.fillRect(908*scale,544*scale,2*scale,52*scale)
+                    c.fillRect(1028*scale,594*scale,2*scale,52*scale)
                 }
                 if(this.time > 2){
-                    c.fillRect(908*scale,546*scale,4*scale,48*scale)
+                    c.fillRect(1028*scale,596*scale,4*scale,48*scale)
                 }
                 if(this.time > 0){
-                    c.fillRect(908*scale,548*scale,6*scale,44*scale)
+                    c.fillRect(1028*scale,598*scale,6*scale,44*scale)
                 }
             
 
@@ -1620,7 +1619,11 @@ class Button{
                         if(this.select === false){
                             drawRotatedImage(this.x*drawScale+715,this.y*drawScale-400,this.w*drawScale,this.h*drawScale,this.img,0,this.mirror,this.w*2,0,this.w,this.h)
                         }else{
-                            drawRotatedImage(this.x*drawScale+715,this.y*drawScale-400,this.w*drawScale,this.h*drawScale,this.img,0,this.mirror,this.w*3,0,this.w,this.h)
+                            if(this.img.width > this.w*2){
+                                drawRotatedImage(this.x*drawScale+715,this.y*drawScale-400,this.w*drawScale,this.h*drawScale,this.img,0,this.mirror,this.w*3,0,this.w,this.h)
+                            }else{
+                                drawRotatedImage(this.x*drawScale+715,this.y*drawScale-400,this.w*drawScale,this.h*drawScale,this.img,0,this.mirror,0,0,this.w,this.h)
+                            }
                         }
                     }else{
                         if(detectCollition(this.x*drawScale*scale+715*scale,this.y*drawScale*scale-400*scale,this.w*drawScale*scale,this.h*drawScale*scale,mouse.realX,mouse.realY,1,1)){
@@ -1632,7 +1635,6 @@ class Button{
                             this.hover = true;
                         }else{
                             this.hover = false;
-                                drawRotatedImage(this.x*drawScale,this.y*drawScale,this.w*drawScale,this.h*drawScale,this.img,0,this.mirror,0,0,this.w,this.h,false)
                                 if(this.disableselectTexture){
                                     drawRotatedImage(this.x*drawScale+715,this.y*drawScale-400,this.w*drawScale,this.h*drawScale,this.img,0,this.mirror,this.w,0,this.w,this.h)
                                 }else{
