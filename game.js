@@ -389,6 +389,11 @@ class LocalLobby {
                     e.colorButton.draw();
                 })
                 this.playerInputs.forEach(function(e,i){
+                    self.playerInputs.forEach(function(g,h){
+                        if(e.textInput.value === g.textInput.value && i !== h){
+                            self.ableToStart = false;
+                        }
+                    })
                     if(e.colorButton.selected){
                         
 
