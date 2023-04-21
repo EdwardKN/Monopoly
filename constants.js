@@ -6,7 +6,7 @@ var players = [];
 
 const drawScale = 2;
 
-const fastLoad = false;
+const fastLoad = true;
 
 const fastSpeed = false;
 
@@ -29,6 +29,8 @@ var offsets = {
     x:Math.floor(window.innerWidth/2) - 832*drawScale/2,
     y:Math.floor(window.innerHeight/2) - 416*drawScale/2
 }
+
+var scale = Math.sqrt(Math.pow(window.innerWidth,2) + Math.pow(window.innerHeight,2))/2000
 
 var speeds;
 if(fastSpeed === true){
@@ -163,10 +165,10 @@ var sounds = {
 }
 
 var mouse = {
-    x:0,
-    y:0,
-    realX:0,
-    realY:0
+    x:10000,
+    y:10000,
+    realX:10000,
+    realY:10000
 }
 const pieces = [
     {
