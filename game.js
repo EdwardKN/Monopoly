@@ -238,6 +238,20 @@ class LocalLobby {
         let self = this;
         this.playerInputs = [];
         this.amountBots = 0;
+        this.backButton = new Button(false,-300,220,images.buttons.img[10],function(){
+            self.current = false;
+            menus[0].current = true;
+            self.backButton.visible = false;
+            self.startButton.visible = false;
+            self.addPlayer.visible = false;
+            self.removePlayer.visible = false;
+            self.playerInputs.forEach( e=>{
+                e.textInput.visible = false;
+                e.botButton.visible = false;
+                e.colorButton.visible = false;
+                e.colorButtons.forEach(g => g.visible = false)
+                })
+        },200,40,true)
         this.startButton = new Button(false,100,500,images.buttons.img[10],function(){
             let playerlist = []
 
@@ -270,7 +284,7 @@ class LocalLobby {
                 id:id,
                 colorId:undefined,
                 y:(self.playerInputs.length*110 - 100),
-                textInput: new TextInput(100,300,500,80,true,"50px Arcade",14),
+                textInput: new TextInput(100,300,500,80,true,50,14),
                 botButton: new Button(true,-50 +42,self.playerInputs.length*55 - 32,images.buttons.img[4],function(){
                     self.playerInputs[id].textInput.value = ""
                     if(self.playerInputs[id].botButton.selected){
@@ -332,14 +346,17 @@ class LocalLobby {
             }
             self.playerInputs.splice(self.playerInputs.length-1,1)
         },40,40,false,false)
-        this.addPlayer.visible = true;
-        this.removePlayer.visible = true;
-        this.startButton.visible = true;
+        
         this.addmorePlayers();
         this.addmorePlayers();
 
         this.draw = function(){
             if(this.current){
+                this.backButton.visible = true;
+                this.addPlayer.visible = true;
+                this.removePlayer.visible = true;
+                this.startButton.visible = true;
+                this.backButton.draw();
 
                 this.playerInputs.forEach(function(e,index) {
                     e.textInput.y = e.y - self.playerInputs.length*40 + 600;
@@ -465,17 +482,19 @@ class MainMenu {
             self.current = false;
             menus[1].current = true;
             self.localButton.visible = false;
+            self.onlineButton.visible = false;
         },195,50,false,false,true)
-        this.onlineButton = new Button(false,-322,539,images.mainMenu.img[2],function(){
+        this.onlineButton = new Button(false,-322,540,images.mainMenu.img[2],function(){
         },195,50,false,false,true)
 
-        this.localButton.visible = true;
-        this.onlineButton.visible = true;
+        
         this.onlineButton.disabled = false;
 
         this.draw = function(){
             if(this.current){
-                drawRotatedImage(0,0,960*drawScale,540*drawScale,images.mainMenu.img[0],0,0,0,0,960,540)
+                drawRotatedImage(0,0,images.mainMenu.img[0].width*drawScale,images.mainMenu.img[0].height*drawScale,images.mainMenu.img[0],0,0,0,0,960,540)
+                this.localButton.visible = true;
+                this.onlineButton.visible = true;
                 this.localButton.draw();
                 this.onlineButton.draw();
             }
@@ -513,7 +532,7 @@ class TextInput {
                 }
                 c.fillRect(this.x*scale + 4*scale,this.y*scale + 4*scale,this.w*scale-8*scale,this.h*scale-8*scale)
                 c.fillStyle = "black";
-                c.font = this.font;
+                c.font = this.font*scale + "px Arcade";
                 c.textAlign = "center";
                 c.fillText(this.value,this.x*scale + this.w/2*scale,this.y*scale + this.h/1.5*scale)
             }
