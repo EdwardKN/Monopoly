@@ -484,7 +484,7 @@ class MainMenu {
             self.localButton.visible = false;
             self.onlineButton.visible = false;
         },195,50,false,false,true)
-        this.onlineButton = new Button(false,-322,540,images.mainMenu.img[2],function(){
+        this.onlineButton = new Button(false,-322,538,images.mainMenu.img[2],function(){
         },195,50,false,false,true)
 
         
@@ -492,7 +492,7 @@ class MainMenu {
 
         this.draw = function(){
             if(this.current){
-                drawRotatedImage(0,0,images.mainMenu.img[0].width*drawScale,images.mainMenu.img[0].height*drawScale,images.mainMenu.img[0],0,0,0,0,960,540)
+                drawRotatedImage(0,0,981*drawScale,552*drawScale,images.mainMenu.img[0],0,0,0,0,981,554)
                 this.localButton.visible = true;
                 this.onlineButton.visible = true;
                 this.localButton.draw();
@@ -635,7 +635,6 @@ function update(){
     }
 
     menus.forEach(e => e.draw())
-    
 }
 
 function showBackground(){
