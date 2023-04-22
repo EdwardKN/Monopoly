@@ -258,7 +258,7 @@ class LocalLobby {
         this.readyPlayers = [];
         this.settingsButtons[1].disabled = true;
 
-        this.backButton = new Button(false,-337,220,images.buttons.img[10],function(){
+        this.backButton = new Button(false,-337,220,images.buttons.img[12],function(){
             self.current = false;
             menus[0].current = true;
             self.backButton.visible = false;
@@ -316,7 +316,7 @@ class LocalLobby {
                 colorId:undefined,
                 y:(self.playerInputs.length*110 - 100),
                 textInput: new TextInput(40,300,560,80,true,50,10),
-                botButton: new Button(true,-50 +42,self.playerInputs.length*55 - 32,images.buttons.img[4],function(){
+                botButton: new Button(true,-50 +42,self.playerInputs.length*55 - 32,images.buttons.img[13],function(){
                     self.playerInputs[id].textInput.value = ""
                     if(self.playerInputs[id].botButton.selected){
                         self.amountBots++;
@@ -376,6 +376,7 @@ class LocalLobby {
 
         this.draw = function(){
             if(this.current){
+                drawRotatedImage(0,0,981*drawScale,552*drawScale,images.mainMenu.img[3],0,0,0,0,981,552)
                 this.readyPlayers = [];
 
                 if(this.settingsButtons[8].value > 0){
