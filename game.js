@@ -546,8 +546,8 @@ class MainMenu {
             self.localButton.visible = false;
             self.onlineButton.visible = false;
             this.musicButton.visible = false;
-        },195,51,false,false,true)
-        this.onlineButton = new Button(false,-322,538,images.mainMenu.img[2],function(){
+        },195,52,false,false,true)
+        this.onlineButton = new Button(false,-322,539,images.mainMenu.img[2],function(){
         },195,52,false,false,true)
 
         this.musicButton = new Button(true,-357,711,images.buttons.img[4],function(){
