@@ -778,6 +778,8 @@ class Board{
         },82,35);
         this.rollDiceButton = new Button(false,76,530,images.buttons.img[0],function(){players[turn].rollDice()},107,23,false,false,false,true)
         this.nextPlayerButton = new Button(false,76,530,images.buttons.img[1],function(){
+            board.animateDices = false;
+            board.showDices = false;
             if(players[turn].money >= 0){
                 players[turn].numberOfRolls = 0;
                 players[turn].rolls = false;
