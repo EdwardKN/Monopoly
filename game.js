@@ -247,7 +247,7 @@ class LocalLobby {
         this.settingsButtons.push(new Button(true,100,220 + this.settingsButtons.length*50,images.buttons.img[10],function(){},500,40,false,false,false,false,false,"Möjlighet att inteckna",42,"black"))
         this.settingsButtons.push(new Button(true,100,220 + this.settingsButtons.length*50,images.buttons.img[10],function(){},500,40,false,false,false,false,false,"Köpa och sälja hus jämnt",42,"black"))
         this.settingsButtons.push(new Slider(456*drawScale,284*drawScale + this.settingsButtons.length*12,502*drawScale,40*drawScale,500,3000,100,true,30,"kr","Startmängd: "))
-        this.settingsButtons.push(new Slider(456*drawScale,284*drawScale + this.settingsButtons.length*12*drawScale,502*drawScale,40*drawScale,0,5,1,true,30,"","Antal rundor innan köp: "))
+        this.settingsButtons.push(new Slider(456*drawScale,284*drawScale + this.settingsButtons.length*12*drawScale,502*drawScale,40*drawScale,0,5,1,true,30,"","Antal varv innan köp: "))
         this.settingsButtons[1].selected = true
         this.settingsButtons[2].selected = true
         this.settingsButtons[3].selected = true
