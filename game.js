@@ -1916,7 +1916,7 @@ class BoardPiece{
         }
         this.playerStep = function (onlyStep,player,diceRoll){
             this.currentPlayer.push(player);
-            if(!onlyStep && !this.mortgaged){
+            if(!onlyStep && !this.mortgaged && player.laps >= board.settings.roundsBeforePurchase){
                 if(this.piece.price < 0){
                     player.money += this.piece.price;
                     board.boardPieces[20].money -= this.piece.price;
@@ -2218,6 +2218,7 @@ class Player{
         this.lastMoneyInDebt = 0;
         this.jailcardAmount = 0;
         this.timeInJail = 0;
+        this.laps = 0;
 
         this.playerBorder = new PlayerBorder(this)
         if(bot == true ){
@@ -2434,6 +2435,7 @@ class Player{
                         board.boardPieces[0].playerStep(true,self);
                         self.playerBorder.startMoneyAnimation(200)
                             self.money += 200;
+                            self.laps++;
                     }else{
                         board.boardPieces[(to2-self.animationOffset)%40].playerStep(true,self);
                     }
