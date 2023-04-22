@@ -241,22 +241,24 @@ class LocalLobby {
         this.amountBots = 0;
         this.settingsButtons = [];
         this.settingsButtons.push(new Button(true,100,220,images.buttons.img[10],function(){},500,40,false,false,false,false,false,"Ge alla skattepengar till fri parkering",42,"black"))
-        this.settingsButtons.push(new Button(true,100,220 + this.settingsButtons.length*50,images.buttons.img[10],function(){},500,40,false,false,false,false,false,"Dubbel hyra på komplett färggrupp",42,"black"))
-        this.settingsButtons.push(new Button(true,100,220 + this.settingsButtons.length*50,images.buttons.img[10],function(){},500,40,false,false,false,false,false,"Auktioner",42,"black"))
-        this.settingsButtons.push(new Button(true,100,220 + this.settingsButtons.length*50,images.buttons.img[10],function(){},500,40,false,false,false,false,false,"Få eller förlora pengar i fängelset",42,"black"))
-        this.settingsButtons.push(new Button(true,100,220 + this.settingsButtons.length*50,images.buttons.img[10],function(){},500,40,false,false,false,false,false,"Möjlighet att inteckna",42,"black"))
-        this.settingsButtons.push(new Button(true,100,220 + this.settingsButtons.length*50,images.buttons.img[10],function(){},500,40,false,false,false,false,false,"Jämn utbyggnad",42,"black"))
-        this.settingsButtons.push(new Slider(456*drawScale,284*drawScale + this.settingsButtons.length*12,502*drawScale,40*drawScale,500,3000,100,true,30,"kr","Startkapital: "))
-        this.settingsButtons.push(new Slider(456*drawScale,284*drawScale + this.settingsButtons.length*12*drawScale,502*drawScale,40*drawScale,0,5,1,true,30,"","Antal varv innan köp: "))
-        this.settingsButtons[1].selected = true
+        this.settingsButtons.push(new Button(true,100,220+ this.settingsButtons.length*45,images.buttons.img[10],function(){},500,40,false,false,false,false,false,"Ge alla bankpengar till fri parkering",42,"black"))
+        this.settingsButtons.push(new Button(true,100,220 + this.settingsButtons.length*45,images.buttons.img[10],function(){},500,40,false,false,false,false,false,"Dubbel hyra på komplett färggrupp",42,"black"))
+        this.settingsButtons.push(new Button(true,100,220 + this.settingsButtons.length*45,images.buttons.img[10],function(){},500,40,false,false,false,false,false,"Auktioner",42,"black"))
+        this.settingsButtons.push(new Button(true,100,220 + this.settingsButtons.length*45,images.buttons.img[10],function(){},500,40,false,false,false,false,false,"Få eller förlora pengar i fängelset",42,"black"))
+        this.settingsButtons.push(new Button(true,100,220 + this.settingsButtons.length*45,images.buttons.img[10],function(){},500,40,false,false,false,false,false,"Möjlighet att inteckna",42,"black"))
+        this.settingsButtons.push(new Button(true,100,220 + this.settingsButtons.length*45,images.buttons.img[10],function(){},500,40,false,false,false,false,false,"Jämn utbyggnad",42,"black"))
+        this.settingsButtons.push(new Slider(456*drawScale,300*drawScale + this.settingsButtons.length*12,502*drawScale,40*drawScale,500,3000,100,true,30,"kr","Startkapital: "))
+        this.settingsButtons.push(new Slider(456*drawScale,300*drawScale + this.settingsButtons.length*12*drawScale,502*drawScale,40*drawScale,0,5,1,true,30,"","Antal varv innan köp: "))
         this.settingsButtons[2].selected = true
         this.settingsButtons[3].selected = true
         this.settingsButtons[4].selected = true
         this.settingsButtons[5].selected = true
-        this.settingsButtons[6].percentage = 0.35
+        this.settingsButtons[6].selected = true
+        this.settingsButtons[7].percentage = 0.35
         this.readyPlayers = [];
+        this.settingsButtons[1].disabled = true;
 
-        this.backButton = new Button(false,-300,220,images.buttons.img[10],function(){
+        this.backButton = new Button(false,-337,220,images.buttons.img[10],function(){
             self.current = false;
             menus[0].current = true;
             self.backButton.visible = false;
@@ -287,13 +289,14 @@ class LocalLobby {
             })
             let settings = {
                 freeParking:self.settingsButtons[0].selected,
-                doubleincome:self.settingsButtons[1].selected,
-                auctions:self.settingsButtons[2].selected,
-                prisonmoney:self.settingsButtons[3].selected,
-                mortgage:self.settingsButtons[4].selected,
-                even:self.settingsButtons[5].selected,
-                startmoney:self.settingsButtons[6].value,
-                roundsBeforePurchase:self.settingsButtons[7].value,
+                allFreeparking:self.settingsButtons[1].selected,
+                doubleincome:self.settingsButtons[2].selected,
+                auctions:self.settingsButtons[3].selected,
+                prisonmoney:self.settingsButtons[4].selected,
+                mortgage:self.settingsButtons[5].selected,
+                even:self.settingsButtons[6].selected,
+                startmoney:self.settingsButtons[7].value,
+                roundsBeforePurchase:self.settingsButtons[8].value,
             }
             startGame(playerlist,settings)
             self.current = false;
@@ -375,10 +378,16 @@ class LocalLobby {
             if(this.current){
                 this.readyPlayers = [];
 
-                if(this.settingsButtons[7].value > 0){
-                    this.settingsButtons[6].from = 0;
+                if(this.settingsButtons[8].value > 0){
+                    this.settingsButtons[7].from = 0;
                 }else{
-                    this.settingsButtons[6].from = 500;
+                    this.settingsButtons[7].from = 500;
+                }
+                if(this.settingsButtons[0].selected === true){
+                    this.settingsButtons[1].disabled = false;
+                }else{
+                    this.settingsButtons[1].disabled = true;
+                    this.settingsButtons[1].selected = false;
                 }
                 this.settingsButtons.forEach(e => {e.visible = true; e.draw()})
                 this.backButton.visible = true;
@@ -698,6 +707,9 @@ class Board{
         this.trade = undefined;
         this.payJailButton = new Button(false,-10,520,images.jailMenu.img[1],function(){
             players[turn].money -= 50;
+            if(board.settings.freeParking){
+                board.boardPieces[20].money += 50;
+            }
             players[turn].rolls = true;
             players[turn].getOutOfJail();
             board.payJailButton.visible = false;
@@ -745,7 +757,7 @@ class Board{
         this.sellButton = new Button(false,130,580,images.buttons.img[2],function(){
             if(board.currentCard.mortgaged === false){
                 players[turn].money+= board.currentCard.piece.price/2
-                players[turn].checkDebt();
+                players[turn].checkDebt(board.boardPieces[20]);
                 players[turn].playerBorder.startMoneyAnimation(board.currentCard.piece.price/2);
             }
             players[turn].ownedPlaces.splice(players[turn].ownedPlaces.indexOf(board.currentCard),1);
@@ -754,28 +766,37 @@ class Board{
         this.mortgageButton = new Button(false,80,580,images.buttons.img[3],function(){
             if(board.currentCard.mortgaged === true){
                 board.currentCard.mortgaged = false;
+                if(board.settings.allFreeparking){
+                    board.boardPieces[20].money += (board.currentCard.piece.price/2)*1.1
+                }
                 players[turn].money -= (board.currentCard.piece.price/2)*1.1
                 players[turn].playerBorder.startMoneyAnimation(-(board.currentCard.piece.price/2)*1.1)
             }else{
                 board.currentCard.mortgaged = true;
                 players[turn].money += board.currentCard.piece.price/2
                 players[turn].playerBorder.startMoneyAnimation((board.currentCard.piece.price/2)*1.1)
-                players[turn].checkDebt();
+                players[turn].checkDebt(board.boardPieces[20]);
             }
         },40,40);
         this.upgradeButton = new Button(false,75,580,images.buttons.img[4],function(){
             board.currentCard.level++;
             board.currentCard.owner.money -= board.currentCard.piece.housePrice;
+            if(board.settings.allFreeparking){
+                board.boardPieces[20].money += board.currentCard.piece.housePrice;
+            }
             players[turn].playerBorder.startMoneyAnimation(-board.currentCard.piece.housePrice)
         },40,40);
         this.downgradeButton = new Button(false,25,580,images.buttons.img[5],function(){
             board.currentCard.level--;
             board.currentCard.owner.money += board.currentCard.piece.housePrice/2;
             players[turn].playerBorder.startMoneyAnimation(board.currentCard.piece.housePrice/2)
-            players[turn].checkDebt();
+            players[turn].checkDebt(board.boardPieces[20]);
         },40,40);
         this.buyButton = new Button(false,25,580,images.buttons.img[6],function(){
             players[turn].money -= board.currentCard.piece.price;
+            if(board.settings.allFreeparking){
+                board.boardPieces[20].money += board.currentCard.piece.price;
+            }
             players[turn].playerBorder.startMoneyAnimation(-board.currentCard.piece.price);
             board.currentCard.owner = players[turn];
             players[turn].ownedPlaces.push(board.currentCard);
@@ -1577,6 +1598,9 @@ class Auction{
                             if(this.playerlist[0].colorIndex == players[i].colorIndex){
                                 clearInterval(board.auction.timer)
                                 players[i].money -= this.auctionMoney;
+                                if(board.settings.allFreeparking){
+                                    board.boardPieces[20].money += this.auctionMoney;
+                                }
                                 players[i].playerBorder.startMoneyAnimation(-this.auctionMoney)
                                 board.auction.card.owner = players[i];
                                 players[i].ownedPlaces.push(this.card);
@@ -2044,9 +2068,15 @@ class BoardPiece{
                                 if(e.level < 5){
                                     player.money -= 25*e.level
                                     tmp+= 25*e.level
+                                    if(board.settings.freeParking){
+                                        board.boardPieces[20].money += 25*e.level;
+                                    }
                                 }else{
                                     player.money -= 100
                                     tmp += 100
+                                    if(board.settings.freeParking){
+                                        board.boardPieces[20].money += 100;
+                                    }
                                 }
                             }
                         })
@@ -2065,7 +2095,7 @@ class BoardPiece{
                     if(random === 13){
                         alert("Få 50kr av alla andra spelare")
                         player.money += (players.length-1)*50
-                        player.playerBorder.startMoneyAnimation((player.length-1)*50,true)
+                        player.playerBorder.startMoneyAnimation(((players.length-1)*50),true)
                         players.forEach(e=> {if(e !== player){e.money-=50;e.playerBorder.startMoneyAnimation(-50)}})
                     }
                     if(random === 14){
@@ -2087,6 +2117,9 @@ class BoardPiece{
                     if(random === 3){
                         alert("Förlora 50kr")
                         player.money -= 50;
+                        if(board.settings.freeParking){
+                            board.boardPieces[20].money += 50;
+                        }
                         player.playerBorder.startMoneyAnimation(-50)
                     }
                     if(random === 4){
@@ -2105,7 +2138,7 @@ class BoardPiece{
                     if(random === 6){
                         alert("Få 50kr av alla andra spelare")
                         player.money += (players.length-1)*50
-                        player.playerBorder.startMoneyAnimation((player.length-1)*50)
+                        player.playerBorder.startMoneyAnimation(((players.length-1)*50))
                         players.forEach(e=> {if(e !== player){e.money-=50;e.playerBorder.startMoneyAnimation(-50,true)}})
                     }
                     if(random === 7){
@@ -2132,16 +2165,25 @@ class BoardPiece{
                     if(random === 11){
                         alert("Förlora 50kr")
                         player.money -= 50;
+                        if(board.settings.freeParking){
+                            board.boardPieces[20].money += 50;
+                        }
                         player.playerBorder.startMoneyAnimation(-50)
                     }
                     if(random === 12){
                         alert("Förlora 50kr")
                         player.money -= 50;
+                        if(board.settings.freeParking){
+                            board.boardPieces[20].money += 50;
+                        }
                         player.playerBorder.startMoneyAnimation(-50)
                     }
                     if(random === 13){
                         alert("Förlora 25kr")
                         player.money -= 25;
+                        if(board.settings.freeParking){
+                            board.boardPieces[20].money += 25;
+                        }
                         player.playerBorder.startMoneyAnimation(-25)
                     }
                     if(random === 14){
@@ -2151,10 +2193,16 @@ class BoardPiece{
                             if(player === e.owner){
                                 if(e.level < 5){
                                     player.money -= 40*e.level
+                                    if(board.settings.freeParking){
+                                        board.boardPieces[20].money += 40*e.level;
+                                    }
                                     tmp += 40*e.level
                                 }else{
                                     player.money -= 115
                                     tmp += 115
+                                    if(board.settings.freeParking){
+                                        board.boardPieces[20].money += 115;
+                                    }
                                 }
                             }
                         })
