@@ -225,7 +225,6 @@ function playSound(sound,volume,repeat){
         let myClonedAudio = sound.sounds[random].cloneNode();
         myClonedAudio.volume = volume;
         myClonedAudio.play();
-        console.log(sound.sounds[random].duration)
         if(repeat && musicOn){
             musicPlaying = myClonedAudio;
             musictimer = setTimeout(function(){
@@ -662,7 +661,7 @@ function init(){
         menus.push(new LocalLobby())
     }else{
         let playerlist = []
-        let playerAmount = 2;
+        let playerAmount = 3;
         let botAmount = 0;
         let useableColors = [0,1,2,3,4,5,6,7]
         for(let i = 0; i < (playerAmount+botAmount); i++){
@@ -685,7 +684,18 @@ function init(){
             useableColors.splice(random,1)
             
         }
-        startGame(playerlist)
+        let settings = {
+            freeParking:false,
+            allFreeparking:false,
+            doubleincome:true,
+            auctions:true,
+            prisonmoney:true,
+            mortgage:true,
+            even:true,
+            startmoney:1400,
+            roundsBeforePurchase:0,
+        }
+        startGame(playerlist,settings)
     }
 }
 
@@ -1190,9 +1200,9 @@ class Trade{
             if(i%2 === 1){
                 tmp = 107
             }
-            let but = (new Button(true,-170 + tmp,110 + 18*Math.floor(i/2),images.trade.img[2],function(){
+            let but = (new Button(true,-300 + tmp + 200,280 + 18*Math.floor(i/2) + 100,images.trade.img[2],function(){
 
-            },106,17,false,false,false,false,false,e.piece.name + " " + e.piece.price + "kr","13px Arcade",e.piece.color))
+            },106,17,false,false,false,false,false,e.piece.name + " " + e.piece.price + "kr",15,e.piece.color))
 
             if(self.p1.bot !== undefined){
                 but.disabled = true;
@@ -1446,7 +1456,7 @@ class PlayerBorder{
             
             let mirrorAdder = 0;
             if(!this.button.mirror){
-                mirrorAdder = 0;
+                mirrorAdder = 370;
             }
             if(this.button.mirror === false){
                 drawRotatedImage(this.x*drawScale+466 + 715,this.y*drawScale+5 - 400,48,96,images.player.img[this.player.colorIndex],0,false,0,0,24,48,false)
@@ -1475,12 +1485,12 @@ class PlayerBorder{
                     this.createTradebutton.y = this.y + 80 + 27*this.player.ownedPlaces.length;
                     drawRotatedImage(this.x*drawScale+715,this.y*drawScale + 54*drawScale -400,260*drawScale,27*drawScale,images.playerOverlay.img[11],0,this.button.mirror,0,0,260,27,false)
                     for(let i = 0; i < this.player.ownedPlaces.length; i++){
-                        drawRotatedImage(this.x*drawScale+715,this.y*drawScale + 67 *drawScale + 27*drawScale*i + 27,260*drawScale -400,27*drawScale,images.playerOverlay.img[10],0,this.button.mirror,0,0,260,27,false)
+                        drawRotatedImage(this.x*drawScale+715,this.y*drawScale + 67 *drawScale + 27*drawScale*i + 27 - 400,260*drawScale,27*drawScale,images.playerOverlay.img[10],0,this.button.mirror,0,0,260,27,false)
                         c.font = 30*scale+"px Arcade";
                         c.fillStyle ="black"
                         c.textAlign = "left"
                         if(this.player.ownedPlaces[i].piece.type !== "station" && this.player.ownedPlaces[i].piece.type !== "utility"){
-                            c.fillText(this.player.ownedPlaces[i].piece.name + "  " + this.player.ownedPlaces[i].piece.rent[this.player.ownedPlaces[i].level] + "kr",this.x+80+ mirrorAdder*drawScale,this.y*drawScale + 54*1.35*drawScale + 27*drawScale*i + 54)
+                            c.fillText(this.player.ownedPlaces[i].piece.name + "  " + this.player.ownedPlaces[i].piece.rent[this.player.ownedPlaces[i].level] + "kr",this.x*scale+400*scale+ mirrorAdder*drawScale*scale,this.y*drawScale*scale + 80*drawScale*scale + 27*drawScale*i*scale - 354*scale)
                         }else if(this.player.ownedPlaces[i].piece.type === "station"){
                             let tmp = -1;
                             this.player.ownedPlaces.forEach(e => {
@@ -1489,7 +1499,7 @@ class PlayerBorder{
                                 }
                             })
                             
-                            c.fillText(this.player.ownedPlaces[i].piece.name + "  " + 25 * Math.pow(2,tmp) + "kr",this.x+80+ mirrorAdder*drawScale,this.y*drawScale + 54*1.35*drawScale + 27*drawScale*i + 54)
+                            c.fillText(this.player.ownedPlaces[i].piece.name + "  " + 25 * Math.pow(2,tmp) + "kr",this.x*scale+400*scale+ mirrorAdder*drawScale*scale,this.y*drawScale*scale + 80*drawScale*scale + 27*drawScale*i*scale - 354*scale)
                         }else{
                             let tmp = 0;
                             let multiply = 0;
@@ -1500,7 +1510,7 @@ class PlayerBorder{
                             })
                             if(tmp === 1){multiply = 4;}
                             if(tmp === 2){multiply = 10}
-                            c.fillText(this.player.ownedPlaces[i].piece.name + "  " + multiply + " gånger tärning kr",this.x+80+ mirrorAdder*drawScale,this.y*drawScale + 54*1.35*drawScale + 27*drawScale*i + 54)
+                            c.fillText(this.player.ownedPlaces[i].piece.name + "  " + multiply + " x tärning kr",this.x*scale+400*scale+ mirrorAdder*drawScale*scale,this.y*drawScale*scale + 80*drawScale*scale + 27*drawScale*i*scale - 354*scale)
                         }
                     }
                     drawRotatedImage(this.x*drawScale +715,this.y*drawScale + 53*drawScale*1.5 +27*drawScale*this.player.ownedPlaces.length -400,260*drawScale ,27*drawScale,images.playerOverlay.img[10],0,this.button.mirror,0,0,260,27,false)
@@ -1519,7 +1529,7 @@ class PlayerBorder{
                         c.fillStyle ="black"
                         c.textAlign = "left"
                         if(this.player.ownedPlaces[i].piece.type !== "station" && this.player.ownedPlaces[i].piece.type !== "utility"){
-                            c.fillText(this.player.ownedPlaces[i].piece.name + "  " + this.player.ownedPlaces[i].piece.rent[this.player.ownedPlaces[i].level] + "kr",this.x+80+ mirrorAdder*drawScale,this.y*drawScale - 27*1.35*drawScale - 27*drawScale*i)
+                            c.fillText(this.player.ownedPlaces[i].piece.name + "  " + this.player.ownedPlaces[i].piece.rent[this.player.ownedPlaces[i].level] + "kr",this.x*scale+400*scale+ mirrorAdder*drawScale*scale,this.y*drawScale*scale + 80*drawScale*scale - 27*drawScale*i*scale - 634*scale)
                         }else if(this.player.ownedPlaces[i].piece.type === "station"){
                             let tmp = -1;
                             this.player.ownedPlaces.forEach(e => {
@@ -1528,7 +1538,7 @@ class PlayerBorder{
                                 }
                             })
                             
-                            c.fillText(this.player.ownedPlaces[i].piece.name + "  " + 25 * Math.pow(2,tmp) + "kr",this.x+80+ mirrorAdder*drawScale,this.y*drawScale - 27*1.35*drawScale - 27*drawScale*i)
+                            c.fillText(this.player.ownedPlaces[i].piece.name + "  " + 25 * Math.pow(2,tmp) + "kr",this.x*scale+400*scale+ mirrorAdder*drawScale*scale,this.y*drawScale*scale + 80*drawScale*scale - 27*drawScale*i*scale - 634*scale)
                         }else{
                             let tmp = 0;
                             let multiply = 0;
@@ -1539,7 +1549,7 @@ class PlayerBorder{
                             })
                             if(tmp === 1){multiply = 4;}
                             if(tmp === 2){multiply = 10}
-                            c.fillText(this.player.ownedPlaces[i].piece.name + "  " + multiply + " gånger tärning kr",this.x+80+ mirrorAdder*drawScale,this.y*drawScale - 27*1.35*drawScale - 27*drawScale*i)
+                            c.fillText(this.player.ownedPlaces[i].piece.name + "  " + multiply + " x tärning kr",this.x*scale+400*scale+ mirrorAdder*drawScale*scale,this.y*drawScale*scale + 80*drawScale*scale - 27*drawScale*i*scale - 634*scale)
                         }                    
                     }
                     drawRotatedImage(this.x*drawScale +715,this.y*drawScale - 35*drawScale*1.5 -27*drawScale*this.player.ownedPlaces.length -400,260*drawScale ,27*drawScale,images.playerOverlay.img[10],0,this.button.mirror,0,0,260,27,false)
