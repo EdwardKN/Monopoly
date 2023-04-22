@@ -339,7 +339,10 @@ class LocalLobby {
                     self.playerInputs[id].textInput.value = ""
                     if(self.playerInputs[id].botButton.selected){
                         self.amountBots++;
+                        self.useableColors.push(self.playerInputs[id].colorId);
+                        self.playerInputs[id].colorButton.img = images.colorButtons.img[8]
                         self.playerInputs[id].colorId = undefined;
+                        self.playerInputs[id].colorButtons.forEach(e => e.selected = false);
                     }else{
                         self.amountBots--;
                         self.playerInputs[id].textInput.value = ""
