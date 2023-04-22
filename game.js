@@ -2521,7 +2521,7 @@ class Player{
 
                     self.animationOffset -= 1*direction;
                     playSound(sounds.movement,1)
-                    if(((to-self.animationOffset)%40-1) === -1){
+                    if(((to-self.animationOffset)%40-1) === -1 && getMoney){
                         board.boardPieces[0].playerStep(true,self);
                         self.playerBorder.startMoneyAnimation(200)
                             self.money += 200;
