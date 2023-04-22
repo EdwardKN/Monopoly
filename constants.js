@@ -165,6 +165,11 @@ var sounds = {
         type:"multiple",
         src:"./sounds/cash/cash-",
         amount:5
+    },
+    music:{
+        type:"multiple",
+        src:"./sounds/music/music-",
+        amount:6
     }
 }
 
