@@ -312,7 +312,7 @@ class LocalLobby {
                 id:id,
                 colorId:undefined,
                 y:(self.playerInputs.length*110 - 100),
-                textInput: new TextInput(100,300,500,80,true,50,14),
+                textInput: new TextInput(40,300,560,80,true,50,10),
                 botButton: new Button(true,-50 +42,self.playerInputs.length*55 - 32,images.buttons.img[4],function(){
                     self.playerInputs[id].textInput.value = ""
                     if(self.playerInputs[id].botButton.selected){
@@ -493,6 +493,7 @@ class LocalLobby {
                         })
                     }
                 })
+                playersReady.forEach(e => {if(e.textInput.value === ""){self.ableToStart = false}})
                 if(this.ableToStart){
                     this.startButton.disabled = false;
                 }else{
