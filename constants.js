@@ -169,7 +169,7 @@ var sounds = {
     music:{
         type:"multiple",
         src:"./sounds/music/music-",
-        amount:6
+        amount:8
     }
 }
 
