@@ -241,12 +241,12 @@ class LocalLobby {
         this.amountBots = 0;
         this.settingsButtons = [];
         this.settingsButtons.push(new Button(true,100,220,images.buttons.img[10],function(){},500,40,false,false,false,false,false,"Ge alla skattepengar till fri parkering",42,"black"))
-        this.settingsButtons.push(new Button(true,100,220 + this.settingsButtons.length*50,images.buttons.img[10],function(){},500,40,false,false,false,false,false,"Dubbel hyra på kompletta fastigheter",42,"black"))
+        this.settingsButtons.push(new Button(true,100,220 + this.settingsButtons.length*50,images.buttons.img[10],function(){},500,40,false,false,false,false,false,"Dubbel hyra på komplett färggrupp",42,"black"))
         this.settingsButtons.push(new Button(true,100,220 + this.settingsButtons.length*50,images.buttons.img[10],function(){},500,40,false,false,false,false,false,"Auktioner",42,"black"))
         this.settingsButtons.push(new Button(true,100,220 + this.settingsButtons.length*50,images.buttons.img[10],function(){},500,40,false,false,false,false,false,"Få eller förlora pengar i fängelset",42,"black"))
         this.settingsButtons.push(new Button(true,100,220 + this.settingsButtons.length*50,images.buttons.img[10],function(){},500,40,false,false,false,false,false,"Möjlighet att inteckna",42,"black"))
-        this.settingsButtons.push(new Button(true,100,220 + this.settingsButtons.length*50,images.buttons.img[10],function(){},500,40,false,false,false,false,false,"Köpa och sälja hus jämnt",42,"black"))
-        this.settingsButtons.push(new Slider(456*drawScale,284*drawScale + this.settingsButtons.length*12,502*drawScale,40*drawScale,500,3000,100,true,30,"kr","Startmängd: "))
+        this.settingsButtons.push(new Button(true,100,220 + this.settingsButtons.length*50,images.buttons.img[10],function(){},500,40,false,false,false,false,false,"Jämn utbyggnad",42,"black"))
+        this.settingsButtons.push(new Slider(456*drawScale,284*drawScale + this.settingsButtons.length*12,502*drawScale,40*drawScale,500,3000,100,true,30,"kr","Startkapital: "))
         this.settingsButtons.push(new Slider(456*drawScale,284*drawScale + this.settingsButtons.length*12*drawScale,502*drawScale,40*drawScale,0,5,1,true,30,"","Antal varv innan köp: "))
         this.settingsButtons[1].selected = true
         this.settingsButtons[2].selected = true
@@ -908,10 +908,12 @@ class Board{
                         this.buyButton.visible = false;
                         let ownAll = true;
                         let lowest = 5;
+                        let highest = 0;
                         for(let i = 0; i<board.boardPieces.length; i++){
                             if(board.boardPieces[i] !== this.currentCard){
                                 if(board.boardPieces[i].piece.group === this.currentCard.piece.group){
                                     if(lowest > board.boardPieces[i].level){lowest = board.boardPieces[i].level}
+                                    if(highest < board.boardPieces[i].level){highest = board.boardPieces[i].level}
                                     if(this.currentCard.owner !== board.boardPieces[i].owner){
                                         ownAll = false;
                                     }
@@ -919,17 +921,18 @@ class Board{
                             }
                         }
                         if(lowest > this.currentCard.level || !this.settings.even){lowest = this.currentCard.level}
+                        if(highest < this.currentCard.level || !this.settings.even){highest = this.currentCard.level}
                         if(this.currentCard.level < 5 && this.currentCard.piece.housePrice !== undefined && ownAll === true && this.currentCard.level === lowest && players[turn].money >= this.currentCard.piece.housePrice){
                                 this.upgradeButton.disabled = false;
                         }else{
                             this.upgradeButton.disabled = true; 
                         }   
-                        if(this.currentCard.level > 0){
+                        if(this.currentCard.level > 0 && this.currentCard.level === highest){
                             this.downgradeButton.disabled = false;
                         }else{
                             this.downgradeButton.disabled = true;
                         }
-                        if(this.currentCard.mortgaged === true && players[turn].money <= ((this.currentCard.piece.price/2)*1.1) || this.currentCard.level !== 0 || this.settings.mortgage){
+                        if(this.currentCard.mortgaged === true && players[turn].money <= ((this.currentCard.piece.price/2)*1.1) || this.currentCard.level !== 0 || !this.settings.mortgage){
                             this.mortgageButton.disabled = true;
                         }else{
                             this.mortgageButton.disabled = false;
@@ -1906,11 +1909,7 @@ class BoardPiece{
             if(this.hover === true){
                 playSound(sounds.release,1)
                 if(this.piece.card !== undefined){
-                    if(board.currentCard === this){
-                        board.currentCard = undefined;
-                    }else{
-                        board.currentCard = this;
-                    }
+                    board.currentCard = this;
                 }
             }
         }
