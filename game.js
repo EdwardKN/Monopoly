@@ -6,6 +6,12 @@ var menus = [];
 
 var firstclick = false;
 
+var musictimer;
+
+var musicOn = JSON.parse(getCookie("musicOn") === -1 ? 10 : getCookie("musicOn"));;
+
+var musicPlaying;
+
 setTimeout(() => {
     if(window.innerWidth*9 < window.innerHeight*16){
         canvas.width = window.innerWidth;
@@ -45,11 +51,10 @@ canvas.addEventListener("mousemove",function(e){
 })
 
 window.addEventListener("mousedown",function(e){
-    if(firstclick === false){
+    if(firstclick === false && musicOn){
         firstclick = true;
         playSound(sounds.music,1,true)
     }
-    //canvas.requestFullscreen()
     textInputs.forEach(g => {
         g.follow = false;
     })
@@ -220,7 +225,9 @@ function playSound(sound,volume,repeat){
         let myClonedAudio = sound.sounds[random].cloneNode();
         myClonedAudio.volume = volume;
         myClonedAudio.play();
+        console.log(myClonedAudio)
         if(repeat){
+            musicPlaying = myClonedAudio;
             setTimeout(function(){
                 playSound(sound,volume,true)
             },sound.sounds[random].duration*1000)
@@ -538,20 +545,34 @@ class MainMenu {
             menus[1].current = true;
             self.localButton.visible = false;
             self.onlineButton.visible = false;
+            this.musicButton.visible = false;
         },195,51,false,false,true)
         this.onlineButton = new Button(false,-322,538,images.mainMenu.img[2],function(){
         },195,52,false,false,true)
 
+        this.musicButton = new Button(true,-357,711,images.buttons.img[4],function(){
+            document.cookie = `musicOn=${!self.musicButton.selected};Expires=Sun, 22 oct 2030 08:00:00 UTC;`;
+
+            if(self.musicButton.selected){
+                musicPlaying.pause();
+            }else{
+                playSound(sounds.music,1,true)
+            }
+        },40,40,false)
+        this.musicButton.selected = !musicOn
         
         this.onlineButton.disabled = false;
 
         this.draw = function(){
             if(this.current){
                 drawRotatedImage(0,0,981*drawScale,552*drawScale,images.mainMenu.img[0],0,0,0,0,981,552)
+                musicOn = !this.musicButton.selected;
                 this.localButton.visible = true;
                 this.onlineButton.visible = true;
+                this.musicButton.visible = true;
                 this.localButton.draw();
                 this.onlineButton.draw();
+                this.musicButton.draw();
             }
         }
     }
@@ -2026,7 +2047,6 @@ class BoardPiece{
                         player.checkDebt(this.owner);
                     }
                 }else if(this.piece.type === "chance"){
-                    console.log(Math.random())
 
                     let random = randomIntFromRange(1,14)
                     if(random === 1){
@@ -2580,6 +2600,21 @@ class Player{
     }
 }
 
+function getCookie(cname) {
+    var name = cname + "=";
+    var decodedCookie = decodeURIComponent(document.cookie);
+    var ca = decodedCookie.split(';');
+    for(var i = 0; i <ca.length; i++) {
+        var c = ca[i];
+        while (c.charAt(0) == ' ') {
+        c = c.substring(1);
+        }
+        if (c.indexOf(name) == 0) {
+        return c.substring(name.length, c.length);
+        };
+    };
+    return -1;
+    };
 
 init();
 update();
