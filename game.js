@@ -269,7 +269,7 @@ class LocalLobby {
                 e.colorButton.visible = false;
                 e.colorButtons.forEach(g => g.visible = false)
                 })
-        },200,40,true)
+        },325,60,true,false,false,false,false,"Tillbaka",90,"black")
         this.startButton = new Button(false,250,650,images.buttons.img[11],function(){
             let playerlist = []
 
@@ -1076,6 +1076,12 @@ class Slider{
         this.draw = function(){
             if(this.visible){
                 this.value = Math.round((((this.to-this.from)*this.percentage) + this.from)/this.steps)*this.steps;
+                if(this.value > this.to){
+                    this.value = this.to;
+                }
+                if(this.value < this.from){
+                    this.value = this.from;
+                }
                 c.fillStyle = "black";
                 c.fillRect(this.x*scale,this.y*scale,this.w*scale,this.h*scale)
                 c.fillStyle = "white";
@@ -1120,10 +1126,10 @@ class Trade{
         }, 1);
 
         let self = this;
-        this.closeButton = new Button(false,372,284,images.buttons.img[7],function(){self.closeButton.visible = false;board.trade = undefined;players.forEach(e => {e.playerBorder.button.disabled = false})},18,18,false)
+        this.closeButton = new Button(false,370,284,images.buttons.img[7],function(){self.closeButton.visible = false;board.trade = undefined;players.forEach(e => {e.playerBorder.button.disabled = false})},18,18,false)
         this.closeButton.visible = true;
 
-        this.p1Slider = new Slider(500,300,400,60,0,this.p1.money,1,true,30,"kr")
+        this.p1Slider = new Slider(500,300,400,60,0,this.p1.money,10,true,30,"kr","")
         this.p1ConfirmButton = new Button(true,-70,650,images.trade.img[1],function(){},150,50)
         if(this.p1.bot === undefined){
             this.p1ConfirmButton.visible = true;
@@ -1133,7 +1139,7 @@ class Trade{
         if(this.p2.bot === undefined){
             this.p2ConfirmButton.visible = true;
         }
-        this.p2Slider = new Slider(1050,300,400,60,0,this.p2.money,1,true,30,"kr")
+        this.p2Slider = new Slider(1050,300,400,60,0,this.p2.money,10,true,30,"kr","")
 
         
         this.p1PropertyButtons = [];
@@ -1229,6 +1235,7 @@ class Trade{
                 this.p2ConfirmButton.hover = false;
                 this.p1PropertyButtons.forEach(e => {e.visible=false});
                 this.p2PropertyButtons.forEach(e => {e.visible=false});
+                players.forEach(e => {e.playerBorder.button.selected = false;e.playerBorder.button.disabled = false})
                 board.trade = undefined;
             }
         }
