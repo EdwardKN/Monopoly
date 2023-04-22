@@ -225,10 +225,10 @@ function playSound(sound,volume,repeat){
         let myClonedAudio = sound.sounds[random].cloneNode();
         myClonedAudio.volume = volume;
         myClonedAudio.play();
-        console.log(myClonedAudio)
-        if(repeat){
+        console.log(sound.sounds[random].duration)
+        if(repeat && musicOn){
             musicPlaying = myClonedAudio;
-            setTimeout(function(){
+            musictimer = setTimeout(function(){
                 playSound(sound,volume,true)
             },sound.sounds[random].duration*1000)
         }
@@ -263,7 +263,7 @@ class LocalLobby {
         this.settingsButtons.push(new Button(true,100,220+ this.settingsButtons.length*45,images.buttons.img[10],function(){},500,40,false,false,false,false,false,"Ge alla bankpengar till fri parkering",42,"black"))
         this.settingsButtons.push(new Button(true,100,220 + this.settingsButtons.length*45,images.buttons.img[10],function(){},500,40,false,false,false,false,false,"Dubbel hyra på komplett färggrupp",42,"black"))
         this.settingsButtons.push(new Button(true,100,220 + this.settingsButtons.length*45,images.buttons.img[10],function(){},500,40,false,false,false,false,false,"Auktioner",42,"black"))
-        this.settingsButtons.push(new Button(true,100,220 + this.settingsButtons.length*45,images.buttons.img[10],function(){},500,40,false,false,false,false,false,"Få eller förlora pengar i fängelset",42,"black"))
+        this.settingsButtons.push(new Button(true,100,220 + this.settingsButtons.length*45,images.buttons.img[10],function(){},500,40,false,false,false,false,false,"Få/förlora pengar i fängelset",42,"black"))
         this.settingsButtons.push(new Button(true,100,220 + this.settingsButtons.length*45,images.buttons.img[10],function(){},500,40,false,false,false,false,false,"Möjlighet att inteckna",42,"black"))
         this.settingsButtons.push(new Button(true,100,220 + this.settingsButtons.length*45,images.buttons.img[10],function(){},500,40,false,false,false,false,false,"Jämn utbyggnad",42,"black"))
         this.settingsButtons.push(new Slider(456*drawScale,300*drawScale + this.settingsButtons.length*12,502*drawScale,40*drawScale,500,3000,100,true,30,"kr","Startkapital: "))
@@ -552,7 +552,7 @@ class MainMenu {
 
         this.musicButton = new Button(true,-357,711,images.buttons.img[4],function(){
             document.cookie = `musicOn=${!self.musicButton.selected};Expires=Sun, 22 oct 2030 08:00:00 UTC;`;
-
+            clearTimeout(musictimer)
             if(self.musicButton.selected){
                 musicPlaying.pause();
             }else{
