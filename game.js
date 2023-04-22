@@ -824,7 +824,7 @@ class Board{
             }else{
                 board.currentCard.mortgaged = true;
                 players[turn].money += board.currentCard.piece.price/2
-                players[turn].playerBorder.startMoneyAnimation((board.currentCard.piece.price/2)*1.1)
+                players[turn].playerBorder.startMoneyAnimation(board.currentCard.piece.price/2)
                 players[turn].checkDebt(board.boardPieces[20]);
             }
         },40,40);
@@ -2368,12 +2368,16 @@ class Player{
                 this.lastMoneyInDebt = this.money;
             }else if(this.inDebtTo !== undefined){
                 let moneyToAdd =  this.money -this.lastMoneyInDebt;
-                this.inDebtTo.money += moneyToAdd;
-                this.inDebtTo.startMoneyAnimation(moneyToAdd)
+                console.log(moneyToAdd,this.lastMoneyInDebt,this.money);
+                this.lastMoneyInDebt = this.money
+                this.inDebtTo.money += (moneyToAdd);
                 if(this.money >= 0){
+                    this.inDebtTo.playerBorder.startMoneyAnimation(moneyToAdd - this.money); 
                     this.inDebtTo.money -= this.money;
                     this.inDebtTo = undefined;
                     this.lastMoneyInDebt = 0;
+                }else{
+                    this.inDebtTo.playerBorder.startMoneyAnimation(moneyToAdd); 
                 }
             }
         }

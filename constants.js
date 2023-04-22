@@ -6,7 +6,7 @@ var players = [];
 
 const drawScale = 2;
 
-const fastLoad = true;
+const fastLoad = false;
 
 const fastSpeed = false;
 
