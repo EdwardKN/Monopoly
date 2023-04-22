@@ -288,7 +288,7 @@ class LocalLobby {
                 e.colorButton.visible = false;
                 e.colorButtons.forEach(g => g.visible = false)
                 })
-        },325,60,true,false,false,false,false,"Tillbaka",90,"black")
+        },325,60,false,false,false,false,false,"Tillbaka",90,"black")
         this.startButton = new Button(false,250,650,images.buttons.img[11],function(){
             let playerlist = []
 
