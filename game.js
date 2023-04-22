@@ -4,6 +4,8 @@ canvas.id = "game"
 
 var menus = [];
 
+var firstclick = false;
+
 setTimeout(() => {
     if(window.innerWidth*9 < window.innerHeight*16){
         canvas.width = window.innerWidth;
@@ -43,6 +45,10 @@ canvas.addEventListener("mousemove",function(e){
 })
 
 window.addEventListener("mousedown",function(e){
+    if(firstclick === false){
+        firstclick = true;
+        playSound(sounds.music,1,true)
+    }
     //canvas.requestFullscreen()
     textInputs.forEach(g => {
         g.follow = false;
@@ -90,7 +96,7 @@ function loadSounds(soundObject){
         }
         if(sound[1].type === "multiple"){
             sound[1].sounds = []
-            for(let i = 1; i<sound[1].amount; i++){
+            for(let i = 1; i<sound[1].amount+1; i++){
                 if(i < 10){
                     sound[1].sounds.push(new Audio(sound[1].src + "0" + i + ".mp3"))
                 }else{
@@ -204,15 +210,21 @@ function randomIntFromRange(min, max) {
     return Math.floor(Math.random() * (max - min + 1) + min)
 };
 
-function playSound(sound,volume){
+function playSound(sound,volume,repeat){
     if(sound.type === "single"){
         let myClonedAudio = sound.sound.cloneNode();
         myClonedAudio.volume = volume;
         myClonedAudio.play();
     }else{
-        let myClonedAudio = sound.sounds[Math.floor(Math.random() * sound.sounds.length)].cloneNode();
+        let random = Math.floor(Math.random() * sound.sounds.length)
+        let myClonedAudio = sound.sounds[random].cloneNode();
         myClonedAudio.volume = volume;
         myClonedAudio.play();
+        if(repeat){
+            setTimeout(function(){
+                playSound(sound,volume,true)
+            },sound.sounds[random].duration*1000)
+        }
     }
 
 };
@@ -617,6 +629,7 @@ function init(){
     preRender(images);
 
     loadSounds(sounds);   
+    
 
     board = new Board();
     
@@ -2013,6 +2026,7 @@ class BoardPiece{
                         player.checkDebt(this.owner);
                     }
                 }else if(this.piece.type === "chance"){
+                    console.log(Math.random())
 
                     let random = randomIntFromRange(1,14)
                     if(random === 1){
