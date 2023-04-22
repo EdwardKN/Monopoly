@@ -254,14 +254,13 @@ class LocalLobby {
         this.settingsButtons[4].selected = true
         this.settingsButtons[5].selected = true
         this.settingsButtons[6].percentage = 0.35
+        this.readyPlayers = [];
 
         this.backButton = new Button(false,-300,220,images.buttons.img[10],function(){
             self.current = false;
             menus[0].current = true;
             self.backButton.visible = false;
             self.startButton.visible = false;
-            self.addPlayer.visible = false;
-            self.removePlayer.visible = false;
             self.playerInputs.forEach( e=>{
                 e.textInput.visible = false;
                 e.botButton.visible = false;
@@ -272,7 +271,7 @@ class LocalLobby {
         this.startButton = new Button(false,250,650,images.buttons.img[11],function(){
             let playerlist = []
 
-            self.playerInputs.forEach(e =>{
+            self.readyPlayers.forEach(e =>{
                 let tmpColor = e.colorId;
                 if(e.colorId === undefined){
                     let random = randomIntFromRange(0,self.useableColors.length-1);
@@ -301,8 +300,6 @@ class LocalLobby {
             self.startButton.visible = false;
             self.backButton.visible = false;
             self.settingsButtons.forEach(e => {e.visible = false})
-            self.addPlayer.visible = false;
-            self.removePlayer.visible = false;
         },97*2,80,false,false,false,false,false,"Start",100,"black")
         this.disableAll = false;
         this.ableToStart = true;
@@ -370,19 +367,14 @@ class LocalLobby {
             self.playerInputs.push(tmp)
         }
 
-        this.addPlayer = new Button(false,-50+42,220,images.lobbyMenu.img[0],self.addmorePlayers,40,40,false,false)
-        this.removePlayer = new Button(false,-50,220,images.lobbyMenu.img[1],function(){
-            if(self.playerInputs[self.playerInputs.length-1].colorId !== undefined){
-                self.useableColors.push(self.playerInputs[self.playerInputs.length-1].colorId)
-            }
-            self.playerInputs.splice(self.playerInputs.length-1,1)
-        },40,40,false,false)
-        
-        this.addmorePlayers();
-        this.addmorePlayers();
+        for(let i = 0; i<8; i++){
+            this.addmorePlayers();
+        }
 
         this.draw = function(){
             if(this.current){
+                this.readyPlayers = [];
+
                 if(this.settingsButtons[7].value > 0){
                     this.settingsButtons[6].from = 0;
                 }else{
@@ -390,8 +382,6 @@ class LocalLobby {
                 }
                 this.settingsButtons.forEach(e => {e.visible = true; e.draw()})
                 this.backButton.visible = true;
-                this.addPlayer.visible = true;
-                this.removePlayer.visible = true;
                 this.startButton.visible = true;
                 this.backButton.draw();
 
@@ -410,20 +400,11 @@ class LocalLobby {
                 })
                 this.ableToStart = true;
 
-                if(this.playerInputs.length >= 8 || this.disableAll){
-                    this.addPlayer.disabled = true;
-                }else{
-                    this.addPlayer.disabled = false;
-                }
-                if(this.playerInputs.length == 2 || this.disableAll){
-                    this.removePlayer.disabled = true;
-                }else{
-                    this.removePlayer.disabled = false;
-                }
-                this.addPlayer.draw()
-                this.removePlayer.draw();
                 this.playerInputs.forEach(e => {e.textInput.visible = true;e.botButton.visible = true;e.colorButton.visible = true})
                 let lastBotId = 0;
+
+                let playersReady = [];
+                let botsReady = [];
 
                 this.playerInputs.forEach(e => {
                     if((self.amountBots-self.playerInputs.length) == -1 && e.botButton.selected === false){
@@ -453,16 +434,30 @@ class LocalLobby {
                         
 
                     }
-                    if(e.textInput.value.length === 0 || e.colorId === undefined && !e.botButton.selected){
-                        self.ableToStart = false;
+                    if(e.textInput.value.length >= 0 && e.colorId !== undefined && !e.botButton.selected){
+                        playersReady.push(e);
+                        self.readyPlayers.push(e);
+                    }
+                    if(e.botButton.selected){
+                        botsReady.push(e);
+                        self.readyPlayers.push(e);
                     }
                     e.textInput.draw();
                     e.botButton.draw();
                     e.colorButton.draw();
                 })
+                if(playersReady.length < 1 && botsReady.length < 1){
+                    this.ableToStart = false;
+                }
+                if(playersReady.length < 2 && botsReady.length < 1){
+                    this.ableToStart = false;
+                }
+                if(playersReady.length === 0){
+                    this.ableToStart = false;
+                }
                 this.playerInputs.forEach(function(e,i){
                     self.playerInputs.forEach(function(g,h){
-                        if(e.textInput.value === g.textInput.value && i !== h){
+                        if(e.textInput.value === g.textInput.value && i !== h && g.textInput.value !== ""){
                             self.ableToStart = false;
                         }
                     })
