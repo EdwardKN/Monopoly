@@ -2497,7 +2497,7 @@ class Player{
 
             this.steps = step;
 
-            this.animateSteps(oldStep,this.steps,0,direction,getMoney)
+            this.animateSteps(oldStep,this.steps,this.diceSum,direction,getMoney)
         }
         this.animateSteps = function(from,to,dicesum,direction,getMoney){
             let self = this;
@@ -2599,7 +2599,7 @@ class Player{
                             this.rolls = true;
                         }
                         
-                        let diceSum = dice1+dice2;
+                        this.diceSum = dice1+dice2;
                         this.dice1 = dice1
                         this.dice2 = dice2
                         let self = this;
@@ -2613,7 +2613,7 @@ class Player{
                             board.animateDices = false;
                             self.steps += dice1+dice2;
                             self.steps = self.steps%40;
-                            self.animateSteps(oldStep,self.steps,diceSum,1,true)
+                            self.animateSteps(oldStep,self.steps,this.diceSum,1,true)
                         })
                            
                     }
