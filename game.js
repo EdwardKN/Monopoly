@@ -2161,7 +2161,7 @@ class BoardPiece{
                         player.playerBorder.startMoneyAnimation(150)
                     }
                 }else if(this.piece.type === "community Chest"){
-                    let random = randomIntFromRange(1,16);
+                    let random = randomIntFromRange(1,17);
                     if(random === 1){
                         alert("Gå till start")
                         player.teleportTo(0)
@@ -2184,48 +2184,40 @@ class BoardPiece{
                         player.money += 50;
                         player.playerBorder.startMoneyAnimation(50)
                     }
-                    if(random === 4){
+                    if(random === 5){
                         alert("Get out of jail card")
                         player.jailcardAmount++;
                     }
-                    if(random === 5){
+                    if(random === 6){
                         alert("Gå till finkan")
                         player.goToPrison()
                     }
-                    if(random === 6){
+                    if(random === 7){
                         alert("Få 50kr av alla andra spelare")
                         player.money += (players.length-1)*50
                         player.playerBorder.startMoneyAnimation(((players.length-1)*50))
                         players.forEach(e=> {if(e !== player){e.money-=50;e.playerBorder.startMoneyAnimation(-50,true)}})
                     }
-                    if(random === 7){
+                    if(random === 8){
                         alert("Få 100kr")
                         player.money += 100;
                         player.playerBorder.startMoneyAnimation(100)
                     }
-                    if(random === 8){
+                    if(random === 9){
                         alert("Få 20kr")
                         player.money += 20;
                         player.playerBorder.startMoneyAnimation(20)
                     }
-                    if(random === 9){
+                    if(random === 10){
                         alert("Få 10kr av alla andra spelare")
                         player.money += (players.length-1)*10
                         player.playerBorder.startMoneyAnimation((players.length-1)*10)
                         players.forEach(e=> {if(e !== player){e.money-=10;e.playerBorder.startMoneyAnimation(-50,true)}})
                     }
-                    if(random === 10){
+                    if(random === 11){
                         alert("Få 100kr")
                         player.money += 100;
                         player.playerBorder.startMoneyAnimation(100)
-                    }
-                    if(random === 11){
-                        alert("Förlora 50kr")
-                        player.money -= 50;
-                        if(board.settings.freeParking){
-                            board.boardPieces[20].money += 50;
-                        }
-                        player.playerBorder.startMoneyAnimation(-50)
                     }
                     if(random === 12){
                         alert("Förlora 50kr")
@@ -2236,6 +2228,14 @@ class BoardPiece{
                         player.playerBorder.startMoneyAnimation(-50)
                     }
                     if(random === 13){
+                        alert("Förlora 50kr")
+                        player.money -= 50;
+                        if(board.settings.freeParking){
+                            board.boardPieces[20].money += 50;
+                        }
+                        player.playerBorder.startMoneyAnimation(-50)
+                    }
+                    if(random === 14){
                         alert("Förlora 25kr")
                         player.money -= 25;
                         if(board.settings.freeParking){
@@ -2243,7 +2243,7 @@ class BoardPiece{
                         }
                         player.playerBorder.startMoneyAnimation(-25)
                     }
-                    if(random === 14){
+                    if(random === 15){
                         alert("Betala 40 för varje hus man har och 115 för varje hotell")
                         let tmp = 0;
                         board.boardPieces.forEach(function(e){
@@ -2267,12 +2267,12 @@ class BoardPiece{
                             player.playerBorder.startMoneyAnimation(-tmp)
                         }
                     }
-                    if(random === 15){
+                    if(random === 16){
                         alert("Få 10kr")
                         player.money += 10;
                         player.playerBorder.startMoneyAnimation(10)
                     }
-                    if(random === 16){
+                    if(random === 17){
                         alert("Få 100kr")
                         player.money += 100;
                         player.playerBorder.startMoneyAnimation(100)
