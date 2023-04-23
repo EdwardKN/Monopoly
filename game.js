@@ -51,16 +51,17 @@ canvas.addEventListener("mousemove",function(e){
 })
 
 window.addEventListener("mousedown",function(e){
-    if(firstclick === false && musicOn){
-        firstclick = true;
-        playSound(sounds.music,1,true)
-    }
+    
     textInputs.forEach(g => {
         g.follow = false;
     })
     buttons.forEach(e =>{
         e.click();
     })
+    if(firstclick === false && musicOn){
+        firstclick = true;
+        playSound(sounds.music,1,true)
+    }
 
 })
 window.addEventListener("mouseup",function(e){
@@ -487,6 +488,8 @@ class LocalLobby {
                     this.ableToStart = false;
                 }
                 this.playerInputs.forEach(function(e,i){
+
+                    
                     self.playerInputs.forEach(function(g,h){
                         if(e.textInput.value === g.textInput.value && i !== h && g.textInput.value !== ""){
                             self.ableToStart = false;
@@ -558,6 +561,7 @@ class MainMenu {
             if(self.musicButton.selected){
                 musicPlaying.pause();
             }else{
+                firstclick = true;
                 playSound(sounds.music,1,true)
             }
         },40,40,false)
