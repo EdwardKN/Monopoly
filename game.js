@@ -923,7 +923,10 @@ class Board{
                 this.showJailmenu();
             }
             }else{
-                drawRotatedText(820,450,"Grattis " + players[0].name + "! Du vann!", "80px Arcade",0,"black",false,false)
+                c.fillStyle = "black"
+                c.font = 80*scale+"px Arcade"
+                c.textAlign = "center"
+                c.fillText("Grattis " + players[0].name + "! Du vann!",2200,1400)
             }
             for(let i = players.length-1; i>-1; i--){
                 if(players[i].playerBorder.index !== 2 && players[i].playerBorder.index !== 3){
