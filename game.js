@@ -1193,7 +1193,7 @@ class Trade{
         }, 1);
 
         let self = this;
-        this.closeButton = new Button(false,370,284,images.buttons.img[7],function(){self.closeButton.visible = false;board.trade = undefined;players.forEach(e => {e.playerBorder.button.disabled = false})},18,18,false)
+        this.closeButton = new Button(false,369,283,images.buttons.img[7],function(){self.closeButton.visible = false;board.trade = undefined;players.forEach(e => {e.playerBorder.button.disabled = false})},18,18,false)
         this.closeButton.visible = true;
 
         this.p1Slider = new Slider(500,300,400,60,0,this.p1.money,10,true,30,"kr","")
@@ -1532,7 +1532,7 @@ class PlayerBorder{
                     }
                     drawRotatedImage(this.x*drawScale +715,this.y*drawScale + 53*drawScale*1.5 +27*drawScale*this.player.ownedPlaces.length -400,260*drawScale ,27*drawScale,images.playerOverlay.img[10],0,this.button.mirror,0,0,260,27,false)
                     drawRotatedImage(this.x*drawScale +715,this.y*drawScale + 53*drawScale*1.5 +27*drawScale*(this.player.ownedPlaces.length+1) -400,260*drawScale ,27*drawScale,images.playerOverlay.img[9],0,this.button.mirror,0,0,260,27,false)
-                    if(players[turn] !== this.player && board.trade === undefined && players[turn].bot === undefined){
+                    if(players[turn] !== this.player && board.trade === undefined && players[turn].bot === undefined && players[turn].animationOffset === 0 && board.animateDices === false && board.showDices === false){
                         this.createTradebutton.visible = true;
                     }else{
                         this.createTradebutton.visible = false;
@@ -1842,15 +1842,16 @@ class Button{
                 if(detectCollition(this.x*drawScale*scale+715*scale,this.y*drawScale*scale-400*scale,this.w*drawScale*scale,this.h*drawScale*scale,mouse.realX,mouse.realY,1,1)||
                 this.invertedHitbox !== undefined && this.invertedHitbox !== false && !detectCollition(this.invertedHitbox.x*scale,this.invertedHitbox.y*scale,this.invertedHitbox.w*scale,this.invertedHitbox.h*scale,mouse.realX,mouse.realY,1,1)){
                     if(this.select === false){
-                        this.onClick();
                     }else{
                         if(this.selected){
                             this.selected = false;
                         }else{
                             this.selected = true;
                         }
-                        this.onClick();
                     }
+
+                    this.onClick();
+                    
                     this.hover = false;
                     if(!this.disablesound){
                         playSound(sounds.release,1)
@@ -1931,8 +1932,7 @@ class BoardPiece{
 
             let mouseSquareX = (to_grid_coordinate(mouse.realX,mouse.realY).x - 1270*scale)  /(64*scale)
             let mouseSquareY = (to_grid_coordinate(mouse.realX,mouse.realY).y + 680*scale)/(64*scale)
-
-            if(board.currentCard !== undefined|| this.piece.type === "chance" || this.piece.type === "community Chest" || this.piece.type === "income tax" || this.piece.type === "tax" ||this.n%10 === 0 || board.auction !== undefined || board.trade !== undefined || players[turn].inJail === true){
+            if(board.currentCard !== undefined|| this.piece.type === "chance" || this.piece.type === "community Chest" || this.piece.type === "income tax" || this.piece.type === "tax" ||this.n%10 === 0 || board.auction !== undefined || board.trade !== undefined || players[turn].inJail === true || board.showDices || board.animateDices || players[turn].animationOffset !== 0){
                 this.offsetY = 0;
                 this.hover = false;
             }else if(this.x/64*drawScale > mouseSquareX-1*drawScale && this.x/64*drawScale < mouseSquareX && this.side === 2 && this.n%10 !== 0 && mouseSquareY >= 0*drawScale && mouseSquareY < 2*drawScale
