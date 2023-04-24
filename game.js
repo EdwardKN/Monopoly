@@ -316,9 +316,14 @@ class LocalLobby {
             }
             startGame(playerlist,settings)
             self.current = false;
-            self.startButton.visible = false;
             self.backButton.visible = false;
-            self.settingsButtons.forEach(e => {e.visible = false})
+            self.startButton.visible = false;
+            self.playerInputs.forEach( e=>{
+                e.textInput.visible = false;
+                e.botButton.visible = false;
+                e.colorButton.visible = false;
+                e.colorButtons.forEach(g => g.visible = false)
+                })
         },97*2,80,false,false,false,false,false,false,"Start",100,"black")
         this.disableAll = false;
         this.ableToStart = true;
@@ -1855,6 +1860,7 @@ class Button{
                     
                     this.hover = false;
                     if(!this.disablesound){
+                        console.log(this)
                         playSound(sounds.release,1)
                     }
                 }
