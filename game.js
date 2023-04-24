@@ -403,8 +403,10 @@ class LocalLobby {
 
                 if(this.settingsButtons[8].value > 0){
                     this.settingsButtons[7].from = 0;
+                    this.settingsButtons[7].to = 2500;
                 }else{
                     this.settingsButtons[7].from = 500;
+                    this.settingsButtons[7].to = 3000;
                 }
                 if(this.settingsButtons[0].selected === true){
                     this.settingsButtons[1].disabled = false;
