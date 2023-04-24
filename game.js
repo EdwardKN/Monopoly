@@ -51,17 +51,17 @@ canvas.addEventListener("mousemove",function(e){
 })
 
 window.addEventListener("mousedown",function(e){
-    
+    if(firstclick === false && musicOn){
+        firstclick = true;
+        playSound(sounds.music,1,true)
+    }
     textInputs.forEach(g => {
         g.follow = false;
     })
     buttons.forEach(e =>{
         e.click();
     })
-    if(firstclick === false && musicOn){
-        firstclick = true;
-        playSound(sounds.music,1,true)
-    }
+    
 
 })
 window.addEventListener("mouseup",function(e){
@@ -558,9 +558,13 @@ class MainMenu {
             document.cookie = `musicOn=${!self.musicButton.selected};Expires=Sun, 22 oct 2030 08:00:00 UTC;`;
             clearTimeout(musictimer)
             if(self.musicButton.selected){
-                musicPlaying.pause();
+                if(musicPlaying !== undefined && musicOn){
+                    musicPlaying.pause();
+                    musicOn = false;
+                }
             }else{
                 firstclick = true;
+                musicOn = true;
                 playSound(sounds.music,1,true)
             }
         },40,40,false)
@@ -2387,7 +2391,6 @@ class Player{
                 this.lastMoneyInDebt = this.money;
             }else if(this.inDebtTo !== undefined){
                 let moneyToAdd =  this.money -this.lastMoneyInDebt;
-                console.log(moneyToAdd,this.lastMoneyInDebt,this.money);
                 this.lastMoneyInDebt = this.money
                 this.inDebtTo.money += (moneyToAdd);
                 if(this.money >= 0){
