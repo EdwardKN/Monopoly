@@ -1225,9 +1225,9 @@ class Trade{
             if(i%2 === 1){
                 tmp = 107
             }
-            let but = (new Button(true,90 + tmp,110 + 18*Math.floor(i/2),images.trade.img[2],function(){
+            let but = (new Button(true,-30 + tmp + 200,280 + 18*Math.floor(i/2) + 100,images.trade.img[2],function(){
 
-            },106,17,false,false,false,false,false,e.piece.name + " " + e.piece.price + "kr","13px Arcade",e.piece.color))
+            },106,17,false,false,false,false,false,e.piece.name + " " + e.piece.price + "kr",15,e.piece.color))
 
             if(self.p2.bot !== undefined){
                 but.disabled = true;
@@ -2613,7 +2613,7 @@ class Player{
                             board.animateDices = false;
                             self.steps += dice1+dice2;
                             self.steps = self.steps%40;
-                            self.animateSteps(oldStep,self.steps,this.diceSum,1,true)
+                            self.animateSteps(oldStep,self.steps,self.diceSum,1,true)
                         })
                            
                     }
