@@ -1898,6 +1898,7 @@ class BoardPiece{
         this.mortgaged = false;
         this.money = 0;
         this.freeParking = false;
+        this.currentOffsetvalue = 0;
         buttons.push(this);
         
         
@@ -1948,7 +1949,7 @@ class BoardPiece{
             let mouseSquareX = (to_grid_coordinate(mouse.realX,mouse.realY).x - 1270*scale)  /(64*scale)
             let mouseSquareY = (to_grid_coordinate(mouse.realX,mouse.realY).y + 680*scale)/(64*scale)
             if(board.currentCard !== undefined|| this.piece.type === "chance" || this.piece.type === "community Chest" || this.piece.type === "income tax" || this.piece.type === "tax" ||this.n%10 === 0 || board.auction !== undefined || board.trade !== undefined || players[turn].inJail === true || board.showDices || board.animateDices || players[turn].animationOffset !== 0){
-                this.offsetY = 0;
+                this.offsetY = this.currentOffsetvalue;
                 this.hover = false;
             }else if(this.x/64*drawScale > mouseSquareX-1*drawScale && this.x/64*drawScale < mouseSquareX && this.side === 2 && this.n%10 !== 0 && mouseSquareY >= 0*drawScale && mouseSquareY < 2*drawScale
             ||this.x/64*drawScale > mouseSquareX-2*drawScale && this.x/64*drawScale < mouseSquareX && this.side === 2 && this.n%10 === 0 && mouseSquareY >= 0*drawScale && mouseSquareY < 2*drawScale
@@ -1966,7 +1967,7 @@ class BoardPiece{
                 this.hover = true;
                 
             }else{
-                this.offsetY = 0;
+                this.offsetY = this.currentOffsetvalue;
                 this.hover = false;
             }
 
@@ -2035,6 +2036,11 @@ class BoardPiece{
         }
         this.playerStep = function (onlyStep,player,diceRoll){
             this.currentPlayer.push(player);
+            this.currentOffsetvalue = 1;
+            let self = this;
+            setTimeout(() => {
+                self.currentOffsetvalue = 0;
+            }, speeds.stepSpeed);
             if(!onlyStep && !this.mortgaged && player.laps >= board.settings.roundsBeforePurchase){
                 if(this.piece.price < 0){
                     player.money += this.piece.price;
