@@ -1344,6 +1344,7 @@ class PlayerBorder{
             board.trade = new Trade(players[turn],self.player); 
         },219,34,false,false,true)
 
+        
         this.startMoneyAnimation = function(money,disablesound){
             this.moneyTime = 1;
             this.latestTrancaction = money;
@@ -1583,7 +1584,7 @@ class PlayerBorder{
                     drawRotatedImage(this.x*drawScale +715,this.y*drawScale - 35*drawScale*1.5 -27*drawScale*this.player.ownedPlaces.length -400,260*drawScale ,27*drawScale,images.playerOverlay.img[10],0,this.button.mirror,0,0,260,27,false)
                     drawRotatedImage(this.x*drawScale +715,this.y*drawScale - 35*drawScale*1.5 -27*drawScale*(this.player.ownedPlaces.length+1) -400,260*drawScale ,27*drawScale,images.playerOverlay.img[9],180,!this.button.mirror,0,0,260,27,false)
                     this.createTradebutton.y = this.y - 60 - 27*this.player.ownedPlaces.length;
-                    if(players[turn] !== this.player && board.trade === undefined && players[turn].bot === undefined){
+                    if(players[turn] !== this.player && board.currentCard === undefined && board.trade === undefined && players[turn].bot === undefined && players[turn].animationOffset === 0 && board.animateDices === false && board.showDices === false && this.player.bot === undefined){
                         this.createTradebutton.visible = true;
                     }else{
                         this.createTradebutton.visible = false;
