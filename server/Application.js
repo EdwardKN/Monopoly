@@ -1,16 +1,11 @@
-/**
- * Auctions
- * If one player lands on the "Gå till finkan" tile, both players proceed to go there, since both players get the event to go there
- * If a player makes it so the turn changes to the next person before the animation is finished, there isn't an alternative to purchase the tile. But it shouldn't even be able to get in this state.
- */
-
-var https = require('node:https');
-var { ClientRequest, ServerResponse } = require('node:http');
-var { readFileSync } = require('node:fs');
 var os = require('node:os');
+var https = require('node:https');
 var websocket = require('websocket');
-var { PlayerManager } = require('./player');
+var { readFileSync } = require('node:fs');
+var { ClientRequest, ServerResponse } = require('node:http');
+
 var api = require("./api");
+var { PlayerManager } = require('./player');
 
 var network = Object.values(os.networkInterfaces()).map(x => x.filter(y => !y.internal).find(y => y.family == "IPv4")).find(x => x != undefined)?.address;
 if (network == undefined) {
@@ -22,7 +17,7 @@ if (network == undefined) {
     }
 }
 
-var port = 60000 + Math.round((Math.random() - 0.5) * 10000);
+var port = 55045; // Random port that I got, this will be the default now
 var server = https.createServer({ key: readFileSync("./certs/monopoly.key"), cert: readFileSync("./certs/monopoly.crt"), passphrase: readFileSync("./certs/passphrase").toString("utf-8") }, serverHandler).listen(port, () => console.log("Klienter kan nu ansluta till servern med denna adress:\n%s:%s\n", network, port));
 
 var gameHasStarted = false;
@@ -46,7 +41,7 @@ websocketServer.on('request', websocketHandler);
 
 function originIsAllowed(origin) {
     // Official github page and testing
-    return true; //origin.includes("edwardkn.github.io") || origin.includes("localhost") || origin.includes(network);
+    return origin.includes("edwardkn.github.io") || origin.includes("localhost");
 }
 
 /**
