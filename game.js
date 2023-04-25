@@ -340,6 +340,9 @@ class LocalLobby {
                 botButton: new Button(true,-50 +42,self.playerInputs.length*55 - 32,images.buttons.img[13],function(){
                     self.playerInputs[id].textInput.value = ""
                     if(self.playerInputs[id].botButton.selected){
+                        if(self.playerInputs[id].colorId !== undefined){
+                            self.useableColors.push(self.playerInputs[id].colorId)
+                        }
                         self.amountBots++;
                         self.playerInputs[id].colorButton.img = images.colorButtons.img[8]
                         self.playerInputs[id].colorId = undefined;
