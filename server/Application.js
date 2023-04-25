@@ -142,9 +142,25 @@ function websocketHandler(request) {
                     break;
                 case "tile_mortgaged":
                     player.money += event.tile.price / 2;
-                    console.log("[S->C] Player (%s) mortgaged tile: (%s). Balance: %dkr", player.name, event.tile.name, player.money);
+                    console.log("[S<-C] Player (%s) mortgaged tile: (%s). Balance: %dkr", player.name, event.tile.name, player.money);
 
                     api.mortgageTile(player.colorIndex, event.tile.card, player.money);
+                    break;
+                case "trade_request":
+                    console.log("[S<-C] Player (%s) requested to trade with player (%s)", player.name, PlayerManager.players.find(x => x.colorIndex == event.target_player).name);
+                    api.requestTrade(event.target_player);
+                    break;
+                case "trade_content_update":
+                    console.log("[S<-C] Player (%s) updated contents of trade; Contents: %s", player.name, JSON.stringify(event.contents));
+                    api.tradeContentUpdated(event.target_player, event.contents);
+                    break;
+                case "trade_accept_update":
+                    console.log("[S<-C] Trade accept button clicked; Accepted: %s; Contents: %s", event.accepted, JSON.stringify(event.contents));
+                    api.tradeAcceptUpdate(event.target_player, event.accepted, event.contents);
+                    break;
+                case "trade_concluded": 
+                    console.log("[S<-C] Trade concluded; Successful: %s; Contents: %s", event.successful, JSON.stringify(event.contents));
+                    api.tradeConcluded(player.colorIndex, event.target_player, event.successful, event.contents);
                     break;
                 default:
                     console.log(event);

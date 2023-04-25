@@ -2,7 +2,7 @@
 var websocket = undefined;
 
 /**
- * @param {Player[]} players
+ * @param {Player[]} players All the players in the game
  */
 function startGame(players) {
     console.log("[S->C] Game started with %d players", players.length);
@@ -19,8 +19,8 @@ function diceRoll(dice1, dice2) {
 }
 
 /**
- * @param {number} steps
- * @param {number} currentPlayerIndex
+ * @param {number} steps The position of this player
+ * @param {number} currentPlayerIndex The id of this player
  */
 function teleportTo(steps, currentPlayerIndex) {
     console.log("[S->C] Player %d moved to tile %d", currentPlayerIndex, steps);
@@ -28,27 +28,54 @@ function teleportTo(steps, currentPlayerIndex) {
 }
 
 /**
- * @param {String} username 
- * @param {number} index 
- * @param {boolean} isBot 
+ * @param {String} username The username of the removed player
+ * @param {number} index The id of the player
+ * @param {boolean} isBot Whether or not this user was a bot
  */
 function addPlayer(username, index, isBot) {
-    console.log("[S->C] New %s (%s) joined", isBot ? "bot" : "player", username);
+    console.log("[S->C] %s (%s) joined", isBot ? "Bot" : "Player", username);
     websocket.broadcastUTF(JSON.stringify(new PlayerJoinEvent(username, index, isBot)));
 }
 
 /**
- * @param {String} username 
- * @param {number} index 
- * @param {boolean} isBot 
+ * @param {String} username The username of the removed player
+ * @param {number} index The id of the player
+ * @param {boolean} isBot Whether or not this user was a bot
  */
 function removePlayer(username, index, isBot) {
-    console.log("[S->C] %s %s left", username, isBot ? "bot" : "player");
+    console.log("[S->C] %s (%s) left", isBot ? "Bot" : "Player", username);
     websocket.broadcastUTF(JSON.stringify(new PlayerLeaveEvent(username, index, isBot)));
 }
 
 /**
- * 
+ * @param {number} target The id of the the target player
+ */
+function requestTrade(target) {
+    console.log("[S->C] Trade request to player (%s)", target);
+    websocket.broadcastUTF(JSON.stringify(new RequestTradeEvent(target)));
+}
+
+/**
+ * @param {boolean} successful Whether or not the trade was successful
+ * @param {{ money: number, tiles: BoardPiece.piece[] }} contents 
+ */
+function tradeAcceptUpdate(target, successful, contents) {
+    console.log("[S->C] Trade accept button clicked; Accepted: %s; Contents: %s", successful, JSON.stringify(contents));
+    websocket.broadcastUTF(JSON.stringify(new TradeAcceptUpdateEvent(target, successful, contents)));
+}
+
+/**
+ * @param {number} p1 The id of one of the player who are in a trade
+ * @param {number} p2 The id of the other player in the trade
+ * @param {boolean} successful Whether or not the trade was successful
+ * @param {{ money: number, tiles: BoardPiece.piece[] }} contents 
+ */
+function tradeConcluded(p1, p2, successful, contents) {
+    console.log("[S->C] Trade concluded; Successful: %s; Contents: %s", successful, JSON.stringify(contents));
+    websocket.broadcastUTF(JSON.stringify(new TradeConcludedEvent(p1, p2, successful, contents)));
+}
+
+/**
  * @param {number} id The id of the player whose turn it will be
  */
 function newTurn(id) {
@@ -68,7 +95,7 @@ function randomEvent(id, player, type) {
 }
 
 /**
- * This is sent both when an auction is won and when a tile is purchased
+ * This is sent when an auction is won, when a tile is purchased and also when buying back a mortaged tile
  * @param {number} player The id of the player
  * @param {number} money The remaining balance of this player
  * @param {number} tile The id of the tile
@@ -135,6 +162,14 @@ function readyUp(player) {
     websocket.broadcastUTF(JSON.stringify(new PlayerReadyEvent(player)));
 }
 
+/**
+ * @param {{ money: number, tiles: BoardPiece.piece[] }} contents 
+ */
+function tradeContentUpdated(target, contents) {
+    console.log("[S->C] Contents of trade updated; Contents: %s", JSON.stringify(contents));
+    websocket.broadcastUTF(JSON.stringify(new TradeContentUpdateEvent(target, contents)));
+}
+
 class Event {
     /**
      * 
@@ -144,6 +179,30 @@ class Event {
     constructor(eventType, data = {}) {
         this.event_type = eventType;
         this.data = data;
+    }
+}
+
+class RequestTradeEvent extends Event {
+    constructor(target) {
+        super("request_trade_event", { target });
+    }
+}
+
+class TradeContentUpdateEvent extends Event {
+    constructor(target, contents) {
+        super("trade_content_update_event", { target, contents });
+    }
+}
+
+class TradeAcceptUpdateEvent extends Event {
+    constructor(target, successful, contents) {
+        super("trade_accept_update_event", { target, successful, contents });
+    }
+}
+
+class TradeConcludedEvent extends Event {
+    constructor(p1, p2, successful, contents) {
+        super("trade_concluded_event", { p1, p2, successful, contents });
     }
 }
 
@@ -294,18 +353,34 @@ class MoveEvent extends Event {
 
 
 module.exports = {
+    // Joining/Leaving
+    startGame,
+    readyUp,
     addPlayer,
     removePlayer,
+
+    // Movement
     teleportTo,
-    randomEvent,
+
+    // Purchasing
     tilePurchased,
     propertyChanged,
+    mortgageTile,
+
+    // Auction
     auctionStart,
     auctionShow,
     auctionBid,
-    startGame,
+
+    // Trade
+    requestTrade,
+    tradeContentUpdated,
+    tradeAcceptUpdate,
+    tradeConcluded,
+
+    // Misc
+    randomEvent,
     newTurn,
-    readyUp,
-    mortgageTile,
+
     setWebsocket: wss => { websocket = wss; }
 }

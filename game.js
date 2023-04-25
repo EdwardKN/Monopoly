@@ -154,9 +154,7 @@ function to_grid_coordinate(x,y) {
   }
 }
 function detectCollition(x,y,w,h,x2,y2,w2,h2){
-    if(x+w>x2 && x<x2+w2 && y+h>y2 && y<y2+h2){
-            return true;
-        };
+    return x+w>x2 && x<x2+w2 && y+h>y2 && y<y2+h2;
 };
 function isNumeric(str) {
     if (typeof str != "string") return false
@@ -262,7 +260,7 @@ async function init(){
                     playerContainer.removeChild(playerContainer.children[index]);
                 } else {
                     // Set the player to a bot if it left
-                    var player = players.find(x => x.colorIndex == evt.detail.player);
+                    var player = players.find(x => x.colorIndex == evt.detail.index);
                     player.bot = new Bot(player);
                 }
             });
@@ -397,6 +395,73 @@ async function init(){
                 player.money = data.money;
             });
 
+            document.body.addEventListener("request_trade_event", (evt) => {
+                if (evt.detail.target == Api.currentPlayer) {
+                    var thisPlayer = players.find(x => x.colorIndex == Api.currentPlayer);
+                    var otherPlayer = players[turn];
+                    board.trade = new Trade(thisPlayer, otherPlayer);
+                }
+            });
+
+            document.body.addEventListener("trade_concluded_event", (evt) => {
+                if (evt.detail.successful) {
+                    var contents = evt.detail.contents;
+
+                    var p1 = players.find(p => p.colorIndex == evt.detail.p1);
+                    var p2 = players.find(p => p.colorIndex == evt.detail.p2);
+
+                    var p1New = contents.p2.tiles.map(tile => board.boardPieces.find(x => x.piece.card == tile.card));
+                    var p2New = contents.p1.tiles.map(tile => board.boardPieces.find(x => x.piece.card == tile.card));
+
+                    p1New.forEach(tile => {
+                        p2.ownedPlaces.splice(p2.ownedPlaces.findIndex(t => t.piece.card == tile.piece.card), 1);
+                        p1.ownedPlaces.push(tile);
+                        tile.owner = p1;
+                    });
+
+                    p2New.forEach(tile => {
+                        p1.ownedPlaces.splice(p1.ownedPlaces.findIndex(t => t.piece.card == tile.piece.card), 1);
+                        p2.ownedPlaces.push(tile);
+                        tile.owner = p2;
+                    });
+
+                    p1.money += contents.p2.money;
+                    p2.money += contents.p1.money;
+                    p1.money -= contents.p1.money;
+                    p2.money -= contents.p2.money;
+
+                    if (board.trade != undefined) {
+                        board.trade.closeButton.visible = false;
+                        board.trade.p1ConfirmButton.visible = false;
+                        board.trade.p2ConfirmButton.visible = false;
+                        board.trade.p1Slider.visible = false;
+                        board.trade.p1Slider.visible = false;
+                        board.trade.p1ConfirmButton.hover = false;
+                        board.trade.p2ConfirmButton.hover = false;
+                        board.trade.p1PropertyButtons.forEach(e => { e.visible = false; });
+                        board.trade.p2PropertyButtons.forEach(e => { e.visible = false; });
+                    }
+                }
+                board.trade = undefined;
+            });
+
+            document.body.addEventListener("trade_accept_update_event", (evt) => {
+                if (board.trade != undefined && evt.detail.target == Api.currentPlayer) {
+                    board.trade.p2ConfirmButton.selected = evt.detail.successful;
+                }
+            });
+
+            document.body.addEventListener("trade_content_update_event", (evt) => {
+                if (evt.detail.target == Api.currentPlayer) {
+                    board.trade.contents.p2 = evt.detail.contents;
+
+                    board.trade.p2Slider.percentage = (board.trade.contents.p2.money - board.trade.p2Slider.min) / (board.trade.p2Slider.max - board.trade.p2Slider.min);
+                    board.trade.p2PropertyButtons.forEach(button => {
+                        button.selected = board.trade.contents.p2.tiles.some(tile => tile.card == button.card);
+                    });
+                }
+            })
+
             await Api.openWebsocketConnection(serverURL, username);
         } catch(err) {
             alert("VIKTIGT!\nDu kommer att hamna på en annan webbsida.\nFör att gå med i spelet måste du klicka på:\nAvancerat...>Acceptera risken och fortsätt\nOm du inte gör detta så kommer du inte kunna ansluta till spelet.");
@@ -412,13 +477,13 @@ async function init(){
     if (!Api.online) {
         document.getElementById("lobby").style.display = "none";
         let playerAmount = 0;
-        let botAmount = 0;
+        let botAmount = -1;
 
         let playerImages = [0,1,2,3,4,5,6,7]
     
         if (fastLoad === true){
             playerAmount = 2;
-            botAmount = -1
+            botAmount = 0;
         }
 
         while(playerAmount == 0){
@@ -434,20 +499,24 @@ async function init(){
             }
         }
 
-        while(botAmount == 0){
+        while(botAmount == -1){
             if(playerAmount < 8) {
                 let promptText = prompt("Hur många bots?");
                 if(isNumeric(promptText)) {
                     if(JSON.parse(promptText) <= 8-playerAmount){
-                        botAmount = JSON.parse(promptText)
+                        botAmount = JSON.parse(promptText);
+
+                        if (playerAmount + botAmount < 2) {
+                            botAmount = -1;
+                        }
                     }else{
-                        botAmount = 0;
+                        botAmount = -1;
                     }
                 }else{
-                    botAmount = 0;
+                    botAmount = -1;
                 }
             } else {
-                botAmount = -1
+                botAmount = 0;
             }
         }
         
@@ -455,11 +524,9 @@ async function init(){
         for(i = 0; i < playerAmount; i++){
             let lastPlayername = "";
             let random = randomIntFromRange(0,playerImages.length-1)
-            let playername = "";
-            if(fastLoad === true){
-                playername = "Spelare " + (i+1);
-            }
-            while(playername == ""){
+            let playername = fastLoad ? "Spelare" + (i + 1) : "";
+
+            while(playername == "") {
                 playername = prompt("Vad heter spelare " + (i+1) + "?",lastPlayername)
                 lastPlayername = playername
                 if(playername.length > 9 || playername.length < 2){
@@ -468,8 +535,6 @@ async function init(){
                 players.push(new Player(images.player.img[playerImages[random]],playerImages[random],playername,false))
                 playerImages.splice(random,1)
             }
-            players.push(new Player(images.player.img[playerImages[random]],playerImages[random],playername,false))
-            playerImages.splice(random,1)
         }
         for(i = 0; i < botAmount; i++){
             let random = randomIntFromRange(0,playerImages.length-1)
@@ -511,7 +576,8 @@ function update(){
         if(e.hover){
             tmp = true;
         }
-    })
+    });
+
     if(tmp === true){
         canvas.style.cursor = "pointer"
     }else{
@@ -897,6 +963,8 @@ class Slider{
         this.h = h;
         this.visible = false;
         this.disabled = false;
+        this.min = from;
+        this.max = to;
         this.percentage = 0;
         this.value = 0;
         this.follow = false;
@@ -906,6 +974,9 @@ class Slider{
 
         buttons.push(this);
         this.draw = function(){
+            if (this.disabled) this.hover = false;
+            if (!this.visible) return;
+            
             if(this.visible){
                 this.value = Math.round(((to-from)*this.percentage) + from);
                 c.fillStyle = "black";
@@ -934,37 +1005,70 @@ class Slider{
             }
         }
         this.click = function(){
+            if (this.disabled) return;
+
             if(this.hover === true){
                 this.follow = true;
             }
         }
         this.release = function(){
+            if (this.disabled) return;
+
+            if (Api.online && board.trade != undefined) {
+                // Update money
+                board.trade.contents.p1.money = this.value;
+                Api.tradeContentUpdated(board.trade.p2.colorIndex, board.trade.contents.p1);
+            }
+
             this.follow = false;
         }   
     }
 }
+
 class Trade{
     constructor(p1,p2){
         this.p1 = p1;
         this.p2 = p2;
 
+        this.contents = {
+            // This is what each player offers
+            // Currently only used in the online version
+            p1: { money: 0, tiles: [] },
+            p2: { money: 0, tiles: [] }
+        };
+
         let self = this;
-        this.closeButton = new Button(false,302,9,images.buttons.img[7],function(){self.closeButton.visible = false;board.trade = undefined;},18,18,false)
+        this.closeButton = new Button(false,302,9,images.buttons.img[7],function(){self.closeButton.visible = false; if (Api.online) { Api.tradeConcluded(self.p2.colorIndex, false); } board.trade = undefined;},18,18,false)
         this.closeButton.visible = true;
 
         this.p1Slider = new Slider(-470,-270,400,60,0,this.p1.money,true,"30px Arcade","kr")
-        this.p1ConfirmButton = new Button(true,-145,350,images.trade.img[1],function(){},150,50)
-        if(this.p1.bot === undefined){
+        this.p1ConfirmButton = new Button(true,-145,350,images.trade.img[1],function(){
+            if (Api.online && self.p1.colorIndex == Api.currentPlayer) {
+                if (self.p2ConfirmButton.selected) {
+                    Api.tradeConcluded(self.p2.colorIndex, true, self.contents);
+                } else {
+                    Api.tradeAcceptUpdate(self.p2.colorIndex, self.p1ConfirmButton.selected);
+                }
+            }
+        },150,50);
+        if(this.p1.bot === undefined) {
             this.p1ConfirmButton.visible = true;
         }
+        if (Api.online && this.p1.colorIndex != Api.currentPlayer) {
+            this.p2ConfirmButton.disabled = true;
+            this.p1Slider.disabled = true;
+        }
 
+        this.p2Slider = new Slider(50,-270,400,60,0,this.p2.money,true,"30px Arcade","kr")
         this.p2ConfirmButton = new Button(true,120,350,images.trade.img[1],function(){},150,50)
-        if(this.p2.bot === undefined){
+        if(this.p2.bot === undefined) {
             this.p2ConfirmButton.visible = true;
         }
-        this.p2Slider = new Slider(50,-270,400,60,0,this.p2.money,true,"30px Arcade","kr")
+        if (Api.online && this.p2.colorIndex != Api.currentPlayer) {
+            this.p2ConfirmButton.disabled = true;
+            this.p2Slider.disabled = true;
+        }
 
-        
         this.p1PropertyButtons = [];
         this.p2PropertyButtons = [];
 
@@ -973,33 +1077,46 @@ class Trade{
             if(i%2 === 1){
                 tmp = 107
             }
-            let but = (new Button(true,-170 + tmp,110 + 18*Math.floor(i/2),images.trade.img[2],function(){
+            let but = new Button(true,-170 + tmp,110 + 18*Math.floor(i/2),images.trade.img[2],function(){
+                if (Api.online) {
+                    if (this.selected) {
+                        self.contents.p1.tiles.push(e.piece);
+                    } else {
+                        self.contents.p1.tiles.splice(self.contents.p1.tiles.findIndex(x => x.card == e.piece.card), 1);
+                    }
+                    Api.tradeContentUpdated(self.p2.colorIndex, self.contents.p1);
+                }
+            },106,17,false,false,false,false,e.piece.name + " " + e.piece.price + "kr","13px Arcade",e.piece.color)
 
-            },106,17,false,false,false,false,e.piece.name + " " + e.piece.price + "kr","13px Arcade",e.piece.color))
-
-            if(self.p1.bot !== undefined){
+            if(self.p1.bot !== undefined || (Api.online && self.p1.colorIndex != Api.currentPlayer)){
                 but.disabled = true;
             }
             if(e.level !== 0){
                 but.disabled = true;
             }
+
+            but.card = e.piece.card;
             self.p1PropertyButtons.push(but);
-        })
+        });
         
         this.p2.ownedPlaces.forEach(function(e,i){
             let tmp = 0;
             if(i%2 === 1){
                 tmp = 107
             }
-            let but = (new Button(true,90 + tmp,110 + 18*Math.floor(i/2),images.trade.img[2],function(){
+            let but = (new Button(true,90 + tmp,110 + 18*Math.floor(i/2),images.trade.img[2],function(){},106,17,false,false,false,false,e.piece.name + " " + e.piece.price + "kr","13px Arcade",e.piece.color))
 
-            },106,17,false,false,false,false,e.piece.name + " " + e.piece.price + "kr","13px Arcade",e.piece.color))
-
-            if(self.p2.bot !== undefined){
+            if(self.p2.bot !== undefined || (Api.online && self.p2.colorIndex != Api.currentPlayer)){
                 but.disabled = true;
             }
+            if(e.level !== 0){
+                but.disabled = true;
+            }
+
+            but.card = e.piece.card;
             self.p2PropertyButtons.push(but);
-        })
+        });
+
         this.update = function(){
             drawIsometricImage(0,0,images.trade.img[0],false,0,0,images.trade.img[0].width,images.trade.img[0].height,-192,images.trade.img[0].height/50,1)
             this.closeButton.draw();
@@ -1019,7 +1136,7 @@ class Trade{
             this.p1PropertyButtons.forEach(e => {e.visible=true;e.draw()});
             this.p2PropertyButtons.forEach(e => {e.visible=true;e.draw()});
 
-            if(this.p1ConfirmButton.selected && this.p2ConfirmButton.selected){
+            if(this.p1ConfirmButton.selected && this.p2ConfirmButton.selected && !Api.online){
                 let p1New = [];
                 let p2New = [];
                 this.p1PropertyButtons.forEach(function(e,i){
@@ -1074,78 +1191,77 @@ class PlayerBorder{
         
         
         this.button = new Button(false,this.x,this.y,images.playerOverlay.img[8],function(){
-            players.forEach(e =>{if(e.playerBorder.showInfo && e.playerBorder != self){e.playerBorder.showInfo = false}})
-            if(!self.showInfo){
-                self.showInfo = true;
-            }else{
-                self.showInfo = false;
+            players.forEach(e =>{if(e.playerBorder.showInfo && e.playerBorder != self){ e.playerBorder.showInfo = false; }});
+            self.showInfo = !self.showInfo;
+            if (Api.online) {
+                if (Api.currentPlayer != players[turn].colorIndex) {
+                    self.createTradebutton.visible = false;
+                } else if (Api.currentPlayer == self.player.colorIndex) {
+                    self.createTradebutton.visible = false;
+                } else {
+                    self.createTradebutton.visible = true;
+                }
             }
         },260,54,false,false,true) 
 
         this.createTradebutton = new Button(false,this.x,this.y,images.buttons.img[9],function(){
             self.createTradebutton.visible = false;
             self.showInfo = false;
+
+            if (Api.online && board.trade == undefined) {
+                Api.requestTrade(self.player.colorIndex);
+            }
+
             board.trade = new Trade(players[turn],self.player);
         },219,34,false,false,true)
 
         this.init = function(){
-            if(players.length === 5 && this.realIndex === 4){
-                this.index = 3
+            // What does this function even do?
+            if(players.length === 5) {
+                if (this.realIndex === 4){
+                    this.index = 3;
+                } else if(this.realIndex === 2){
+                    this.index = 4;
+                } else if(this.realIndex === 3){
+                    this.index = 2;
+                }
+            } else if (players.length == 6) {
+                if(this.realIndex === 4){
+                    this.index = 2;
+                } else if(this.realIndex === 2){
+                    this.index = 4;
+                } else if(this.realIndex === 3){
+                    this.index = 6;
+                } else if(this.realIndex === 5){
+                    this.index = 3;
+                }
+            } else if (players.length == 7) {
+                if(this.realIndex === 4){
+                    this.index = 5;
+                } else if(this.realIndex === 2){
+                    this.index = 4;
+                } else if(this.realIndex === 3){
+                    this.index = 6;
+                } else if(this.realIndex === 5){
+                    this.index = 3;
+                } else if(this.realIndex === 6){
+                    this.index = 2;
+                }
+            } else if (players.length == 8) {
+                if(this.realIndex === 4){
+                    this.index = 5;
+                } else if(this.realIndex === 2){
+                    this.index = 4;
+                } else if(this.realIndex === 3){
+                    this.index = 6;
+                } else if(this.realIndex === 5){
+                    this.index = 7;
+                } else if(this.realIndex === 6){
+                    this.index = 2;
+                } else if(this.realIndex === 7){
+                    this.index = 3;
+                }
             }
-            if(players.length === 5 && this.realIndex === 2){
-                this.index = 4
-            }
-            if(players.length === 5 && this.realIndex === 3){
-                this.index = 2
-            }
-            
-            if(players.length === 6 && this.realIndex === 4){
-                this.index = 2
-            }
-            if(players.length === 6 && this.realIndex === 2){
-                this.index = 4
-            }
-            if(players.length === 6 && this.realIndex === 3){
-                this.index = 6
-            }
-            if(players.length === 6 && this.realIndex === 5){
-                this.index = 3
-            }     
-
-            if(players.length === 7 && this.realIndex === 4){
-                this.index = 5
-            }
-            if(players.length === 7 && this.realIndex === 2){
-                this.index = 4
-            }
-            if(players.length === 7 && this.realIndex === 3){
-                this.index = 6
-            }
-            if(players.length === 7 && this.realIndex === 5){
-                this.index = 3
-            }   
-            if(players.length === 7 && this.realIndex === 6){
-                this.index = 2
-            }       
-
-            if(players.length === 8 && this.realIndex === 4){
-                this.index = 5
-            }
-            if(players.length === 8 && this.realIndex === 2){
-                this.index = 4
-            }
-            if(players.length === 8 && this.realIndex === 3){
-                this.index = 6
-            }
-            if(players.length === 8 && this.realIndex === 5){
-                this.index = 7
-            }   
-            if(players.length === 8 && this.realIndex === 6){
-                this.index = 2
-            }      
-            if(players.length === 8 && this.realIndex === 7){
-                this.index = 3
-            }      
         }
         
         this.draw = function() {
@@ -1253,10 +1369,12 @@ class PlayerBorder{
                     }
                     drawRotatedImage(this.x*drawScale,this.y*drawScale + 53*drawScale*1.5 +27*drawScale*this.player.ownedPlaces.length,260*drawScale ,27*drawScale,images.playerOverlay.img[10],0,this.button.mirror,0,0,260,27,false)
                     drawRotatedImage(this.x*drawScale,this.y*drawScale + 53*drawScale*1.5 +27*drawScale*(this.player.ownedPlaces.length+1),260*drawScale ,27*drawScale,images.playerOverlay.img[9],0,this.button.mirror,0,0,260,27,false)
-                    if(players[turn] !== this.player && board.trade === undefined && players[turn].bot === undefined){
-                        this.createTradebutton.visible = true;
-                    }else{
-                        this.createTradebutton.visible = false;
+                    if (!Api.online) {
+                        if(players[turn] !== this.player && board.trade === undefined && players[turn].bot === undefined){
+                            this.createTradebutton.visible = true;
+                        }else{
+                            this.createTradebutton.visible = false;
+                        }
                     }
                     this.createTradebutton.draw();
                 }else{
@@ -1499,7 +1617,8 @@ class Button{
         buttons.push(this);
 
         this.draw = function(){
-            
+            if (!this.visible) return;
+
             if(this.visible && this.img !== undefined){
                 if(!this.disabled && this.selected === false){
                     if(this.screencenter){
@@ -1590,18 +1709,13 @@ class Button{
             }
         }
         this.click = function(){
+            if (this.disabled) return;
+
             if(this.visible && !this.disabled){
                 if(this.screencenter){
                     if(detectCollition(this.x*drawScale,this.y*drawScale,this.w*drawScale,this.h*drawScale,mouse.realX,mouse.realY,1,1)){
-                        if(this.select === false){
-                            this.onClick();
-                        }else{
-                            if(this.selected){
-                                this.selected = false;
-                            }else{
-                                this.selected = true;
-                            }
-                        }
+                        this.selected = !this.selected;
+                        this.onClick();
                         this.hover = false;
                         if(!this.disablesound){
                             playSound(sounds.release,1)
@@ -1609,15 +1723,8 @@ class Button{
                     }
                 }else{
                     if(detectCollition(canvas.width/2 + this.x*drawScale - 64*drawScale,canvas.height/2 + this.y*drawScale - 208*drawScale,this.w*drawScale,this.h*drawScale,mouse.realX,mouse.realY,1,1)){
-                        if(this.select === false){
-                            this.onClick();
-                        }else{
-                            if(this.selected){
-                                this.selected = false;
-                            }else{
-                                this.selected = true;
-                            }
-                        }
+                        this.selected = !this.selected;
+                        this.onClick();
                         this.hover = false;
                         if(!this.disablesound){
                             playSound(sounds.release,1)
@@ -2346,7 +2453,7 @@ class Player{
                         
                         let self = this;
                         this.animateDice(dice1,dice2,function(){
-                            self.teleportTo(dice1+dice2);
+                            self.teleportTo(self.steps + dice1 + dice2);
                             board.nextPlayerButton.visible = true;
                         })
                     }

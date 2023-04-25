@@ -14,11 +14,44 @@ class Api {
     static currentPlayer = -1;
 
     /**
+     * Request to start a trade with someone 
+     * @param {number} target 
+     */
+    static requestTrade(target) {
+        Api.getWebSocket().send(JSON.stringify({ event_type: "trade_request", target_player: target }));
+    }
+
+    /**
+     * Sent when the trade is concluded, either by mutual agreement or by one player opting out
+     * @param {boolean} successful 
+     * @param {{ money: number, tiles: BoardPiece.piece[] }}} contents 
+     */
+    static tradeConcluded(target, successful, contents) {
+        Api.getWebSocket().send(JSON.stringify({ event_type: "trade_concluded", target_player: target, successful, contents }));
+    }
+
+    /**
+     * Update the contents of the ongoing trade
+     * @param {{ money: number, tiles: BoardPiece.piece[] }} contents 
+     */
+    static tradeContentUpdated(target, contents) {
+        Api.getWebSocket().send(JSON.stringify({ event_type: "trade_content_update", target_player: target, contents }));
+    }
+
+    /**
+     * This player accepted/unaccepted the trade
+     * @param {boolean} accepted Whether or not this player accepts the trade 
+     */
+    static tradeAcceptUpdate(target, accepted) {
+        Api.getWebSocket().send(JSON.stringify({ event_type: "trade_accept_update", target_player: target, accepted }));
+    }
+    
+    /**
      * Move to some location
      * @param {number} location 
      */
     static moveTo(location) {
-        Api.getWebSocket().send(JSON.stringify({ "event_type": "move", "tiles_moved": location }));
+        Api.getWebSocket().send(JSON.stringify({ event_type: "move", "tiles_moved": location }));
     }
 
     /**
