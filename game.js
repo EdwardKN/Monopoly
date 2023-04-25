@@ -2324,7 +2324,7 @@ class BoardPiece{
                         player.money =  Math.round(player.money * 0.9);
                         board.boardPieces[20].money += (Math.round(player.money * 0.1));
                     }
-                }else if(this.freeParking){
+                }else if(this.freeParking && this.money !== 0){
                     player.money += this.money;
                     player.playerBorder.startMoneyAnimation(this.money)
                     this.money = 0;
