@@ -341,7 +341,6 @@ class LocalLobby {
                     self.playerInputs[id].textInput.value = ""
                     if(self.playerInputs[id].botButton.selected){
                         self.amountBots++;
-                        self.useableColors.push(self.playerInputs[id].colorId);
                         self.playerInputs[id].colorButton.img = images.colorButtons.img[8]
                         self.playerInputs[id].colorId = undefined;
                         self.playerInputs[id].colorButtons.forEach(e => e.selected = false);
@@ -400,6 +399,7 @@ class LocalLobby {
 
         this.draw = function(){
             if(this.current){
+                console.log(this.useableColors)
                 drawRotatedImage(0,0,981*drawScale,552*drawScale,images.mainMenu.img[3],0,0,0,0,981,552)
                 this.readyPlayers = [];
 
@@ -1863,7 +1863,6 @@ class Button{
                         
                         this.hover = false;
                         if(!this.disablesound){
-                            console.log(this)
                             playSound(sounds.release,1)
                         }
                     }
