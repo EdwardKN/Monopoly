@@ -263,7 +263,7 @@ class LocalLobby {
         this.settingsButtons.push(new Button(true,100,220 + this.settingsButtons.length*45,images.buttons.img[10],function(){},500,40,false,false,false,false,false,false,"Få/förlora pengar i fängelset",42,"black"))
         this.settingsButtons.push(new Button(true,100,220 + this.settingsButtons.length*45,images.buttons.img[10],function(){},500,40,false,false,false,false,false,false,"Möjlighet att inteckna",42,"black"))
         this.settingsButtons.push(new Button(true,100,220 + this.settingsButtons.length*45,images.buttons.img[10],function(){},500,40,false,false,false,false,false,false,"Jämn utbyggnad",42,"black"))
-        this.settingsButtons.push(new Slider(456*drawScale,300*drawScale + this.settingsButtons.length*12,502*drawScale,40*drawScale,500,3000,100,true,30,"kr","Startkapital: "))
+        this.settingsButtons.push(new Slider(456*drawScale,300*drawScale + this.settingsButtons.length*12,502*drawScale,40*drawScale,0,3000,100,true,30,"kr","Startkapital: "))
         this.settingsButtons.push(new Slider(456*drawScale,300*drawScale + this.settingsButtons.length*12*drawScale,502*drawScale,40*drawScale,0,5,1,true,30,"","Antal varv innan köp: "))
         this.settingsButtons[2].selected = true
         this.settingsButtons[3].selected = true
@@ -405,11 +405,6 @@ class LocalLobby {
                 drawRotatedImage(0,0,981*drawScale,552*drawScale,images.mainMenu.img[3],0,0,0,0,981,552)
                 this.readyPlayers = [];
 
-                if(this.settingsButtons[8].value > 0){
-                    this.settingsButtons[7].from = 0;
-                }else{
-                    this.settingsButtons[7].from = 200;
-                }
                 if(this.settingsButtons[0].selected === true){
                     this.settingsButtons[1].disabled = false;
                 }else{
@@ -1686,21 +1681,23 @@ class Auction{
                     if(this.playerlist.length === 1){
                         for(let i = 0; i<players.length; i++){
                             if(this.playerlist[0].colorIndex == players[i].colorIndex){
-                                clearInterval(board.auction.timer)
-                                players[i].money -= this.auctionMoney;
-                                if(board.settings.allFreeparking){
-                                    board.boardPieces[20].money += this.auctionMoney;
+                                if(this.auctionMoney !== 0){
+                                    clearInterval(board.auction.timer)
+                                    players[i].money -= this.auctionMoney;
+                                    if(board.settings.allFreeparking){
+                                        board.boardPieces[20].money += this.auctionMoney;
+                                    }
+                                    players[i].playerBorder.startMoneyAnimation(-this.auctionMoney)
+                                    board.auction.card.owner = players[i];
+                                    players[i].ownedPlaces.push(this.card);
                                 }
-                                players[i].playerBorder.startMoneyAnimation(-this.auctionMoney)
-                                board.auction.card.owner = players[i];
-                                players[i].ownedPlaces.push(this.card);
-                                buttons.splice(buttons.indexOf(this.addMoneyButton2),1)
-                                buttons.splice(buttons.indexOf(this.addMoneyButton10),1)
-                                buttons.splice(buttons.indexOf(this.addMoneyButton100),1)
-                                buttons.splice(buttons.indexOf(this.startAuctionButton),1)
-                                board.currentCard = undefined;
-                                board.buyButton.visible = false;
-                                board.auction = undefined;
+                                    buttons.splice(buttons.indexOf(this.addMoneyButton2),1)
+                                    buttons.splice(buttons.indexOf(this.addMoneyButton10),1)
+                                    buttons.splice(buttons.indexOf(this.addMoneyButton100),1)
+                                    buttons.splice(buttons.indexOf(this.startAuctionButton),1)
+                                    board.currentCard = undefined;
+                                    board.buyButton.visible = false;
+                                    board.auction = undefined;
                             }
                         }
 
@@ -1723,6 +1720,7 @@ class Auction{
         this.update = function(){
         if(this.playerlist[this.turn].money < (this.auctionMoney+2)){
             this.addMoneyButton2.disabled = true;
+            this.time = -10
         }else{
             this.addMoneyButton2.disabled = false;
         }
