@@ -172,9 +172,10 @@ function tradeContentUpdated(target, contents) {
 
 /**
  * @param {number} player The id of the player
+ * @param {String} type Either DICE, CARD or MONEY depending on the method of exit
  */
-function exitedJail(player) {
-    websocket.broadcastUTF(JSON.stringify(new PlayerExitedJailEvent(player)));
+function exitedJail(player, type) {
+    websocket.broadcastUTF(JSON.stringify(new PlayerExitedJailEvent(player, type)));
 }
 
 class Event {
@@ -190,8 +191,8 @@ class Event {
 }
 
 class PlayerExitedJailEvent extends Event {
-    constructor(player) {
-        super("exited_jail_event", { player });
+    constructor(player, type) {
+        super("exited_jail_event", { player, type });
     }
 }
 

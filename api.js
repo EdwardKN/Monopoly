@@ -15,9 +15,10 @@ class Api {
 
     /**
      * Sent when this player exited jail
+     * @param {String} type Either DICE, CARD or MONEY depending on how the player exited jail
      */
-    static exitJail() {
-        Api.getWebSocket().send(JSON.stringify({ event_type: "exited_jail" }));
+    static exitJail(type = "DICE") {
+        Api.getWebSocket().send(JSON.stringify({ event_type: "exited_jail", type }));
     }
 
     /**

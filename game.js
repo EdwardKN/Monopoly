@@ -464,7 +464,15 @@ async function init(){
             
             document.body.addEventListener("exited_jail_event", (evt) => {
                 var player = players.find(p => p.colorIndex == evt.detail.player);
-                player.getOutOfJail(false);
+                if (evt.detail.player != Api.currentPlayer) {
+                    // This has already been done for the player in question
+                    if (evt.detail.type == "MONEY") {
+                        player.money -= 50;
+                    } else if (evt.detail.type == "CARD") {
+                        player.jailcardAmount -= 1;
+                    } 
+                }
+                player.getOutOfJail(undefined, false);
             });
 
             await Api.openWebsocketConnection(serverURL, username);
@@ -617,7 +625,7 @@ class Board{
         this.payJailButton = new Button(false,-74,239,images.jailMenu.img[1],function(){
             players[turn].money -= 50;
             players[turn].rolls = true;
-            players[turn].getOutOfJail();
+            players[turn].getOutOfJail("MONEY");
             board.payJailButton.visible = false;
                 
         },82,35);
@@ -632,14 +640,14 @@ class Board{
             players[turn].animateDice(dice1,dice2,function(){
                 board.animateDices = false; 
                 if(dice1 === dice2){
-                    self.getOutOfJail()
+                    self.getOutOfJail("DICE")
                     self.teleportTo(self.steps + dice1 + dice2);
                 }
             })
         },82,35);
         this.jailCardButton = new Button(false,111,239,images.jailMenu.img[3],function(){
             players[turn].jailcardAmount--;
-            players[turn].getOutOfJail();
+            players[turn].getOutOfJail("CARD");
             board.jailCardButton.visible = false;
         },82,35);
         this.rollDiceButton = new Button(false,10,250,images.buttons.img[0],function(){ players[turn].rollDice(); },107,23,false,false,false,true);
@@ -2318,9 +2326,9 @@ class Player{
             this.inJail = true;
             this.rolls = true;
         }
-        this.getOutOfJail = function(sendToServer = true){
+        this.getOutOfJail = function(type, sendToServer = true){
             if (Api.online && sendToServer) {
-                Api.exitJail();
+                Api.exitJail(type);
                 return;
             }
 

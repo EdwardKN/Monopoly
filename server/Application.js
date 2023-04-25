@@ -7,6 +7,8 @@ var { ClientRequest, ServerResponse } = require('node:http');
 var api = require("./api");
 var { PlayerManager } = require('./player');
 
+const CONFIG = JSON.parse(readFileSync("./config.json", "utf-8"));
+
 var network = Object.values(os.networkInterfaces()).map(x => x.filter(y => !y.internal).find(y => y.family == "IPv4")).find(x => x != undefined)?.address;
 if (network == undefined) {
     network = Object.values(os.networkInterfaces()).map(x => x.filter(y => !y.internal).find(y => y.family == "IPv6")).find(x => x != undefined)?.address;
@@ -17,8 +19,8 @@ if (network == undefined) {
     }
 }
 
-var port = 55045; // Random port that I got, this will be the default now
-var server = https.createServer({ key: readFileSync("./certs/monopoly.key"), cert: readFileSync("./certs/monopoly.crt"), passphrase: readFileSync("./certs/passphrase").toString("utf-8") }, serverHandler).listen(port, () => console.log("Klienter kan nu ansluta till servern med denna adress:\n%s:%s\n", network, port));
+var port = CONFIG.PORT;
+var server = https.createServer({ key: readFileSync("./certs/monopoly.key"), cert: readFileSync("./certs/monopoly.crt"), passphrase: readFileSync("./certs/passphrase", "utf-8") }, serverHandler).listen(port, () => console.log("Klienter kan nu ansluta till servern med denna adress:\n%s:%s\n", network, port));
 
 var gameHasStarted = false;
 
@@ -40,12 +42,10 @@ var websocketServer = new websocket.server({
 websocketServer.on('request', websocketHandler);
 
 function originIsAllowed(origin) {
-    // Official github page and testing
-    return origin.includes("edwardkn.github.io") || origin.includes("localhost");
+    return CONFIG.ALLOWED_DOMAINS.some(domain => origin.includes(domain));
 }
 
 /**
- * 
  * @param {websocket.request} request 
  * @returns 
  */
@@ -156,11 +156,22 @@ function websocketHandler(request) {
                     break;
                 case "trade_concluded": 
                     console.log("[S<-C] Trade concluded; Successful: %s; Contents: %s", event.successful, JSON.stringify(event.contents));
+                    if (event.successful) {
+                        player.money -= event.contents.p1.money;
+                        player.money += event.contents.p2.money;
+
+                        var p2 = PlayerManager.players.find(p => p.colorIndex == event.target_player);
+                        p2.money -= event.contents.p2.money;
+                        p2.money += event.contents.p1.money;
+                    }
                     api.tradeConcluded(player.colorIndex, event.target_player, event.successful, event.contents);
                     break;
                 case "exited_jail":
                     console.log("[S<-C] Player (%s) bought their way out of jail", player.name);
-                    api.exitedJail(player.colorIndex);
+                    if (event.type == "MONEY") {
+                        player.money -= 50;
+                    }
+                    api.exitedJail(player.colorIndex, event.type);
                     break;
                 default:
                     console.log(event);
