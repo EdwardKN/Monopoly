@@ -23,6 +23,8 @@ f.load().then(function(font){document.fonts.add(font);});
 
 var buttons = [];
 
+var textInputs = [];
+
 var offsets = {
     x:Math.floor(window.innerWidth/2) - 832*drawScale/2,
     y:Math.floor(window.innerHeight/2) - 416*drawScale/2
@@ -40,7 +42,8 @@ if(fastSpeed === true){
             factor:10,
             threshold:0,
             delay:0,
-        }
+        },
+        moneyAnimationSpeed:0.05
         
     }
 }else{
@@ -54,12 +57,23 @@ if(fastSpeed === true){
             factor:1.4,
             threshold:150,
             delay:1000
-        }
+        },
+        moneyAnimationSpeed:0.015
         
     }
 }
 
-
+const groups = {
+    'brown': [1, 3],
+    'light blue': [6, 8, 9],
+    'pink': [11, 13, 14],
+    'orange': [16, 18, 19],
+    'red': [21, 23, 24],
+    'yellow': [26, 27, 29],
+    'green': [31, 32, 34],
+    'blue': [37, 39],
+}
+const buyable = [1, 3, 5, 6, 8, 9, 11, 12, 13, 14, 15, 16, 18, 19, 21, 23, 24, 25, 26, 27, 28, 29, 31, 32, 34, 35, 37, 39]
 
 var images = {
     part:{
@@ -122,6 +136,14 @@ var images = {
     },
     jailMenu:{
         src:["./images/menus/prisonmenu","./images/buttons/prisonpay","./images/buttons/prisonrolldice","./images/buttons/prisongetoutofjail"]
+    },
+    lobbyMenu:{
+        src:["./images/buttons/plus","./images/buttons/minus"]
+    },
+    colorButtons:{
+        src:["./images/playercolorbuttons/player","./images/playercolorbuttons/player2","./images/playercolorbuttons/player3","./images/playercolorbuttons/player4",
+        "./images/playercolorbuttons/player5","./images/playercolorbuttons/player6","./images/playercolorbuttons/player7","./images/playercolorbuttons/player8","./images/playercolorbuttons/unselected"
+        ]
     }
 };
 
@@ -142,6 +164,11 @@ var sounds = {
         type:"multiple",
         src:"./sounds/movement/move-",
         amount:46
+    },
+    cash:{
+        type:"multiple",
+        src:"./sounds/cash/cash-",
+        amount:5
     }
 }
 
@@ -168,7 +195,7 @@ const pieces = [
     },
     {
         name:"Allmänning",
-        type:"community Chest",
+        type:"community chest",
         img:15
     },
     {
@@ -230,7 +257,7 @@ const pieces = [
         color:"#81d4fa"
     },
     {
-        name:"§ängelse",
+        name:"fängelse",
         img:1
     },
     {
@@ -291,7 +318,7 @@ const pieces = [
     },
     {
         name:"Allmänning",
-        type:"community Chest",
+        type:"community chest",
         img:15
     },
     {
@@ -425,7 +452,7 @@ const pieces = [
     },
     {
         name:"Allmänning",
-        type:"community Chest",
+        type:"community chest",
         img:15
     },
     {
