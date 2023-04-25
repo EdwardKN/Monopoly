@@ -270,7 +270,7 @@ class LocalLobby {
         this.settingsButtons[4].selected = true
         this.settingsButtons[5].selected = true
         this.settingsButtons[6].selected = true
-        this.settingsButtons[7].percentage = 0.42
+        this.settingsButtons[7].percentage = 0.45
         this.readyPlayers = [];
         this.settingsButtons[1].disabled = true;
 
