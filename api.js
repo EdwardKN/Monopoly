@@ -14,6 +14,13 @@ class Api {
     static currentPlayer = -1;
 
     /**
+     * Sent when this player exited jail
+     */
+    static exitJail() {
+        Api.getWebSocket().send(JSON.stringify({ event_type: "exited_jail" }));
+    }
+
+    /**
      * Request to start a trade with someone 
      * @param {number} target 
      */

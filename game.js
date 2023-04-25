@@ -460,7 +460,12 @@ async function init(){
                         button.selected = board.trade.contents.p2.tiles.some(tile => tile.card == button.card);
                     });
                 }
-            })
+            });
+            
+            document.body.addEventListener("exited_jail_event", (evt) => {
+                var player = players.find(p => p.colorIndex == evt.detail.player);
+                player.getOutOfJail(false);
+            });
 
             await Api.openWebsocketConnection(serverURL, username);
         } catch(err) {
@@ -2313,7 +2318,12 @@ class Player{
             this.inJail = true;
             this.rolls = true;
         }
-        this.getOutOfJail = function(){
+        this.getOutOfJail = function(sendToServer = true){
+            if (Api.online && sendToServer) {
+                Api.exitJail();
+                return;
+            }
+
             let self = this;
             board.prisonExtra.currentPlayer.forEach(function(e,i){
                 if(e == self){

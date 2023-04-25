@@ -162,6 +162,10 @@ function websocketHandler(request) {
                     console.log("[S<-C] Trade concluded; Successful: %s; Contents: %s", event.successful, JSON.stringify(event.contents));
                     api.tradeConcluded(player.colorIndex, event.target_player, event.successful, event.contents);
                     break;
+                case "exited_jail":
+                    console.log("[S<-C] Player (%s) bought their way out of jail", player.name);
+                    api.exitedJail(player.colorIndex);
+                    break;
                 default:
                     console.log(event);
                     console.error("<Warning> Event (%s) doesn't have any handler", event.event_type);

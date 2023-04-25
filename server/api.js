@@ -170,6 +170,13 @@ function tradeContentUpdated(target, contents) {
     websocket.broadcastUTF(JSON.stringify(new TradeContentUpdateEvent(target, contents)));
 }
 
+/**
+ * @param {number} player The id of the player
+ */
+function exitedJail(player) {
+    websocket.broadcastUTF(JSON.stringify(new PlayerExitedJailEvent(player)));
+}
+
 class Event {
     /**
      * 
@@ -179,6 +186,12 @@ class Event {
     constructor(eventType, data = {}) {
         this.event_type = eventType;
         this.data = data;
+    }
+}
+
+class PlayerExitedJailEvent extends Event {
+    constructor(player) {
+        super("exited_jail_event", { player });
     }
 }
 
@@ -361,6 +374,7 @@ module.exports = {
 
     // Movement
     teleportTo,
+    exitedJail,
 
     // Purchasing
     tilePurchased,
