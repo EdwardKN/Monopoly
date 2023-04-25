@@ -29,10 +29,12 @@ button {
     color: white;
 }
 
+button.waiting::before { content: "Inte redo"; }
 button.waiting {
     background-color: firebrick;
 }
 
+button.ready::before { content: "Redo!"; }
 button.ready {
     background-color: green;
 }
