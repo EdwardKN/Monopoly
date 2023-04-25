@@ -356,7 +356,7 @@ class LocalLobby {
                     }else{
                         self.disableAll = false;
                     }
-                },40,40,false,false,false,true),
+                },40,40,false,false,false,true,false,{x:300,y:300,w:200,h:200,onlySelected:true}),
                 colorButtons: []
             }
             for(let i = 0; i < 8; i++){
@@ -505,8 +505,10 @@ class LocalLobby {
                         c.fillStyle = "black"
                         if(i >= self.playerInputs.length/2){
                             c.fillRect(e.colorButton.x*drawScale*scale + 550*scale,e.colorButton.y*drawScale*scale -610*scale,410*scale,210*scale)
+                            e.colorButton.invertedHitbox = {x:e.colorButton.x*drawScale + 550,y:e.colorButton.y*drawScale -610,w:410,h:210,onlySelected:true}
                         }else{
                             c.fillRect(e.colorButton.x*drawScale*scale +550*scale,e.colorButton.y*drawScale*scale -26*scale -294*scale,410*scale,210*scale)
+                            e.colorButton.invertedHitbox = {x:e.colorButton.x*drawScale +550,y:e.colorButton.y*drawScale -26 -294,w:410,h:210,onlySelected:true}
                         }
                         e.colorButtons.forEach(function(g,h){
                             for (let i = 0; i < self.useableColors.length; i++) {
@@ -1846,24 +1848,25 @@ class Button{
         this.click = function(){
             if(this.visible && !this.disabled){
                 if(detectCollition(this.x*drawScale*scale+715*scale,this.y*drawScale*scale-400*scale,this.w*drawScale*scale,this.h*drawScale*scale,mouse.realX,mouse.realY,1,1)||
-                this.invertedHitbox !== undefined && this.invertedHitbox !== false && !detectCollition(this.invertedHitbox.x*scale,this.invertedHitbox.y*scale,this.invertedHitbox.w*scale,this.invertedHitbox.h*scale,mouse.realX,mouse.realY,1,1)){
+                this.invertedHitbox !== undefined && this.invertedHitbox !== false && this.invertedHitbox.onlySelected === undefined && !detectCollition(this.invertedHitbox.x*scale,this.invertedHitbox.y*scale,this.invertedHitbox.w*scale,this.invertedHitbox.h*scale,mouse.realX,mouse.realY,1,1) ||
+                this.invertedHitbox !== undefined && this.invertedHitbox !== false && this.invertedHitbox.onlySelected === true && this.selected && !detectCollition(this.invertedHitbox.x*scale,this.invertedHitbox.y*scale,this.invertedHitbox.w*scale,this.invertedHitbox.h*scale,mouse.realX,mouse.realY,1,1)){
                     if(this.select === false){
-                    }else{
-                        if(this.selected){
-                            this.selected = false;
                         }else{
-                            this.selected = true;
+                            if(this.selected){
+                                this.selected = false;
+                            }else{
+                                this.selected = true;
+                            }
+                        }
+    
+                        this.onClick();
+                        
+                        this.hover = false;
+                        if(!this.disablesound){
+                            console.log(this)
+                            playSound(sounds.release,1)
                         }
                     }
-
-                    this.onClick();
-                    
-                    this.hover = false;
-                    if(!this.disablesound){
-                        console.log(this)
-                        playSound(sounds.release,1)
-                    }
-                }
             }
         }
         
