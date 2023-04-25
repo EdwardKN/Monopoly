@@ -1205,7 +1205,7 @@ class Trade{
         }, 1);
 
         let self = this;
-        this.closeButton = new Button(false,369,283,images.buttons.img[7],function(){self.closeButton.visible = false;board.trade = undefined;players.forEach(e => {e.playerBorder.button.disabled = false})},18,18,false)
+        this.closeButton = new Button(false,369,284,images.buttons.img[7],function(){self.closeButton.visible = false;board.trade = undefined;players.forEach(e => {e.playerBorder.button.disabled = false})},18,18,false)
         this.closeButton.visible = true;
 
         this.p1Slider = new Slider(500,300,400,60,0,this.p1.money,10,true,30,"kr","")
