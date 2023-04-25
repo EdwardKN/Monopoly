@@ -270,7 +270,7 @@ class LocalLobby {
         this.settingsButtons[4].selected = true
         this.settingsButtons[5].selected = true
         this.settingsButtons[6].selected = true
-        this.settingsButtons[7].percentage = 0.35
+        this.settingsButtons[7].percentage = 0.42
         this.readyPlayers = [];
         this.settingsButtons[1].disabled = true;
 
@@ -407,10 +407,8 @@ class LocalLobby {
 
                 if(this.settingsButtons[8].value > 0){
                     this.settingsButtons[7].from = 0;
-                    this.settingsButtons[7].to = 2500;
                 }else{
-                    this.settingsButtons[7].from = 500;
-                    this.settingsButtons[7].to = 3000;
+                    this.settingsButtons[7].from = 200;
                 }
                 if(this.settingsButtons[0].selected === true){
                     this.settingsButtons[1].disabled = false;
