@@ -4,7 +4,7 @@
 ## Krav
 * Nodejs
 
-## Instructions
+## Instruktioner
 1. Ladda ner detta projekt.
 2. Gå in i terminal och navigera till detta projekt>server.
 3. När du är i den mappen, skriv kommandot `node Application.js` (och tryck på enter) för att starta servern
