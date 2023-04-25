@@ -1719,7 +1719,7 @@ class Button{
             if(this.visible && !this.disabled){
                 if(this.screencenter){
                     if(detectCollition(this.x*drawScale,this.y*drawScale,this.w*drawScale,this.h*drawScale,mouse.realX,mouse.realY,1,1)){
-                        this.selected = !this.selected;
+                        if (this.select) this.selected = !this.selected;
                         this.onClick();
                         this.hover = false;
                         if(!this.disablesound){
@@ -1728,7 +1728,7 @@ class Button{
                     }
                 }else{
                     if(detectCollition(canvas.width/2 + this.x*drawScale - 64*drawScale,canvas.height/2 + this.y*drawScale - 208*drawScale,this.w*drawScale,this.h*drawScale,mouse.realX,mouse.realY,1,1)){
-                        this.selected = !this.selected;
+                        if (this.select) this.selected = !this.selected;
                         this.onClick();
                         this.hover = false;
                         if(!this.disablesound){
