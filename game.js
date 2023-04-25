@@ -644,11 +644,12 @@ class TextInput {
         }
         this.input = function(key){
             if(this.follow){
-                playSound(sounds.key,1,false)
                 if(key.keyCode > 46 && key.keyCode < 91 && this.value.length < this.maxLength){
                     this.value += key.key
+                    playSound(sounds.key,1,false)
                 }
-                if(key.keyCode === 8){
+                if(key.keyCode === 8 && this.value.length > 0){
+                    playSound(sounds.key,1,false)
                     this.value = this.value.substring(0, this.value.length - 1);
                 }
             }
