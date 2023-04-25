@@ -1,11 +1,12 @@
 # Monopol för fan!
 
 # Server
-## Requirements
+## Krav
 * Nodejs
 
 ## Instructions
-1. Download this project
-2. Start file explorer, navigate to this project>server and right-click somewhere in the windows where there aren't any files/folders to open the terminal.
-3. When in the terminal, do `node Application.js` to start the server
-4. You'll see an address appear in the terminal shortly afterwards, on which other people on the **SAME** Wi-Fi as you can connect (If you know how to mix with your firewalls to get other people to connect, that should work too).
+1. Ladda ner detta projekt.
+2. Gå in i terminal och navigera till detta projekt>server.
+3. När du är i den mappen, skriv kommandot `node Application.js` (och tryck på enter) för att starta servern
+4. Du kommer att se en address dyka upp i terminalen efter en liten stund. Andra personer som är på **samma** nätverk som du kan skriva in den addressen för att ansluta till ditt monopolspel.
+* (PS. Om du vet hur du ska ändra med dina brandväggar för att få andra att ansluta, borde det fungera också)

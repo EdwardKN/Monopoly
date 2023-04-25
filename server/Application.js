@@ -23,7 +23,7 @@ if (network == undefined) {
 }
 
 var port = 60000 + Math.round((Math.random() - 0.5) * 10000);
-var server = https.createServer({ key: readFileSync("./certs/monopoly.key"), cert: readFileSync("./certs/monopoly.crt"), passphrase: readFileSync("./certs/passphrase").toString("utf-8") }, serverHandler).listen(port, () => console.log("Clients can now connect at the Address:\n%s:%s\n", network, port));
+var server = https.createServer({ key: readFileSync("./certs/monopoly.key"), cert: readFileSync("./certs/monopoly.crt"), passphrase: readFileSync("./certs/passphrase").toString("utf-8") }, serverHandler).listen(port, () => console.log("Klienter kan nu ansluta till servern med denna adress:\n%s:%s\n", network, port));
 
 var gameHasStarted = false;
 
@@ -46,7 +46,7 @@ websocketServer.on('request', websocketHandler);
 
 function originIsAllowed(origin) {
     // Official github page and testing
-    return true//origin.includes("edwardkn.github.io") || origin.includes("localhost") || origin.includes(network);
+    return true; //origin.includes("edwardkn.github.io") || origin.includes("localhost") || origin.includes(network);
 }
 
 /**
@@ -135,6 +135,7 @@ function websocketHandler(request) {
                     player.isReady = !player.isReady;
 
                     if (PlayerManager.getNumberOfPlayers() >= 2 && PlayerManager.players.every(x => x.isReady)) {
+                        gameHasStarted = true;
                         api.startGame(PlayerManager.players);
                     } else {
                         api.readyUp(player.colorIndex);
