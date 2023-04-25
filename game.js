@@ -399,7 +399,6 @@ class LocalLobby {
 
         this.draw = function(){
             if(this.current){
-                console.log(this.useableColors)
                 drawRotatedImage(0,0,981*drawScale,552*drawScale,images.mainMenu.img[3],0,0,0,0,981,552)
                 this.readyPlayers = [];
 
@@ -645,6 +644,7 @@ class TextInput {
         }
         this.input = function(key){
             if(this.follow){
+                playSound(sounds.key,1,false)
                 if(key.keyCode > 46 && key.keyCode < 91 && this.value.length < this.maxLength){
                     this.value += key.key
                 }
@@ -1144,12 +1144,17 @@ class Slider{
         this.steps = steps;
         this.beginningText = beginningText;
         this.from = from;
-        this.to = to
+        this.to = to;
+        this.last = this.value;
 
         buttons.push(this);
         this.draw = function(){
             if(this.visible){
                 this.value = Math.round((((this.to-this.from)*this.percentage) + this.from)/this.steps)*this.steps;
+                if(this.value !== this.last){
+                    this.last = this.value;
+                    playSound(sounds.clicks,0.1,false)
+                }
                 if(this.value > this.to){
                     this.value = this.to;
                 }

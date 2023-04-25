@@ -170,6 +170,16 @@ var sounds = {
         type:"multiple",
         src:"./sounds/music/music-",
         amount:8
+    },
+    key:{
+        type:"multiple",
+        src:"./sounds/keyboard/key-",
+        amount:9
+    },
+    clicks:{
+        type:"multiple",
+        src:"./sounds/clicks/click-",
+        amount:11
     }
 }
 
