@@ -1598,8 +1598,8 @@ class BoardPiece{
 
                     }
                 }else if(this.piece.type === "chance"){
-
-                    let random = randomIntFromRange(1,14)
+                                                    
+                    let random = randomIntFromRange(1, 14)
                     if(random === 1){
                         alert("Gå till start!")
                         player.teleportTo(0, true)
@@ -1819,7 +1819,9 @@ class Player{
 
         this.checkMoney = function(){
             if(this.money < 0 && this.ownedPlaces.length == 0){
-                delete Bot.boardInfo[turn]
+                Bot.boardInfo = {}
+                players.forEach((player, i) => Bot.boardInfo[i] = player.ownedPlaces)
+
                 turn = turn%(players.length-1);
 
                 if(players.length-1 === 1){
@@ -2042,7 +2044,7 @@ class Player{
                 }else{
                     setTimeout(myFunction, counter);
                 }
-            }
+            }   
             setTimeout(myFunction, counter);
         }
         
@@ -2084,7 +2086,6 @@ class Player{
 
     }
 }
-
 
 init();
 update();

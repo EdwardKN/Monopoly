@@ -68,29 +68,29 @@ class Bot{
         }
 
         this.player.rollDice()
-        
         while (board.animateDices || this.player.animationOffset !== 0) { await new Promise(requestAnimationFrame) }
-        
-        players[turn].rolls = false;
-        players[turn].numberOfRolls = 0;
-        turn = (turn+1)%players.length;
-        board.dice1 = 0;
-        board.dice2 = 0;
-        
-        if (this.player.inJail) { return }
-
+        if (board.boardPieces[this.player.steps].type === 'chans') {
+            await new Promise(resolve => setTimeout(resolve, 250))
+        }
+        await new Promise(resolve => setTimeout(resolve, randomIntFromRange(speeds.botMin, speeds.botMax)))
+        while (this.player.animationOffset !== 0) { await new Promise(requestAnimationFrame) } 
         let bP = board.boardPieces[this.player.steps]
+        
+        players[turn].rolls = false
+        players[turn].numberOfRolls = 0
+        turn = (turn + 1) % players.length
+        board.dice1 = 0
+        board.dice2 = 0
+        
 
         if (this.player.negative) {
             this.handleBankrupt()
         }
 
-
+        if (bP.owner === this.player || !((bP.piece.type || bP.piece.group) in groups)) { return }
+        if (bP.owner) { this.player.checkDebt(bP.owner); return }
 
         // Buy or Auction
-        if (!((bP.piece.type || bP.piece.group) in groups)) { return }
-        if (bP.owner && bP.owner !== this.player) { this.player.checkDebt(bP.owner); return }
-
         let moneyLeft = this.player.money - bP.piece.price
         if (moneyLeft < this.getAverageLoss(12)) { 
             board.auction = new Auction(bP)
@@ -108,6 +108,15 @@ class Bot{
             if (moneyLeft > 2 * this.getAverageLoss(12) || Object.values(owners).some(amount => amount / groups[group].length >= 0.5)) {
                 this.buyPiece(bP)  
             }
+        }
+
+        // Create Trade
+        
+
+        // Unmortgage
+        for (let bP of this.player.ownedPlaces) {
+            if (!bP.mortgaged) { continue }
+
         }
     }
 
@@ -200,7 +209,7 @@ class Bot{
             const remainingMoney = this.player.money - currentPrice - option// + this.getAverageIncome() - this.getAverageLoss()
             if (remainingMoney < 0) { continue }
 
-            let moneyToSpend = originalPrice - currentPrice - option
+            let moneyToSpend = originalPrice - currentPrice - option - this.getAverageLoss() + this.getAverageIncome()
             
             if (bP.piece.group) {
                 let owner
@@ -213,7 +222,7 @@ class Bot{
 
                 if (owner) {
                     let factor = owner === this.player ? 2 : 1.5
-                    moneyToSpend += Math.min(moneyToSpend + factor * bP.piece.price, factor * this.player.money)
+                    moneyToSpend += Math.min(moneyToSpend + factor * bP.piece.price, 1.2 * this.player.money)
                 }
             }
 
