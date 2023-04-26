@@ -28,8 +28,7 @@ setTimeout(() => {
 }, 100);
 
 window.addEventListener("resize", e=> {
-    backCanvas.width = window.innerWidth;
-    backCanvas.height = window.innerHeight;
+    
     if(window.innerWidth*9 < window.innerHeight*16){
         canvas.width = window.innerWidth;
         canvas.height = (window.innerWidth*9)/16;
@@ -37,6 +36,8 @@ window.addEventListener("resize", e=> {
         canvas.width = (window.innerHeight*16)/9;
         canvas.height = window.innerHeight;
     }
+    backCanvas.width = canvas.width;
+    backCanvas.height = canvas.height;
     offsets = {
         x:Math.floor(window.innerWidth/2) - 832*drawScale/2,
         y:Math.floor(window.innerHeight/2) - 416*drawScale/2
@@ -767,6 +768,9 @@ class Board{
         this.win = false;
         this.auction = undefined;
         this.trade = undefined;
+        this.getToMainMenuButton = new Button(true,-30,691,images.buttons.img[12],function(){
+            
+        },325,60,true,false,false,true,false,false)
         this.payJailButton = new Button(false,-10,520,images.jailMenu.img[1],function(){
             players[turn].money -= 50;
             if(board.settings.freeParking){
@@ -898,6 +902,7 @@ class Board{
             
 
             this.boardPieces.forEach(g => g.update())
+            
             if(this.win === false){ 
 
             this.showDice()
@@ -955,6 +960,8 @@ class Board{
             if(this.trade !== undefined){
                 this.trade.update();
             }
+            this.getToMainMenuButton.visible = true;
+            this.getToMainMenuButton.draw();
         }  
 
         
