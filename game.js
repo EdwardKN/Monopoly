@@ -620,10 +620,11 @@ class TextInput {
         this.htmlElement.style.position = "absolute"
 
         this.htmlElement.style.border = "0px "
-        this.htmlElement.style.padding = "0"
+        this.htmlElement.style.padding = "0px"
         this.htmlElement.style.zIndex = 100;
         this.htmlElement.style.display = "none"
         this.htmlElement.style.fontFamily = "Arcade"
+        this.htmlElement.style.lineHeight = "200%"
 
         this.draw = function(){
             this.htmlElement.style.left = this.x*scale +(window.innerWidth-canvas.width)/2 + "px";
