@@ -1336,7 +1336,7 @@ class PlayerBorder{
         this.button = new Button(true,this.x,this.y,images.playerOverlay.img[8],function(){
             players.forEach(e =>{if(e.playerBorder != self){e.playerBorder.button.selected = false}})
             self.createTradebutton.visible = false;
-        },260,54,false,false,false,true) 
+        },249,54,false,false,false,true) 
 
         this.createTradebutton = new Button(false,this.x,this.y,images.buttons.img[9],function(){
             self.createTradebutton.visible = false;
@@ -1441,7 +1441,7 @@ class PlayerBorder{
                 this.button.mirror = true;
             }
             if(this.index === 1){
-                this.x = 364
+                this.x = 374
                 this.y = 200;
                 this.button.mirror = false;
             }
@@ -1487,7 +1487,7 @@ class PlayerBorder{
                 mirrorAdder = 370;
             }
             if(this.button.mirror === false){
-                drawRotatedImage(this.x*drawScale+466 + 715,this.y*drawScale+5 - 400,48,96,images.player.img[this.player.colorIndex],0,false,0,0,24,48,false)
+                drawRotatedImage(this.x*drawScale+466 + 694,this.y*drawScale+5 - 400,48,96,images.player.img[this.player.colorIndex],0,false,0,0,24,48,false)
                 c.font = 40*scale+"px Arcade";
                 c.fillStyle ="black"
                 c.textAlign = "right"
@@ -1812,7 +1812,11 @@ class Button{
                     }else{
                         if(detectCollition(this.x*drawScale*scale+715*scale,this.y*drawScale*scale-400*scale,this.w*drawScale*scale,this.h*drawScale*scale,mouse.realX,mouse.realY,1,1)){
                             if(this.img.width < this.w*2){
-                                drawRotatedImage(this.x*drawScale+715,this.y*drawScale-400,this.w*drawScale,this.h*drawScale,this.img,0,this.mirror,this.w*2,0,this.w,this.h)
+                                if(this.disableselectTexture){
+                                    drawRotatedImage(this.x*drawScale+715,this.y*drawScale-400,this.w*drawScale,this.h*drawScale,this.img,0,this.mirror,this.w*1,0,this.w,this.h)
+                                }else{
+                                    drawRotatedImage(this.x*drawScale+715,this.y*drawScale-400,this.w*drawScale,this.h*drawScale,this.img,0,this.mirror,this.w*2,0,this.w,this.h)
+                                }
                             }else{
                                 drawRotatedImage(this.x*drawScale+715,this.y*drawScale-400,this.w*drawScale,this.h*drawScale,this.img,0,this.mirror,this.w,0,this.w,this.h)
                             }
