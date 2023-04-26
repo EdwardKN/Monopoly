@@ -60,17 +60,14 @@ window.addEventListener("mousedown",function(e){
         firstclick = true;
         playSound(sounds.music,1,true)
     }
-    textInputs.forEach(g => {
-        g.follow = false;
-    })
     buttons.forEach(e =>{
         e.click();
     })
     
 
 })
-window.addEventListener("mouseup",function(e){
 
+window.addEventListener("mouseup",function(e){
     buttons.forEach(e =>{
         if(e.release !== undefined){
             e.release();
@@ -78,13 +75,6 @@ window.addEventListener("mouseup",function(e){
     })
 
 })
-
-window.addEventListener("keydown",function(e){
-    textInputs.forEach(g => {
-        g.input(e)
-    })
-})
-
 
 function preRender(imageObject){
     Object.entries(imageObject).forEach(image => {
@@ -291,6 +281,7 @@ class LocalLobby {
             self.backButton.visible = false;
             self.startButton.visible = false;
             self.playerInputs.forEach( e=>{
+                e.textInput.htmlElement.style.display = "none"
                 e.textInput.visible = false;
                 e.botButton.visible = false;
                 e.colorButton.visible = false;
@@ -330,6 +321,7 @@ class LocalLobby {
             self.backButton.visible = false;
             self.startButton.visible = false;
             self.playerInputs.forEach( e=>{
+                e.textInput.htmlElement.style.display = "none"
                 e.textInput.visible = false;
                 e.botButton.visible = false;
                 e.colorButton.visible = false;
@@ -366,8 +358,10 @@ class LocalLobby {
                 colorButton: new Button(true,-50,self.playerInputs.length*55 - 32,images.colorButtons.img[8],function(){
                     if(self.playerInputs[id].colorButton.selected){
                         self.disableAll = true;
+                        canvas.style.zIndex = 500;
                     }else{
                         self.disableAll = false;
+                        canvas.style.zIndex = -100;
                     }
                 },40,40,false,false,false,true,false,{x:300,y:300,w:200,h:200,onlySelected:true}),
                 colorButtons: []
@@ -506,7 +500,6 @@ class LocalLobby {
                         }
                     })
                     if(e.colorButton.selected){
-                        
 
                         c.fillStyle = "black"
                         if(i >= self.playerInputs.length/2){
@@ -613,55 +606,31 @@ class TextInput {
         this.follow = false;
         this.value = ""
         this.maxLength = maxLength;
+        this.htmlElement = document.createElement("input");
+        document.body.appendChild(this.htmlElement)
 
-        textInputs.push(this);
-        buttons.push(this)
+        this.htmlElement.style.position = "absolute"
+
+        this.htmlElement.style.border = "0px "
+        this.htmlElement.style.padding = "0"
+        this.htmlElement.style.zIndex = 100;
+        this.htmlElement.style.display = "none"
+        this.htmlElement.style.fontFamily = "Arcade"
 
         this.draw = function(){
+            this.htmlElement.style.left = this.x*scale +(window.innerWidth-canvas.width)/2 + "px";
+            this.htmlElement.style.top = this.y*scale+ (window.innerHeight-canvas.height)/2+"px";
+            this.htmlElement.style.width = this.w*scale+ "px";
+            this.htmlElement.style.height = this.h*scale+ "px";
+            this.htmlElement.style.fontSize = this.font*scale + "px"
+            this.htmlElement.maxLength = this.maxLength;
+
             if(this.visible){
-                c.fillStyle = "black";
-                c.fillRect(this.x*scale,this.y*scale,this.w*scale,this.h*scale)
-                if(this.follow){
-                    c.fillStyle = "lightgray";
-                }else if(this.hover){
-                    c.fillStyle = "gray";
-                }else{
-                    c.fillStyle = "white";
-                }
-                c.fillRect(this.x*scale + 4*scale,this.y*scale + 4*scale,this.w*scale-8*scale,this.h*scale-8*scale)
-                c.fillStyle = "black";
-                c.font = this.font*scale + "px Arcade";
-                c.textAlign = "center";
-                c.fillText(this.value,this.x*scale + this.w/2*scale,this.y*scale + this.h/1.5*scale)
-            }
-            if(detectCollition(this.x*scale,this.y*scale,this.w*scale,this.h*scale,mouse.realX,mouse.realY,1,1) && this.disabled === false){
-                this.hover = true;
-            }else{
-                this.hover = false;
+                this.htmlElement.style.display = "inline"
+                this.value = this.htmlElement.value
+
             }
         }
-        this.click = function(){
-            if(this.hover === true && this.disabled === false){
-                if(this.follow === false){
-                    this.follow = true;
-                }else{
-                    this.follow = false;
-                }
-            }
-        }
-        this.input = function(key){
-            if(this.follow){
-                if(key.keyCode > 46 && key.keyCode < 91 && this.value.length < this.maxLength){
-                    this.value += key.key
-                    playSound(sounds.key,1,false)
-                }
-                if(key.keyCode === 8 && this.value.length > 0){
-                    playSound(sounds.key,1,false)
-                    this.value = this.value.substring(0, this.value.length - 1);
-                }
-            }
-        }
-         
     }
 }
 
@@ -1202,6 +1171,9 @@ class Slider{
             }
         }
         this.release = function(){
+            if(this.follow === true){
+                this.percentage = (mouse.realX-(this.x*scale))/(this.w*scale-4*scale);
+            }
             this.follow = false;
         }   
     }
@@ -1240,7 +1212,7 @@ class Trade{
             if(i%2 === 1){
                 tmp = 107
             }
-            let but = (new Button(true,-300 + tmp + 200,280 + 18*Math.floor(i/2) + 100,images.trade.img[2],function(){
+            let but = (new Button(true,-300 + tmp + 198,280 + 18*Math.floor(i/2) + 110,images.trade.img[2],function(){
 
             },106,17,false,false,false,false,false,false,e.piece.name + " " + e.piece.price + "kr",15,e.piece.color))
 
@@ -1258,7 +1230,7 @@ class Trade{
             if(i%2 === 1){
                 tmp = 107
             }
-            let but = (new Button(true,-30 + tmp + 200,280 + 18*Math.floor(i/2) + 100,images.trade.img[2],function(){
+            let but = (new Button(true,-30 + tmp + 200,280 + 18*Math.floor(i/2) + 110,images.trade.img[2],function(){
 
             },106,17,false,false,false,false,false,false,e.piece.name + " " + e.piece.price + "kr",15,e.piece.color))
 
