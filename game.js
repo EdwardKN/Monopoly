@@ -374,7 +374,15 @@ class LocalLobby {
                 colorButton: new Button(true,-50,self.playerInputs.length*55 - 32,images.colorButtons.img[8],function(){
                     if(self.playerInputs[id].colorButton.selected){
                         self.disableAll = true;
-                        self.playerInputs.forEach(e => e.textInput.w = 400)
+                        if(id < 4){
+                            for(let i = id+1; i < 3+id; i++){
+                                self.playerInputs[i].textInput.w = 400
+                            }
+                        }else{
+                            for(let i = id-2; i < id; i++){
+                                self.playerInputs[i].textInput.w = 400
+                            }
+                        }
                     }else{
                         self.disableAll = false;
                         self.playerInputs.forEach(e => e.textInput.w = 560)
