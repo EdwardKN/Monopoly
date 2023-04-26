@@ -2179,8 +2179,14 @@ class Player{
 
         this.checkMoney = function(){
             if(this.money < 0 && this.ownedPlaces.length == 0){
-                Bot.boardInfo = {}
-                players.forEach((player, i) => Bot.boardInfo[i] = player.ownedPlaces)
+                let i = players.indexOf(this)
+                delete Bot.boardInfo[i]
+                for (let key of Object.keys(Bot.boardInfo)) {
+                    if (key > i) {
+                        Bot.boardInfo[key - 1] = players[key].ownedPlaces
+                        delete Bot.boardInfo[key]
+                    }
+                }
 
                 turn = turn%(players.length-1);
 
@@ -2188,7 +2194,7 @@ class Player{
                     board.win = true;
                 }
                 board.boardPieces[this.steps].currentPlayer.splice(board.boardPieces[this.steps].currentPlayer.indexOf(this),1)
-                players.splice(players.indexOf(this),1)
+                players.splice(i,1)
 
             }else if(this.money < 0){
                 this.negative = true;
