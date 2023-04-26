@@ -2660,6 +2660,7 @@ class Player{
             board.showDices = true;
             self.timer = setInterval(function(){
                 if(self.animationOffset <= 0 && direction === 1 || self.animationOffset >= 0 && direction === -1){
+                    board.getToMainMenuButton.visible = true;
                     clearInterval(self.timer);
                     
                     board.boardPieces.forEach(function(b,i2) {b.currentPlayer.forEach(function(d,i3) {
@@ -2682,7 +2683,6 @@ class Player{
                         self.goToPrison()
                     }
                     board.showDices = false;
-                    board.getToMainMenuButton.visible = true;
 
                 }else{
                     board.boardPieces.forEach(function(b,i2) {b.currentPlayer.forEach(function(d,i3) {
