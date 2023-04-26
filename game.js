@@ -1026,7 +1026,7 @@ class Board{
                         }else{
                             this.downgradeButton.disabled = true;
                         }
-                        if(this.currentCard.mortgaged === true && players[turn].money <= ((this.currentCard.piece.price/2)*1.1) || this.currentCard.level !== 0 || !this.settings.mortgage){
+                        if(this.currentCard.mortgaged === true && players[turn].money <= ((this.currentCard.piece.price/2)*1.1) || highest === 0 || !this.settings.mortgage){
                             this.mortgageButton.disabled = true;
                         }else{
                             this.mortgageButton.disabled = false;
