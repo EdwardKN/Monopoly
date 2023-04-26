@@ -1029,6 +1029,7 @@ async function showOnlineLobby() {
                     board.trade.p2PropertyButtons.forEach(e => { e.visible = false; });
                 }
             }
+            players.forEach(p => { p.playerBorder.button.disabled = false; });
             board.trade = undefined;
         });
 
