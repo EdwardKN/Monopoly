@@ -824,11 +824,12 @@ class Board{
             players[turn].rolls = true;
             players[turn].getOutOfJail();
             board.payJailButton.visible = false;
+            board.rollJailButton.visible = false;
+            board.jailCardButton.visible = false;
             players[turn].playerBorder.startMoneyAnimation(-50);
                 
         },82,35);
         this.rollJailButton = new Button(false,85,520,images.jailMenu.img[2],function(){
-            board.rollJailButton.visible = false;
             let dice1 = randomIntFromRange(1,6);
             let dice2 = randomIntFromRange(1,6);
             players[turn].rolls = true;
@@ -846,16 +847,19 @@ class Board{
                     self.teleportTo(self.steps + dice1 + dice2);
                 }
             })
+            board.payJailButton.visible = false;
+            board.rollJailButton.visible = false;
+            board.jailCardButton.visible = false;
         },82,35);
         this.jailCardButton = new Button(false,180,520,images.jailMenu.img[3],function(){
             players[turn].jailcardAmount--;
             players[turn].getOutOfJail();
+            board.payJailButton.visible = false;
+            board.rollJailButton.visible = false;
             board.jailCardButton.visible = false;
         },82,35);
         this.rollDiceButton = new Button(false,76,530,images.buttons.img[0],function(){players[turn].rollDice()},107,23,false,false,false,true)
         this.nextPlayerButton = new Button(false,76,530,images.buttons.img[1],function(){
-            board.animateDices = false;
-            board.showDices = false;
             if(players[turn].money >= 0){
                 players[turn].rolls = false;
                 players[turn].numberOfRolls = 0;
@@ -863,6 +867,8 @@ class Board{
                 board.dice1 = 0;
                 board.dice2 = 0;
             }
+            board.animateDices = false;
+            board.showDices = false;
         },107,23)
         this.currentCard = undefined;
         this.cardCloseButton = new Button(false,241,318,images.buttons.img[7],function(){
@@ -2703,6 +2709,7 @@ class Player{
         }
 
         this.animateDice = function(dice1,dice2,callback){
+
             board.animateDices = true;
 
             let counter = speeds.diceSpeed.counter;
