@@ -672,8 +672,8 @@ function init(){
         menus.push(new LocalLobby())
     }else{
         let playerlist = []
-        let playerAmount = 3;
-        let botAmount = 0;
+        let playerAmount = 0;
+        let botAmount = 2;
         let useableColors = [0,1,2,3,4,5,6,7]
         for(let i = 0; i < (playerAmount+botAmount); i++){
             let random = randomIntFromRange(0,useableColors.length-1)
@@ -2048,8 +2048,8 @@ class BoardPiece{
                     board.boardPieces[20].money -= this.piece.price;
                     player.playerBorder.startMoneyAnimation(this.piece.price)
                 }else if(this.piece.price > 0 && this.owner === undefined){
-                    if(players[turn].bot === undefined){
-                                board.currentCard = this;        
+                    if(player.bot === undefined){
+                            board.currentCard = this;        
                     }
                 }else if(this.owner !== player && this.owner !== undefined && board.settings.prisonmoney || this.owner !== player && this.owner !== undefined && !board.settings.prisonmoney && !this.owner.inJail){
                     if(this.piece.type === "utility"){
@@ -2108,7 +2108,7 @@ class BoardPiece{
                     }
                 }else if(this.piece.type === "chance"){
                                                     
-                    let random = randomIntFromRange(1, 14)
+                    let random = randomIntFromRange(2,2)//1, 14
                     if(random === 1){
                         alert("Gå till start!")
                         player.teleportTo(0, true)
@@ -2635,8 +2635,8 @@ class Player{
                 if(this.inJail === false){
                     if(this.rolls === false){
                         let oldStep = this.steps;
-                        let dice1 = randomIntFromRange(1,6);
-                        let dice2 = randomIntFromRange(1,6);
+                        let dice1 = randomIntFromRange(3,3);
+                        let dice2 = randomIntFromRange(4,4);
                         this.numberOfRolls++;
                         if(dice1 === dice2){
                             this.rolls = false;
