@@ -56,14 +56,6 @@ canvas.addEventListener("mousemove",function(e){
 })
 
 window.addEventListener("mousedown",function(e){
-    mouse = {
-        x:e.offsetX - offsets.x,
-        y:e.offsetY - offsets.y,
-        realX:e.offsetX,
-        realY:e.offsetY,
-        offsetX:e.offsetX,
-        offsety:e.offsetY,
-    }
     if(firstclick === false && musicOn){
         firstclick = true;
         playSound(sounds.music,1,true)
@@ -76,14 +68,6 @@ window.addEventListener("mousedown",function(e){
 })
 
 window.addEventListener("mouseup",function(e){
-    mouse = {
-        x:e.offsetX - offsets.x,
-        y:e.offsetY - offsets.y,
-        realX:e.offsetX,
-        realY:e.offsetY,
-        offsetX:e.offsetX,
-        offsety:e.offsetY,
-    }
     buttons.forEach(e =>{
         if(e.release !== undefined){
             e.release();
