@@ -285,7 +285,7 @@ class LocalLobby {
                 e.colorButton.visible = false;
                 e.colorButtons.forEach(g => g.visible = false)
                 })
-        },325,60,false,false,false,false,false,false,"Tillbaka",90,"black")
+        },325,60,false,false,false,false,false,false)
         this.startButton = new Button(false,250,650,images.buttons.img[11],function(){
             let playerlist = []
 
@@ -324,7 +324,7 @@ class LocalLobby {
                 e.colorButton.visible = false;
                 e.colorButtons.forEach(g => g.visible = false)
                 })
-        },97*2,80,false,false,false,false,false,false,"Start",100,"black")
+        },97*2,80,false,false,false,false,false,false)
         this.disableAll = false;
         this.ableToStart = true;
 
