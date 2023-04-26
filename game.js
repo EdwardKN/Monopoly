@@ -616,10 +616,10 @@ class TextInput {
         this.maxLength = maxLength;
         this.htmlElement = document.createElement("input");
         document.body.appendChild(this.htmlElement)
+        this.oldvalue = this.htmlElement.value;
 
         this.htmlElement.style.position = "absolute"
 
-        this.htmlElement.style.border = "0px "
         this.htmlElement.style.padding = "0px"
         this.htmlElement.style.zIndex = 100;
         this.htmlElement.style.display = "none"
@@ -627,14 +627,19 @@ class TextInput {
         this.htmlElement.style.lineHeight = "200%"
 
         this.draw = function(){
-            this.htmlElement.style.left = this.x*scale +(window.innerWidth-canvas.width)/2 + "px";
-            this.htmlElement.style.top = this.y*scale+ (window.innerHeight-canvas.height)/2+"px";
+            this.htmlElement.style.left = this.x*scale +(window.innerWidth-canvas.width)/2 -5*scale+ "px";
+            this.htmlElement.style.top = this.y*scale+ (window.innerHeight-canvas.height)/2-5*scale+"px";
             this.htmlElement.style.width = this.w*scale+ "px";
             this.htmlElement.style.height = this.h*scale+ "px";
             this.htmlElement.style.fontSize = this.font*scale + "px"
             this.htmlElement.maxLength = this.maxLength;
+            this.htmlElement.style.border = 5*scale+"px solid black "
 
             if(this.visible){
+                if(this.oldvalue !== this.htmlElement.value){
+                    this.oldvalue = this.htmlElement.value;
+                    playSound(sounds.key,1,false)
+                }
                 this.htmlElement.style.display = "inline"
                 this.value = this.htmlElement.value
 
