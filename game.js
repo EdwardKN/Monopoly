@@ -1804,7 +1804,11 @@ class Button{
                             drawRotatedImage(this.x*drawScale+715,this.y*drawScale-400,this.w*drawScale,this.h*drawScale,this.img,0,this.mirror,this.w*2,0,this.w,this.h)
                         }else{
                             if(this.img.width > this.w*2){
-                                drawRotatedImage(this.x*drawScale+715,this.y*drawScale-400,this.w*drawScale,this.h*drawScale,this.img,0,this.mirror,this.w*3,0,this.w,this.h)
+                                if(this.selected){
+                                    drawRotatedImage(this.x*drawScale+715,this.y*drawScale-400,this.w*drawScale,this.h*drawScale,this.img,0,this.mirror,this.w*3,0,this.w,this.h)
+                                }else{
+                                    drawRotatedImage(this.x*drawScale+715,this.y*drawScale-400,this.w*drawScale,this.h*drawScale,this.img,0,this.mirror,this.w*1,0,this.w,this.h)
+                                }
                             }else{
                                 drawRotatedImage(this.x*drawScale+715,this.y*drawScale-400,this.w*drawScale,this.h*drawScale,this.img,0,this.mirror,0,0,this.w,this.h)
                             }
