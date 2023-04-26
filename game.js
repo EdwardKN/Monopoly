@@ -1000,7 +1000,7 @@ class Board{
                 c.fillStyle = "black"
                 c.font = 80*scale+"px Arcade"
                 c.textAlign = "center"
-                c.fillText("Grattis " + players[0].name + "! Du vann!",2200,1400)
+                c.fillText("Grattis " + players[0].name + "! Du vann!",1000*scale,600*scale)
             }
             for(let i = players.length-1; i>-1; i--){
                 if(players[i].playerBorder.index !== 2 && players[i].playerBorder.index !== 3){
