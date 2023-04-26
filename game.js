@@ -346,15 +346,15 @@ class LocalLobby {
                         if(self.playerInputs[id].colorId !== undefined){
                             self.useableColors.push(self.playerInputs[id].colorId)
                         }
-                        self.playerInputs[id].textInput.htmlElement.disabled = true;
                         self.amountBots++;
                         self.playerInputs[id].colorButton.img = images.colorButtons.img[8]
                         self.playerInputs[id].colorId = undefined;
                         self.playerInputs[id].colorButtons.forEach(e => e.selected = false);
                     }else{
                         self.amountBots--;
-                        self.playerInputs[id].textInput.htmlElement.disabled = false;
                         self.playerInputs[id].textInput.htmlElement.value = ""
+                        self.playerInputs[id].textInput.oldvalue = "";
+                        self.playerInputs[id].textInput.htmlElement.disabled = false;
                     }
                 },40,40,false,false),
                 colorButton: new Button(true,-50,self.playerInputs.length*55 - 32,images.colorButtons.img[8],function(){
@@ -462,6 +462,7 @@ class LocalLobby {
                         lastBotId++;
 
                         e.textInput.htmlElement.value = "Bot " + lastBotId;
+                        e.textInput.htmlElement.disabled = true;
                         e.colorButton.disabled = true;
                         e.textInput.disabled = true;
                     }else{
@@ -641,7 +642,9 @@ class TextInput {
             if(this.visible){
                 if(this.oldvalue !== this.htmlElement.value){
                     this.oldvalue = this.htmlElement.value;
-                    playSound(sounds.key,1,false)
+                    if(!this.htmlElement.disabled){
+                        playSound(sounds.key,1,false)
+                    }
                 }
                 this.htmlElement.style.display = "inline"
                 this.value = this.htmlElement.value
@@ -1453,7 +1456,7 @@ class PlayerBorder{
                 this.button.mirror = true;
             }
             if(this.index === 3){
-                this.x = 364
+                this.x = 374
                 this.y = 700;
                 this.button.mirror = false;
             }
@@ -1463,7 +1466,7 @@ class PlayerBorder{
                 this.button.mirror = true;
             }
             if(this.index === 5){
-                this.x = 364
+                this.x = 374
                 this.y = 200 +54;
                 this.button.mirror = false;
             }
@@ -1473,7 +1476,7 @@ class PlayerBorder{
                 this.button.mirror = true;
             }
             if(this.index === 7){
-                this.x = 364
+                this.x = 374
                 this.y = 700 -54;
                 this.button.mirror = false;
             }
