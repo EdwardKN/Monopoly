@@ -17,7 +17,7 @@ if(disableAlert){
 }
 
 
-var f = new FontFace('Arcade', 'url(./fonts/SFPixelate-Bold.ttf)');
+var f = new FontFace('Arcade', 'url(./fonts/SFPixelate.ttf)');
 
 f.load().then(function(font){document.fonts.add(font);});
 

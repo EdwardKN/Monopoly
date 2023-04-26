@@ -1492,7 +1492,7 @@ class PlayerBorder{
             }
             if(this.button.mirror === false){
                 drawRotatedImage(this.x*drawScale+466 + 694,this.y*drawScale+5 - 400,48,96,images.player.img[this.player.colorIndex],0,false,0,0,24,48,false)
-                c.font = ((1/this.player.name.length)*8 + 25)*scale+"px Arcade";
+                c.font = (50 - this.player.name.length*2.3)*scale+"px Arcade";
                 c.fillStyle ="black"
                 c.textAlign = "left"
                 c.fillText(this.player.name,this.x*drawScale*scale+750*scale,this.y*drawScale*scale-335*scale)
@@ -1502,7 +1502,7 @@ class PlayerBorder{
                 }
             }else{
                 drawRotatedImage(this.x*drawScale +720,this.y*drawScale -396,48,96,images.player.img[this.player.colorIndex],0,false,0,0,24,48,false)
-                c.font = ((1/this.player.name.length)*8 + 25)*scale+"px Arcade";
+                c.font = (50 - this.player.name.length*2.3)*scale+"px Arcade";
                 c.fillStyle ="black"
                 c.textAlign = "left"
                 c.fillText(this.player.name,this.x*scale+420*scale,this.y*drawScale*scale-335*scale)
@@ -2398,7 +2398,9 @@ class Player{
         }
 
         this.checkMoney = function(){
-            if(this.money < 0 && this.ownedPlaces.length == 0){
+            let mortgaged = 0;
+            this.ownedPlaces.forEach(e =>{if(e.mortgaged === true){mortgaged++}})
+            if(this.money < 0 && this.ownedPlaces.length == 0+mortgaged){
                 delete Bot.boardInfo[turn]
                 turn = turn%(players.length-1);
 
