@@ -808,7 +808,6 @@ class Board{
             board.animateDices = false;
             board.showDices = false;
             if(players[turn].money >= 0){
-                players[turn].numberOfRolls = 0;
                 players[turn].rolls = false;
                 players[turn].numberOfRolls = 0;
                 turn = (turn+1)%players.length;
@@ -2057,8 +2056,8 @@ class BoardPiece{
                     board.boardPieces[20].money -= this.piece.price;
                     player.playerBorder.startMoneyAnimation(this.piece.price)
                 }else if(this.piece.price > 0 && this.owner === undefined){
-                    if(players[turn].bot === undefined){
-                                board.currentCard = this;        
+                    if(player.bot === undefined){
+                        board.currentCard = this;        
                     }
                 }else if(this.owner !== player && this.owner !== undefined && board.settings.prisonmoney || this.owner !== player && this.owner !== undefined && !board.settings.prisonmoney && !this.owner.inJail){
                     if(this.piece.type === "utility"){
