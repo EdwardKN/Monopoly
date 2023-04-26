@@ -465,7 +465,7 @@ class LocalLobby {
                         
 
                     }
-                    if(e.textInput.value.length >= 0 && e.colorId !== undefined && !e.botButton.selected){
+                    if(e.textInput.value !== "" && !e.botButton.selected){
                         playersReady.push(e);
                         self.readyPlayers.push(e);
                     }
