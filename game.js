@@ -326,6 +326,7 @@ class LocalLobby {
             self.current = false;
             self.backButton.visible = false;
             self.startButton.visible = false;
+            self.settingsButtons.forEach(e => e.visible = false)
             self.playerInputs.forEach( e=>{
                 e.textInput.htmlElement.style.display = "none"
                 e.textInput.value = "";
@@ -870,6 +871,7 @@ class Board{
             board.mortgageButton.visible = false;
             board.upgradeButton.visible = false;
             board.downgradeButton.visible = false;
+            board.getToMainMenuButton.visible = true;
         },18,18,false,false,false,false,false,{x:722,y:236,w:256*drawScale,h:324*drawScale})
         this.sellButton = new Button(false,130,580,images.buttons.img[2],function(){
             if(board.currentCard.mortgaged === false){
@@ -918,6 +920,7 @@ class Board{
             board.currentCard.owner = players[turn];
             players[turn].ownedPlaces.push(board.currentCard);
             board.currentCard = undefined;
+            board.getToMainMenuButton.visible = true;
             board.buyButton.visible = false;
             board.auctionButton.visible = false;
         },97,40);
@@ -925,6 +928,7 @@ class Board{
         this.auctionButton = new Button(false,25 + 117,580,images.buttons.img[8],function(){
             board.auction = new Auction(board.currentCard)
             board.currentCard = undefined;
+            board.getToMainMenuButton.visible = true;
             board.buyButton.visible = false;
             board.auctionButton.visible = false;
         },97,40);
@@ -946,6 +950,7 @@ class Board{
             
 
             this.boardPieces.forEach(g => g.update())
+            
             
             if(this.win === false){ 
 
@@ -1277,7 +1282,7 @@ class Trade{
         }, 1));
 
         let self = this;
-        this.closeButton = new Button(false,364,289,images.buttons.img[7],function(){self.closeButton.visible = false;board.trade = undefined;players.forEach(e => {e.playerBorder.button.disabled = false})},18,18,false,
+        this.closeButton = new Button(false,364,289,images.buttons.img[7],function(){self.closeButton.visible = false;board.trade = undefined;board.getToMainMenuButton.visible = true; players.forEach(e => {e.playerBorder.button.disabled = false})},18,18,false,
         false,false,false,false,{x:466,y:170,w:1025,h:840})
         this.closeButton.visible = true;
 
@@ -1389,6 +1394,7 @@ class Trade{
                 this.p2PropertyButtons.forEach(e => {e.visible=false});
                 players.forEach(e => {e.playerBorder.button.selected = false;e.playerBorder.button.disabled = false})
                 board.trade = undefined;
+                board.getToMainMenuButton.visible = true; 
             }
         }
     }
@@ -1409,14 +1415,15 @@ class PlayerBorder{
         
         
         this.button = new Button(true,this.x,this.y,images.playerOverlay.img[8],function(){
-            players.forEach(e =>{if(e.playerBorder != self){e.playerBorder.button.selected = false}})
+            players.forEach(e =>{if(e.playerBorder != self){e.playerBorder.button.selected = false;e.playerBorder.createTradebutton.visible = false;}})
             self.createTradebutton.visible = false;
-        },249,54,false,false,false,true) 
+        },249,54,false,false,false,true,false,{x:0,y:0,w:249,h:54,onlySelected:true}) 
 
         this.createTradebutton = new Button(false,this.x,this.y,images.buttons.img[9],function(){
             self.createTradebutton.visible = false;
             self.showInfo = false;
-            board.trade = new Trade(players[turn],self.player); 
+            board.trade = new Trade(players[turn],self.player);
+            board.getToMainMenuButton.visible = false; 
         },219,34,false,false,true)
 
         
@@ -1552,7 +1559,17 @@ class PlayerBorder{
             }
             this.button.y = this.y
             this.button.x = this.x
-            
+            this.button.invertedHitbox.x = this.x*drawScale +715
+            this.button.invertedHitbox.y = this.y*drawScale - 400 + 54*drawScale;
+            this.button.invertedHitbox.w = this.button.w*drawScale
+            this.button.invertedHitbox.h = this.player.ownedPlaces.length*27*drawScale + 27*3*drawScale;
+
+            if(board.getToMainMenuButton.selected){
+                this.button.disabled = true;
+            }else{
+                this.button.disabled = false;
+            }
+
             this.button.visible = true;
             this.button.draw()
             this.createTradebutton.x = this.x + 20 
@@ -1772,6 +1789,7 @@ class Auction{
                                     buttons.splice(buttons.indexOf(this.addMoneyButton100),1)
                                     buttons.splice(buttons.indexOf(this.startAuctionButton),1)
                                     board.currentCard = undefined;
+                                    board.getToMainMenuButton.visible = true;
                                     board.buyButton.visible = false;
                                     board.auction = undefined;
                             }
@@ -2111,6 +2129,7 @@ class BoardPiece{
                 playSound(sounds.release,1)
                 if(this.piece.card !== undefined){
                     board.currentCard = this;
+                    board.getToMainMenuButton.visible = false;
                 }
             }
         }
@@ -2128,7 +2147,8 @@ class BoardPiece{
                     player.playerBorder.startMoneyAnimation(this.piece.price)
                 }else if(this.piece.price > 0 && this.owner === undefined){
                     if(player.bot === undefined){
-                        board.currentCard = this;        
+                        board.currentCard = this;     
+                        board.getToMainMenuButton.visible = false;   
                     }
                 }else if(this.owner !== player && this.owner !== undefined && board.settings.prisonmoney || this.owner !== player && this.owner !== undefined && !board.settings.prisonmoney && !this.owner.inJail){
                     if(this.piece.type === "utility"){
@@ -2656,6 +2676,8 @@ class Player{
                         self.goToPrison()
                     }
                     board.showDices = false;
+                    board.getToMainMenuButton.visible = true;
+
                 }else{
                     board.boardPieces.forEach(function(b,i2) {b.currentPlayer.forEach(function(d,i3) {
                         if(d === self){
@@ -2722,6 +2744,7 @@ class Player{
                         this.dice1 = dice1
                         this.dice2 = dice2
                         let self = this;
+                        board.getToMainMenuButton.visible = false;
 
                         this.animateDice(dice1,dice2,function(){
                             if(self.numberOfRolls === 3 && dice1 === dice2){
