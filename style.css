@@ -54,6 +54,8 @@ button.ready:hover {
     display: grid;
     position: absolute;
 
+    display: none;
+
     grid-template-rows: 8fr 2fr;
     
     left: 0px;
@@ -62,7 +64,7 @@ button.ready:hover {
     width: 100vw;
     height: 100vh;
     
-    background-color: #454545;
+    background-color: #795548;
     color: white;
 }
 

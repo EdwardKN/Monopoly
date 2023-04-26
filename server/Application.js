@@ -42,7 +42,7 @@ var websocketServer = new websocket.server({
 websocketServer.on('request', websocketHandler);
 
 function originIsAllowed(origin) {
-    return CONFIG.ALLOWED_DOMAINS.some(domain => origin.includes(domain));
+    return CONFIG.ALLOWED_DOMAINS.includes("*") || CONFIG.ALLOWED_DOMAINS.some(domain => origin.includes(domain));
 }
 
 /**
@@ -110,6 +110,7 @@ function websocketHandler(request) {
                     break;
                 case "random_event":
                     console.log("[S<-C] Random event with id: (%s; %s) happened to player (%s)", event.id, event.type, player.name);
+                    player.money = event.money;
                     api.randomEvent(event.id, player, event.type);
                     break;
                 case "auction_start":
