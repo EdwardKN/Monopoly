@@ -8,7 +8,7 @@ var firstclick = false;
 
 var musictimer;
 
-var musicOn = JSON.parse(getCookie("musicOn") === -1 ? 10 : getCookie("musicOn"));;
+var musicOn = JSON.parse(getCookie("musicOn") === -1 ? false : getCookie("musicOn"));;
 
 var musicPlaying;
 
@@ -556,7 +556,7 @@ class MainMenu {
         this.onlineButton = new Button(false,-322,539,images.mainMenu.img[2],function(){
         },195,52,false,false,true)
 
-        this.musicButton = new Button(true,-357,711,images.buttons.img[4],function(){
+        this.musicButton = new Button(true,-357,711,images.buttons.img[14],function(){
             document.cookie = `musicOn=${!self.musicButton.selected};Expires=Sun, 22 oct 2030 08:00:00 UTC;`;
             clearTimeout(musictimer)
             if(self.musicButton.selected){
