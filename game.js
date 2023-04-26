@@ -341,18 +341,20 @@ class LocalLobby {
                 y:(self.playerInputs.length*110 - 100),
                 textInput: new TextInput(40,300,560,80,true,50,10),
                 botButton: new Button(true,-50 +42,self.playerInputs.length*55 - 32,images.buttons.img[13],function(){
-                    self.playerInputs[id].textInput.value = ""
+                    self.playerInputs[id].textInput.htmlElement.value = ""
                     if(self.playerInputs[id].botButton.selected){
                         if(self.playerInputs[id].colorId !== undefined){
                             self.useableColors.push(self.playerInputs[id].colorId)
                         }
+                        self.playerInputs[id].textInput.htmlElement.disabled = true;
                         self.amountBots++;
                         self.playerInputs[id].colorButton.img = images.colorButtons.img[8]
                         self.playerInputs[id].colorId = undefined;
                         self.playerInputs[id].colorButtons.forEach(e => e.selected = false);
                     }else{
                         self.amountBots--;
-                        self.playerInputs[id].textInput.value = ""
+                        self.playerInputs[id].textInput.htmlElement.disabled = false;
+                        self.playerInputs[id].textInput.htmlElement.value = ""
                     }
                 },40,40,false,false),
                 colorButton: new Button(true,-50,self.playerInputs.length*55 - 32,images.colorButtons.img[8],function(){
@@ -458,7 +460,8 @@ class LocalLobby {
                     }
                     if(e.botButton.selected){
                         lastBotId++;
-                        e.textInput.value = "Bot " + lastBotId;
+
+                        e.textInput.htmlElement.value = "Bot " + lastBotId;
                         e.colorButton.disabled = true;
                         e.textInput.disabled = true;
                     }else{
