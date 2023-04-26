@@ -1590,7 +1590,7 @@ class Trade{
         };
 
         let self = this;
-        this.closeButton = new Button(false,364,289,images.buttons.img[7],function(){self.closeButton.visible = false;board.trade = undefined;players.forEach(e => {e.playerBorder.button.disabled = false})},18,18,false,
+        this.closeButton = new Button(false,364,289,images.buttons.img[7],function(){if (Api.online) { Api.tradeConcluded(self.p2.colorIndex, false); } self.closeButton.visible = false;board.trade = undefined;players.forEach(e => {e.playerBorder.button.disabled = false})},18,18,false,
         false,false,false,false,{x:466,y:170,w:1025,h:840})
         this.closeButton.visible = true;
 
