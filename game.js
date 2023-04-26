@@ -1488,23 +1488,23 @@ class PlayerBorder{
             }
             if(this.button.mirror === false){
                 drawRotatedImage(this.x*drawScale+466 + 694,this.y*drawScale+5 - 400,48,96,images.player.img[this.player.colorIndex],0,false,0,0,24,48,false)
-                c.font = 40*scale+"px Arcade";
+                c.font = ((1/this.player.name.length)*8 + 25)*scale+"px Arcade";
                 c.fillStyle ="black"
-                c.textAlign = "right"
-                c.fillText(this.player.name,this.x*drawScale*scale+990*scale,this.y*drawScale*scale-335*scale)
                 c.textAlign = "left"
+                c.fillText(this.player.name,this.x*drawScale*scale+750*scale,this.y*drawScale*scale-335*scale)
+                c.textAlign = "right"
                 if(this.moneyTime <= 0){
-                    c.fillText(this.player.money + "kr",this.x*drawScale*scale+1020*scale,this.y*drawScale*scale-335*scale)
+                    c.fillText(this.player.money + "kr",this.x*drawScale*scale+1150*scale,this.y*drawScale*scale-335*scale)
                 }
             }else{
                 drawRotatedImage(this.x*drawScale +720,this.y*drawScale -396,48,96,images.player.img[this.player.colorIndex],0,false,0,0,24,48,false)
-                c.font = 40*scale+"px Arcade";
+                c.font = ((1/this.player.name.length)*8 + 25)*scale+"px Arcade";
                 c.fillStyle ="black"
                 c.textAlign = "left"
                 c.fillText(this.player.name,this.x*scale+420*scale,this.y*drawScale*scale-335*scale)
                 c.textAlign = "right"
                 if(this.moneyTime <= 0){
-                    c.fillText(this.player.money + "kr",this.x*scale+850*scale,this.y*drawScale*scale-335*scale)
+                    c.fillText(this.player.money + "kr",this.x*scale+830*scale,this.y*drawScale*scale-335*scale)
                 }
 
             }
