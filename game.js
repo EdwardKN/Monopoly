@@ -437,9 +437,9 @@ class LocalLobby {
                     e.colorButton.y = e.y/2 - self.playerInputs.length*40/2 + 238 + 262;
                     for(let i = 0; i < 8; i++){
                         if(index >= self.playerInputs.length/2){
-                            e.colorButtons[i].y = e.y/2 + (i%2)*47 + 286 - self.playerInputs.length*40/2 +118
+                            e.colorButtons[i].y = e.y/2 + (i%2)*50 + 281 - self.playerInputs.length*40/2 +118
                         }else{
-                            e.colorButtons[i].y = e.y/2 + (i%2)*47 + 286 - self.playerInputs.length*40/2 +262
+                            e.colorButtons[i].y = e.y/2 + (i%2)*50 + 291 - self.playerInputs.length*40/2 +262
                         }
                         e.colorButtons[i].x = Math.floor(i/2)*50 - 125
                     }
@@ -515,10 +515,10 @@ class LocalLobby {
 
                         c.fillStyle = "black"
                         if(i >= self.playerInputs.length/2){
-                            c.fillRect(e.colorButton.x*drawScale*scale + 550*scale,e.colorButton.y*drawScale*scale -610*scale,410*scale,210*scale)
+                            c.fillRect(e.colorButton.x*drawScale*scale + 550*scale,e.colorButton.y*drawScale*scale -630*scale,410*scale,230*scale)
                             e.colorButton.invertedHitbox = {x:e.colorButton.x*drawScale + 550,y:e.colorButton.y*drawScale -610,w:410,h:210,onlySelected:true}
                         }else{
-                            c.fillRect(e.colorButton.x*drawScale*scale +550*scale,e.colorButton.y*drawScale*scale -26*scale -294*scale,410*scale,210*scale)
+                            c.fillRect(e.colorButton.x*drawScale*scale +550*scale,e.colorButton.y*drawScale*scale -26*scale -294*scale,410*scale,230*scale)
                             e.colorButton.invertedHitbox = {x:e.colorButton.x*drawScale +550,y:e.colorButton.y*drawScale -26 -294,w:410,h:210,onlySelected:true}
                         }
                         e.colorButtons.forEach(function(g,h){
