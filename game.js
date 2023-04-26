@@ -1,6 +1,8 @@
 var canvas = document.createElement("canvas");
 var c = canvas.getContext("2d");
 canvas.id = "game"
+var backCanvas = document.createElement("canvas");
+var backC = backCanvas.getContext("2d");
 
 var menus = [];
 
@@ -20,11 +22,14 @@ setTimeout(() => {
         canvas.width = (window.innerHeight*16)/9;
         canvas.height = window.innerHeight;
     }
+    backCanvas.width = window.innerWidth;
+    backCanvas.height = window.innerHeight;
     scale = Math.sqrt(Math.pow(canvas.width,2) + Math.pow(canvas.height,2))/2250
 }, 100);
 
 window.addEventListener("resize", e=> {
-    
+    backCanvas.width = window.innerWidth;
+    backCanvas.height = window.innerHeight;
     if(window.innerWidth*9 < window.innerHeight*16){
         canvas.width = window.innerWidth;
         canvas.height = (window.innerWidth*9)/16;
@@ -109,7 +114,7 @@ function loadSounds(soundObject){
         }
     });
 }
-function drawRotatedImage(x,y,w,h,img,angle,mirrored,cropX,cropY,cropW,cropH,offset){
+function drawRotatedImage(x,y,w,h,img,angle,mirrored,cropX,cropY,cropW,cropH,offset,drawcanvas){
     let degree = angle * Math.PI / 180;
     if(offset){
         //x+= offsets.x;
@@ -120,17 +125,20 @@ function drawRotatedImage(x,y,w,h,img,angle,mirrored,cropX,cropY,cropW,cropH,off
         x:x*scale+w/2*scale,
         y:y*scale+h/2*scale
     };
+    if(drawcanvas === undefined){
+        drawcanvas = c;
+    }
 
-    c.save();
-    c.translate(middlePoint.x,middlePoint.y);
-    c.rotate(degree);
+    drawcanvas.save();
+    drawcanvas.translate(middlePoint.x,middlePoint.y);
+    drawcanvas.rotate(degree);
     if(mirrored === true){
-        c.scale(-1, 1);
+        drawcanvas.scale(-1, 1);
     }
     
-    c.drawImage(img,Math.floor(cropX),Math.floor(cropY),Math.floor(cropW),Math.floor(cropH),Math.floor(-w/2)*scale,Math.floor(-h/2)*scale,Math.floor(w)*scale,Math.floor(h)*scale);
+    drawcanvas.drawImage(img,Math.floor(cropX),Math.floor(cropY),Math.floor(cropW),Math.floor(cropH),Math.floor(-w/2)*scale,Math.floor(-h/2)*scale,Math.floor(w)*scale,Math.floor(h)*scale);
 
-    c.restore();
+    drawcanvas.restore();
 }
 
 function drawRotatedText(x,y,text,font,angle,color,mirrored,overide){
@@ -200,12 +208,15 @@ function isNumeric(str) {
            !isNaN(parseFloat(str)) 
   }
 
-function drawIsometricImage(x,y,img,mirror,cropX,cropY,cropW,cropH,offsetX,offsetY,sizeOveride){
+function drawIsometricImage(x,y,img,mirror,cropX,cropY,cropW,cropH,offsetX,offsetY,sizeOveride,drawcanvas){
     let scaleOfThis = drawScale;
     if(sizeOveride !== undefined){
         scaleOfThis = sizeOveride*drawScale;
     }
-    drawRotatedImage(to_screen_coordinate(x*drawScale,y*drawScale).x + 850 + offsetX*drawScale,to_screen_coordinate(x*drawScale,y*drawScale).y + 150 + offsetY*drawScale,cropW*scaleOfThis,cropH*scaleOfThis,img,0,mirror,cropX,cropY,cropW,cropH,true)
+    if(drawcanvas === undefined){
+        drawcanvas = c;
+    }
+    drawRotatedImage(to_screen_coordinate(x*drawScale,y*drawScale).x + 850 + offsetX*drawScale,to_screen_coordinate(x*drawScale,y*drawScale).y + 150 + offsetY*drawScale,cropW*scaleOfThis,cropH*scaleOfThis,img,0,mirror,cropX,cropY,cropW,cropH,true,drawcanvas)
 }
 
 
@@ -657,6 +668,8 @@ class TextInput {
 function init(){
     document.body.appendChild(canvas);
     canvas.style.zIndex = -100;
+    document.body.appendChild(backCanvas);
+    backCanvas.style.zIndex = -150;
 
     
 
@@ -716,7 +729,8 @@ function update(){
     c.clearRect(0,0,canvas.width,canvas.height);
 
     
-    
+    showBackground();
+
     if(board !== undefined && players.length >0){
         board.update();
     }
@@ -739,9 +753,9 @@ function update(){
 }
 
 function showBackground(){
-    for(let x = -2; x < 4; x++){
-        for(let y = -2; y < 4; y++){
-            drawIsometricImage(-352*2 + 832*x,+832*y,images.background.img[1],false,0,0,832,416,0,0)
+    for(let x = -4; x <8; x++){
+        for(let y = -4; y < 8; y++){
+            drawIsometricImage(-352*2    + 832*x,+832*y,images.background.img[1],false,0,0,832,416,0,0,1,backC)
 
         }
     }
@@ -889,7 +903,6 @@ class Board{
         }
 
         this.update = function () {
-            showBackground();
                 c.fillStyle = "white";
                 c.font = 50*scale+"px Arcade";
                 c.textAlign = "center";
