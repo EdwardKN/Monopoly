@@ -1,4 +1,15 @@
 {
     "PORT": 55045,
-    "ALLOWED_DOMAINS": [ "edwardkn.github.io", "localhost", "*" ]
+    "ALLOWED_DOMAINS": [ "edwardkn.github.io" ],
+    "GAME_SETTINGS": {
+        "freeParking": false,
+        "allFreeparking": false,
+        "doubleincome": true,
+        "auctions": true,
+        "prisonmoney": true,
+        "mortgage": true,
+        "even": true,
+        "startmoney": 1500,
+        "roundsBeforePurchase": 0
+    }
 }

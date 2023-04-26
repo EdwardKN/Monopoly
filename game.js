@@ -781,36 +781,13 @@ async function showOnlineLobby() {
                 board.nextPlayerButton.visible = false;
             }
 
-            board.settings ={
-                freeParking:false,
-                allFreeparking:false,
-                doubleincome:true,
-                auctions:true,
-                prisonmoney:true,
-                mortgage:true,
-                even:true,
-                startmoney:1500,
-                roundsBeforePurchase:0,
-            }
-
             update();
         });
-
+        
         document.body.addEventListener("join_info", (evt) => {
             var data = evt.detail;
-
-            board.settings = {
-                // Need to fetch this from server later on
-                freeParking:false,
-                allFreeparking:false,
-                doubleincome:true,
-                auctions:true,
-                prisonmoney:true,
-                mortgage:true,
-                even:true,
-                startmoney:1500,
-                roundsBeforePurchase:0,
-            }
+            
+            board.settings = data.settings;
 
             data.players.forEach((player) => {
                 players.push(new Player(images.player.img[player.colorIndex], player.colorIndex, player.name, false));

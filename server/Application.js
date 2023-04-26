@@ -51,7 +51,6 @@ function originIsAllowed(origin) {
  */
 function websocketHandler(request) {
     if (!originIsAllowed(request.origin)) {
-        // Make sure we only accept requests from an allowed origin
         request.reject(undefined, "INVALID_ORIGIN");
         return;
     } else if (gameHasStarted) {
@@ -71,7 +70,8 @@ function websocketHandler(request) {
         event_type: "join_info",
         data: {
             players: playerInfo,
-            thisPlayer: player.colorIndex
+            thisPlayer: player.colorIndex,
+            settings: CONFIG.GAME_SETTINGS,
         }
     }));
     
