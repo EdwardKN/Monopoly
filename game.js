@@ -14,6 +14,9 @@ var musicOn = JSON.parse(getCookie("musicOn") === -1 ? false : getCookie("musicO
 
 var musicPlaying;
 
+var timeouts = [];
+var intervals = [];
+
 setTimeout(() => {
     if(window.innerWidth*9 < window.innerHeight*16){
         canvas.width = window.innerWidth;
@@ -36,8 +39,8 @@ window.addEventListener("resize", e=> {
         canvas.width = (window.innerHeight*16)/9;
         canvas.height = window.innerHeight;
     }
-    backCanvas.width = canvas.width;
-    backCanvas.height = canvas.height;
+    backCanvas.width = window.innerWidth;
+    backCanvas.height = window.innerHeight;
     offsets = {
         x:Math.floor(window.innerWidth/2) - 832*drawScale/2,
         y:Math.floor(window.innerHeight/2) - 416*drawScale/2
@@ -235,6 +238,8 @@ function playSound(sound,volume,repeat){
 
 };
 function startGame(playerlist,settings){
+    board = new Board();
+
     board.settings = settings;
     let tmpArray =[];
     for(i = 0; i < playerlist.length; i++){
@@ -323,11 +328,20 @@ class LocalLobby {
             self.startButton.visible = false;
             self.playerInputs.forEach( e=>{
                 e.textInput.htmlElement.style.display = "none"
+                e.textInput.value = "";
+                e.textInput.htmlElement.value = "";
+                e.textInput.colorId = undefined;
                 e.textInput.visible = false;
                 e.botButton.visible = false;
+                e.colorButtons.forEach(g => g.selected = false)
+                e.colorButton.img = images.colorButtons.img[8];
                 e.colorButton.visible = false;
                 e.colorButtons.forEach(g => g.visible = false)
-                })
+                e.botButton.selected = false;
+                e.textInput.htmlElement.disabled = false;
+                e.textInput.oldvalue = ""
+            })
+            self.useableColors = [0,1,2,3,4,5,6,7]
         },97*2,80,false,false,false,false,false,false)
         this.disableAll = false;
         this.ableToStart = true;
@@ -668,12 +682,12 @@ function init(){
     loadSounds(sounds);   
     
 
-    board = new Board();
     
     if(fastLoad === false){
         menus.push(new MainMenu())
         menus.push(new LocalLobby())
     }else{
+        board = new Board();
         let playerlist = []
         let playerAmount = 3;
         let botAmount = 0;
@@ -768,9 +782,39 @@ class Board{
         this.win = false;
         this.auction = undefined;
         this.trade = undefined;
+        this.goToMainMenuButton = new Button(false,25,530,images.buttons.img[8],function(){
+            board.getToMainMenuButton.selected = false;
+            board.closeConfirmButton.visible = false;
+            board.goToMainMenuButton.visible = false;
+            board.escapeConfirm.visible = false;
+            board.getToMainMenuButton.visible = true;
+        },97,40);
+        this.escapeConfirm = new Button(false,25 + 117,530,images.buttons.img[6],function(){
+            board.getToMainMenuButton.selected = false;
+            board.closeConfirmButton.visible = false;
+            board.goToMainMenuButton.visible = false;
+            board.escapeConfirm.visible = false;
+            board.getToMainMenuButton.visible = false;
+            players = [];
+            menus[0].current = true;
+            board = undefined;
+            timeouts.forEach(e => clearTimeout(e));
+            intervals.forEach(e => clearTimeout(e));
+            timeouts = [];
+        },97,40);
+        this.closeConfirmButton = new Button(false,241,368,images.buttons.img[7],function(){
+            board.getToMainMenuButton.selected = false;
+            board.closeConfirmButton.visible = false;
+            board.goToMainMenuButton.visible = false;
+            board.escapeConfirm.visible = false;
+            board.getToMainMenuButton.visible = true;
+        },18,18,false,false,false,false,false,{x:722,y:336,w:256*drawScale,h:224*drawScale})
+
         this.getToMainMenuButton = new Button(true,-30,691,images.buttons.img[12],function(){
-            
-        },325,60,true,false,false,true,false,false)
+        },325,60,false,false,false,true,false,false)
+
+        this.getToMainMenuButton.visible = true;
+
         this.payJailButton = new Button(false,-10,520,images.jailMenu.img[1],function(){
             players[turn].money -= 50;
             if(board.settings.freeParking){
@@ -960,11 +1004,31 @@ class Board{
             if(this.trade !== undefined){
                 this.trade.update();
             }
-            this.getToMainMenuButton.visible = true;
             this.getToMainMenuButton.draw();
+            if(this.getToMainMenuButton.selected){
+                this.confirmMenu();
+            }
         }  
 
-        
+        this.confirmMenu = function(){
+            this.getToMainMenuButton.visible = false;
+            this.getToMainMenuButton.hover = false;
+            c.fillStyle = "white"
+            c.fillRect(722*scale,336*scale,512*scale,448*scale)
+            c.fillStyle = "black";
+            c.textAlign = "center";
+            c.font =50*scale+"px Arcade";     
+            c.fillText("Vill du verkligen",(722+256)*scale,(236+200)*scale)       
+            c.fillText("återvända till",(722+256)*scale,(236+250)*scale)       
+            c.fillText("huvudmenyn?",(722+256)*scale,(236+300)*scale)       
+            c.fillText("(Avbryta spelet)",(722+256)*scale,(236+350)*scale)       
+            this.closeConfirmButton.visible = true;
+            this.closeConfirmButton.draw();
+            this.goToMainMenuButton.visible = true;
+            this.goToMainMenuButton.draw();
+            this.escapeConfirm.visible = true;
+            this.escapeConfirm.draw();
+        }
         this.randomizeDice = function () {
             this.dice1Type = randomIntFromRange(0,3);
             this.dice2Type = randomIntFromRange(0,3);
@@ -1111,7 +1175,7 @@ class Board{
             this.rollDiceButton.visible = false;
             }else{
                 if(players[turn].rolls === false){
-                    if(players[turn].bot === undefined && this.auction === undefined && players[turn].inJail === false){
+                    if(players[turn].bot === undefined && this.auction === undefined && players[turn].inJail === false && !this.getToMainMenuButton.selected){
                         this.rollDiceButton.visible = true;
                         this.nextPlayerButton.visible = false;
                     }else{
@@ -1119,7 +1183,7 @@ class Board{
                         this.nextPlayerButton.visible = false;
                     }
                 }else{
-                    if(players[turn].bot === undefined && this.auction === undefined){
+                    if(players[turn].bot === undefined && this.auction === undefined && !this.getToMainMenuButton.selected){
                         this.rollDiceButton.visible = false;
                         this.nextPlayerButton.visible = true;
                     }else{
@@ -1208,9 +1272,9 @@ class Trade{
     constructor(p1,p2){
         this.p1 = p1;
         this.p2 = p2;
-        setTimeout(() => {
+        timeouts.push(setTimeout(() => {
             players.forEach(e => {e.playerBorder.button.selected = false;e.playerBorder.button.disabled = true})
-        }, 1);
+        }, 1));
 
         let self = this;
         this.closeButton = new Button(false,364,289,images.buttons.img[7],function(){self.closeButton.visible = false;board.trade = undefined;players.forEach(e => {e.playerBorder.button.disabled = false})},18,18,false,
@@ -1636,9 +1700,9 @@ class Auction{
             board.auction.started = true;
             board.auction.duration = 10 * speeds.auctionSpeed;
             board.auction.startTime = performance.now();
-            board.auction.timer = setInterval(function(){
+            board.auction.timer = intervals.push(setInterval(function(){
                 board.auction.time = 472 * (1 - (performance.now() - board.auction.startTime) / board.auction.duration);
-            },10);
+            },10));
         },240,40,false)
 
         this.draw = function(){
@@ -1964,7 +2028,7 @@ class BoardPiece{
 
             let mouseSquareX = (to_grid_coordinate(mouse.realX,mouse.realY).x - 1270*scale)  /(64*scale)
             let mouseSquareY = (to_grid_coordinate(mouse.realX,mouse.realY).y + 680*scale)/(64*scale)
-            if(board.currentCard !== undefined|| this.piece.type === "chance" || this.piece.type === "community Chest" || this.piece.type === "income tax" || this.piece.type === "tax" ||this.n%10 === 0 || board.auction !== undefined || board.trade !== undefined || players[turn].inJail === true || board.showDices || board.animateDices || players[turn].animationOffset !== 0){
+            if(board.currentCard !== undefined|| this.piece.type === "chance" || this.piece.type === "community Chest" || this.piece.type === "income tax" || this.piece.type === "tax" ||this.n%10 === 0 || board.auction !== undefined || board.trade !== undefined || players[turn].inJail === true || board.showDices || board.animateDices || players[turn].animationOffset !== 0 || board.getToMainMenuButton.selected){
                 this.offsetY = this.currentOffsetvalue;
                 this.hover = false;
             }else if(this.x/64*drawScale > mouseSquareX-1*drawScale && this.x/64*drawScale < mouseSquareX && this.side === 2 && this.n%10 !== 0 && mouseSquareY >= 0*drawScale && mouseSquareY < 2*drawScale
@@ -2054,9 +2118,9 @@ class BoardPiece{
             this.currentPlayer.push(player);
             this.currentOffsetvalue = 1;
             let self = this;
-            setTimeout(() => {
+            timeouts.push(setTimeout(() => {
                 self.currentOffsetvalue = 0;
-            }, speeds.stepSpeed);
+            }, speeds.stepSpeed));
             if(!onlyStep && !this.mortgaged && player.laps >= board.settings.roundsBeforePurchase){
                 if(this.piece.price < 0){
                     player.money += this.piece.price;
@@ -2613,6 +2677,7 @@ class Player{
 
                 }
             },speeds.stepSpeed);
+            intervals.push(self.timer)
         }
 
         this.animateDice = function(dice1,dice2,callback){
@@ -2628,15 +2693,15 @@ class Player{
                 if(counter > speeds.diceSpeed.threshold){
                     board.dice1 = dice1;
                     board.dice2 = dice2;
-                    setTimeout(() => {
+                    timeouts.push(setTimeout(() => {
                         board.animateDices = false;
                         callback()
-                    }, speeds.diceSpeed.delay);
+                    }, speeds.diceSpeed.delay));
                 }else{
-                    setTimeout(myFunction, counter);
+                    timeouts.push(setTimeout(myFunction, counter));
                 }
             }
-            setTimeout(myFunction, counter);
+            timeouts.push(setTimeout(myFunction, counter));
         }
         
         this.rollDice = function(){
