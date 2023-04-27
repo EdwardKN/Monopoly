@@ -158,6 +158,14 @@ class Api {
         })
     }
 
+    /**
+     * Disconnect from the server
+     */
+    static disconnect() {
+        Api.getWebSocket()?.close();
+        Api.online = false;
+    }
+
     static _messageHandler(message) {
         var event = JSON.parse(message.data);
 

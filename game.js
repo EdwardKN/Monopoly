@@ -1098,7 +1098,7 @@ class Board{
             players = [];
             menus[0].current = true;
             board = undefined;
-            if (Api.online) Api._websocket.close();
+            if (Api.online) Api.disconnect();
             timeouts.forEach(e => clearTimeout(e));
             intervals.forEach(e => clearTimeout(e));
             timeouts = [];
@@ -1385,8 +1385,8 @@ class Board{
                         c.fillText("Ägare: " + this.currentCard.owner.name,985*scale,415*scale)
                     }
 
+                    if (players[Api.online ? Api.currentPlayer : turn].bot === undefined) this.cardCloseButton.visible = true;
                     if(this.currentCard.owner === players[Api.online ? Api.currentPlayer : turn] && players[Api.online ? Api.currentPlayer : turn].bot === undefined){
-                        this.cardCloseButton.visible = true;
                         this.sellButton.draw();
                         this.sellButton.visible = true;
                         this.mortgageButton.draw();
@@ -3186,6 +3186,7 @@ class Player{
                             board.animateDices = false;
                             self.teleportTo(self.steps + dice1 + dice2);
                             board.nextPlayerButton.visible = true;
+                            board.goToMainMenuButton.visible = true;
                         })
                     }
                 }
