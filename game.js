@@ -693,10 +693,15 @@ async function init(){
     
     
     if(fastLoad === false){
+        
+    }else{
         menus.push(new MainMenu())
         menus.push(new LocalLobby())
         update();
-    }else{
+        menus[0].localButton.visible = false;
+        menus[0].onlineButton.visible = false;
+        menus[0].musicButton.visible = false;
+        menus[0].current = false;
         board = new Board();
         let playerlist = []
         let playerAmount = 3;
@@ -1082,19 +1087,38 @@ class Board{
         this.win = false;
         this.auction = undefined;
         this.trade = undefined;
-        this.goToMainMenuButton = new Button(false,25,530,images.buttons.img[8],function(){
+        let self = this;
+        this.musicButton = new Button(true,25,530,images.buttons.img[14],function(){
+            document.cookie = `musicOn=${!self.musicButton.selected};Expires=Sun, 22 oct 2030 08:00:00 UTC;`;
+            clearTimeout(musictimer)
+            if(self.musicButton.selected){
+                if(musicPlaying !== undefined && musicOn){
+                    musicPlaying.pause();
+                    musicOn = false;
+                }
+            }else{
+                firstclick = true;
+                musicOn = true;
+                playSound(sounds.music,1,true)
+            }
+        },40,40,false)
+        this.musicButton.selected = !musicOn;
+
+        this.goToMainMenuButton = new Button(false,25 + 117,530,images.buttons.img[15],function(){
             board.getToMainMenuButton.selected = false;
             board.closeConfirmButton.visible = false;
             board.goToMainMenuButton.visible = false;
             board.escapeConfirm.visible = false;
             board.getToMainMenuButton.visible = true;
-        },97,40);
-        this.escapeConfirm = new Button(false,25 + 117,530,images.buttons.img[6],function(){
+            board.musicButton.visible = false;
+        },40,40);
+        this.escapeConfirm = new Button(false,25 + 117 + 57,530,images.buttons.img[16],function(){
             board.getToMainMenuButton.selected = false;
             board.closeConfirmButton.visible = false;
             board.goToMainMenuButton.visible = false;
             board.escapeConfirm.visible = false;
             board.getToMainMenuButton.visible = false;
+            board.musicButton.visible = false;
             players = [];
             menus[0].current = true;
             board = undefined;
@@ -1102,13 +1126,14 @@ class Board{
             timeouts.forEach(e => clearTimeout(e));
             intervals.forEach(e => clearTimeout(e));
             timeouts = [];
-        },97,40);
+        },40,40);
         this.closeConfirmButton = new Button(false,241,368,images.buttons.img[7],function(){
             board.getToMainMenuButton.selected = false;
             board.closeConfirmButton.visible = false;
             board.goToMainMenuButton.visible = false;
             board.escapeConfirm.visible = false;
             board.getToMainMenuButton.visible = true;
+            board.musicButton.visible = false;
         },18,18,false,false,false,false,false,{x:722,y:336,w:256*drawScale,h:224*drawScale})
 
         this.getToMainMenuButton = new Button(true,-30,691,images.buttons.img[12],function(){
@@ -1377,6 +1402,8 @@ class Board{
             this.goToMainMenuButton.draw();
             this.escapeConfirm.visible = true;
             this.escapeConfirm.draw();
+            this.musicButton.visible = true;
+            this.musicButton.draw();
         }
         this.randomizeDice = function () {
             this.dice1Type = randomIntFromRange(0,3);

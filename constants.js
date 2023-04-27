@@ -6,7 +6,7 @@ var players = [];
 
 const drawScale = 2;
 
-const fastLoad = false;
+const fastLoad = true;
 
 const fastSpeed = false;
 
@@ -117,6 +117,7 @@ var images = {
         "./images/buttons/sellbutton","./images/buttons/mortgage","./images/buttons/arrowup","./images/buttons/arrowdown",
         "./images/buttons/buythislawn","./images/buttons/exitCard","./images/buttons/auction","./images/buttons/suggestatrade",
         "./images/buttons/setting","./images/buttons/start","./images/buttons/back","./images/buttons/bot","./images/buttons/music",
+        "./images/buttons/no","./images/buttons/yes",
         ]
     },
     auction:{
