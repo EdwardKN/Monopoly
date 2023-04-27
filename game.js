@@ -134,31 +134,6 @@ function drawRotatedImage(x,y,w,h,img,angle,mirrored,cropX,cropY,cropW,cropH,off
     drawcanvas.restore();
 }
 
-function drawRotatedText(x,y,text,font,angle,color,mirrored,overide){
-    let degree = angle * Math.PI / 180;
-    if(overide !== true){
-        x+= offsets.x;
-        y+= offsets.y
-    }
-   
-    let middlePoint = {
-        x:x,
-        y:y
-    };
-
-    c.save();
-    c.translate(middlePoint.x,middlePoint.y);
-    c.rotate(degree);
-    if(mirrored === true){
-        c.scale(-1, 1);
-    }
-    c.font = font;
-    c.fillStyle = color;
-    c.textAlign = "center"
-    c.fillText(text,Math.floor(0),Math.floor(0));
-    c.restore();
-}
-
 function to_screen_coordinate(x,y){
     return {
         x: x*0.5+y*-0.5,
@@ -1517,7 +1492,7 @@ class Board{
                 this.nextPlayerButton.visible = false;
                 this.rollDiceButton.visible = false;
                 if(this.currentCard.mortgaged === true){
-                    drawRotatedText(800,canvas.height/2 - 100,"Intecknad","150px Brush Script MT",45,"black",false)
+
                 }
             }else{
                 this.cardCloseButton.visible = false;
