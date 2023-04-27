@@ -778,6 +778,7 @@ async function showOnlineLobby() {
             if (Api.currentPlayer == 0) {
                 board.rollDiceButton.visible = true;
                 board.nextPlayerButton.visible = false;
+                board.nextPlayerButton.hover = false;
             }
 
             update();
@@ -855,9 +856,12 @@ async function showOnlineLobby() {
             if (Api.currentPlayer == turn) {
                 board.rollDiceButton.visible = true;
                 board.nextPlayerButton.visible = false;
+                board.nextPlayerButton.hover = false;
             } else {
                 board.rollDiceButton.visible = false;
                 board.nextPlayerButton.visible = false;
+                board.nextPlayerButton.hover = false;
+                board.rollDiceButton.hover = false;
             }
         });
 
@@ -1166,6 +1170,7 @@ class Board{
                 board.dice2 = 0;
 
                 board.nextPlayerButton.visible = false;
+                board.nextPlayerButton.hover = false;
             }
             board.animateDices = false;
             board.showDices = false;
@@ -1174,6 +1179,7 @@ class Board{
         if (Api.online && Api.currentPlayer == 0) {
             this.rollDiceButton.visible = true;
             this.nextPlayerButton.visible = false;
+            board.nextPlayerButton.hover = false;
         }
 
         this.currentCard = undefined;
@@ -1482,7 +1488,9 @@ class Board{
 
                 }
                 this.nextPlayerButton.visible = false;
+                this.nextPlayerButton.hover = false;
                 this.rollDiceButton.visible = false;
+                this.rollDiceButton.hover = false;
                 if(this.currentCard.mortgaged === true){
                     drawRotatedImage(722,236,images.mortgageOverlay.img[0].width*drawScale,images.mortgageOverlay.img[0].height*drawScale,images.mortgageOverlay.img[0],0,false,0,0,images.mortgageOverlay.img[0].width,images.mortgageOverlay.img[0].height)
                 }
@@ -1518,6 +1526,8 @@ class Board{
                 drawIsometricImage(550,400,images.dice.img[0],false,this.dice2Type*64,(this.dice2-1)*64,64,64,0,0)
                 this.nextPlayerButton.visible = false;
                 this.rollDiceButton.visible = false;
+                this.rollDiceButton.hover = false;
+                this.nextPlayerButton.hover = false;
             }else{
                 if (Api.online) {
                     if (players[turn].colorIndex != Api.currentPlayer) {
@@ -1529,17 +1539,23 @@ class Board{
                     if(players[turn].bot === undefined && this.auction === undefined && players[turn].inJail === false && !this.getToMainMenuButton.selected){
                         this.rollDiceButton.visible = true;
                         this.nextPlayerButton.visible = false;
+                        this.nextPlayerButton.hover = false;
                     }else{
                         this.rollDiceButton.visible = false;
+                        this.rollDiceButton.hover = false;
                         this.nextPlayerButton.visible = false;
+                        this.nextPlayerButton.hover = false;
                     }
                 }else{
                     if(players[turn].bot === undefined && this.auction === undefined && !this.getToMainMenuButton.selected){
                         this.rollDiceButton.visible = false;
+                        this.rollDiceButton.hover = false;
                         this.nextPlayerButton.visible = true;
                     }else{
                         this.rollDiceButton.visible = false;
+                        this.rollDiceButton.hover = false;
                         this.nextPlayerButton.visible = false;
+                        this.nextPlayerButton.hover = false;
                     }
                 }
                 
@@ -2191,6 +2207,7 @@ class Auction{
                         for(let i = 0; i<players.length; i++){
                             if(this.playerlist[0].colorIndex == players[i].colorIndex){
                                 intervals.forEach(e => clearInterval(e));
+                                clearInterval(this.timer)
                                 if(this.auctionMoney !== 0){
                                     players[i].money -= this.auctionMoney;
                                     if(board.settings.allFreeparking){
@@ -2499,7 +2516,11 @@ class BoardPiece{
         }
         this.draw = function () {
             if(this.n%10 !== 0){
-                drawIsometricImage(this.x,this.y,this.img,false,96*this.imgSide,0,96,48,this.offsetX,this.offsetY);
+                if(this.mortgaged === false){
+                    drawIsometricImage(this.x,this.y,this.img,false,96*this.imgSide,0,96,48,this.offsetX,this.offsetY);
+                }else{
+                    drawIsometricImage(this.x,this.y,images.part.img[17],false,96*this.imgSide,0,96,48,this.offsetX,this.offsetY);
+                }
                 if(this.owner !== undefined){
                     if(this.side === 2){
                         drawIsometricImage(this.x-10,this.y,images.playerOverlay.img[this.owner.colorIndex],false,96*this.imgSide,0,96,48,this.offsetX,this.offsetY);
