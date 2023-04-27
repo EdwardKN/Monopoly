@@ -2548,11 +2548,14 @@ class BoardPiece{
         }
         this.playerStep = function (onlyStep,player,diceRoll){
             this.currentPlayer.push(player);
-            this.currentOffsetvalue = 1;
-            let self = this;
-            timeouts.push(setTimeout(() => {
-                self.currentOffsetvalue = 0;
-            }, speeds.stepSpeed));
+            if(this.currentPlayer.length <= 2){
+                this.currentOffsetvalue = 1;
+                let self = this;
+                timeouts.push(setTimeout(() => {
+                    self.currentOffsetvalue = 0;
+                }, speeds.stepSpeed));
+            }
+            
             if(!onlyStep && !this.mortgaged && player.laps >= board.settings.roundsBeforePurchase){
                 if(this.piece.price < 0){
                     player.money += this.piece.price;
