@@ -1084,15 +1084,13 @@ class Board{
 
         this.goToMainMenuButton = new Button(false,111,530,images.buttons.img[15],function(){
             board.getToMainMenuButton.selected = false;
-            board.closeConfirmButton.visible = false;
             board.goToMainMenuButton.visible = false;
             board.escapeConfirm.visible = false;
             board.getToMainMenuButton.visible = true;
             board.musicButton.visible = false;
-        },40,40);
+        },40,40,false,false,false,false,false,{x:722,y:336,w:256*drawScale,h:224*drawScale});
         this.escapeConfirm = new Button(false,171,530,images.buttons.img[16],function(){
             board.getToMainMenuButton.selected = false;
-            board.closeConfirmButton.visible = false;
             board.goToMainMenuButton.visible = false;
             board.escapeConfirm.visible = false;
             board.getToMainMenuButton.visible = false;
@@ -1104,15 +1102,7 @@ class Board{
             timeouts.forEach(e => clearTimeout(e));
             intervals.forEach(e => clearTimeout(e));
             timeouts = [];
-        },40,40);
-        this.closeConfirmButton = new Button(false,241,368,images.buttons.img[7],function(){
-            board.getToMainMenuButton.selected = false;
-            board.closeConfirmButton.visible = false;
-            board.goToMainMenuButton.visible = false;
-            board.escapeConfirm.visible = false;
-            board.getToMainMenuButton.visible = true;
-            board.musicButton.visible = false;
-        },18,18,false,false,false,false,false,{x:722,y:336,w:256*drawScale,h:224*drawScale})
+        },40,40,false,false,false,false,false,);
 
         this.getToMainMenuButton = new Button(true,90 ,691 + 20,images.buttons.img[17],function(){
         },80,40,false,false,false,true,false,false)
@@ -1367,8 +1357,7 @@ class Board{
             this.getToMainMenuButton.hover = false;
             c.fillRect(722*scale,336*scale,512*scale,448*scale)
             drawRotatedImage(722,336,512,448,images.exitMenu.img[0],0,false,0,0,256,224)  
-            this.closeConfirmButton.visible = true;
-            this.closeConfirmButton.draw();
+
             this.goToMainMenuButton.visible = true;
             this.goToMainMenuButton.draw();
             this.escapeConfirm.visible = true;
