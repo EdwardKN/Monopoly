@@ -1953,11 +1953,7 @@ class PlayerBorder{
             this.button.x = this.x
             
 
-            if(board.getToMainMenuButton.selected){
-                this.button.disabled = true;
-            }else if(this.button.disabled === false){
-                this.button.disabled = false;
-            }
+            
 
             this.button.visible = true;
             this.button.draw()
