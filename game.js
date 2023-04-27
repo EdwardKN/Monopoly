@@ -1812,7 +1812,7 @@ class PlayerBorder{
             }
             players.forEach( e => e.playerBorder.button.disabled = false)
 
-        },250,54,true,false,false,true,false,{x:0,y:0,w:249,h:54,onlySelected:true}) 
+        },250,54,false,false,false,true,false,{x:0,y:0,w:249,h:54,onlySelected:true}) 
 
         console.log(buttons.indexOf(this.button))
         this.createTradebutton = new Button(false,this.x,this.y,images.buttons.img[9],function(){
