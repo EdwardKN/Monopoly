@@ -89,9 +89,6 @@ function websocketHandler(request) {
     Logger.log(`Player (${player.name}) joined the lobby`, "Connection::onOpen", Logger.STANDARD);
     connection.on('message', message => {
         if (message.type === 'utf8') {
-            // I'm thinking about having as little validation on the server itself
-            // It'll only act as a relay and sync the info about players and the board, such as money, owned tiles and position of players.
-            // This way, it'll go faster and I don't have to recreate the whole game
             var event = JSON.parse(message.utf8Data);
             switch(event.event_type) {
                 case "move":
