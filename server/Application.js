@@ -50,6 +50,7 @@ function originIsAllowed(origin) {
  * @returns 
  */
 function websocketHandler(request) {
+    var playername = decodeURI(request.resourceURL.search.substring(1));
     if (!originIsAllowed(request.origin)) {
         request.reject(undefined, "INVALID_ORIGIN");
         return;
@@ -59,12 +60,15 @@ function websocketHandler(request) {
     } else if (PlayerManager.getNumberOfPlayers() >= 8) {
         request.reject(undefined, "GAME_FULL");
         return;
+    } else if (PlayerManager.players.some(p => p.name == playername)) {
+        request.reject(undefined, "DUPLICATE_NAME");
+        return;
     }
 
     var connection = request.accept('', request.origin);    
     
     // Send message with info about the game
-    var playerInfo = PlayerManager.playerJoined(decodeURI(request.resourceURL.search.substring(1)));
+    var playerInfo = PlayerManager.playerJoined(playername);
     var player = PlayerManager.players[playerInfo.length - 1];
     connection.sendUTF(JSON.stringify({
         event_type: "join_info",
