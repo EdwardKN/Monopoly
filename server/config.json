@@ -1,6 +1,7 @@
 {
     "PORT": 55045,
-    "ALLOWED_DOMAINS": [ "edwardkn.github.io", "127.0.0.1", "localhost" ],
+    "ALLOWED_DOMAINS": [ "edwardkn.github.io", "localhost" ],
+    "LOGGING_LEVEL": "STANDARD",
     "GAME_SETTINGS": {
         "freeParking": false,
         "allFreeparking": false,
