@@ -2175,6 +2175,10 @@ class Auction{
                     this.addMoneyButton2.visible = false;
                     this.addMoneyButton10.visible = false;
                     this.addMoneyButton100.visible = false;
+                    this.startAuctionButton.hover = false;
+                    this.addMoneyButton2.hover = false;
+                    this.addMoneyButton10.hover = false;
+                    this.addMoneyButton100.hover = false;
                 }
                 
                 drawIsometricImage(0,0,images.auction.img[4],false,0,30,240,30,-150,220,1)
