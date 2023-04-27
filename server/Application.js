@@ -92,8 +92,12 @@ function websocketHandler(request) {
             var event = JSON.parse(message.utf8Data);
             switch(event.event_type) {
                 case "move":
-                    // There's only 39 tiles on the board
-                    event.tiles_moved %= 40;
+                    if (event.tiles_moved >= 40) {
+                        event.tiles_moved %= 40;
+                        // Get 200kr when past GO
+                        player.money += 200;
+                    }
+
                     Logger.log(`Player (${player.name}) moved to tile: ${event.tiles_moved}`, "Event::onMove", Logger.STANDARD);
                     Logger.log(JSON.stringify(player), "Event::onMove", Logger.VERBOSE);
                     player.teleportTo(event.tiles_moved);
