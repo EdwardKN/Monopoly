@@ -1365,15 +1365,8 @@ class Board{
         this.confirmMenu = function(){
             this.getToMainMenuButton.visible = false;
             this.getToMainMenuButton.hover = false;
-            c.fillStyle = "white"
             c.fillRect(722*scale,336*scale,512*scale,448*scale)
-            c.fillStyle = "black";
-            c.textAlign = "center";
-            c.font =50*scale+"px Arcade";     
-            c.fillText("Vill du verkligen",(722+256)*scale,(236+200)*scale)       
-            c.fillText("återvända till",(722+256)*scale,(236+250)*scale)       
-            c.fillText("huvudmenyn?",(722+256)*scale,(236+300)*scale)       
-            c.fillText("(Avbryta spelet)",(722+256)*scale,(236+350)*scale)       
+            drawRotatedImage(722,336,512,448,images.exitMenu.img[0],0,false,0,0,256,224)  
             this.closeConfirmButton.visible = true;
             this.closeConfirmButton.draw();
             this.goToMainMenuButton.visible = true;

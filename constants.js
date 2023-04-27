@@ -135,6 +135,9 @@ var images = {
     mainMenu:{
         src:["./images/menus/mainmenu","./images/buttons/local","./images/buttons/online","./images/menus/lobbymenu"]
     },
+    exitMenu:{
+        src:["./images/menus/exitmenu"]
+    },
     mortgageOverlay:{
         src:["./images/Cards/mortgageoverlay"]
     },
