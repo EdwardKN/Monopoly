@@ -783,7 +783,7 @@ async function showOnlineLobby() {
     try {
         document.body.addEventListener("start_game", (evt) => {
             var data = evt.detail;
-            
+
             document.getElementById("lobby").style.display = "none";
             
             players = [];
@@ -804,7 +804,8 @@ async function showOnlineLobby() {
         
         document.body.addEventListener("join_info", (evt) => {
             var data = evt.detail;
-            
+            window.board = new Board();
+
             board.settings = data.settings;
 
             data.players.forEach((player) => {
@@ -1097,6 +1098,7 @@ class Board{
             players = [];
             menus[0].current = true;
             board = undefined;
+            if (Api.online) Api._websocket.close();
             timeouts.forEach(e => clearTimeout(e));
             intervals.forEach(e => clearTimeout(e));
             timeouts = [];
