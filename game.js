@@ -767,7 +767,7 @@ async function showOnlineLobby() {
             var data = evt.detail;
 
             document.getElementById("lobby").style.display = "none";
-            
+            players.forEach(e => buttons.splice(buttons.indexOf(e.playerBorder.button),1))
             players = [];
             data.players.forEach((player) => {
                 players.push(new Player(images.player.img[player.colorIndex], player.colorIndex, player.name, false));
@@ -788,7 +788,10 @@ async function showOnlineLobby() {
             window.board = new Board();
 
             board.settings = data.settings;
-  
+
+            data.players.forEach((player) => {
+                players.push(new Player(images.player.img[player.colorIndex], player.colorIndex, player.name, false));
+            });
 
             Api.currentPlayer = data.thisPlayer;
 
@@ -940,7 +943,7 @@ async function showOnlineLobby() {
         });
 
         document.body.addEventListener("player_ready_event", (evt) => {
-            var index =  evt.detail.player;
+            var index =  players.findIndex(x => x.colorIndex == evt.detail.player);
             if (document.getElementById("lobby").style.display != "none") {
                 var playerContainer = document.getElementById("player-container");
                 playerContainer.children[index].style.color = playerContainer.children[index].style.color == "green" ? "red" : "green";
@@ -1090,6 +1093,7 @@ class Board{
             board.escapeConfirm.visible = false;
             board.getToMainMenuButton.visible = false;
             board.musicButton.visible = false;
+            players.forEach(e => buttons.splice(buttons.indexOf(e.playerBorder.button),1))
             players = [];
             menus[0].current = true;
             board = undefined;
@@ -1391,6 +1395,8 @@ class Board{
                             this.mortgageButton.x = 60;
                             this.upgradeButton.visible = false;
                             this.downgradeButton.visible = false;
+                            this.upgradeButton.hover = false;
+                            this.downgradeButton.hover = false;
                         }else{
                             this.sellButton.x = 200;
                             this.mortgageButton.x = 150;
