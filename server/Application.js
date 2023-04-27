@@ -6,6 +6,7 @@ var { ClientRequest, ServerResponse } = require('node:http');
 
 var api = require("./api");
 var { PlayerManager } = require('./player');
+const { Logger } = require('./Logger');
 
 const CONFIG = JSON.parse(readFileSync("./config.json", "utf-8"));
 
@@ -19,8 +20,14 @@ if (network == undefined) {
     }
 }
 
+Logger.setOutputLevel(CONFIG.LOGGING_LEVEL);
+
 var port = CONFIG.PORT;
-var server = https.createServer({ key: readFileSync("./certs/monopoly.key"), cert: readFileSync("./certs/monopoly.crt"), passphrase: readFileSync("./certs/passphrase", "utf-8") }, serverHandler).listen(port, () => console.log("Klienter kan nu ansluta till servern med denna adress:\n%s:%s\n", network, port));
+var server = https.createServer({ key: readFileSync("./certs/monopoly.key"), cert: readFileSync("./certs/monopoly.crt"), passphrase: readFileSync("./certs/passphrase", "utf-8") }, serverHandler)
+    .listen(port, () => {
+        Logger.log("New session started\n============================================\n", "Server.onstart", Logger.VERBOSE);
+        Logger.log(`Klienter kan nu ansluta till servern med denna adress:\n${network}:${port}\n`, undefined, Logger.NONE);
+    });
 
 var gameHasStarted = false;
 
@@ -79,7 +86,7 @@ function websocketHandler(request) {
         }
     }));
     
-    console.log("[S<-C] Player (%s) joined the lobby", player.name);
+    Logger.log(`Player (${player.name}) joined the lobby`, "Connection::onOpen", Logger.STANDARD);
     connection.on('message', message => {
         if (message.type === 'utf8') {
             // I'm thinking about having as little validation on the server itself
@@ -90,17 +97,21 @@ function websocketHandler(request) {
                 case "move":
                     // There's only 39 tiles on the board
                     event.tiles_moved %= 40;
-                    console.log("[S<-C] Player (%s) moved to tile: %d", player.name, event.tiles_moved);
+                    Logger.log(`Player (${player.name}) moved to tile: ${event.tiles_moved}`, "Event::onMove", Logger.STANDARD);
+                    Logger.log(JSON.stringify(player), "Event::onMove", Logger.VERBOSE);
                     player.teleportTo(event.tiles_moved);
                     break;
                 case "change_turn":
                     var newPlayer = PlayerManager.players[(PlayerManager.players.indexOf(player) + 1) % PlayerManager.getNumberOfPlayers()];
-                    console.log("[S<-C] Turn changed from player %s to player %s", player.name, newPlayer.name);
+                    Logger.log(`Turn changed from player (${player.name}) to player (${newPlayer.name})`, "Event::onChangeTurn", Logger.STANDARD);
+                    Logger.log(JSON.stringify(player), "Event::onChangeTurn", Logger.VERBOSE);
+                    Logger.log(JSON.stringify(newPlayer), "Event::onChangeTurn", Logger.VERBOSE);
                     api.newTurn(newPlayer.colorIndex);
                     break;
                 case "tile_purchased":
                     player.money -= event.price || event.tile.price;
-                    console.log("[S<-C] Player (%s) purchased the tile: (%s). Remaining balance: %dkr", player.name, event.tile.name, player.money);
+                    Logger.log(`Player (${player.name}) purchased the tile: (${event.tile.name}). Remaining balance: ${player.money}kr`, "Event::onTilePurchase", Logger.STANDARD);
+                    Logger.log(JSON.stringify(player), "Event::onTilePurchase", Logger.VERBOSE);
 
                     // BoardPiece.piece.card is the image it should be, therefore this can be used as an id in the same manner that Player.colorIndex is used as an id.
                     api.tilePurchased(player.colorIndex, player.money, event.tile.card);
@@ -109,30 +120,35 @@ function websocketHandler(request) {
                     // The cost of houses seems to be decided by which side the tile is on, first is 50, then 100, then 150 and lastly 200.
                     var price = Math.round((event.tile.side + 1) * 50 * (event.is_upgrade ? 1 : -1/2));
                     player.money -= price;
-                    console.log("[S<-C] Player (%s) purchased property on the tile: (%s). Remaining balance: %dkr, level: %d", player.name, event.tile.name, player.money, event.new_level);
+                    Logger.log(`Player (${player.name}) purchased property on the tile: (${event.tile.name}). Remaining balance: ${player.money}kr, level: ${event.new_level}`, "Event::onPropertyPurchase", Logger.STANDARD);
+                    Logger.log(JSON.stringify(player), "Event::onPropertyPurchase", Logger.VERBOSE);
                     api.propertyChanged(player.colorIndex, event.tile.card, player.money, event.new_level);
                     break;
                 case "random_event":
-                    console.log("[S<-C] Random event with id: (%s; %s) happened to player (%s)", event.id, event.type, player.name);
                     player.money = event.money;
+                    Logger.log(`Random event with id: (${event.id}; ${event.type}) happened to player (${player.name})`, "Event::onCardEvent", Logger.STANDARD);
+                    Logger.log(JSON.stringify(player), "Event::onCardEvent", Logger.VERBOSE);
                     api.randomEvent(event.id, player, event.type);
                     break;
                 case "auction_start":
-                    console.log("[S<-C] Auction of tile (%s) started", event.tile.name);
+                    Logger.log(`Auction of tile (${event.tile.name}) started`, "Event::onAuctionStart", Logger.STANDARD);
                     api.auctionStart(event.tile.card);
                     break;
                 case "auction_show":
-                    console.log("[S<-C] Auction of tile (%s) shown", event.tile.name);
+                    Logger.log(`Auction of tile (${event.tile.name}) shown`, "Event::onAuctionShow", Logger.STANDARD);
                     api.auctionShow(event.tile.card);
                     break;
                 case "auction_bid":
                     var newPlayer = PlayerManager.players[(PlayerManager.players.indexOf(player) + 1) % PlayerManager.getNumberOfPlayers()];
-                    console.log("[S<-C] Player (%s) bid %dkr on tile (%s)", player.name, event.bid, event.tile.name);
+                    Logger.log(`Player (${player.name}) bid ${event.bid}kr on the tile (${event.tile.name})`, "Event::onAuctionBid", Logger.STANDARD);
+                    Logger.log(JSON.stringify(player), "Event::onAuctionBid", Logger.VERBOSE);
+                    Logger.log(JSON.stringify(newPlayer), "Event::onAuctionBid", Logger.VERBOSE);
                     api.auctionBid(player.colorIndex, newPlayer.colorIndex, event.bid, event.tile.card, event.is_out);
                     break;
                 case "ready_up":
-                    console.log("[S<-C] Player (%s) is ready", player.name);
                     player.isReady = !player.isReady;
+                    Logger.log(`Player (${player.name}) is ready`, "Event::onReadyUp", Logger.STANDARD);
+                    Logger.log(JSON.stringify(player), "Event::onReadyUp", Logger.VERBOSE);
 
                     if (PlayerManager.getNumberOfPlayers() >= 2 && PlayerManager.players.every(x => x.isReady)) {
                         gameHasStarted = true;
@@ -143,39 +159,52 @@ function websocketHandler(request) {
                     break;
                 case "tile_mortgaged":
                     player.money += event.tile.price / 2;
-                    console.log("[S<-C] Player (%s) mortgaged tile: (%s). Balance: %dkr", player.name, event.tile.name, player.money);
+                    Logger.log(`Player (${player.name}) mortgaged the tile (${event.tile.name}). Balance ${player.money}kr`, "Event::onTileMortgaged", Logger.STANDARD);
+                    Logger.log(JSON.stringify(player), "Event::onTileMortgaged", Logger.VERBOSE);
 
                     api.mortgageTile(player.colorIndex, event.tile.card, player.money);
                     break;
                 case "trade_request":
-                    console.log("[S<-C] Player (%s) requested to trade with player (%s)", player.name, PlayerManager.players.find(x => x.colorIndex == event.target_player).name);
+                    Logger.log(`Player (${player.name}) requested to trade with player (${PlayerManager.players.find(x => x.colorIndex == event.target_player).name})`, "Event::onTradeRequest", Logger.STANDARD);
+                    Logger.log(JSON.stringify(player), "Event::onTradeRequest", Logger.VERBOSE);
+                    Logger.log(JSON.stringify(PlayerManager.players.find(x => x.colorIndex == event.target_player)), "Event::onTradeRequest", Logger.VERBOSE);
                     api.requestTrade(event.target_player);
                     break;
                 case "trade_content_update":
-                    console.log("[S<-C] Player (%s) updated contents of trade; Contents: %s", player.name, JSON.stringify(event.contents));
+                    Logger.log(`Player (${player.name}) updated contents of trade with player (${PlayerManager.players.find(x => x.colorIndex == event.target_player).name})`, "Event::onTradeContentUpdate", Logger.STANDARD);
+                    Logger.log("Contents: " + JSON.stringify(event.contents), "Event::onTradeContentUpdate", Logger.VERBOSE);
+                    Logger.log(JSON.stringify(player), "Event::onTradeContentUpdate", Logger.VERBOSE);
+                    Logger.log(JSON.stringify(PlayerManager.players.find(x => x.colorIndex == event.target_player)), "Event::onTradeContentUpdate", Logger.VERBOSE);
                     api.tradeContentUpdated(event.target_player, event.contents);
                     break;
                 case "trade_accept_update":
-                    console.log("[S<-C] Trade accept button clicked; Accepted: %s; Contents: %s", event.accepted, JSON.stringify(event.contents));
+                    Logger.log(`Player (${player.name}) ${event.accepted ? "accepted" : "declined"} trade with player (${PlayerManager.players.find(x => x.colorIndex == event.target_player).name})`, "Event::onTradeContentUpdate", Logger.STANDARD);
+                    Logger.log("Contents: " + JSON.stringify(event.contents), "Event::onTradeAcceptUpdate", Logger.VERBOSE);
+                    Logger.log(JSON.stringify(player), "Event::onTradeContentUpdate", Logger.VERBOSE);
+                    Logger.log(JSON.stringify(PlayerManager.players.find(x => x.colorIndex == event.target_player)), "Event::onTradeContentUpdate", Logger.VERBOSE);
                     api.tradeAcceptUpdate(event.target_player, event.accepted, event.contents);
                     break;
                 case "trade_concluded": 
-                    console.log("[S<-C] Trade concluded; Successful: %s; Contents: %s", event.successful, JSON.stringify(event.contents));
+                    Logger.log(`Trade concluded; Successful: (${event.successful})`, "Event::onTradeConcluded", Logger.STANDARD);
                     if (event.successful) {
                         player.money -= event.contents.p1.money;
                         player.money += event.contents.p2.money;
-
+                        
                         var p2 = PlayerManager.players.find(p => p.colorIndex == event.target_player);
                         p2.money -= event.contents.p2.money;
                         p2.money += event.contents.p1.money;
                     }
+                    Logger.log(JSON.stringify(player), "Event::onTradeConcluded", Logger.VERBOSE);
+                    Logger.log(JSON.stringify(PlayerManager.players.find(x => x.colorIndex == event.target_player)), "Event::onTradeConcluded", Logger.VERBOSE);
                     api.tradeConcluded(player.colorIndex, event.target_player, event.successful, event.contents);
                     break;
                 case "exited_jail":
-                    console.log("[S<-C] Player (%s) bought their way out of jail", player.name);
+                    Logger.log(`Player (${player.name}) exited jail`, "Event::onJailExit", Logger.STANDARD);
                     if (event.type == "MONEY") {
                         player.money -= 50;
                     }
+
+                    Logger.log(JSON.stringify(player), "Event::onJailExit", Logger.VERBOSE);
                     api.exitedJail(player.colorIndex, event.type);
                     break;
                 default:

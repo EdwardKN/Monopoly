@@ -1,3 +1,5 @@
+const { Logger } = require("./Logger");
+
 // WebsocketServer, used to broadcast messages to all
 var websocket = undefined;
 
@@ -5,16 +7,17 @@ var websocket = undefined;
  * @param {Player[]} players All the players in the game
  */
 function startGame(players) {
-    console.log("[S->C] Game started with %d players", players.length);
+    Logger.log(`Game started with ${players.length} players`, "API::startGame", Logger.VERBOSE);
     websocket.broadcastUTF(JSON.stringify(new StartEvent(players)));
 }
 
 /**
+ * @Unused (Might be used later for the animation of die)
  * @param {number} dice1 A value between 1-6
  * @param {number} dice2 A value between 1-6
  */
 function diceRoll(dice1, dice2) {
-    console.log("[S->C] Dice rolled (%d, %d)", dice1, dice2);
+    Logger.log(`Dice rolled (${dice1}; ${dice2})`, "API::diceRoll", Logger.VERBOSE);
     websocket.broadcastUTF(JSON.stringify(new DiceEvent(dice1, dice2)));
 }
 
@@ -23,7 +26,7 @@ function diceRoll(dice1, dice2) {
  * @param {number} currentPlayerIndex The id of this player
  */
 function teleportTo(steps, currentPlayerIndex) {
-    console.log("[S->C] Player %d moved to tile %d", currentPlayerIndex, steps);
+    Logger.log(`Player ${currentPlayerIndex} moved to tile: ${steps}`, "API::teleportTo", Logger.VERBOSE);
     websocket.broadcastUTF(JSON.stringify(new MoveEvent(steps, currentPlayerIndex)));
 }
 
@@ -33,7 +36,7 @@ function teleportTo(steps, currentPlayerIndex) {
  * @param {boolean} isBot Whether or not this user was a bot
  */
 function addPlayer(username, index, isBot) {
-    console.log("[S->C] %s (%s) joined", isBot ? "Bot" : "Player", username);
+    Logger.log(`${isBot ? "Bot" : "Player"} (${username}) joined`, "API::addPlayer", Logger.VERBOSE);
     websocket.broadcastUTF(JSON.stringify(new PlayerJoinEvent(username, index, isBot)));
 }
 
@@ -43,7 +46,7 @@ function addPlayer(username, index, isBot) {
  * @param {boolean} isBot Whether or not this user was a bot
  */
 function removePlayer(username, index, isBot) {
-    console.log("[S->C] %s (%s) left", isBot ? "Bot" : "Player", username);
+    Logger.log(`${isBot ? "Bot" : "Player"} (${username}) left`, "API::removePlayer", Logger.VERBOSE);
     websocket.broadcastUTF(JSON.stringify(new PlayerLeaveEvent(username, index, isBot)));
 }
 
@@ -51,7 +54,7 @@ function removePlayer(username, index, isBot) {
  * @param {number} target The id of the the target player
  */
 function requestTrade(target) {
-    console.log("[S->C] Trade request to player (%s)", target);
+    Logger.log(`Trade request to player (${target})`, "API::requestTrade", Logger.VERBOSE);
     websocket.broadcastUTF(JSON.stringify(new RequestTradeEvent(target)));
 }
 
@@ -60,7 +63,7 @@ function requestTrade(target) {
  * @param {{ money: number, tiles: BoardPiece.piece[] }} contents 
  */
 function tradeAcceptUpdate(target, successful, contents) {
-    console.log("[S->C] Trade accept button clicked; Accepted: %s; Contents: %s", successful, JSON.stringify(contents));
+    Logger.log(`Trade accept button (${target}); Accepted: ${successful}; Contents: ${JSON.stringify(contents)}`, "API::tradeAcceptUpdate", Logger.VERBOSE);
     websocket.broadcastUTF(JSON.stringify(new TradeAcceptUpdateEvent(target, successful, contents)));
 }
 
@@ -71,7 +74,7 @@ function tradeAcceptUpdate(target, successful, contents) {
  * @param {{ money: number, tiles: BoardPiece.piece[] }} contents 
  */
 function tradeConcluded(p1, p2, successful, contents) {
-    console.log("[S->C] Trade concluded; Successful: %s; Contents: %s", successful, JSON.stringify(contents));
+    Logger.log(`Trade between (${p1}) and (${p2}) concluded; Successful: ${successful}; Contents: ${JSON.stringify(contents)}`, "API::tradeConcluded", Logger.VERBOSE);
     websocket.broadcastUTF(JSON.stringify(new TradeConcludedEvent(p1, p2, successful, contents)));
 }
 
@@ -79,7 +82,7 @@ function tradeConcluded(p1, p2, successful, contents) {
  * @param {number} id The id of the player whose turn it will be
  */
 function newTurn(id) {
-    console.log("[S->C] Changed turn to %d", id);
+    Logger.log(`Changed turn to: ${id}`, "API::newTurn", Logger.VERBOSE);
     websocket.broadcastUTF(JSON.stringify(new NewTurnEvent(id)));
 }
 
@@ -90,7 +93,7 @@ function newTurn(id) {
  * @param {String} type Whether this is CHANCE_CARD or COMMUNITY_CHEST
  */
 function randomEvent(id, player, type) {
-    console.log("[S->C] Random event with id: (%s; %s) happened to player (%s)", id, type, player.name);
+    Logger.log(`Random event with id: (${id}; ${type}) happened to player (${player.name})`, "API::randomEvent", Logger.VERBOSE);
     websocket.broadcastUTF(JSON.stringify(new RandomEvent(id, type, player.colorIndex)));
 }
 
@@ -101,7 +104,7 @@ function randomEvent(id, player, type) {
  * @param {number} tile The id of the tile
  */
 function tilePurchased(player, money, tile) {
-    console.log("[S->C] Player (%s) purchased the tile: (%d). Remaining balance: %dkr", player, tile, money);
+    Logger.log(`Player (${player}) purchased the tile: (${tile}). Remaining balance: ${money}kr`, "API::tilePurchased", Logger.VERBOSE);
     websocket.broadcastUTF(JSON.stringify(new TilePurchasedEvent(player, money, tile)));
 }
 
@@ -112,7 +115,7 @@ function tilePurchased(player, money, tile) {
  * @param {number} newLevel The new property level of this tile
  */
 function propertyChanged(player, tile, money, newLevel) {
-    console.log("[S->C] Player (%s) purchased property on the tile: (%d). Remaining balance: %dkr, level: %d", player, tile, money, newLevel);
+    Logger.log(`Player (${player}) purchased property on the tile: (${tile}). Remaining balance: ${money}kr, level: ${newLevel}`, "API::propertyChanged", Logger.VERBOSE);
     websocket.broadcastUTF(JSON.stringify(new PropertyChangedEvent(player, tile, money, newLevel)));
 }
 
@@ -124,7 +127,7 @@ function propertyChanged(player, tile, money, newLevel) {
  * @param {boolean} isOut Whether or not this player is out of the auction
  */
 function auctionBid(player, nextPlayer, bid, tile, isOut) {
-    console.log("[S->C] Player (%s) bid: %dkr on the tile: (%d)", player, bid, tile);
+    Logger.log(`Player (${player}) bid ${bid}kr on the tile: (${tile})`, "API::auctionBid", Logger.VERBOSE);
     websocket.broadcastUTF(JSON.stringify(new AuctionBidEvent(player, nextPlayer, bid, tile, isOut)));
 }
 
@@ -134,7 +137,7 @@ function auctionBid(player, nextPlayer, bid, tile, isOut) {
  * @param {number} tile The id of the tile
  */
 function mortgageTile(player, tile, money) {
-    console.log("[S->C] Player (%s) mortgaged tile: (%s). Balance: %dkr", player, tile, money);
+    Logger.log(`Player (${player}) mortgaged the tile: (${tile}). Balance: ${money}kr`, "API::mortgageTile", Logger.VERBOSE);
     websocket.broadcastUTF(JSON.stringify(new MortgageEvent(player, money, tile)));
 }
 
@@ -142,7 +145,7 @@ function mortgageTile(player, tile, money) {
  * @param {number} tile The tile which was put up for auction
  */
 function auctionStart(tile) {
-    console.log("[S->C] Auction of tile (%s) started", tile);
+    Logger.log(`Auction of tile (${tile}) started`, "API::auctionStart", Logger.VERBOSE);
     websocket.broadcastUTF(JSON.stringify(new AuctionStartEvent(tile)));
 }
 
@@ -150,7 +153,7 @@ function auctionStart(tile) {
  * @param {number} tile The tile which was put up for auction
  */
 function auctionShow(tile) {
-    console.log("[S->C] Auction of tile (%s) shown", tile);
+    Logger.log(`Auction of tile (${tile}) shown`, "API::auctionShow", Logger.VERBOSE);
     websocket.broadcastUTF(JSON.stringify(new AuctionShowEvent(tile)));
 }
 
@@ -158,7 +161,7 @@ function auctionShow(tile) {
  * @param {number} player The id of the player
  */
 function readyUp(player) {
-    console.log("[S->C] Player (%s) is ready", player);
+    Logger.log(`Player (${player}) is ready`, "API::readyUp", Logger.VERBOSE);
     websocket.broadcastUTF(JSON.stringify(new PlayerReadyEvent(player)));
 }
 
@@ -166,7 +169,7 @@ function readyUp(player) {
  * @param {{ money: number, tiles: BoardPiece.piece[] }} contents 
  */
 function tradeContentUpdated(target, contents) {
-    console.log("[S->C] Contents of trade updated; Contents: %s", JSON.stringify(contents));
+    Logger.log(`Content of trade updated; Contents: ${JSON.stringify(contents)}`, "API::tradeContentUpdated", Logger.VERBOSE);
     websocket.broadcastUTF(JSON.stringify(new TradeContentUpdateEvent(target, contents)));
 }
 
