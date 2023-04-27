@@ -57,7 +57,6 @@ even: true Bygga hus jämnt
 mortgage: true
 */
 
-
 class Bot{
     /**
     * @param {object} boardInfo Every Players Owned Pieces With The Index As The Key
@@ -91,8 +90,10 @@ class Bot{
         if (this.player !== players[turn] || players.some(p => p.animationOffset !== 0) ||
             board.showDices || board.animateDices) { return }
         // Random Delay
-        Bot.thinking = true; await new Promise(resolve => setTimeout(resolve, randomIntFromRange(speeds.botMin, speeds.botMax))); Bot.thinking = false
-        
+        Bot.thinking = true
+        await new Promise(resolve => setTimeout(resolve, randomIntFromRange(speeds.botMin, speeds.botMax)))
+        Bot.thinking = false
+
         // Before Roll Dice
         if (!await this.handleBankrupt()) {
             this.player.ownedPlaces.forEach(bP => bP.owner = undefined)
@@ -101,7 +102,7 @@ class Bot{
             turn = turn % players.length
             return
         }
-        
+
         if (this.player.inJail) {
             let result = await this.handleJail()
             
@@ -125,28 +126,22 @@ class Bot{
         if (['chance', 'community chest'].includes(board.boardPieces[this.player.steps].type)) {
             await new Promise(resolve => setTimeout(resolve, 500))
         }
+
         await new Promise(resolve => setTimeout(resolve, randomIntFromRange(speeds.botMin, speeds.botMax)))
         while (this.player.animationOffset !== 0) { await new Promise(requestAnimationFrame) } 
         let bP = board.boardPieces[this.player.steps]
 
-        // Edward
-        if (this.player.rolls) {
-            this.player.numberOfRolls = 0
-            turn = (turn + 1) % players.length
-            board.dice1 = 0
-            board.dice2 = 0
-        }
         await new Promise(resolve => setTimeout(resolve, randomIntFromRange(speeds.botMin, speeds.botMax)))
-        Bot.thinking = false
-
         // Bankrupt after move?
         if (!await this.handleBankrupt()) {
+            Bot.thinking = false
             this.player.ownedPlaces.forEach(bP => bP.owner = undefined)
             this.player.ownedPlaces = []
             players.splice(players.indexOf(this.player), 1)
             turn = turn % players.length
             return
         }
+
         if (!bP.owner && Object.keys(boardWeights).includes(`${bP.n}`) && this.player.laps >= board.settings.roundsBeforePurchase) {
             // Buy or Auction
             let moneyLeft = this.player.money - bP.piece.price
@@ -175,6 +170,16 @@ class Bot{
             if (!bP.mortgaged) { continue }
 
         }
+
+        // Edward
+        if (this.player.rolls) {
+            this.player.numberOfRolls = 0
+            turn = (turn + 1) % players.length
+            board.dice1 = 0
+            board.dice2 = 0
+        }
+        Bot.thinking = false
+        this.player.rolls = false
     }
 
 
@@ -258,21 +263,12 @@ class Bot{
 
     async bidOnAuction() {
         const bP = board.auction.card
-        const originalPrice = bP.piece.price
         const currentPrice = board.auction.auctionMoney
-        const rankedPlayers = rankPlayers()
-        const weights = {
-            'ownGroup': 0.2,
-            'enemyGroup': 0.1,
-            'enemyRank': 0.1,
-            'moneyLeft': 0.4,
-            'moneySaved': 0.2
-        }
 
         for (const option of [100, 10, 2]) {
+            const cost = currentPrice + option
             // Current Money, Current Price, Bid | (Average Income, Average Loss) > Average Money Change Next Cycle
-            const remainingMoney = this.player.money - currentPrice - option
-            if (remainingMoney < this.getAverageLoss(12)) { continue }
+            if (this.player.money - cost < this.getAverageLoss(12)) { continue }
 
             // Dubbel hyra? 
             let maxValueToSpend = bP.piece.price * (board.settings.doubleincome ? 1.05 : 1)
@@ -296,7 +292,7 @@ class Bot{
 
             maxValueToSpend *= 1 - this.randomness + Math.random() * this.randomness * 2
             
-            if (currentPrice + option <= maxValueToSpend) {
+            if (maxValueToSpend >= cost) {
                 Bot.thinking = true
                 await new Promise(resolve => {
                     setTimeout(() => {

@@ -2108,7 +2108,7 @@ class BoardPiece{
                     }
                 }else if(this.piece.type === "chance"){
                                                     
-                    let random = randomIntFromRange(2,2)//1, 14
+                    let random = randomIntFromRange(1,14)
                     if(random === 1){
                         alert("Gå till start!")
                         player.teleportTo(0, true)
@@ -2631,12 +2631,13 @@ class Player{
         }
         
         this.rollDice = function(){
+            console.log("Hi")
             if(this.negative === false){
                 if(this.inJail === false){
                     if(this.rolls === false){
                         let oldStep = this.steps;
-                        let dice1 = randomIntFromRange(3,3);
-                        let dice2 = randomIntFromRange(4,4);
+                        let dice1 = randomIntFromRange(1,6);
+                        let dice2 = randomIntFromRange(1,6);
                         this.numberOfRolls++;
                         if(dice1 === dice2){
                             this.rolls = false;
