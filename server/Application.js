@@ -204,13 +204,21 @@ function websocketHandler(request) {
                     if (event.type == "MONEY") {
                         player.money -= 50;
                     }
-
+                    
                     Logger.log(JSON.stringify(player), "Event::onJailExit", Logger.VERBOSE);
                     api.exitedJail(player.colorIndex, event.type);
                     break;
+                case "tile_sold":
+                    Logger.log(`Player (${player.name}) sold the tile: (${event.tile.name})`, "Event::onTileSold", Logger.STANDARD);
+                    Logger.log(JSON.stringify(player), "Event::onTileSold", Logger.VERBOSE);
+                    Logger.log(JSON.stringify(event.tile), "Event::onTileSold", Logger.VERBOSE);
+
+                    player.money += event.tile.price / 2;
+                    api.tileSold(player.colorIndex, event.tile.card);
+                    break;
                 default:
                     console.log(event);
-                    console.error("<Warning> Event (%s) doesn't have any handler", event.event_type);
+                    Logger.log(`Event (${event.event_type}) doesn't have any handler`, "No Handler", Logger.VERBOSE);
 
             }
         }

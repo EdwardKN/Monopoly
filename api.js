@@ -114,6 +114,14 @@ class Api {
     }
 
     /**
+     * Sell a tile
+     * @param {BoardPiece} tile 
+     */
+    static tileSold(tile) {
+        Api.getWebSocket().send(JSON.stringify({ event_type: "tile_sold", tile: tile.piece }));
+    }
+
+    /**
      * Purchase a property
      * @param {BoardPiece} tile The boardpiece that has been modified
      * @param {number} newLevel The new level of this property

@@ -1042,6 +1042,8 @@ async function showOnlineLobby() {
             player.getOutOfJail(undefined, false);
         });
 
+        document.body.addEventListener("tile_sold_event", (evt) => board.sellButton.onClick(board.boardPieces.find(x => x.piece.card == evt.detail.tile), false));
+
         await Api.openWebsocketConnection(serverURL, username);
     } catch(err) {
         alert("VIKTIGT!\nDu kommer att hamna på en annan webbsida.\nFör att gå med i spelet måste du klicka på:\nAvancerat...>Acceptera risken och fortsätt\nOm du inte gör detta så kommer du inte kunna ansluta till spelet.");
@@ -1184,14 +1186,21 @@ class Board{
             board.downgradeButton.visible = false;
             board.getToMainMenuButton.visible = true;
         },18,18,false,false,false,false,false,{x:722,y:236,w:256*drawScale,h:324*drawScale})
-        this.sellButton = new Button(false,130,580,images.buttons.img[2],function(){
-            if(board.currentCard.mortgaged === false){
-                players[turn].money+= board.currentCard.piece.price/2
+        this.sellButton = new Button(false,130,580,images.buttons.img[2],function(card = board.currentCard, sendToServer = true){
+            if(card.mortgaged === false){
+                if (Api.online && sendToServer && board.currentCard != undefined) {
+                    Api.tileSold(board.currentCard);
+                    return;
+                }
+
+                players[turn].money += card.piece.price/2;
                 players[turn].checkDebt(board.boardPieces[20]);
-                players[turn].playerBorder.startMoneyAnimation(board.currentCard.piece.price/2);
+                players[turn].playerBorder.startMoneyAnimation(card.piece.price/2);
             }
-            players[turn].ownedPlaces.splice(players[turn].ownedPlaces.indexOf(board.currentCard),1);
-            board.currentCard.owner = undefined;
+
+            players[turn].ownedPlaces.splice(players[turn].ownedPlaces.indexOf(card),1);
+            card.owner = undefined;
+            board.currentCard = undefined;
         },40,40);
         this.mortgageButton = new Button(false,80,580,images.buttons.img[3],function(){
             if(board.currentCard.mortgaged === true){

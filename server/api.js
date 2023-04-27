@@ -178,7 +178,13 @@ function tradeContentUpdated(target, contents) {
  * @param {String} type Either DICE, CARD or MONEY depending on the method of exit
  */
 function exitedJail(player, type) {
+    Logger.log(`Player (${player}) exited jail, using (${type})`, "API::exitedJail", Logger.VERBOSE);
     websocket.broadcastUTF(JSON.stringify(new PlayerExitedJailEvent(player, type)));
+}
+
+function tileSold(player, tile) {
+    Logger.log(`Player (${player}) sold the tile (${tile})`, "API::tileSold", Logger.VERBOSE);
+    websocket.broadcastUTF(JSON.stringify(new TileSoldEvent(player, tile)));
 }
 
 class Event {
@@ -190,6 +196,12 @@ class Event {
     constructor(eventType, data = {}) {
         this.event_type = eventType;
         this.data = data;
+    }
+}
+
+class TileSoldEvent extends Event {
+    constructor(player, tile) {
+        super("tile_sold_event", { player, tile });
     }
 }
 
@@ -384,6 +396,7 @@ module.exports = {
     tilePurchased,
     propertyChanged,
     mortgageTile,
+    tileSold,
 
     // Auction
     auctionStart,
