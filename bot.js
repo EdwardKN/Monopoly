@@ -108,7 +108,7 @@ class Bot{
             
             if (result === false) {
                 turn = (turn + 1) % players.length
-                board.showDices = false
+                board.showDices = false // Should not return here
                 board.animateDices = false
                 return
             } else {
@@ -142,10 +142,12 @@ class Bot{
             return
         }
 
-        if (!bP.owner && Object.keys(boardWeights).includes(`${bP.n}`) && this.player.laps >= board.settings.roundsBeforePurchase) {
+
+        if (!bP.owner && Object.keys(boardWeights).includes(`${bP.n}`) &&
+        this.player.laps >= board.settings.roundsBeforePurchase) {
             // Buy or Auction
             let moneyLeft = this.player.money - bP.piece.price
-            if (moneyLeft < this.getAverageLoss(12) && board.auction) { 
+            if (moneyLeft < this.getAverageLoss(12) && board.settings.auction) { 
                 board.auction = new Auction(bP)
                 board.currentCard = undefined
                 board.buyButton.visible = false
