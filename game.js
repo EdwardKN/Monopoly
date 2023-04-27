@@ -3075,6 +3075,8 @@ class Player{
             this.animateSteps(oldStep,this.steps,dicesum,direction,getMoney);
         }
         this.animateSteps = function(from,to,dicesum,direction,getMoney){
+            board.getToMainMenuButton.visible = false;
+
             let self = this;
             clearInterval(this.timer)
             if(to < from && direction === 1){
