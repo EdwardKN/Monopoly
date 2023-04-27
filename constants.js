@@ -135,6 +135,9 @@ var images = {
     mainMenu:{
         src:["./images/menus/mainmenu","./images/buttons/local","./images/buttons/online","./images/menus/lobbymenu"]
     },
+    mortgageOverlay:{
+        src:["./images/Cards/mortgageoverlay"]
+    },
     colorButtons:{
         src:["./images/playercolorbuttons/player","./images/playercolorbuttons/player2","./images/playercolorbuttons/player3","./images/playercolorbuttons/player4",
         "./images/playercolorbuttons/player5","./images/playercolorbuttons/player6","./images/playercolorbuttons/player7","./images/playercolorbuttons/player8","./images/playercolorbuttons/unselected"

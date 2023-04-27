@@ -1492,7 +1492,7 @@ class Board{
                 this.nextPlayerButton.visible = false;
                 this.rollDiceButton.visible = false;
                 if(this.currentCard.mortgaged === true){
-
+                    drawRotatedImage(722,236,images.mortgageOverlay.img[0].width*drawScale,images.mortgageOverlay.img[0].height*drawScale,images.mortgageOverlay.img[0],0,false,0,0,images.mortgageOverlay.img[0].width,images.mortgageOverlay.img[0].height)
                 }
             }else{
                 this.cardCloseButton.visible = false;
