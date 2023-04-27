@@ -877,7 +877,8 @@ async function showOnlineLobby() {
             clearInterval(board?.auction?.timer);
             board.auction = undefined;
 
-            board.buyButton.visible = false;
+            board.buyButton.visible = false;                        
+            board.buyButton.hover = false;
             board.auctionButton.visible = false;
         });
 
@@ -888,6 +889,7 @@ async function showOnlineLobby() {
             board.auction = new Auction(currentCard);
             board.currentCard = undefined;
             board.buyButton.visible = false;
+            board.buyButton.hover = false;
             board.auctionButton.visible = false;
         });
 
@@ -1255,6 +1257,7 @@ class Board{
             board.currentCard = undefined;
             board.getToMainMenuButton.visible = true;
             board.buyButton.visible = false;
+            board.buyButton.hover = false;
             board.auctionButton.visible = false;
         },97,40);
 
@@ -1267,6 +1270,7 @@ class Board{
             board.currentCard = undefined;
             board.getToMainMenuButton.visible = true;
             board.buyButton.visible = false;
+            board.buyButton.hover = false;
             board.auctionButton.visible = false;
         },97,40);
 
@@ -1407,6 +1411,7 @@ class Board{
                         }
                         
                         this.buyButton.visible = false;
+                        this.buyButton.hover = false;
                         let ownAll = true;
                         let lowest = 5;
                         let highest = 0;
@@ -1471,6 +1476,7 @@ class Board{
                         
                     }else{
                         this.buyButton.visible = false;
+                        this.buyButton.hover = false;
                         this.auctionButton.visible = false;
                     }
 
@@ -2201,6 +2207,7 @@ class Auction{
                                     board.currentCard = undefined;
                                     board.getToMainMenuButton.visible = true;
                                     board.buyButton.visible = false;
+                                    board.buyButton.hover = false;
                                     board.auction = undefined;
                             }
                         }
