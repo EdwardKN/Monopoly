@@ -166,6 +166,14 @@ class Bot{
             }
         } else if (bP.owner && bP.owner !== this.player) { this.player.checkDebt(bP.owner) }        
 
+        /*
+        Priority:
+        1. Buy House
+        2. Unmortgage
+        3. Trade
+        */
+
+
         // Unmortgage
         // 1.1 * (bP.piece.price / 2)
         for (let bP of this.player.ownedPlaces) {
@@ -173,7 +181,7 @@ class Bot{
 
         }
 
-        // Edward
+
         if (this.player.rolls) {
             this.player.numberOfRolls = 0
             turn = (turn + 1) % players.length
@@ -195,7 +203,7 @@ class Bot{
         if (!boardPiece.mortgaged) { this.player.money += boardPiece.piece.price / 2; this.player.playerBorder.startMoneyAnimation(boardPiece.piece.price / 2)}
         boardPiece.owner = undefined
         this.player.ownedPlaces.splice(this.player.ownedPlaces.indexOf(boardPiece), 1)
-        if (false && this.player.ownedPlaces.length === 0 && this.player.money < 0) { this.player.checkDept() }
+        if (this.player.ownedPlaces.length === 0 && this.player.money < 0) { this.player.checkDept() }
     }
 
     getAverageLoss(ahead) {
