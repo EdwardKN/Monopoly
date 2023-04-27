@@ -73,7 +73,8 @@ var images = {
         "./images/plates/green","./images/plates/blue",
         "./images/plates/chance","./images/plates/chance2","./images/plates/chance3",
         "./images/plates/train", "./images/plates/water", "./images/plates/electric",
-        "./images/plates/supertax","./images/plates/chest","./images/plates/incometax"
+        "./images/plates/supertax","./images/plates/chest","./images/plates/incometax",
+        "./images/plates/mortgaged"
         ]
     },
     card:{
