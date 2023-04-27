@@ -1812,7 +1812,7 @@ class PlayerBorder{
                     self.createTradebutton.visible = true;
                 }
             }
-        },249,54,false,false,false,true,false,{x:0,y:0,w:249,h:54,onlySelected:true}) 
+        },250,54,false,false,false,true,false,{x:0,y:0,w:249,h:54,onlySelected:true}) 
 
         this.createTradebutton = new Button(false,this.x,this.y,images.buttons.img[9],function(){
             self.createTradebutton.visible = false;
@@ -2280,8 +2280,8 @@ class Button{
             if(this.visible && this.img !== undefined){
                 if(!this.disabled && this.selected === false){
                     if(detectCollition(this.x*drawScale*scale+715*scale,this.y*drawScale*scale-400*scale,this.w*drawScale*scale,this.h*drawScale*scale,mouse.realX,mouse.realY,1,1)){
-                        if(this.img.width < this.w*2){
-                            drawRotatedImage(this.x*drawScale+715,this.y*drawScale-400,this.w*drawScale,this.h*drawScale,this.img,0,this.mirror,0,0,this.w,this.h)
+                        if(this.img.width+1 < this.w*2){
+                            drawRotatedImage(this.x*drawScale+715,this.y*drawScale-400,this.w*drawScale,this.h*drawScale,this.img,0,this.mirror,this.w,0,this.w,this.h)
                         }else{
                             drawRotatedImage(this.x*drawScale+715,this.y*drawScale-400,this.w*drawScale,this.h*drawScale,this.img,0,this.mirror,this.w,0,this.w,this.h)
                         }
