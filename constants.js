@@ -17,13 +17,11 @@ if(disableAlert){
 }
 
 
-var f = new FontFace('Arcade', 'url(./fonts/SFPixelate-Bold.ttf)');
+var f = new FontFace('Arcade', 'url(./fonts/SFPixelate.ttf)');
 
 f.load().then(function(font){document.fonts.add(font);});
 
 var buttons = [];
-
-var textInputs = [];
 
 var offsets = {
     x:Math.floor(window.innerWidth/2) - 832*drawScale/2,
@@ -119,6 +117,7 @@ var images = {
         "./images/buttons/sellbutton","./images/buttons/mortgage","./images/buttons/arrowup","./images/buttons/arrowdown",
         "./images/buttons/buythislawn","./images/buttons/exitCard","./images/buttons/auction","./images/buttons/suggestatrade",
         "./images/buttons/setting","./images/buttons/start","./images/buttons/back","./images/buttons/bot","./images/buttons/music",
+        "./images/buttons/no","./images/buttons/yes","./images/buttons/menu",
         ]
     },
     auction:{
@@ -135,6 +134,12 @@ var images = {
     },
     mainMenu:{
         src:["./images/menus/mainmenu","./images/buttons/local","./images/buttons/online","./images/menus/lobbymenu"]
+    },
+    exitMenu:{
+        src:["./images/menus/exitmenu"]
+    },
+    mortgageOverlay:{
+        src:["./images/Cards/mortgageoverlay"]
     },
     colorButtons:{
         src:["./images/playercolorbuttons/player","./images/playercolorbuttons/player2","./images/playercolorbuttons/player3","./images/playercolorbuttons/player4",
