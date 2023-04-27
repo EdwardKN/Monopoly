@@ -682,7 +682,7 @@ async function init(){
         menus[0].current = false;
         board = new Board();
         let playerlist = []
-        let playerAmount = 3;
+        let playerAmount = 8;
         let botAmount = 0;
         let useableColors = [0,1,2,3,4,5,6,7]
         for(let i = 0; i < (playerAmount+botAmount); i++){
@@ -1100,7 +1100,7 @@ class Board{
             board = undefined;
             if (Api.online) Api.disconnect();
             timeouts.forEach(e => clearTimeout(e));
-            intervals.forEach(e => clearTimeout(e));
+            intervals.forEach(e => clearInterval(e));
             timeouts = [];
         },40,40,false,false,false,false,false,);
 
@@ -1815,6 +1815,8 @@ class PlayerBorder{
                     self.createTradebutton.visible = true;
                 }
             }
+            players.forEach( e => e.playerBorder.button.disabled = false)
+
         },250,54,false,false,false,true,false,{x:0,y:0,w:249,h:54,onlySelected:true}) 
 
         this.createTradebutton = new Button(false,this.x,this.y,images.buttons.img[9],function(){
@@ -1949,14 +1951,11 @@ class PlayerBorder{
             }
             this.button.y = this.y
             this.button.x = this.x
-            this.button.invertedHitbox.x = this.x*drawScale +715
-            this.button.invertedHitbox.y = this.y*drawScale - 400 + 54*drawScale;
-            this.button.invertedHitbox.w = this.button.w*drawScale
-            this.button.invertedHitbox.h = this.player.ownedPlaces.length*27*drawScale + 27*3*drawScale;
+            
 
             if(board.getToMainMenuButton.selected){
                 this.button.disabled = true;
-            }else{
+            }else if(this.button.disabled === false){
                 this.button.disabled = false;
             }
 
@@ -1975,6 +1974,7 @@ class PlayerBorder{
                 c.textAlign = "left"
                 c.fillText(this.player.name,this.x*drawScale*scale+750*scale,this.y*drawScale*scale-335*scale)
                 c.textAlign = "right"
+                c.font = (50)*scale+"px Arcade";
                 if(this.moneyTime <= 0){
                     c.fillText(this.player.money + "kr",this.x*drawScale*scale+1150*scale,this.y*drawScale*scale-335*scale)
                 }
@@ -1985,13 +1985,20 @@ class PlayerBorder{
                 c.textAlign = "left"
                 c.fillText(this.player.name,this.x*scale+420*scale,this.y*drawScale*scale-335*scale)
                 c.textAlign = "right"
+                c.font = (50)*scale+"px Arcade";
                 if(this.moneyTime <= 0){
                     c.fillText(this.player.money + "kr",this.x*scale+830*scale,this.y*drawScale*scale-335*scale)
                 }
 
             }
             if(this.button.selected){
+                players.forEach( e => e.playerBorder.button.disabled = true)
+                this.button.disabled = false;
                 if(this.index === 0 || this.index === 1 || this.index === 4 || this.index === 5){
+                    this.button.invertedHitbox.x = this.x*drawScale +715
+                    this.button.invertedHitbox.y = this.y*drawScale - 400 + 54*drawScale;
+                    this.button.invertedHitbox.w = this.button.w*drawScale
+                    this.button.invertedHitbox.h = this.player.ownedPlaces.length*27*drawScale + 27*3*drawScale;
                     this.createTradebutton.y = this.y + 80 + 27*this.player.ownedPlaces.length;
                     drawRotatedImage(this.x*drawScale+715,this.y*drawScale + 54*drawScale -400,260*drawScale,27*drawScale,images.playerOverlay.img[11],0,this.button.mirror,0,0,260,27,false)
                     for(let i = 0; i < this.player.ownedPlaces.length; i++){
@@ -2035,6 +2042,10 @@ class PlayerBorder{
 
                     this.createTradebutton.draw();
                 }else{
+                    this.button.invertedHitbox.x = this.x*drawScale +715
+                    this.button.invertedHitbox.y = this.y*drawScale - 400-this.player.ownedPlaces.length*27*drawScale - 27*3*drawScale;
+                    this.button.invertedHitbox.w = this.button.w*drawScale
+                    this.button.invertedHitbox.h = this.player.ownedPlaces.length*27*drawScale + 27*3*drawScale;
                     drawRotatedImage(this.x*drawScale +715,this.y*drawScale - 27*drawScale -400,260*drawScale,27*drawScale,images.playerOverlay.img[11],180,!this.button.mirror,0,0,260,27,false)
                     for(let i = 0; i < this.player.ownedPlaces.length; i++){
                         drawRotatedImage(this.x*drawScale +715,this.y*drawScale - 67 *drawScale - 27*drawScale*i + 27 -400,260*drawScale,27*drawScale,images.playerOverlay.img[10],180,!this.button.mirror,0,0,260,27,false)
@@ -2175,7 +2186,7 @@ class Auction{
                     if(this.playerlist.length === 1){
                         for(let i = 0; i<players.length; i++){
                             if(this.playerlist[0].colorIndex == players[i].colorIndex){
-                                clearInterval(board.auction.timer)
+                                intervals.forEach(e => clearInterval(e));
                                 if(this.auctionMoney !== 0){
                                     players[i].money -= this.auctionMoney;
                                     if(board.settings.allFreeparking){
@@ -3187,7 +3198,7 @@ class Player{
                                 return;
                             }
                             board.animateDices = false;
-                            self.teleportTo(self.steps + dice1 + dice2);
+                            self.teleportTo((self.steps + dice1 + dice2)%40);
                             board.nextPlayerButton.visible = true;
                             board.goToMainMenuButton.visible = true;
                         })
