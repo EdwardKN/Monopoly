@@ -59,7 +59,6 @@ canvas.addEventListener("mousemove",function(e){
 })
 
 window.addEventListener("mousedown",function(e){
-    if (board == undefined) return;
     if(firstclick === false && musicOn){
         firstclick = true;
         playSound(sounds.music,1,true)
