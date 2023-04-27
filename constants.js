@@ -6,7 +6,7 @@ var players = [];
 
 const drawScale = 2;
 
-const fastLoad = true;
+const fastLoad = false;
 
 const fastSpeed = false;
 
@@ -29,6 +29,8 @@ var offsets = {
     x:Math.floor(window.innerWidth/2) - 832*drawScale/2,
     y:Math.floor(window.innerHeight/2) - 416*drawScale/2
 }
+
+var scale = Math.sqrt(Math.pow(window.innerWidth,2) + Math.pow(window.innerHeight,2))/2000
 
 var speeds;
 if(fastSpeed === true){
@@ -73,7 +75,6 @@ const groups = {
     'green': [31, 32, 34],
     'blue': [37, 39],
 }
-const buyable = [1, 3, 5, 6, 8, 9, 11, 12, 13, 14, 15, 16, 18, 19, 21, 23, 24, 25, 26, 27, 28, 29, 31, 32, 34, 35, 37, 39]
 
 var images = {
     part:{
@@ -125,7 +126,8 @@ var images = {
     buttons:{
         src:["./images/buttons/rolldice","./images/buttons/nextplayer",
         "./images/buttons/sellbutton","./images/buttons/mortgage","./images/buttons/arrowup","./images/buttons/arrowdown",
-        "./images/buttons/buythislawn","./images/buttons/exitCard","./images/buttons/auction","./images/buttons/suggestatrade"
+        "./images/buttons/buythislawn","./images/buttons/exitCard","./images/buttons/auction","./images/buttons/suggestatrade",
+        "./images/buttons/setting","./images/buttons/start","./images/buttons/back","./images/buttons/bot","./images/buttons/music",
         ]
     },
     auction:{
@@ -139,6 +141,9 @@ var images = {
     },
     lobbyMenu:{
         src:["./images/buttons/plus","./images/buttons/minus"]
+    },
+    mainMenu:{
+        src:["./images/menus/mainmenu","./images/buttons/local","./images/buttons/online","./images/menus/lobbymenu"]
     },
     colorButtons:{
         src:["./images/playercolorbuttons/player","./images/playercolorbuttons/player2","./images/playercolorbuttons/player3","./images/playercolorbuttons/player4",
@@ -169,14 +174,29 @@ var sounds = {
         type:"multiple",
         src:"./sounds/cash/cash-",
         amount:5
+    },
+    music:{
+        type:"multiple",
+        src:"./sounds/music/music-",
+        amount:8
+    },
+    key:{
+        type:"multiple",
+        src:"./sounds/keyboard/key-",
+        amount:9
+    },
+    clicks:{
+        type:"multiple",
+        src:"./sounds/clicks/click-",
+        amount:11
     }
 }
 
 var mouse = {
-    x:0,
-    y:0,
-    realX:0,
-    realY:0
+    x:10000,
+    y:10000,
+    realX:10000,
+    realY:10000
 }
 const pieces = [
     {
