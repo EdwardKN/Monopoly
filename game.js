@@ -1088,7 +1088,7 @@ class Board{
         this.auction = undefined;
         this.trade = undefined;
         let self = this;
-        this.musicButton = new Button(true,25,530,images.buttons.img[14],function(){
+        this.musicButton = new Button(true,51,530,images.buttons.img[14],function(){
             document.cookie = `musicOn=${!self.musicButton.selected};Expires=Sun, 22 oct 2030 08:00:00 UTC;`;
             clearTimeout(musictimer)
             if(self.musicButton.selected){
@@ -1104,7 +1104,7 @@ class Board{
         },40,40,false)
         this.musicButton.selected = !musicOn;
 
-        this.goToMainMenuButton = new Button(false,25 + 117,530,images.buttons.img[15],function(){
+        this.goToMainMenuButton = new Button(false,111,530,images.buttons.img[15],function(){
             board.getToMainMenuButton.selected = false;
             board.closeConfirmButton.visible = false;
             board.goToMainMenuButton.visible = false;
@@ -1112,7 +1112,7 @@ class Board{
             board.getToMainMenuButton.visible = true;
             board.musicButton.visible = false;
         },40,40);
-        this.escapeConfirm = new Button(false,25 + 117 + 57,530,images.buttons.img[16],function(){
+        this.escapeConfirm = new Button(false,171,530,images.buttons.img[16],function(){
             board.getToMainMenuButton.selected = false;
             board.closeConfirmButton.visible = false;
             board.goToMainMenuButton.visible = false;
