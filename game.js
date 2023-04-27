@@ -1974,6 +1974,7 @@ class PlayerBorder{
                 c.textAlign = "left"
                 c.fillText(this.player.name,this.x*drawScale*scale+750*scale,this.y*drawScale*scale-335*scale)
                 c.textAlign = "right"
+                c.font = (50)*scale+"px Arcade";
                 if(this.moneyTime <= 0){
                     c.fillText(this.player.money + "kr",this.x*drawScale*scale+1150*scale,this.y*drawScale*scale-335*scale)
                 }
@@ -1984,6 +1985,7 @@ class PlayerBorder{
                 c.textAlign = "left"
                 c.fillText(this.player.name,this.x*scale+420*scale,this.y*drawScale*scale-335*scale)
                 c.textAlign = "right"
+                c.font = (50)*scale+"px Arcade";
                 if(this.moneyTime <= 0){
                     c.fillText(this.player.money + "kr",this.x*scale+830*scale,this.y*drawScale*scale-335*scale)
                 }
