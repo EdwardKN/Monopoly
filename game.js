@@ -1100,7 +1100,7 @@ class Board{
             board = undefined;
             if (Api.online) Api.disconnect();
             timeouts.forEach(e => clearTimeout(e));
-            intervals.forEach(e => clearTimeout(e));
+            intervals.forEach(e => clearInterval(e));
             timeouts = [];
         },40,40,false,false,false,false,false,);
 
@@ -2186,7 +2186,7 @@ class Auction{
                     if(this.playerlist.length === 1){
                         for(let i = 0; i<players.length; i++){
                             if(this.playerlist[0].colorIndex == players[i].colorIndex){
-                                clearInterval(board.auction.timer)
+                                intervals.forEach(e => clearInterval(e));
                                 if(this.auctionMoney !== 0){
                                     players[i].money -= this.auctionMoney;
                                     if(board.settings.allFreeparking){
