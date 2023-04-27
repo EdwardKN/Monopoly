@@ -31,7 +31,6 @@ setTimeout(() => {
 }, 100);
 
 window.addEventListener("resize", e=> {
-    
     if(window.innerWidth*9 < window.innerHeight*16){
         canvas.width = window.innerWidth;
         canvas.height = (window.innerWidth*9)/16;
@@ -42,7 +41,7 @@ window.addEventListener("resize", e=> {
     backCanvas.width = window.innerWidth;
     backCanvas.height = window.innerHeight;
     offsets = {
-        x:Math.floor(window.innerWidth/2) - 832*drawScale/2,
+        x:Math.floor(window.innerWidth/2) - 416*2*drawScale/2,
         y:Math.floor(window.innerHeight/2) - 416*drawScale/2
     }
     scale = Math.sqrt(Math.pow(canvas.width,2) + Math.pow(canvas.height,2))/2250
@@ -60,6 +59,7 @@ canvas.addEventListener("mousemove",function(e){
 })
 
 window.addEventListener("mousedown",function(e){
+    if (board == undefined) return;
     if(firstclick === false && musicOn){
         firstclick = true;
         playSound(sounds.music,1,true)
@@ -192,9 +192,7 @@ function to_grid_coordinate(x,y) {
   }
 }
 function detectCollition(x,y,w,h,x2,y2,w2,h2){
-    if(x+w>x2 && x<x2+w2 && y+h>y2 && y<y2+h2){
-            return true;
-        };
+    return x+w>x2 && x<x2+w2 && y+h>y2 && y<y2+h2;
 };
 function isNumeric(str) {
     if (typeof str != "string") return false
@@ -586,6 +584,12 @@ class MainMenu {
             self.musicButton.visible = false;
         },195,52,false,false,true)
         this.onlineButton = new Button(false,-322,539,images.mainMenu.img[2],function(){
+            self.current = false;
+            self.localButton.visible = false;
+            self.onlineButton.visible = false;
+            self.musicButton.visible = false;
+
+            showOnlineLobby();
         },195,52,false,false,true)
 
         this.musicButton = new Button(true,-357,711,images.buttons.img[14],function(){
@@ -670,23 +674,29 @@ class TextInput {
     }
 }
 
-function init(){
+async function init(){
     document.body.appendChild(canvas);
     canvas.style.zIndex = -100;
     document.body.appendChild(backCanvas);
     backCanvas.style.zIndex = -150;
 
+    canvas.width = innerWidth;
+    canvas.height = innerHeight;
     
-
     preRender(images);
-
     loadSounds(sounds);   
-    
 
+
+    if (location.search != "") {
+        await showOnlineLobby();
+        return;
+    }
+    
     
     if(fastLoad === false){
         menus.push(new MainMenu())
         menus.push(new LocalLobby())
+        update();
     }else{
         board = new Board();
         let playerlist = []
@@ -730,24 +740,23 @@ function init(){
 
 function update(){
     requestAnimationFrame(update);
-    c.imageSmoothingEnabled = false;
-    c.clearRect(0,0,canvas.width,canvas.height);
 
-    
+    c.imageSmoothingEnabled = true;
+    c.clearRect(0,0,canvas.width,canvas.height);
     showBackground();
 
     if(board !== undefined && players.length >0){
         board.update();
     }
 
-    
     let tmp = false;
 
     buttons.forEach(e =>{
         if(e.hover){
             tmp = true;
         }
-    })
+    });
+
     if(tmp === true){
         canvas.style.cursor = "pointer"
     }else{
@@ -765,6 +774,296 @@ function showBackground(){
         }
     }
     drawIsometricImage(-92,352,images.background.img[0],false,0,0,572,286,0,0)
+}
+
+async function showOnlineLobby() {
+    Api.online = true;
+    var username = location.search == "" ? prompt("Vad vill du ha för namn?") : decodeURI(location.search.split("&")[1]);
+    var serverURL = location.search == "" ? prompt("Ange addressen som servern visar, för att gå med i ett spel.\n(Obs. Om du inte har en server, följ anvisningarna på github)") : atob(location.search.substring(1).split("&")[0]);
+    history.replaceState(undefined, undefined, location.href.replace(location.search, ""));
+    try {
+        document.body.addEventListener("start_game", (evt) => {
+            var data = evt.detail;
+            
+            document.getElementById("lobby").style.display = "none";
+            
+            players = [];
+            data.players.forEach((player) => {
+                players.push(new Player(images.player.img[player.colorIndex], player.colorIndex, player.name, false));
+            });
+            
+            // Got no idea where the extra players come from, as they should be cleared aboved. But here's an extra check to remove them
+            board.boardPieces[0].currentPlayer = board.boardPieces[0].currentPlayer.filter(x => players.indexOf(x) != -1);
+
+            if (Api.currentPlayer == 0) {
+                board.rollDiceButton.visible = true;
+                board.nextPlayerButton.visible = false;
+            }
+
+            update();
+        });
+        
+        document.body.addEventListener("join_info", (evt) => {
+            var data = evt.detail;
+            
+            board.settings = data.settings;
+
+            data.players.forEach((player) => {
+                players.push(new Player(images.player.img[player.colorIndex], player.colorIndex, player.name, false));
+            });
+
+            Api.currentPlayer = data.thisPlayer;
+
+            document.getElementById("lobby").style.display = "grid";
+
+            data.players.forEach(p => {
+                var player = document.createElement("div");
+                var span = document.createElement("span");
+                var img = document.createElement("img");
+
+                player.className = "player";
+                player.style.color = !p.isReady ? "red" : "green";    
+                
+                span.innerText = p.name;
+                img.src = images.player.src[p.colorIndex] + ".png";
+
+                player.appendChild(span);
+                player.appendChild(img);
+
+                document.getElementById("player-container").appendChild(player);
+            })
+        });
+
+        document.body.addEventListener("player_left", (evt) => {
+            if (document.getElementById("lobby").style.display != "none") {
+                // If the lobby is visible, remove this player from the list
+                var playerContainer = document.getElementById("player-container");
+                var index = players.findIndex(x => x.colorIndex == evt.detail.index);
+                var player = players.splice(index, 1);
+                playerContainer.removeChild(playerContainer.children[index]);
+            } else {
+                // Set the player to a bot if it left
+                var player = players.find(x => x.colorIndex == evt.detail.index);
+                player.bot = new Bot(player);
+            }
+        });
+
+        document.body.addEventListener("player_joined", (evt) => {
+            if (evt.detail.index == Api.currentPlayer || Api.currentPlayer == -1) return;
+            players.push(new Player(images.player.img[evt.detail.index], evt.detail.index, evt.detail.username, false));
+
+            var player = document.createElement("div");
+            var span = document.createElement("span");
+            var img = document.createElement("img");
+
+            player.className = "player";
+
+            span.innerText = evt.detail.username;
+            img.src = images.player.src[evt.detail.index] + ".png";
+
+            player.appendChild(span);
+            player.appendChild(img);
+
+            document.getElementById("player-container").appendChild(player);
+        });
+        
+        document.body.addEventListener("move_event", (evt) => players[evt.detail.player].teleportTo(evt.detail.steps, evt.detail.step != 10, false));
+
+        document.body.addEventListener("new_turn_event", (evt) => {
+            turn = evt.detail.id;
+            if (Api.currentPlayer == turn) {
+                board.rollDiceButton.visible = true;
+                board.nextPlayerButton.visible = false;
+            } else {
+                board.rollDiceButton.visible = false;
+                board.nextPlayerButton.visible = false;
+            }
+        });
+
+        document.body.addEventListener("tile_purchased_event", (evt) => {
+            var data = evt.detail;
+            var player = players.find(x => x.colorIndex == data.player);
+            var currentCard = board.boardPieces.find(x => x.piece.card == data.tile);
+
+            player.money = data.money;
+            player.ownedPlaces.push(currentCard);
+
+            currentCard.owner = player;
+            board.currentCard = undefined;
+
+            currentCard.mortgaged = false;
+
+            clearInterval(board?.auction?.timer);
+            board.auction = undefined;
+
+            board.buyButton.visible = false;
+            board.auctionButton.visible = false;
+        });
+
+        document.body.addEventListener("auction_show_event", (evt) => {
+            var data = evt.detail;
+            var currentCard = board.boardPieces.find(x => x.piece.card == data.tile);
+
+            board.auction = new Auction(currentCard);
+            board.currentCard = undefined;
+            board.buyButton.visible = false;
+            board.auctionButton.visible = false;
+        });
+
+        document.body.addEventListener("auction_start_event", (evt) => {
+            board.auction.started = true;
+            board.auction.timer = setInterval(() => {
+                board.auction.time -= 1;
+            }, 10);
+        })
+
+        document.body.addEventListener("auction_bid_event", (evt) => {
+            var data = evt.detail;
+
+            if (data.is_out) {
+                if (board.auction == undefined) return;
+
+                board.auction.playerlist.splice(board.auction.playerlist.findIndex(x => x.colorIndex == data.player), 1);
+                if (board.auction.playerlist.length == 1 && board.auction.playerlist[0].colorIndex == Api.currentPlayer) {
+                    Api.tilePurchased(board.auction.card, board.auction.auctionMoney);
+                }
+            } else {
+                board.auction.auctionMoney = data.money;
+                board.auction.turn = board.auction.playerlist.findIndex(x => x.colorIndex == data.nextPlayer);
+            }
+            board.auction.time = 472;
+
+
+            if (data.player == Api.currentPlayer) {
+                // Remove buttons
+                board.auction.addMoneyButton2.visible = false;
+                board.auction.addMoneyButton10.visible = false;
+                board.auction.addMoneyButton100.visible = false;
+            }
+        });
+
+        document.body.addEventListener("random_card", (evt) => {
+            var data = evt.detail;
+            var player = players.find(x => x.colorIndex == data.player);
+
+            if (data.type == "CHANCE_CARD") {
+                board.boardPieces[player.steps].doChanceCard(data.id, player);
+            } else {
+                board.boardPieces[player.steps].doCommunityChest(data.id, player);
+            }
+        });
+
+        document.body.addEventListener("property_changed_event", (evt) => {
+            var data = evt.detail;
+            var currentCard = board.boardPieces.find(x => x.piece.card == data.tile);
+
+            currentCard.level = data.new_level;
+            currentCard.owner.money = data.money;
+        });
+
+        document.body.addEventListener("player_ready_event", (evt) => {
+            var index =  players.findIndex(x => x.colorIndex == evt.detail.player);
+            if (document.getElementById("lobby").style.display != "none") {
+                var playerContainer = document.getElementById("player-container");
+                playerContainer.children[index].style.color = playerContainer.children[index].style.color == "green" ? "red" : "green";
+            }
+        });
+
+        document.body.addEventListener("tile_mortgaged_event", (evt) => {
+            var data = evt.detail;
+            var currentCard = board.boardPieces.find(x => x.piece.card == data.tile);
+            var player = players.find(x => x.colorIndex == data.player);
+
+            currentCard.mortgaged = true;
+            player.money = data.money;
+        });
+
+        document.body.addEventListener("request_trade_event", (evt) => {
+            if (evt.detail.target == Api.currentPlayer) {
+                var thisPlayer = players.find(x => x.colorIndex == Api.currentPlayer);
+                var otherPlayer = players[turn];
+                board.trade = new Trade(thisPlayer, otherPlayer);
+            }
+        });
+
+        document.body.addEventListener("trade_concluded_event", (evt) => {
+            if (evt.detail.successful) {
+                var contents = evt.detail.contents;
+
+                var p1 = players.find(p => p.colorIndex == evt.detail.p1);
+                var p2 = players.find(p => p.colorIndex == evt.detail.p2);
+
+                var p1New = contents.p2.tiles.map(tile => board.boardPieces.find(x => x.piece.card == tile.card));
+                var p2New = contents.p1.tiles.map(tile => board.boardPieces.find(x => x.piece.card == tile.card));
+
+                p1New.forEach(tile => {
+                    p2.ownedPlaces.splice(p2.ownedPlaces.findIndex(t => t.piece.card == tile.piece.card), 1);
+                    p1.ownedPlaces.push(tile);
+                    tile.owner = p1;
+                });
+
+                p2New.forEach(tile => {
+                    p1.ownedPlaces.splice(p1.ownedPlaces.findIndex(t => t.piece.card == tile.piece.card), 1);
+                    p2.ownedPlaces.push(tile);
+                    tile.owner = p2;
+                });
+
+                p1.money += contents.p2.money;
+                p2.money += contents.p1.money;
+                p1.money -= contents.p1.money;
+                p2.money -= contents.p2.money;
+
+                if (board.trade != undefined) {
+                    board.trade.closeButton.visible = false;
+                    board.trade.p1ConfirmButton.visible = false;
+                    board.trade.p2ConfirmButton.visible = false;
+                    board.trade.p1Slider.visible = false;
+                    board.trade.p1Slider.visible = false;
+                    board.trade.p1ConfirmButton.hover = false;
+                    board.trade.p2ConfirmButton.hover = false;
+                    board.trade.p1PropertyButtons.forEach(e => { e.visible = false; });
+                    board.trade.p2PropertyButtons.forEach(e => { e.visible = false; });
+                }
+            }
+            players.forEach(p => { p.playerBorder.button.disabled = false; });
+            board.trade = undefined;
+        });
+
+        document.body.addEventListener("trade_accept_update_event", (evt) => {
+            if (board.trade != undefined && evt.detail.target == Api.currentPlayer) {
+                board.trade.p2ConfirmButton.selected = evt.detail.successful;
+            }
+        });
+
+        document.body.addEventListener("trade_content_update_event", (evt) => {
+            if (evt.detail.target == Api.currentPlayer) {
+                board.trade.contents.p2 = evt.detail.contents;
+
+                board.trade.p2Slider.percentage = (board.trade.contents.p2.money - board.trade.p2Slider.min) / (board.trade.p2Slider.max - board.trade.p2Slider.min);
+                board.trade.p2PropertyButtons.forEach(button => {
+                    button.selected = board.trade.contents.p2.tiles.some(tile => tile.card == button.card);
+                });
+            }
+        });
+        
+        document.body.addEventListener("exited_jail_event", (evt) => {
+            var player = players.find(p => p.colorIndex == evt.detail.player);
+            if (evt.detail.player != Api.currentPlayer) {
+                // This has already been done for the player in question
+                if (evt.detail.type == "MONEY") {
+                    player.money -= 50;
+                } else if (evt.detail.type == "CARD") {
+                    player.jailcardAmount -= 1;
+                } 
+            }
+            player.getOutOfJail(undefined, false);
+        });
+
+        await Api.openWebsocketConnection(serverURL, username);
+    } catch(err) {
+        alert("VIKTIGT!\nDu kommer att hamna på en annan webbsida.\nFör att gå med i spelet måste du klicka på:\nAvancerat...>Acceptera risken och fortsätt\nOm du inte gör detta så kommer du inte kunna ansluta till spelet.");
+        location = "https://" + serverURL + "/" + btoa(location.href) + "/" + encodeURI(username);
+    }
 }
 
 class Board{
@@ -822,7 +1121,7 @@ class Board{
                 board.boardPieces[20].money += 50;
             }
             players[turn].rolls = true;
-            players[turn].getOutOfJail();
+            players[turn].getOutOfJail("MONEY");
             board.payJailButton.visible = false;
             board.rollJailButton.visible = false;
             board.jailCardButton.visible = false;
@@ -841,7 +1140,7 @@ class Board{
             players[turn].animateDice(dice1,dice2,function(){
                 board.animateDices = false; 
                 if(dice1 === dice2|| players[turn].timeInJail === 3){
-                    self.getOutOfJail()
+                    self.getOutOfJail("DICE")
                 }
                 if(dice1 === dice2){
                     self.teleportTo(self.steps + dice1 + dice2);
@@ -853,7 +1152,7 @@ class Board{
         },82,35);
         this.jailCardButton = new Button(false,180,520,images.jailMenu.img[3],function(){
             players[turn].jailcardAmount--;
-            players[turn].getOutOfJail();
+            players[turn].getOutOfJail("CARD");
             board.payJailButton.visible = false;
             board.rollJailButton.visible = false;
             board.jailCardButton.visible = false;
@@ -863,13 +1162,25 @@ class Board{
             if(players[turn].money >= 0){
                 players[turn].rolls = false;
                 players[turn].numberOfRolls = 0;
-                turn = (turn+1)%players.length;
+                if (Api.online) {
+                    Api.changeTurn();
+                } else {
+                    turn = (turn+1)%players.length;
+                }
                 board.dice1 = 0;
                 board.dice2 = 0;
+
+                board.nextPlayerButton.visible = false;
             }
             board.animateDices = false;
             board.showDices = false;
         },107,23)
+
+        if (Api.online && Api.currentPlayer == 0) {
+            this.rollDiceButton.visible = true;
+            this.nextPlayerButton.visible = false;
+        }
+
         this.currentCard = undefined;
         this.cardCloseButton = new Button(false,241,318,images.buttons.img[7],function(){
             board.currentCard = undefined;
@@ -890,6 +1201,11 @@ class Board{
         },40,40);
         this.mortgageButton = new Button(false,80,580,images.buttons.img[3],function(){
             if(board.currentCard.mortgaged === true){
+                if (Api.online) {
+                    Api.tilePurchased(board.currentCard, (board.currentCard.piece.price/2)*1.1);
+                    return;
+                }
+                
                 board.currentCard.mortgaged = false;
                 if(board.settings.allFreeparking){
                     board.boardPieces[20].money += (board.currentCard.piece.price/2)*1.1
@@ -897,6 +1213,11 @@ class Board{
                 players[turn].money -= (board.currentCard.piece.price/2)*1.1
                 players[turn].playerBorder.startMoneyAnimation(-(board.currentCard.piece.price/2)*1.1)
             }else{
+                if (Api.online) {
+                    Api.mortagedTile(board.currentCard);
+                    return;
+                }
+
                 board.currentCard.mortgaged = true;
                 players[turn].money += board.currentCard.piece.price/2
                 players[turn].playerBorder.startMoneyAnimation(board.currentCard.piece.price/2)
@@ -904,6 +1225,11 @@ class Board{
             }
         },40,40);
         this.upgradeButton = new Button(false,75,580,images.buttons.img[4],function(){
+            if (Api.online) {
+                Api.propertyChangedLevel(board.currentCard, board.currentCard.level + 1, true);
+                return;
+            }
+
             board.currentCard.level++;
             board.currentCard.owner.money -= board.currentCard.piece.housePrice;
             if(board.settings.allFreeparking){
@@ -911,13 +1237,21 @@ class Board{
             }
             players[turn].playerBorder.startMoneyAnimation(-board.currentCard.piece.housePrice)
         },40,40);
-        this.downgradeButton = new Button(false,25,580,images.buttons.img[5],function(){
+            this.downgradeButton = new Button(false,25,580,images.buttons.img[5],function(){
+            if (Api.online) {
+                Api.propertyChangedLevel(board.currentCard, board.currentCard.level - 1, false);
+                return;
+            }
             board.currentCard.level--;
             board.currentCard.owner.money += board.currentCard.piece.housePrice/2;
             players[turn].playerBorder.startMoneyAnimation(board.currentCard.piece.housePrice/2)
             players[turn].checkDebt(board.boardPieces[20]);
         },40,40);
         this.buyButton = new Button(false,25,580,images.buttons.img[6],function(){
+            if (Api.online) {
+                Api.tilePurchased(board.currentCard);
+                return;
+            }
             players[turn].money -= board.currentCard.piece.price;
             if(board.settings.allFreeparking){
                 board.boardPieces[20].money += board.currentCard.piece.price;
@@ -932,6 +1266,10 @@ class Board{
         },97,40);
 
         this.auctionButton = new Button(false,25 + 117,580,images.buttons.img[8],function(){
+            if (Api.online) {
+                Api.auctionShow(board.currentCard);
+                return;
+            }
             board.auction = new Auction(board.currentCard)
             board.currentCard = undefined;
             board.getToMainMenuButton.visible = true;
@@ -943,7 +1281,6 @@ class Board{
                 if(n%10 === 0){
                     this.boardPieces.push(new BoardPiece(n,images.corner.img))
                 }else{
-
                     this.boardPieces.push(new BoardPiece(n,images.part.img))
                 }
         }
@@ -1060,8 +1397,7 @@ class Board{
                         c.fillText("Ägare: " + this.currentCard.owner.name,985*scale,415*scale)
                     }
 
-
-                    if(this.currentCard.owner === players[turn] && players[turn].bot === undefined){
+                    if(this.currentCard.owner === players[Api.online ? Api.currentPlayer : turn] && players[Api.online ? Api.currentPlayer : turn].bot === undefined){
                         this.cardCloseButton.visible = true;
                         this.sellButton.draw();
                         this.sellButton.visible = true;
@@ -1118,8 +1454,7 @@ class Board{
                 }else{
                     this.cardCloseButton.visible = true;
 
-                    if(this.currentCard === board.boardPieces[(players[turn].steps)] && this.auction === undefined && players[turn].bot === undefined){
-                            
+                    if(this.currentCard === board.boardPieces[players[Api.online ? Api.currentPlayer : turn].steps] && this.auction === undefined && players[Api.online ? Api.currentPlayer : turn].bot === undefined){
                         if(board.settings.auctions){
                             this.auctionButton.disabled = false;
                             this.cardCloseButton.visible = false;
@@ -1135,6 +1470,7 @@ class Board{
                         this.sellButton.visible = false;
                         this.downgradeButton.visible = false;
                         this.upgradeButton.visible = false;
+
                         if(players[turn].money >= this.currentCard.piece.price){
                             this.buyButton.disabled = false;
                         }else{
@@ -1179,12 +1515,18 @@ class Board{
         }
 
         this.showDice = function () {
-            if(players[turn].animationOffset !== 0 ||this.showDices === true || this.animateDices === true){
-            drawIsometricImage(500,500,images.dice.img[0],false,this.dice1Type*64,(this.dice1-1)*64,64,64,0,0)
-            drawIsometricImage(550,400,images.dice.img[0],false,this.dice2Type*64,(this.dice2-1)*64,64,64,0,0)
-            this.nextPlayerButton.visible = false;
-            this.rollDiceButton.visible = false;
+            if(players[turn].animationOffset !== 0 || this.showDices === true || this.animateDices === true){
+                drawIsometricImage(500,500,images.dice.img[0],false,this.dice1Type*64,(this.dice1-1)*64,64,64,0,0)
+                drawIsometricImage(550,400,images.dice.img[0],false,this.dice2Type*64,(this.dice2-1)*64,64,64,0,0)
+                this.nextPlayerButton.visible = false;
+                this.rollDiceButton.visible = false;
             }else{
+                if (Api.online) {
+                    if (players[turn].colorIndex != Api.currentPlayer) {
+                        return;
+                    }
+                }
+
                 if(players[turn].rolls === false){
                     if(players[turn].bot === undefined && this.auction === undefined && players[turn].inJail === false && !this.getToMainMenuButton.selected){
                         this.rollDiceButton.visible = true;
@@ -1215,6 +1557,8 @@ class Slider{
         this.h = h;
         this.visible = false;
         this.disabled = false;
+        this.min = from;
+        this.max = to;
         this.percentage = 0;
         this.value = 0;
         this.follow = false;
@@ -1229,6 +1573,9 @@ class Slider{
 
         buttons.push(this);
         this.draw = function(){
+            if (this.disabled) this.hover = false;
+            if (!this.visible) return;
+            
             if(this.visible){
                 this.value = Math.round((((this.to-this.from)*this.percentage) + this.from)/this.steps)*this.steps;
                 if(this.value !== this.last){
@@ -1267,18 +1614,28 @@ class Slider{
             }
         }
         this.click = function(){
+            if (this.disabled) return;
+
             if(this.hover === true){
                 this.follow = true;
             }
         }
         this.release = function(){
+            if (this.disabled) return;
             if(this.follow === true){
                 this.percentage = (mouse.realX-(this.x*scale))/(this.w*scale-4*scale);
             }
+            if (Api.online && board.trade != undefined) {
+                // Update money
+                board.trade.contents.p1.money = this.value;
+                Api.tradeContentUpdated(board.trade.p2.colorIndex, board.trade.contents.p1);
+            }
+            
             this.follow = false;
         }   
     }
 }
+
 class Trade{
     constructor(p1,p2){
         this.p1 = p1;
@@ -1287,24 +1644,46 @@ class Trade{
             players.forEach(e => {e.playerBorder.button.selected = false;e.playerBorder.button.disabled = true})
         }, 1));
 
+        this.contents = {
+            // This is what each player offers
+            // Currently only used in the online version
+            p1: { money: 0, tiles: [] },
+            p2: { money: 0, tiles: [] }
+        };
+
         let self = this;
-        this.closeButton = new Button(false,364,289,images.buttons.img[7],function(){self.closeButton.visible = false;board.trade = undefined;board.getToMainMenuButton.visible = true; players.forEach(e => {e.playerBorder.button.disabled = false})},18,18,false,
+        this.closeButton = new Button(false,364,289,images.buttons.img[7],function(){if (Api.online) { Api.tradeConcluded(self.p2.colorIndex, false); } self.closeButton.visible = false;board.trade = undefined;board.getToMainMenuButton.visible = true; players.forEach(e => {e.playerBorder.button.disabled = false})},18,18,false,
         false,false,false,false,{x:466,y:170,w:1025,h:840})
         this.closeButton.visible = true;
 
         this.p1Slider = new Slider(500,300,400,60,0,this.p1.money,10,true,30,"kr","")
-        this.p1ConfirmButton = new Button(true,-70,650,images.trade.img[1],function(){},150,50)
+        this.p1ConfirmButton = new Button(true,-70,650,images.trade.img[1],function(){
+            if (Api.online && self.p1.colorIndex == Api.currentPlayer) {
+                if (self.p2ConfirmButton.selected) {
+                    Api.tradeConcluded(self.p2.colorIndex, true, self.contents);
+                } else {
+                    Api.tradeAcceptUpdate(self.p2.colorIndex, self.p1ConfirmButton.selected);
+                }
+            }
+        },150,50)
         if(this.p1.bot === undefined){
             this.p1ConfirmButton.visible = true;
         }
+        if (Api.online && this.p1.colorIndex != Api.currentPlayer) {
+            this.p2ConfirmButton.disabled = true;
+            this.p1Slider.disabled = true;
+        }
 
         this.p2ConfirmButton = new Button(true,180,650,images.trade.img[1],function(){},150,50)
+        this.p2Slider = new Slider(1050,300,400,60,0,this.p2.money,10,true,30,"kr","")
         if(this.p2.bot === undefined){
             this.p2ConfirmButton.visible = true;
         }
-        this.p2Slider = new Slider(1050,300,400,60,0,this.p2.money,10,true,30,"kr","")
+        if (Api.online && this.p2.colorIndex != Api.currentPlayer) {
+            this.p2ConfirmButton.disabled = true;
+            this.p2Slider.disabled = true;
+        }
 
-        
         this.p1PropertyButtons = [];
         this.p2PropertyButtons = [];
 
@@ -1314,7 +1693,14 @@ class Trade{
                 tmp = 107
             }
             let but = (new Button(true,-300 + tmp + 198,280 + 18*Math.floor(i/2) + 110,images.trade.img[2],function(){
-
+                if (Api.online) {
+                    if (this.selected) {
+                        self.contents.p1.tiles.push(e.piece);
+                    } else {
+                        self.contents.p1.tiles.splice(self.contents.p1.tiles.findIndex(x => x.card == e.piece.card), 1);
+                    }
+                    Api.tradeContentUpdated(self.p2.colorIndex, self.contents.p1);
+                }
             },106,17,false,false,false,false,false,false,e.piece.name + " " + e.piece.price + "kr",15,e.piece.color))
 
             if(self.p1.bot !== undefined){
@@ -1323,23 +1709,29 @@ class Trade{
             if(e.level !== 0){
                 but.disabled = true;
             }
+
+            but.card = e.piece.card;
             self.p1PropertyButtons.push(but);
-        })
+        });
         
         this.p2.ownedPlaces.forEach(function(e,i){
             let tmp = 0;
             if(i%2 === 1){
                 tmp = 107
             }
-            let but = (new Button(true,-30 + tmp + 200,280 + 18*Math.floor(i/2) + 110,images.trade.img[2],function(){
+            let but = (new Button(true,-30 + tmp + 200,280 + 18*Math.floor(i/2) + 110,images.trade.img[2],function(){},106,17,false,false,false,false,false,false,e.piece.name + " " + e.piece.price + "kr",15,e.piece.color))
 
-            },106,17,false,false,false,false,false,false,e.piece.name + " " + e.piece.price + "kr",15,e.piece.color))
-
-            if(self.p2.bot !== undefined){
+            if(self.p2.bot !== undefined || (Api.online && self.p2.colorIndex != Api.currentPlayer)){
                 but.disabled = true;
             }
+            if(e.level !== 0){
+                but.disabled = true;
+            }
+
+            but.card = e.piece.card;
             self.p2PropertyButtons.push(but);
-        })
+        });
+
         this.update = function(){
             drawIsometricImage(0,0,images.trade.img[0],false,0,0,images.trade.img[0].width,images.trade.img[0].height,-192,images.trade.img[0].height/50,1)
             this.closeButton.draw();
@@ -1362,7 +1754,7 @@ class Trade{
             this.p1PropertyButtons.forEach(e => {e.visible=true;e.draw()});
             this.p2PropertyButtons.forEach(e => {e.visible=true;e.draw()});
 
-            if(this.p1ConfirmButton.selected && this.p2ConfirmButton.selected){
+            if(this.p1ConfirmButton.selected && this.p2ConfirmButton.selected && !Api.online){
                 let p1New = [];
                 let p2New = [];
                 this.p1PropertyButtons.forEach(function(e,i){
@@ -1423,12 +1815,24 @@ class PlayerBorder{
         this.button = new Button(true,this.x,this.y,images.playerOverlay.img[8],function(){
             players.forEach(e =>{if(e.playerBorder != self){e.playerBorder.button.selected = false;e.playerBorder.createTradebutton.visible = false;}})
             self.createTradebutton.visible = false;
+            if (Api.online) {
+                if (Api.currentPlayer != players[turn].colorIndex) {
+                    self.createTradebutton.visible = false;
+                } else if (Api.currentPlayer == self.player.colorIndex) {
+                    self.createTradebutton.visible = false;
+                } else {
+                    self.createTradebutton.visible = true;
+                }
+            }
         },249,54,false,false,false,true,false,{x:0,y:0,w:249,h:54,onlySelected:true}) 
 
         this.createTradebutton = new Button(false,this.x,this.y,images.buttons.img[9],function(){
             self.createTradebutton.visible = false;
             self.showInfo = false;
-            board.trade = new Trade(players[turn],self.player);
+            if (Api.online && board.trade == undefined) {
+                Api.requestTrade(self.player.colorIndex);
+            }
+            board.trade = new Trade(players[turn],self.player); 
             board.getToMainMenuButton.visible = false; 
         },219,34,false,false,true)
 
@@ -1461,63 +1865,52 @@ class PlayerBorder{
         }
 
         this.init = function(){
-            if(players.length === 5 && this.realIndex === 4){
-                this.index = 3
+            // What does this function even do?
+            if(players.length === 5) {
+                if (this.realIndex === 4){
+                    this.index = 3;
+                } else if(this.realIndex === 2){
+                    this.index = 4;
+                } else if(this.realIndex === 3){
+                    this.index = 2;
+                }
+            } else if (players.length == 6) {
+                if(this.realIndex === 4){
+                    this.index = 2;
+                } else if(this.realIndex === 2){
+                    this.index = 4;
+                } else if(this.realIndex === 3){
+                    this.index = 6;
+                } else if(this.realIndex === 5){
+                    this.index = 3;
+                }
+            } else if (players.length == 7) {
+                if(this.realIndex === 4){
+                    this.index = 5;
+                } else if(this.realIndex === 2){
+                    this.index = 4;
+                } else if(this.realIndex === 3){
+                    this.index = 6;
+                } else if(this.realIndex === 5){
+                    this.index = 3;
+                } else if(this.realIndex === 6){
+                    this.index = 2;
+                }
+            } else if (players.length == 8) {
+                if(this.realIndex === 4){
+                    this.index = 5;
+                } else if(this.realIndex === 2){
+                    this.index = 4;
+                } else if(this.realIndex === 3){
+                    this.index = 6;
+                } else if(this.realIndex === 5){
+                    this.index = 7;
+                } else if(this.realIndex === 6){
+                    this.index = 2;
+                } else if(this.realIndex === 7){
+                    this.index = 3;
+                }
             }
-            if(players.length === 5 && this.realIndex === 2){
-                this.index = 4
-            }
-            if(players.length === 5 && this.realIndex === 3){
-                this.index = 2
-            }
-            
-            if(players.length === 6 && this.realIndex === 4){
-                this.index = 2
-            }
-            if(players.length === 6 && this.realIndex === 2){
-                this.index = 4
-            }
-            if(players.length === 6 && this.realIndex === 3){
-                this.index = 6
-            }
-            if(players.length === 6 && this.realIndex === 5){
-                this.index = 3
-            }     
-
-            if(players.length === 7 && this.realIndex === 4){
-                this.index = 5
-            }
-            if(players.length === 7 && this.realIndex === 2){
-                this.index = 4
-            }
-            if(players.length === 7 && this.realIndex === 3){
-                this.index = 6
-            }
-            if(players.length === 7 && this.realIndex === 5){
-                this.index = 3
-            }   
-            if(players.length === 7 && this.realIndex === 6){
-                this.index = 2
-            }       
-
-            if(players.length === 8 && this.realIndex === 4){
-                this.index = 5
-            }
-            if(players.length === 8 && this.realIndex === 2){
-                this.index = 4
-            }
-            if(players.length === 8 && this.realIndex === 3){
-                this.index = 6
-            }
-            if(players.length === 8 && this.realIndex === 5){
-                this.index = 7
-            }   
-            if(players.length === 8 && this.realIndex === 6){
-                this.index = 2
-            }      
-            if(players.length === 8 && this.realIndex === 7){
-                this.index = 3
-            }      
         }
         
         this.draw = function() {
@@ -1641,10 +2034,12 @@ class PlayerBorder{
                     }
                     drawRotatedImage(this.x*drawScale +715,this.y*drawScale + 53*drawScale*1.5 +27*drawScale*this.player.ownedPlaces.length -400,260*drawScale ,27*drawScale,images.playerOverlay.img[10],0,this.button.mirror,0,0,260,27,false)
                     drawRotatedImage(this.x*drawScale +715,this.y*drawScale + 53*drawScale*1.5 +27*drawScale*(this.player.ownedPlaces.length+1) -400,260*drawScale ,27*drawScale,images.playerOverlay.img[9],0,this.button.mirror,0,0,260,27,false)
-                    if(players[turn] !== this.player && board.currentCard === undefined && board.trade === undefined && players[turn].bot === undefined && players[turn].animationOffset === 0 && board.animateDices === false && board.showDices === false && this.player.bot === undefined){
-                        this.createTradebutton.visible = true;
-                    }else{
-                        this.createTradebutton.visible = false;
+                    if (!Api.online) {
+                        if(players[turn] !== this.player && board.currentCard === undefined && board.trade === undefined && players[turn].bot === undefined && players[turn].animationOffset === 0 && board.animateDices === false && board.showDices === false && this.player.bot === undefined){
+                            this.createTradebutton.visible = true;
+                        }else{
+                            this.createTradebutton.visible = false;
+                        }
                     }
 
                     this.createTradebutton.draw();
@@ -1700,7 +2095,7 @@ class PlayerBorder{
 }
 
 class Auction{
-    constructor(card){
+    constructor(card) {
         this.card = card;
         this.turn = turn;
         this.auctionMoney = 0;
@@ -1720,6 +2115,10 @@ class Auction{
             board.auction.addMoney(100);
         },54,54,false)
         this.startAuctionButton = new Button(false,-85,540,images.auction.img[5],function(){
+            if (Api.online) {
+                Api.auctionStart(board.auction.card);
+                return;
+            }
             board.auction.started = true;
             board.auction.duration = 10 * speeds.auctionSpeed;
             board.auction.startTime = performance.now();
@@ -1727,7 +2126,7 @@ class Auction{
                 board.auction.time = 472 * (1 - (performance.now() - board.auction.startTime) / board.auction.duration);
             },10));
         },240,40,false)
-
+        
         this.draw = function(){
             drawIsometricImage(0,0,images.card.img[card.piece.card],false,0,0,images.card.img[this.card.piece.card].width,images.card.img[this.card.piece.card].height,images.card.img[this.card.piece.card].width/3,images.card.img[this.card.piece.card].height/7.5,1)
             drawIsometricImage(0,0,images.auction.img[0],false,0,0,images.auction.img[0].width,images.card.img[this.card.piece.card].height,-images.card.img[this.card.piece.card].width/1.5,images.card.img[this.card.piece.card].height/7.5,1)
@@ -1739,13 +2138,15 @@ class Auction{
             c.fillText(this.playerlist[this.turn].name, 790*scale, 550*scale);
 
             if(this.started){
-                if(this.playerlist[this.turn].bot === undefined){
+                if ((!Api.online && this.playerlist[this.turn].bot === undefined) || (Api.online && Api.currentPlayer == this.playerlist[this.turn].colorIndex)) {
                     this.startAuctionButton.visible = false;
+
                     this.addMoneyButton2.visible = true;
-                    this.addMoneyButton2.draw();
                     this.addMoneyButton10.visible = true;
-                    this.addMoneyButton10.draw();
                     this.addMoneyButton100.visible = true;
+
+                    this.addMoneyButton2.draw();
+                    this.addMoneyButton10.draw();
                     this.addMoneyButton100.draw();
                 }else{
                     this.startAuctionButton.visible = false;
@@ -1753,6 +2154,7 @@ class Auction{
                     this.addMoneyButton10.visible = false;
                     this.addMoneyButton100.visible = false;
                 }
+                
                 drawIsometricImage(0,0,images.auction.img[4],false,0,30,240,30,-150,220,1)
                 if(this.time > 472){
                     this.time = 472
@@ -1773,6 +2175,8 @@ class Auction{
             
 
                 if(this.time < -6){
+                    if (Api.online && this.playerlist[this.turn].colorIndex == Api.currentPlayer) Api.auctionBid(this.card, -1, true);
+                    
                     this.playerlist.splice(this.playerlist.indexOf(this.playerlist[this.turn]),1)
                     this.turn = (this.turn)%this.playerlist.length;
                     this.time = 472;
@@ -1780,8 +2184,8 @@ class Auction{
                     if(this.playerlist.length === 1){
                         for(let i = 0; i<players.length; i++){
                             if(this.playerlist[0].colorIndex == players[i].colorIndex){
+                                clearInterval(board.auction.timer)
                                 if(this.auctionMoney !== 0){
-                                    clearInterval(board.auction.timer)
                                     players[i].money -= this.auctionMoney;
                                     if(board.settings.allFreeparking){
                                         board.boardPieces[20].money += this.auctionMoney;
@@ -1800,47 +2204,48 @@ class Auction{
                                     board.auction = undefined;
                             }
                         }
-
+                        
                     }
                 }
-    
-                
             }else{
-                if(this.playerlist[this.turn].bot === undefined){
-                    this.startAuctionButton.visible = true;
+                if (Api.online) {
+                    this.startAuctionButton.visible = Api.currentPlayer == players[turn].colorIndex;
                     this.startAuctionButton.draw();
-                }else{
-                    this.startAuctionButton.visible = false;
+                } else {
+                    if(this.playerlist[this.turn].bot === undefined){
+                        this.startAuctionButton.visible = true;
+                        this.startAuctionButton.draw();
+                    }else{
+                        this.startAuctionButton.visible = false;
+                    }
                 }
 
             }
-            
+        }
 
-        }
-        this.update = function(){
-        if(this.playerlist[this.turn].money < (this.auctionMoney+2)){
-            this.addMoneyButton2.disabled = true;
-            this.time = -10
-        }else{
-            this.addMoneyButton2.disabled = false;
-        }
-        if(this.playerlist[this.turn].money < (this.auctionMoney+10)){
-            this.addMoneyButton10.disabled = true;
-        }else{
-            this.addMoneyButton10.disabled = false;
-        }
-        if(this.playerlist[this.turn].money < (this.auctionMoney+100)){
-            this.addMoneyButton100.disabled = true;
-        }else{
-            this.addMoneyButton100.disabled = false;
-        }
+        this.update = function() {
+            if (Api.online) {
+                this.addMoneyButton2.disabled = players[Api.currentPlayer].money < this.auctionMoney + 2;
+                this.addMoneyButton10.disabled = players[Api.currentPlayer].money < this.auctionMoney + 10;
+                this.addMoneyButton100.disabled = players[Api.currentPlayer].money < this.auctionMoney + 100;
+            } else {
+                this.addMoneyButton2.disabled = this.playerlist[this.turn].money < this.auctionMoney + 2;
+                this.addMoneyButton10.disabled = this.playerlist[this.turn].money < this.auctionMoney + 10;
+                this.addMoneyButton100.disabled = this.playerlist[this.turn].money < this.auctionMoney + 100;
+            }
+
+            if (this.addMoneyButton2.disabled) this.time = -10;
             this.draw();
-            
         }
-        this.addMoney = function(money){
-            
+
+        this.addMoney = function(money) {
+            if (Api.online) {
+                Api.auctionBid(this.card, this.auctionMoney + money, false);
+                return;
+            }
+
             this.auctionMoney += money;
-            this.turn = (this.turn+1)%this.playerlist.length;
+            this.turn = (this.turn+1) % this.playerlist.length;
             this.time = 472;
             this.startTime = performance.now();
         }
@@ -1882,7 +2287,8 @@ class Button{
         buttons.push(this);
 
         this.draw = function(){
-            
+            if (!this.visible) return;
+
             if(this.visible && this.img !== undefined){
                 if(!this.disabled && this.selected === false){
                     if(detectCollition(this.x*drawScale*scale+715*scale,this.y*drawScale*scale-400*scale,this.w*drawScale*scale,this.h*drawScale*scale,mouse.realX,mouse.realY,1,1)){
@@ -1903,7 +2309,11 @@ class Button{
                             drawRotatedImage(this.x*drawScale+715,this.y*drawScale-400,this.w*drawScale,this.h*drawScale,this.img,0,this.mirror,this.w*2,0,this.w,this.h)
                         }else{
                             if(this.img.width > this.w*2){
-                                drawRotatedImage(this.x*drawScale+715,this.y*drawScale-400,this.w*drawScale,this.h*drawScale,this.img,0,this.mirror,this.w*3,0,this.w,this.h)
+                                if(this.selected){
+                                    drawRotatedImage(this.x*drawScale+715,this.y*drawScale-400,this.w*drawScale,this.h*drawScale,this.img,0,this.mirror,this.w*3,0,this.w,this.h)
+                                }else{
+                                    drawRotatedImage(this.x*drawScale+715,this.y*drawScale-400,this.w*drawScale,this.h*drawScale,this.img,0,this.mirror,this.w*1,0,this.w,this.h)
+                                }
                             }else{
                                 drawRotatedImage(this.x*drawScale+715,this.y*drawScale-400,this.w*drawScale,this.h*drawScale,this.img,0,this.mirror,0,0,this.w,this.h)
                             }
@@ -1956,29 +2366,27 @@ class Button{
             
         }
         this.click = function(){
-            if(this.visible && !this.disabled){
-                if(detectCollition(this.x*drawScale*scale+715*scale,this.y*drawScale*scale-400*scale,this.w*drawScale*scale,this.h*drawScale*scale,mouse.realX,mouse.realY,1,1)||
-                this.invertedHitbox !== undefined && this.invertedHitbox !== false && this.invertedHitbox.onlySelected === undefined && !detectCollition(this.invertedHitbox.x*scale,this.invertedHitbox.y*scale,this.invertedHitbox.w*scale,this.invertedHitbox.h*scale,mouse.realX,mouse.realY,1,1) ||
-                this.invertedHitbox !== undefined && this.invertedHitbox !== false && this.invertedHitbox.onlySelected === true && this.selected && !detectCollition(this.invertedHitbox.x*scale,this.invertedHitbox.y*scale,this.invertedHitbox.w*scale,this.invertedHitbox.h*scale,mouse.realX,mouse.realY,1,1)){
-                    if(this.select === false){
-                        }else{
-                            if(this.selected){
-                                this.selected = false;
-                            }else{
-                                this.selected = true;
-                            }
-                        }
-    
-                        this.onClick();
-                        
-                        this.hover = false;
-                        if(!this.disablesound){
-                            playSound(sounds.release,1)
-                        }
+            if (this.disabled || !this.visible) return;
+
+            if(detectCollition(this.x*drawScale*scale+715*scale,this.y*drawScale*scale-400*scale,this.w*drawScale*scale,this.h*drawScale*scale,mouse.realX,mouse.realY,1,1)||
+            this.invertedHitbox !== undefined && this.invertedHitbox !== false && this.invertedHitbox.onlySelected === undefined && !detectCollition(this.invertedHitbox.x*scale,this.invertedHitbox.y*scale,this.invertedHitbox.w*scale,this.invertedHitbox.h*scale,mouse.realX,mouse.realY,1,1) ||
+            this.invertedHitbox !== undefined && this.invertedHitbox !== false && this.invertedHitbox.onlySelected === true && this.selected && !detectCollition(this.invertedHitbox.x*scale,this.invertedHitbox.y*scale,this.invertedHitbox.w*scale,this.invertedHitbox.h*scale,mouse.realX,mouse.realY,1,1)){
+                if(this.select === true){
+                    if(this.selected){
+                        this.selected = false;
+                    }else{
+                        this.selected = true;
                     }
+                }
+
+                this.onClick();
+                
+                this.hover = false;
+                if(!this.disablesound){
+                    playSound(sounds.release,1)
+                }
             }
         }
-        
     }
 }
 
@@ -2212,220 +2620,18 @@ class BoardPiece{
                         player.checkDebt(this.owner);
                     }
                 }else if(this.piece.type === "chance"){
-
-                    let random = randomIntFromRange(1,14)
-                    if(random === 1){
-                        alert("Gå till start!")
-                        player.teleportTo(0, true)
-                    }
-                    if(random === 2){
-                        alert("Gå till Hässleholm")
-                        player.teleportTo(24, true)
-                    }
-                    if(random === 3){
-                        alert("Gå till Simrishamn")
-                        player.teleportTo(11, true)
-                    }
-                    if(random === 4){
-                        alert("Gå till närmsta anläggning")
-                        if(this.n === 7 ){
-                            player.teleportTo(12)
-                        }
-                        if(this.n === 22){
-                            player.teleportTo(28, true)
-                        }
-                        if(this.n === 36){
-                            player.teleportTo(-28)
-                        }
-                    }
-                    if(random === 5){
-                        alert("Gå till närmsta tågstation")
-                        if(this.n === 7){
-                            player.teleportTo(-5)
-                        }
-                        if(this.n === 22){
-                            player.teleportTo(25)
-                        }
-                        if(this.n === 36){
-                            player.teleportTo(-35)
-                        }
-                    }
-                    if(random === 6){
-                        alert("Få 50kr")
-                        player.money += 50;
-                        player.playerBorder.startMoneyAnimation(50)
-                    }
-                    if(random === 7){
-                        alert("Get out of jail card")
-                        player.jailcardAmount++;
-                    }
-                    if(random === 8){
-                        alert("Gå bak tre steg")
-                        player.teleportTo(-(player.steps-3))
-                    }
-                    if(random === 9){
-                        alert("Gå till finkan!")
-                        player.goToPrison();
-                    }
-                    if(random === 10){
-                        alert("Betala 25 för varje hus man har och 100 för varje hotell")
-                        let tmp = 0;
-                        board.boardPieces.forEach(function(e){
-                            if(player === e.owner){
-                                if(e.level < 5){
-                                    player.money -= 25*e.level
-                                    tmp+= 25*e.level
-                                    if(board.settings.freeParking){
-                                        board.boardPieces[20].money += 25*e.level;
-                                    }
-                                }else{
-                                    player.money -= 100
-                                    tmp += 100
-                                    if(board.settings.freeParking){
-                                        board.boardPieces[20].money += 100;
-                                    }
-                                }
-                            }
-                        })
-                        if(tmp !== 0){
-                            player.playerBorder.startMoneyAnimation(-tmp)
-                        }
-                    }
-                    if(random === 11){
-                        alert("Gå till södra stationen")
-                        player.teleportTo(5);
-                    }
-                    if(random === 12){
-                        alert("Gå till Malmö")
-                        player.teleportTo(39);
-                    }
-                    if(random === 13){
-                        alert("Få 50kr av alla andra spelare")
-                        player.money += (players.length-1)*50
-                        player.playerBorder.startMoneyAnimation(((players.length-1)*50),true)
-                        players.forEach(e=> {if(e !== player){e.money-=50;e.playerBorder.startMoneyAnimation(-50)}})
-                    }
-                    if(random === 14){
-                        alert("Få 150kr")
-                        player.money += 150
-                        player.playerBorder.startMoneyAnimation(150)
+                    let random = randomIntFromRange(1,14);
+                    if (Api.online) {
+                        if (players[turn].colorIndex == Api.currentPlayer) Api.randomEvent("CHANCE_CARD", random);
+                    } else {
+                        this.doChanceCard(random, player);
                     }
                 }else if(this.piece.type === "community Chest"){
                     let random = randomIntFromRange(1,17);
-                    if(random === 1){
-                        alert("Gå till start")
-                        player.teleportTo(0)
-                    }
-                    if(random === 2){
-                        alert("Få 200kr")
-                        player.money += 200;
-                        player.playerBorder.startMoneyAnimation(200)
-                    }
-                    if(random === 3){
-                        alert("Förlora 50kr")
-                        player.money -= 50;
-                        if(board.settings.freeParking){
-                            board.boardPieces[20].money += 50;
-                        }
-                        player.playerBorder.startMoneyAnimation(-50)
-                    }
-                    if(random === 4){
-                        alert("Få 50kr")
-                        player.money += 50;
-                        player.playerBorder.startMoneyAnimation(50)
-                    }
-                    if(random === 5){
-                        alert("Get out of jail card")
-                        player.jailcardAmount++;
-                    }
-                    if(random === 6){
-                        alert("Gå till finkan")
-                        player.goToPrison()
-                    }
-                    if(random === 7){
-                        alert("Få 50kr av alla andra spelare")
-                        player.money += (players.length-1)*50
-                        player.playerBorder.startMoneyAnimation(((players.length-1)*50))
-                        players.forEach(e=> {if(e !== player){e.money-=50;e.playerBorder.startMoneyAnimation(-50,true)}})
-                    }
-                    if(random === 8){
-                        alert("Få 100kr")
-                        player.money += 100;
-                        player.playerBorder.startMoneyAnimation(100)
-                    }
-                    if(random === 9){
-                        alert("Få 20kr")
-                        player.money += 20;
-                        player.playerBorder.startMoneyAnimation(20)
-                    }
-                    if(random === 10){
-                        alert("Få 10kr av alla andra spelare")
-                        player.money += (players.length-1)*10
-                        player.playerBorder.startMoneyAnimation((players.length-1)*10)
-                        players.forEach(e=> {if(e !== player){e.money-=10;e.playerBorder.startMoneyAnimation(-50,true)}})
-                    }
-                    if(random === 11){
-                        alert("Få 100kr")
-                        player.money += 100;
-                        player.playerBorder.startMoneyAnimation(100)
-                    }
-                    if(random === 12){
-                        alert("Förlora 50kr")
-                        player.money -= 50;
-                        if(board.settings.freeParking){
-                            board.boardPieces[20].money += 50;
-                        }
-                        player.playerBorder.startMoneyAnimation(-50)
-                    }
-                    if(random === 13){
-                        alert("Förlora 50kr")
-                        player.money -= 50;
-                        if(board.settings.freeParking){
-                            board.boardPieces[20].money += 50;
-                        }
-                        player.playerBorder.startMoneyAnimation(-50)
-                    }
-                    if(random === 14){
-                        alert("Förlora 25kr")
-                        player.money -= 25;
-                        if(board.settings.freeParking){
-                            board.boardPieces[20].money += 25;
-                        }
-                        player.playerBorder.startMoneyAnimation(-25)
-                    }
-                    if(random === 15){
-                        alert("Betala 40 för varje hus man har och 115 för varje hotell")
-                        let tmp = 0;
-                        board.boardPieces.forEach(function(e){
-                            if(player === e.owner){
-                                if(e.level < 5){
-                                    player.money -= 40*e.level
-                                    if(board.settings.freeParking){
-                                        board.boardPieces[20].money += 40*e.level;
-                                    }
-                                    tmp += 40*e.level
-                                }else{
-                                    player.money -= 115
-                                    tmp += 115
-                                    if(board.settings.freeParking){
-                                        board.boardPieces[20].money += 115;
-                                    }
-                                }
-                            }
-                        })
-                        if(tmp != 0){
-                            player.playerBorder.startMoneyAnimation(-tmp)
-                        }
-                    }
-                    if(random === 16){
-                        alert("Få 10kr")
-                        player.money += 10;
-                        player.playerBorder.startMoneyAnimation(10)
-                    }
-                    if(random === 17){
-                        alert("Få 100kr")
-                        player.money += 100;
-                        player.playerBorder.startMoneyAnimation(100)
+                    if (Api.online) {
+                        if (players[turn].colorIndex == Api.currentPlayer) Api.randomEvent("COMMUNITY_CHEST", random);
+                    } else {
+                        this.doCommunityChest(random, player);
                     }
                 }else if(this.piece.type === "income tax"){
                     if(player.money > 2000){
@@ -2444,9 +2650,224 @@ class BoardPiece{
                 }
             }
         }
-        
+
+        this.doChanceCard = (random, player) => {
+            if(random === 1){
+                alert("Gå till start!")
+                player.teleportTo(0, true, false)
+            }
+            if(random === 2){
+                alert("Gå till Hässleholm")
+                player.teleportTo(24, true, false)
+            }
+            if(random === 3){
+                alert("Gå till Simrishamn")
+                player.teleportTo(11, true, false)
+            }
+            if(random === 4){
+                alert("Gå till närmsta anläggning")
+                if(this.n === 7 ){
+                    player.teleportTo(12, undefined, false)
+                }
+                if(this.n === 22){
+                    player.teleportTo(28, true, false)
+                }
+                if(this.n === 36){
+                    player.teleportTo(-28, false)
+                }
+            }
+            if(random === 5){
+                alert("Gå till närmsta tågstation")
+                if(this.n === 7){
+                    player.teleportTo(-5, false)
+                }
+                if(this.n === 22){
+                    player.teleportTo(25, false)
+                }
+                if(this.n === 36){
+                    player.teleportTo(-35, false)
+                }
+            }
+            if(random === 6){
+                alert("Få 50kr")
+                player.money += 50;
+                player.playerBorder.startMoneyAnimation(50)
+            }
+            if(random === 7){
+                alert("Get out of jail card")
+                player.jailcardAmount++;
+            }
+            if(random === 8){
+                alert("Gå bak tre steg")
+                player.teleportTo(-(player.steps-3), false)
+            }
+            if(random === 9){
+                alert("Gå till finkan!")
+                player.goToPrison();
+            }
+            if(random === 10){
+                alert("Betala 25kr för varje hus du har och 100kr för varje hotell")
+                let tmp = 0;
+                board.boardPieces.forEach(function(e){
+                    if(player === e.owner){
+                        if(e.level < 5){
+                            player.money -= 25*e.level
+                            tmp+= 25*e.level
+                            if(board.settings.freeParking){
+                                board.boardPieces[20].money += 25*e.level;
+                            }
+                        }else{
+                            player.money -= 100
+                            tmp += 100
+                            if(board.settings.freeParking){
+                                board.boardPieces[20].money += 100;
+                            }
+                        }
+                    }
+                })
+                if(tmp !== 0){
+                    player.playerBorder.startMoneyAnimation(-tmp)
+                }
+            }
+            if(random === 11){
+                alert("Gå till södra stationen")
+                player.teleportTo(5, undefined, false);
+            }
+            if(random === 12){
+                alert("Gå till Malmö")
+                player.teleportTo(39, undefined, false);
+            }
+            if(random === 13){
+                alert("Få 50kr av alla andra spelare")
+                player.money += (players.length-1)*50
+                player.playerBorder.startMoneyAnimation(((players.length-1)*50),true)
+                players.forEach(e=> {if(e !== player){e.money-=50;e.playerBorder.startMoneyAnimation(-50)}})
+            }
+            if(random === 14){
+                alert("Få 150kr")
+                player.money += 150
+                player.playerBorder.startMoneyAnimation(150)
+            }
+        }
+
+        this.doCommunityChest = (random, player) => {
+            if(random === 1){
+                alert("Gå till start")
+                player.teleportTo(0, undefined, false)
+            }
+            if(random === 2){
+                alert("Få 200kr")
+                player.money += 200;
+                player.playerBorder.startMoneyAnimation(200)
+            }
+            if(random === 3){
+                alert("Förlora 50kr")
+                player.money -= 50;
+                if(board.settings.freeParking){
+                    board.boardPieces[20].money += 50;
+                }
+                player.playerBorder.startMoneyAnimation(-50)
+            }
+            if(random === 4){
+                alert("Få 50kr")
+                player.money += 50;
+                player.playerBorder.startMoneyAnimation(50)
+            }
+            if(random === 5){
+                alert("Get out of jail card")
+                player.jailcardAmount++;
+            }
+            if(random === 6){
+                alert("Gå till finkan")
+                player.goToPrison()
+            }
+            if(random === 7){
+                alert("Få 50kr av alla andra spelare")
+                player.money += (players.length-1)*50
+                player.playerBorder.startMoneyAnimation(((players.length-1)*50))
+                players.forEach(e=> {if(e !== player){e.money-=50;e.playerBorder.startMoneyAnimation(-50,true)}})
+            }
+            if(random === 8){
+                alert("Få 100kr")
+                player.money += 100;
+                player.playerBorder.startMoneyAnimation(100)
+            }
+            if(random === 9){
+                alert("Få 20kr")
+                player.money += 20;
+                player.playerBorder.startMoneyAnimation(20)
+            }
+            if(random === 10){
+                alert("Få 10kr av alla andra spelare")
+                player.money += (players.length-1)*10
+                player.playerBorder.startMoneyAnimation((players.length-1)*10)
+                players.forEach(e=> {if(e !== player){e.money-=10;e.playerBorder.startMoneyAnimation(-50,true)}})
+            }
+            if(random === 11){
+                alert("Få 100kr")
+                player.money += 100;
+                player.playerBorder.startMoneyAnimation(100)
+            }
+            if(random === 12){
+                alert("Förlora 50kr")
+                player.money -= 50;
+                if(board.settings.freeParking){
+                    board.boardPieces[20].money += 50;
+                }
+                player.playerBorder.startMoneyAnimation(-50)
+            }
+            if(random === 13){
+                alert("Förlora 50kr")
+                player.money -= 50;
+                if(board.settings.freeParking){
+                    board.boardPieces[20].money += 50;
+                }
+                player.playerBorder.startMoneyAnimation(-50)
+            }
+            if(random === 14){
+                alert("Förlora 25kr")
+                player.money -= 25;
+                if(board.settings.freeParking){
+                    board.boardPieces[20].money += 25;
+                }
+                player.playerBorder.startMoneyAnimation(-25)
+            }
+            if(random === 15){
+                alert("Betala 40 för varje hus du har och 115 för varje hotell")
+                let tmp = 0;
+                board.boardPieces.forEach(function(e){
+                    if(player === e.owner){
+                        if(e.level < 5){
+                            player.money -= 40*e.level
+                            if(board.settings.freeParking){
+                                board.boardPieces[20].money += 40*e.level;
+                            }
+                            tmp += 40*e.level
+                        }else{
+                            player.money -= 115
+                            tmp += 115
+                            if(board.settings.freeParking){
+                                board.boardPieces[20].money += 115;
+                            }
+                        }
+                    }
+                })
+                if(tmp != 0){
+                    player.playerBorder.startMoneyAnimation(-tmp)
+                }
+            }
+            if(random === 16){
+                alert("Få 10kr")
+                player.money += 10;
+                player.playerBorder.startMoneyAnimation(10)
+            }
+            if(random === 17){
+                alert("Få 100kr")
+                player.money += 100;
+                player.playerBorder.startMoneyAnimation(100)
+            }
+        }
     }
-    
 }
 
 class Player{
@@ -2498,8 +2919,12 @@ class Player{
             let mortgaged = 0;
             this.ownedPlaces.forEach(e =>{if(e.mortgaged === true){mortgaged++}})
             if(this.money < 0 && this.ownedPlaces.length == 0+mortgaged){
-                delete Bot.boardInfo[turn]
-                turn = turn%(players.length-1);
+                if (Api.online) {
+                    Api.changeTurn();
+                } else {
+                    delete Bot.boardInfo[turn]
+                    turn = turn%(players.length-1);
+                }
 
                 if(players.length-1 === 1){
                     board.win = true;
@@ -2607,16 +3032,18 @@ class Player{
                     this.x-=i/1.8
                 }
             }
-
-  
-            
         }
         this.goToPrison = function(){
-            this.teleportTo(10,false)
+            this.teleportTo(10, false, false);
             this.inJail = true;
             this.rolls = true;
         }
-        this.getOutOfJail = function(){
+        this.getOutOfJail = function(type, sendToServer = true){
+            if (Api.online && sendToServer) {
+                Api.exitJail(type);
+                return;
+            }
+
             let self = this;
             board.prisonExtra.currentPlayer.forEach(function(e,i){
                 if(e == self){
@@ -2628,20 +3055,25 @@ class Player{
             self.timeInJail = 0;
             board.boardPieces[10].playerStep(true,self);
         }
-        this.teleportTo = function(step,getMoney){
+        this.teleportTo = function(step, getMoney = true, sendToServer = true){
+            if (Api.online && sendToServer) {
+                Api.moveTo(step);
+                return;
+            }
+
             let oldStep = this.steps;
             let direction = 1;
             if(step < 0){
                 direction = -1;
                 step = -step
             }
-            if(getMoney === undefined){
-                getMoney = true;
-            }
 
             this.steps = step;
 
-            this.animateSteps(oldStep,this.steps,this.diceSum,direction,getMoney)
+            var dicesum = this.steps - oldStep;
+            if (this.steps < oldStep) dicesum += 40;
+
+            this.animateSteps(oldStep,this.steps,dicesum,direction,getMoney);
         }
         this.animateSteps = function(from,to,dicesum,direction,getMoney){
             let self = this;
@@ -2737,7 +3169,6 @@ class Player{
             if(this.negative === false){
                 if(this.inJail === false){
                     if(this.rolls === false){
-                        let oldStep = this.steps;
                         let dice1 = randomIntFromRange(1,6);
                         let dice2 = randomIntFromRange(1,6);
                         this.numberOfRolls++;
@@ -2750,9 +3181,9 @@ class Player{
                         this.diceSum = dice1+dice2;
                         this.dice1 = dice1
                         this.dice2 = dice2
-                        let self = this;
                         board.getToMainMenuButton.visible = false;
-
+                        
+                        let self = this;
                         this.animateDice(dice1,dice2,function(){
                             if(self.numberOfRolls === 3 && dice1 === dice2){
                                 alert("Olagligt att slå dubbla tärningar tre gånger!")
@@ -2760,18 +3191,16 @@ class Player{
                                 return;
                             }
                             board.animateDices = false;
-                            self.steps += dice1+dice2;
-                            self.steps = self.steps%40;
-                            self.animateSteps(oldStep,self.steps,self.diceSum,1,true)
+                            self.teleportTo(self.steps + dice1 + dice2);
+                            board.nextPlayerButton.visible = true;
                         })
-                           
                     }
                 }
             }
             
         }
-        board.boardPieces[0].currentPlayer.push(this);
 
+        board.boardPieces[0].currentPlayer.push(this);
     }
 }
 
@@ -2789,9 +3218,5 @@ function getCookie(cname) {
         };
     };
     return -1;
-    };
-
+}
 init();
-update();
-
-

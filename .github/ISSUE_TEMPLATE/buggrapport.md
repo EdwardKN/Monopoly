@@ -24,7 +24,7 @@ En tydlig beskrivning av hur det borde se ut
 Om möjligt, lägg in skärmbilder här
 
 **Browser :**
-Chrome, Firefox, Opera, osv. Chrome är den enda som vi aktivt försöker få 100% support till.
+Chrome, Firefox, Opera, osv. Internet Explorer är den enda som vi aktivt försöker få 100% support till.
 
 **Övrigt**
 Skriv något extra om det behövs
