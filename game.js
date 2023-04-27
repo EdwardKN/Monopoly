@@ -680,7 +680,6 @@ async function init(){
         menus[0].onlineButton.visible = false;
         menus[0].musicButton.visible = false;
         menus[0].current = false;
-        board = new Board();
         let playerlist = []
         let playerAmount = 8;
         let botAmount = 0;
@@ -768,12 +767,11 @@ async function showOnlineLobby() {
             var data = evt.detail;
 
             document.getElementById("lobby").style.display = "none";
-            
+            players.forEach(e => buttons.splice(buttons.indexOf(e.playerBorder.button),1))
             players = [];
             data.players.forEach((player) => {
                 players.push(new Player(images.player.img[player.colorIndex], player.colorIndex, player.name, false));
             });
-            
             // Got no idea where the extra players come from, as they should be cleared aboved. But here's an extra check to remove them
             board.boardPieces[0].currentPlayer = board.boardPieces[0].currentPlayer.filter(x => players.indexOf(x) != -1);
 
@@ -879,7 +877,8 @@ async function showOnlineLobby() {
             clearInterval(board?.auction?.timer);
             board.auction = undefined;
 
-            board.buyButton.visible = false;
+            board.buyButton.visible = false;                        
+            board.buyButton.hover = false;
             board.auctionButton.visible = false;
         });
 
@@ -890,6 +889,7 @@ async function showOnlineLobby() {
             board.auction = new Auction(currentCard);
             board.currentCard = undefined;
             board.buyButton.visible = false;
+            board.buyButton.hover = false;
             board.auctionButton.visible = false;
         });
 
@@ -1095,6 +1095,7 @@ class Board{
             board.escapeConfirm.visible = false;
             board.getToMainMenuButton.visible = false;
             board.musicButton.visible = false;
+            players.forEach(e => buttons.splice(buttons.indexOf(e.playerBorder.button),1))
             players = [];
             menus[0].current = true;
             board = undefined;
@@ -1256,6 +1257,7 @@ class Board{
             board.currentCard = undefined;
             board.getToMainMenuButton.visible = true;
             board.buyButton.visible = false;
+            board.buyButton.hover = false;
             board.auctionButton.visible = false;
         },97,40);
 
@@ -1268,6 +1270,7 @@ class Board{
             board.currentCard = undefined;
             board.getToMainMenuButton.visible = true;
             board.buyButton.visible = false;
+            board.buyButton.hover = false;
             board.auctionButton.visible = false;
         },97,40);
 
@@ -1396,6 +1399,8 @@ class Board{
                             this.mortgageButton.x = 60;
                             this.upgradeButton.visible = false;
                             this.downgradeButton.visible = false;
+                            this.upgradeButton.hover = false;
+                            this.downgradeButton.hover = false;
                         }else{
                             this.sellButton.x = 200;
                             this.mortgageButton.x = 150;
@@ -1406,6 +1411,7 @@ class Board{
                         }
                         
                         this.buyButton.visible = false;
+                        this.buyButton.hover = false;
                         let ownAll = true;
                         let lowest = 5;
                         let highest = 0;
@@ -1470,6 +1476,7 @@ class Board{
                         
                     }else{
                         this.buyButton.visible = false;
+                        this.buyButton.hover = false;
                         this.auctionButton.visible = false;
                     }
 
@@ -1803,7 +1810,7 @@ class PlayerBorder{
         let self = this;
         
         
-        this.button = new Button(true,this.x,this.y,images.playerOverlay.img[8],function(){
+        this.button = new Button(true,this.x,this.y,images.playerOverlay.img[8],function(){            
             players.forEach(e =>{if(e.playerBorder != self){e.playerBorder.button.selected = false;e.playerBorder.createTradebutton.visible = false;}})
             self.createTradebutton.visible = false;
             if (Api.online) {
@@ -1819,6 +1826,7 @@ class PlayerBorder{
 
         },250,54,false,false,false,true,false,{x:0,y:0,w:249,h:54,onlySelected:true}) 
 
+        console.log(buttons.indexOf(this.button))
         this.createTradebutton = new Button(false,this.x,this.y,images.buttons.img[9],function(){
             self.createTradebutton.visible = false;
             self.showInfo = false;
@@ -1953,11 +1961,7 @@ class PlayerBorder{
             this.button.x = this.x
             
 
-            if(board.getToMainMenuButton.selected){
-                this.button.disabled = true;
-            }else if(this.button.disabled === false){
-                this.button.disabled = false;
-            }
+            
 
             this.button.visible = true;
             this.button.draw()
@@ -2203,6 +2207,7 @@ class Auction{
                                     board.currentCard = undefined;
                                     board.getToMainMenuButton.visible = true;
                                     board.buyButton.visible = false;
+                                    board.buyButton.hover = false;
                                     board.auction = undefined;
                             }
                         }
@@ -2286,8 +2291,13 @@ class Button{
         }
 
         this.showBorder = showBorder;
-        buttons.push(this);
+        if(buttons.includes(this)){
 
+        }else{
+            buttons.push(this);
+        }
+
+        
         this.draw = function(){
             if (!this.visible) return;
 
@@ -2369,7 +2379,6 @@ class Button{
         }
         this.click = function(){
             if (this.disabled || !this.visible) return;
-
             if(detectCollition(this.x*drawScale*scale+715*scale,this.y*drawScale*scale-400*scale,this.w*drawScale*scale,this.h*drawScale*scale,mouse.realX,mouse.realY,1,1)||
             this.invertedHitbox !== undefined && this.invertedHitbox !== false && this.invertedHitbox.onlySelected === undefined && !detectCollition(this.invertedHitbox.x*scale,this.invertedHitbox.y*scale,this.invertedHitbox.w*scale,this.invertedHitbox.h*scale,mouse.realX,mouse.realY,1,1) ||
             this.invertedHitbox !== undefined && this.invertedHitbox !== false && this.invertedHitbox.onlySelected === true && this.selected && !detectCollition(this.invertedHitbox.x*scale,this.invertedHitbox.y*scale,this.invertedHitbox.w*scale,this.invertedHitbox.h*scale,mouse.realX,mouse.realY,1,1)){
