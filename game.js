@@ -682,7 +682,7 @@ async function init(){
         menus[0].current = false;
         board = new Board();
         let playerlist = []
-        let playerAmount = 3;
+        let playerAmount = 8;
         let botAmount = 0;
         let useableColors = [0,1,2,3,4,5,6,7]
         for(let i = 0; i < (playerAmount+botAmount); i++){
@@ -1815,7 +1815,10 @@ class PlayerBorder{
                     self.createTradebutton.visible = true;
                 }
             }
-        },250,54,false,false,false,true,false,{x:0,y:0,w:249,h:54,onlySelected:true}) 
+            players.forEach( e => e.playerBorder.button.disabled = false)
+            console.log("bgsdsg")
+
+        },250,54,true,false,false,true,false,{x:0,y:0,w:249,h:54,onlySelected:true}) 
 
         this.createTradebutton = new Button(false,this.x,this.y,images.buttons.img[9],function(){
             self.createTradebutton.visible = false;
@@ -1949,14 +1952,11 @@ class PlayerBorder{
             }
             this.button.y = this.y
             this.button.x = this.x
-            this.button.invertedHitbox.x = this.x*drawScale +715
-            this.button.invertedHitbox.y = this.y*drawScale - 400 + 54*drawScale;
-            this.button.invertedHitbox.w = this.button.w*drawScale
-            this.button.invertedHitbox.h = this.player.ownedPlaces.length*27*drawScale + 27*3*drawScale;
+            
 
             if(board.getToMainMenuButton.selected){
                 this.button.disabled = true;
-            }else{
+            }else if(this.button.disabled === false){
                 this.button.disabled = false;
             }
 
@@ -1991,7 +1991,13 @@ class PlayerBorder{
 
             }
             if(this.button.selected){
+                players.forEach( e => e.playerBorder.button.disabled = true)
+                this.button.disabled = false;
                 if(this.index === 0 || this.index === 1 || this.index === 4 || this.index === 5){
+                    this.button.invertedHitbox.x = this.x*drawScale +715
+                    this.button.invertedHitbox.y = this.y*drawScale - 400 + 54*drawScale;
+                    this.button.invertedHitbox.w = this.button.w*drawScale
+                    this.button.invertedHitbox.h = this.player.ownedPlaces.length*27*drawScale + 27*3*drawScale;
                     this.createTradebutton.y = this.y + 80 + 27*this.player.ownedPlaces.length;
                     drawRotatedImage(this.x*drawScale+715,this.y*drawScale + 54*drawScale -400,260*drawScale,27*drawScale,images.playerOverlay.img[11],0,this.button.mirror,0,0,260,27,false)
                     for(let i = 0; i < this.player.ownedPlaces.length; i++){
@@ -2035,6 +2041,10 @@ class PlayerBorder{
 
                     this.createTradebutton.draw();
                 }else{
+                    this.button.invertedHitbox.x = this.x*drawScale +715
+                    this.button.invertedHitbox.y = this.y*drawScale - 400-this.player.ownedPlaces.length*27*drawScale - 27*3*drawScale;
+                    this.button.invertedHitbox.w = this.button.w*drawScale
+                    this.button.invertedHitbox.h = this.player.ownedPlaces.length*27*drawScale + 27*3*drawScale;
                     drawRotatedImage(this.x*drawScale +715,this.y*drawScale - 27*drawScale -400,260*drawScale,27*drawScale,images.playerOverlay.img[11],180,!this.button.mirror,0,0,260,27,false)
                     for(let i = 0; i < this.player.ownedPlaces.length; i++){
                         drawRotatedImage(this.x*drawScale +715,this.y*drawScale - 67 *drawScale - 27*drawScale*i + 27 -400,260*drawScale,27*drawScale,images.playerOverlay.img[10],180,!this.button.mirror,0,0,260,27,false)
