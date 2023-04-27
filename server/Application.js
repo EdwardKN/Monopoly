@@ -52,16 +52,16 @@ function originIsAllowed(origin) {
 function websocketHandler(request) {
     var playername = decodeURI(request.resourceURL.search.substring(1));
     if (!originIsAllowed(request.origin)) {
-        request.reject(1001, "INVALID_ORIGIN");
+        request.reject(undefined, "INVALID_ORIGIN");
         return;
     } else if (gameHasStarted) {
-        request.reject(1002, "GAME_ONGOING");
+        request.reject(undefined, "GAME_ONGOING");
         return;
     } else if (PlayerManager.getNumberOfPlayers() >= 8) {
-        request.reject(1003, "GAME_FULL");
+        request.reject(undefined, "GAME_FULL");
         return;
     } else if (PlayerManager.players.some(p => p.name == playername)) {
-        request.reject(1004, "DUPLICATE_NAME");
+        request.reject(undefined, "DUPLICATE_NAME");
         return;
     }
 

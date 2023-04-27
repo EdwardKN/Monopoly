@@ -1,11 +1,9 @@
 /**
  * The class used for using the server
- * @Warning Any functions/variables with an underscore in the beginning are internal and
- * shouldn't be accessed from outside this class.
  */
 class Api {
     // Websocket used to communicate to the server
-    static _websocket = undefined;
+    static #websocket = undefined;
 
     // Whether or not this is in multiplayer mode
     static online = false;
@@ -149,10 +147,10 @@ class Api {
         return new Promise((resolve, reject) => {
             var ws = new WebSocket("wss://" + url + "?" + encodeURI(username));
             
-            ws.onmessage = Api._messageHandler;
+            ws.onmessage = Api.#messageHandler;
             ws.onerror = (_, ev) => reject(ev);
             ws.onopen = () => {
-                Api._websocket = ws;
+                Api.#websocket = ws;
                 resolve();
             };
         })
@@ -166,7 +164,7 @@ class Api {
         Api.online = false;
     }
 
-    static _messageHandler(message) {
+    static #messageHandler(message) {
         var event = JSON.parse(message.data);
 
         console.log(event.event_type);
@@ -179,10 +177,10 @@ class Api {
      * @returns {WebSocket} websocket
      */
     static getWebSocket() {
-        if (Api._websocket == undefined || Api._websocket.readyState != Api._websocket.OPEN) {
+        if (Api.#websocket == undefined || Api.#websocket.readyState != Api.#websocket.OPEN) {
             throw "Please open an websocket first (Api.openWebsocketConnection())";
         }
 
-        return Api._websocket;
+        return Api.#websocket;
     }
 }
