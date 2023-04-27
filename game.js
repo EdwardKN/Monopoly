@@ -86,7 +86,7 @@ function preRender(imageObject){
             image[1].img.push(new Image());
 
             image[1].img[i].src = image[1].src[i] + ".png";
-            c.drawImage(image[1].img[i],0,0)
+            //c.drawImage(image[1].img[i],0,0)
         }
     });
 }
@@ -693,7 +693,10 @@ async function init(){
     
     
     if(fastLoad === false){
-        
+        menus.push(new MainMenu())
+        menus.push(new LocalLobby())
+        update();
+
     }else{
         menus.push(new MainMenu())
         menus.push(new LocalLobby())
@@ -1136,8 +1139,8 @@ class Board{
             board.musicButton.visible = false;
         },18,18,false,false,false,false,false,{x:722,y:336,w:256*drawScale,h:224*drawScale})
 
-        this.getToMainMenuButton = new Button(true,-30,691,images.buttons.img[12],function(){
-        },325,60,false,false,false,true,false,false)
+        this.getToMainMenuButton = new Button(true,90 ,691 + 20,images.buttons.img[17],function(){
+        },80,40,false,false,false,true,false,false)
 
         this.getToMainMenuButton.visible = true;
 
