@@ -3187,7 +3187,7 @@ class Player{
                                 return;
                             }
                             board.animateDices = false;
-                            self.teleportTo(self.steps + dice1 + dice2);
+                            self.teleportTo((self.steps + dice1 + dice2)%40);
                             board.nextPlayerButton.visible = true;
                             board.goToMainMenuButton.visible = true;
                         })
