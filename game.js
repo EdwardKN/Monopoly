@@ -129,7 +129,7 @@ function drawRotatedImage(x,y,w,h,img,angle,mirrored,cropX,cropY,cropW,cropH,off
         drawcanvas.scale(-1, 1);
     }
     
-    drawcanvas.drawImage(img,Math.floor(cropX),Math.floor(cropY),Math.floor(cropW),Math.floor(cropH),Math.floor(-w/2)*scale,Math.floor(-h/2)*scale,Math.floor(w)*scale,Math.floor(h)*scale);
+    drawcanvas.drawImage(img,Math.floor(cropX),Math.floor(cropY),Math.floor(cropW),Math.floor(cropH),Math.floor(-w/2*scale),Math.floor(-h/2*scale),Math.floor(w*scale),Math.floor(h*scale));
 
     drawcanvas.restore();
 }
@@ -1815,7 +1815,7 @@ class PlayerBorder{
                     self.createTradebutton.visible = true;
                 }
             }
-        },249,54,false,false,false,true,false,{x:0,y:0,w:249,h:54,onlySelected:true}) 
+        },250,54,false,false,false,true,false,{x:0,y:0,w:249,h:54,onlySelected:true}) 
 
         this.createTradebutton = new Button(false,this.x,this.y,images.buttons.img[9],function(){
             self.createTradebutton.visible = false;
