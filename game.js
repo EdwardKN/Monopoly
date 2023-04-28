@@ -2318,7 +2318,7 @@ class Button{
             this.screencenter = true;
         }
         if(textFont == undefined){
-            this.textcolor = "Arcade"
+            this.textFont = "Arcade"
         }    
 
         this.showBorder = showBorder;
