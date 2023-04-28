@@ -733,7 +733,7 @@ function update(){
     let tmp = false;
 
     buttons.forEach(e =>{
-        if(e.hover){
+        if(e.hover && e.visible){
             tmp = true;
         }
     });
@@ -778,7 +778,6 @@ async function showOnlineLobby() {
             if (Api.currentPlayer == 0) {
                 board.rollDiceButton.visible = true;
                 board.nextPlayerButton.visible = false;
-                board.nextPlayerButton.hover = false;
             }
 
             update();
@@ -856,12 +855,9 @@ async function showOnlineLobby() {
             if (Api.currentPlayer == turn) {
                 board.rollDiceButton.visible = true;
                 board.nextPlayerButton.visible = false;
-                board.nextPlayerButton.hover = false;
             } else {
                 board.rollDiceButton.visible = false;
                 board.nextPlayerButton.visible = false;
-                board.nextPlayerButton.hover = false;
-                board.rollDiceButton.hover = false;
             }
         });
 
@@ -882,7 +878,6 @@ async function showOnlineLobby() {
             board.auction = undefined;
 
             board.buyButton.visible = false;                        
-            board.buyButton.hover = false;
             board.auctionButton.visible = false;
         });
 
@@ -893,7 +888,6 @@ async function showOnlineLobby() {
             board.auction = new Auction(currentCard);
             board.currentCard = undefined;
             board.buyButton.visible = false;
-            board.buyButton.hover = false;
             board.auctionButton.visible = false;
         });
 
@@ -1006,8 +1000,6 @@ async function showOnlineLobby() {
                     board.trade.p2ConfirmButton.visible = false;
                     board.trade.p1Slider.visible = false;
                     board.trade.p1Slider.visible = false;
-                    board.trade.p1ConfirmButton.hover = false;
-                    board.trade.p2ConfirmButton.hover = false;
                     board.trade.p1PropertyButtons.forEach(e => { e.visible = false; });
                     board.trade.p2PropertyButtons.forEach(e => { e.visible = false; });
                 }
@@ -1170,7 +1162,6 @@ class Board{
                 board.dice2 = 0;
 
                 board.nextPlayerButton.visible = false;
-                board.nextPlayerButton.hover = false;
             }
             board.animateDices = false;
             board.showDices = false;
@@ -1179,7 +1170,6 @@ class Board{
         if (Api.online && Api.currentPlayer == 0) {
             this.rollDiceButton.visible = true;
             this.nextPlayerButton.visible = false;
-            board.nextPlayerButton.hover = false;
         }
 
         this.currentCard = undefined;
@@ -1263,7 +1253,6 @@ class Board{
             board.currentCard = undefined;
             board.getToMainMenuButton.visible = true;
             board.buyButton.visible = false;
-            board.buyButton.hover = false;
             board.auctionButton.visible = false;
         },97,40);
 
@@ -1276,7 +1265,6 @@ class Board{
             board.currentCard = undefined;
             board.getToMainMenuButton.visible = true;
             board.buyButton.visible = false;
-            board.buyButton.hover = false;
             board.auctionButton.visible = false;
         },97,40);
 
@@ -1363,7 +1351,6 @@ class Board{
 
         this.confirmMenu = function(){
             this.getToMainMenuButton.visible = false;
-            this.getToMainMenuButton.hover = false;
             c.fillRect(722*scale,336*scale,512*scale,448*scale)
             drawRotatedImage(722,336,512,448,images.exitMenu.img[0],0,false,0,0,256,224)  
 
@@ -1405,8 +1392,6 @@ class Board{
                             this.mortgageButton.x = 60;
                             this.upgradeButton.visible = false;
                             this.downgradeButton.visible = false;
-                            this.upgradeButton.hover = false;
-                            this.downgradeButton.hover = false;
                         }else{
                             this.sellButton.x = 200;
                             this.mortgageButton.x = 150;
@@ -1417,7 +1402,6 @@ class Board{
                         }
                         
                         this.buyButton.visible = false;
-                        this.buyButton.hover = false;
                         let ownAll = true;
                         let lowest = 5;
                         let highest = 0;
@@ -1482,15 +1466,12 @@ class Board{
                         
                     }else{
                         this.buyButton.visible = false;
-                        this.buyButton.hover = false;
                         this.auctionButton.visible = false;
                     }
 
                 }
                 this.nextPlayerButton.visible = false;
-                this.nextPlayerButton.hover = false;
                 this.rollDiceButton.visible = false;
-                this.rollDiceButton.hover = false;
                 if(this.currentCard.mortgaged === true){
                     drawRotatedImage(722,236,images.mortgageOverlay.img[0].width*drawScale,images.mortgageOverlay.img[0].height*drawScale,images.mortgageOverlay.img[0],0,false,0,0,images.mortgageOverlay.img[0].width,images.mortgageOverlay.img[0].height)
                 }
@@ -1526,8 +1507,6 @@ class Board{
                 drawIsometricImage(550,400,images.dice.img[0],false,this.dice2Type*64,(this.dice2-1)*64,64,64,0,0)
                 this.nextPlayerButton.visible = false;
                 this.rollDiceButton.visible = false;
-                this.rollDiceButton.hover = false;
-                this.nextPlayerButton.hover = false;
             }else{
                 if (Api.online) {
                     if (players[turn].colorIndex != Api.currentPlayer) {
@@ -1539,23 +1518,17 @@ class Board{
                     if(players[turn].bot === undefined && this.auction === undefined && players[turn].inJail === false && !this.getToMainMenuButton.selected){
                         this.rollDiceButton.visible = true;
                         this.nextPlayerButton.visible = false;
-                        this.nextPlayerButton.hover = false;
                     }else{
                         this.rollDiceButton.visible = false;
-                        this.rollDiceButton.hover = false;
                         this.nextPlayerButton.visible = false;
-                        this.nextPlayerButton.hover = false;
                     }
                 }else{
                     if(players[turn].bot === undefined && this.auction === undefined && !this.getToMainMenuButton.selected){
                         this.rollDiceButton.visible = false;
-                        this.rollDiceButton.hover = false;
                         this.nextPlayerButton.visible = true;
                     }else{
                         this.rollDiceButton.visible = false;
-                        this.rollDiceButton.hover = false;
                         this.nextPlayerButton.visible = false;
-                        this.nextPlayerButton.hover = false;
                     }
                 }
                 
@@ -1800,8 +1773,6 @@ class Trade{
                 this.p2ConfirmButton.visible = false;
                 this.p1Slider.visible = false;
                 this.p1Slider.visible = false;
-                this.p1ConfirmButton.hover = false;
-                this.p2ConfirmButton.hover = false;
                 this.p1PropertyButtons.forEach(e => {e.visible=false});
                 this.p2PropertyButtons.forEach(e => {e.visible=false});
                 players.forEach(e => {e.playerBorder.button.selected = false;e.playerBorder.button.disabled = false})
@@ -2175,10 +2146,6 @@ class Auction{
                     this.addMoneyButton2.visible = false;
                     this.addMoneyButton10.visible = false;
                     this.addMoneyButton100.visible = false;
-                    this.startAuctionButton.hover = false;
-                    this.addMoneyButton2.hover = false;
-                    this.addMoneyButton10.hover = false;
-                    this.addMoneyButton100.hover = false;
                 }
                 
                 drawIsometricImage(0,0,images.auction.img[4],false,0,30,240,30,-150,220,1)
@@ -2228,7 +2195,6 @@ class Auction{
                                     board.currentCard = undefined;
                                     board.getToMainMenuButton.visible = true;
                                     board.buyButton.visible = false;
-                                    board.buyButton.hover = false;
                                     board.auction = undefined;
                             }
                         }
