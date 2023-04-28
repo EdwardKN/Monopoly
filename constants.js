@@ -62,10 +62,23 @@ if(fastSpeed === true){
         
     }
 }
+var spritesheet;
+var spritesheetImage
+
+async function loadSpriteSheet(){
+    var response = await fetch("./images/texture.json")
+    spritesheet = await response.json();
+    spritesheetImage = new Image();
+    spritesheetImage.src = "./images/texture.png";
+}
+
 
 
 
 var images = {
+    spritesheet:{
+        src:["./images/spritesheet"]
+    },
     part:{
         src:["./images/plates/brown","./images/plates/light_blue",
         "./images/plates/pink","./images/plates/orange",
@@ -143,8 +156,8 @@ var images = {
         src:["./images/Cards/mortgageoverlay"]
     },
     colorButtons:{
-        src:["./images/playercolorbuttons/player","./images/playercolorbuttons/player2","./images/playercolorbuttons/player3","./images/playercolorbuttons/player4",
-        "./images/playercolorbuttons/player5","./images/playercolorbuttons/player6","./images/playercolorbuttons/player7","./images/playercolorbuttons/player8","./images/playercolorbuttons/unselected"
+        src:["./images/playercolorbuttons/playercolorbutton","./images/playercolorbuttons/playercolorbutton2","./images/playercolorbuttons/playercolorbutton3","./images/playercolorbuttons/playercolorbutton4",
+        "./images/playercolorbuttons/playercolorbutton5","./images/playercolorbuttons/playercolorbutton6","./images/playercolorbuttons/playercolorbutton7","./images/playercolorbuttons/playercolorbutton8","./images/playercolorbuttons/unselected"
         ]
     }
 };

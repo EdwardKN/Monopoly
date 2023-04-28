@@ -79,14 +79,14 @@ window.addEventListener("mouseup",function(e){
 
 })
 
-function preRender(imageObject){
+async function preRender(imageObject){
+    await loadSpriteSheet();
     Object.entries(imageObject).forEach(image => {
-        image[1].img = [];
+        image[1].sprites = [];
         for(i=0;i<image[1].src.length;i++){
-            image[1].img.push(new Image());
-
-            image[1].img[i].src = image[1].src[i] + ".png";
-            //c.drawImage(image[1].img[i],0,0)
+            let src = (image[1].src[i].split("/"))
+            let src2 = src[src.length-2] + "/"+ src[src.length-1]
+            image[1].sprites.push(spritesheet.frames[spritesheet.frames.map(function(e) { return e.filename; }).indexOf(src2 + ".png")])
         }
     });
 }
@@ -107,7 +107,8 @@ function loadSounds(soundObject){
         }
     });
 }
-function drawRotatedImage(x,y,w,h,img,angle,mirrored,cropX,cropY,cropW,cropH,offset,drawcanvas){
+
+function drawRotatedImageFromSpriteSheet(x,y,w,h,frame,angle,mirrored,cropX,cropY,cropW,cropH,offset,drawcanvas){
     let degree = angle * Math.PI / 180;
     if(offset){
         //x+= offsets.x;
@@ -115,8 +116,8 @@ function drawRotatedImage(x,y,w,h,img,angle,mirrored,cropX,cropY,cropW,cropH,off
     }
 
     let middlePoint = {
-        x:x*scale+w/2*scale,
-        y:y*scale+h/2*scale
+        x:Math.floor(x*scale+w/2*scale),
+        y:Math.floor(y*scale+h/2*scale)
     };
     if(drawcanvas === undefined){
         drawcanvas = c;
@@ -129,7 +130,7 @@ function drawRotatedImage(x,y,w,h,img,angle,mirrored,cropX,cropY,cropW,cropH,off
         drawcanvas.scale(-1, 1);
     }
     
-    drawcanvas.drawImage(img,Math.floor(cropX),Math.floor(cropY),Math.floor(cropW),Math.floor(cropH),Math.floor(-w/2*scale),Math.floor(-h/2*scale),Math.floor(w*scale),Math.floor(h*scale));
+    drawcanvas.drawImage(spritesheetImage,Math.floor(cropX+frame.frame.x),Math.floor(cropY+frame.frame.y),Math.floor(cropW),Math.floor(cropH),Math.floor(-w/2*scale),Math.floor(-h/2*scale),Math.floor(w*scale),Math.floor(h*scale));
 
     drawcanvas.restore();
 }
@@ -182,8 +183,9 @@ function drawIsometricImage(x,y,img,mirror,cropX,cropY,cropW,cropH,offsetX,offse
     if(drawcanvas === undefined){
         drawcanvas = c;
     }
-    drawRotatedImage(to_screen_coordinate(x*drawScale,y*drawScale).x + 850 + offsetX*drawScale,to_screen_coordinate(x*drawScale,y*drawScale).y + 150 + offsetY*drawScale,cropW*scaleOfThis,cropH*scaleOfThis,img,0,mirror,cropX,cropY,cropW,cropH,true,drawcanvas)
+    drawRotatedImageFromSpriteSheet(to_screen_coordinate(x*drawScale,y*drawScale).x + 850 + offsetX*drawScale,to_screen_coordinate(x*drawScale,y*drawScale).y + 150 + offsetY*drawScale,cropW*scaleOfThis,cropH*scaleOfThis,img,0,mirror,cropX,cropY,cropW,cropH,true,drawcanvas)
 }
+
 
 
 function randomIntFromRange(min, max) {
@@ -220,7 +222,7 @@ function startGame(playerlist,settings){
     for(i = 0; i < playerlist.length; i++){
         let tmpI = randomIntFromRange(0,tmpArray.length-1);
         let correctI = tmpArray[tmpI]
-        players.push(new Player(images.player.img[playerlist[correctI].color],playerlist[correctI].color,playerlist[correctI].name,playerlist[correctI].bot))
+        players.push(new Player(images.player.sprites[playerlist[correctI].color],playerlist[correctI].color,playerlist[correctI].name,playerlist[correctI].bot))
         tmpArray.splice(tmpI,1)
     }
     turn = randomIntFromRange(0,playerlist.length-1)
@@ -235,13 +237,13 @@ class LocalLobby {
         this.playerInputs = [];
         this.amountBots = 0;
         this.settingsButtons = [];
-        this.settingsButtons.push(new Button(true,100,220,images.buttons.img[10],function(){},500,40,false,false,false,false,false,false,"Ge alla skattepengar till fri parkering",42,"black"))
-        this.settingsButtons.push(new Button(true,100,220+ this.settingsButtons.length*45,images.buttons.img[10],function(){},500,40,false,false,false,false,false,false,"Ge alla bankpengar till fri parkering",42,"black"))
-        this.settingsButtons.push(new Button(true,100,220 + this.settingsButtons.length*45,images.buttons.img[10],function(){},500,40,false,false,false,false,false,false,"Dubbel hyra på komplett färggrupp",42,"black"))
-        this.settingsButtons.push(new Button(true,100,220 + this.settingsButtons.length*45,images.buttons.img[10],function(){},500,40,false,false,false,false,false,false,"Auktioner",42,"black"))
-        this.settingsButtons.push(new Button(true,100,220 + this.settingsButtons.length*45,images.buttons.img[10],function(){},500,40,false,false,false,false,false,false,"Få/förlora pengar i fängelset",42,"black"))
-        this.settingsButtons.push(new Button(true,100,220 + this.settingsButtons.length*45,images.buttons.img[10],function(){},500,40,false,false,false,false,false,false,"Möjlighet att inteckna",42,"black"))
-        this.settingsButtons.push(new Button(true,100,220 + this.settingsButtons.length*45,images.buttons.img[10],function(){},500,40,false,false,false,false,false,false,"Jämn utbyggnad",42,"black"))
+        this.settingsButtons.push(new Button(true,100,220,images.buttons.sprites[10],function(){},500,40,false,false,false,false,false,false,"Ge alla skattepengar till fri parkering",42,"black"))
+        this.settingsButtons.push(new Button(true,100,220+ this.settingsButtons.length*45,images.buttons.sprites[10],function(){},500,40,false,false,false,false,false,false,"Ge alla bankpengar till fri parkering",42,"black"))
+        this.settingsButtons.push(new Button(true,100,220 + this.settingsButtons.length*45,images.buttons.sprites[10],function(){},500,40,false,false,false,false,false,false,"Dubbel hyra på komplett färggrupp",42,"black"))
+        this.settingsButtons.push(new Button(true,100,220 + this.settingsButtons.length*45,images.buttons.sprites[10],function(){},500,40,false,false,false,false,false,false,"Auktioner",42,"black"))
+        this.settingsButtons.push(new Button(true,100,220 + this.settingsButtons.length*45,images.buttons.sprites[10],function(){},500,40,false,false,false,false,false,false,"Få/förlora pengar i fängelset",42,"black"))
+        this.settingsButtons.push(new Button(true,100,220 + this.settingsButtons.length*45,images.buttons.sprites[10],function(){},500,40,false,false,false,false,false,false,"Möjlighet att inteckna",42,"black"))
+        this.settingsButtons.push(new Button(true,100,220 + this.settingsButtons.length*45,images.buttons.sprites[10],function(){},500,40,false,false,false,false,false,false,"Jämn utbyggnad",42,"black"))
         this.settingsButtons.push(new Slider(456*drawScale,300*drawScale + this.settingsButtons.length*12,502*drawScale,40*drawScale,0,3000,100,true,30,"kr","Startkapital: "))
         this.settingsButtons.push(new Slider(456*drawScale,300*drawScale + this.settingsButtons.length*12*drawScale,502*drawScale,40*drawScale,0,5,1,true,30,"","Antal varv innan köp: "))
         this.settingsButtons[2].selected = true
@@ -253,7 +255,7 @@ class LocalLobby {
         this.readyPlayers = [];
         this.settingsButtons[1].disabled = true;
 
-        this.backButton = new Button(false,-337,220,images.buttons.img[12],function(){
+        this.backButton = new Button(false,-337,220,images.buttons.sprites[12],function(){
             self.current = false;
             menus[0].current = true;
             self.backButton.visible = false;
@@ -266,7 +268,7 @@ class LocalLobby {
                 e.colorButtons.forEach(g => g.visible = false)
                 })
         },325,60,false,false,false,false,false,false)
-        this.startButton = new Button(false,250,650,images.buttons.img[11],function(){
+        this.startButton = new Button(false,250,650,images.buttons.sprites[11],function(){
             let playerlist = []
 
             self.readyPlayers.forEach(e =>{
@@ -307,7 +309,7 @@ class LocalLobby {
                 e.textInput.visible = false;
                 e.botButton.visible = false;
                 e.colorButtons.forEach(g => g.selected = false)
-                e.colorButton.img = images.colorButtons.img[8];
+                e.colorButton.img = images.colorButtons.sprites[8];
                 e.colorButton.visible = false;
                 e.colorButtons.forEach(g => g.visible = false)
                 e.botButton.selected = false;
@@ -328,14 +330,14 @@ class LocalLobby {
                 colorId:undefined,
                 y:(self.playerInputs.length*110 - 100),
                 textInput: new TextInput(40,300,560,80,true,50,10),
-                botButton: new Button(true,-50 +42,self.playerInputs.length*55 - 32,images.buttons.img[13],function(){
+                botButton: new Button(true,-50 +42,self.playerInputs.length*55 - 32,images.buttons.sprites[13],function(){
                     self.playerInputs[id].textInput.htmlElement.value = ""
                     if(self.playerInputs[id].botButton.selected){
                         if(self.playerInputs[id].colorId !== undefined){
                             self.useableColors.push(self.playerInputs[id].colorId)
                         }
                         self.amountBots++;
-                        self.playerInputs[id].colorButton.img = images.colorButtons.img[8]
+                        self.playerInputs[id].colorButton.img = images.colorButtons.sprites[8]
                         self.playerInputs[id].colorId = undefined;
                         self.playerInputs[id].colorButtons.forEach(e => e.selected = false);
                     }else{
@@ -345,7 +347,7 @@ class LocalLobby {
                         self.playerInputs[id].textInput.htmlElement.disabled = false;
                     }
                 },40,40,false,false),
-                colorButton: new Button(true,-50,self.playerInputs.length*55 - 32,images.colorButtons.img[8],function(){
+                colorButton: new Button(true,-50,self.playerInputs.length*55 - 32,images.colorButtons.sprites[8],function(){
                     if(self.playerInputs[id].colorButton.selected){
                         self.disableAll = true;
                         if(id < 4){
@@ -365,14 +367,14 @@ class LocalLobby {
                 colorButtons: []
             }
             for(let i = 0; i < 8; i++){
-                tmp.colorButtons.push(new Button(true,110 + (i%4)*47,self.playerInputs.length*55 +150 + Math.floor(i/2)*50,images.colorButtons.img[i],function(){
+                tmp.colorButtons.push(new Button(true,110 + (i%4)*47,self.playerInputs.length*55 +150 + Math.floor(i/2)*50,images.colorButtons.sprites[i],function(){
                     let select = self.playerInputs[id].colorButtons[i].selected;
                     self.playerInputs[id].colorButtons.forEach(e => {
                         e.selected = false;
                     })
                     if(select === true){
                         self.playerInputs[id].colorButtons[i].selected = true;
-                        self.playerInputs[id].colorButton.img = images.colorButtons.img[i];
+                        self.playerInputs[id].colorButton.img = images.colorButtons.sprites[i];
                         if(self.playerInputs[id].colorId !== undefined){
                             self.useableColors.push(self.playerInputs[id].colorId)
                         }
@@ -381,7 +383,7 @@ class LocalLobby {
                     }else{
                         self.playerInputs[id].colorButtons[i].selected = false;
 
-                        self.playerInputs[id].colorButton.img = images.colorButtons.img[8];
+                        self.playerInputs[id].colorButton.img = images.colorButtons.sprites[8];
                         if(self.playerInputs[id].colorId !== undefined){
                             self.useableColors.push(self.playerInputs[id].colorId)
                         }
@@ -405,7 +407,7 @@ class LocalLobby {
 
         this.draw = function(){
             if(this.current){
-                drawRotatedImage(0,0,981*drawScale,552*drawScale,images.mainMenu.img[3],0,0,0,0,981,552)
+                drawRotatedImageFromSpriteSheet(0,0,981*drawScale,552*drawScale,images.mainMenu.sprites[3],0,0,0,0,981,552)
                 this.readyPlayers = [];
 
                 if(this.settingsButtons[0].selected === true){
@@ -550,14 +552,14 @@ class MainMenu {
         this.current = true;
         let self = this;
 
-        this.localButton = new Button(false,-322,341,images.mainMenu.img[1],function(){
+        this.localButton = new Button(false,-322,341,images.mainMenu.sprites[1],function(){
             self.current = false;
             menus[1].current = true;
             self.localButton.visible = false;
             self.onlineButton.visible = false;
             self.musicButton.visible = false;
         },195,52,false,false,true)
-        this.onlineButton = new Button(false,-322,539,images.mainMenu.img[2],function(){
+        this.onlineButton = new Button(false,-322,539,images.mainMenu.sprites[2],function(){
             self.current = false;
             self.localButton.visible = false;
             self.onlineButton.visible = false;
@@ -566,7 +568,7 @@ class MainMenu {
             showOnlineLobby();
         },195,52,false,false,true)
 
-        this.musicButton = new Button(true,-357,711,images.buttons.img[14],function(){
+        this.musicButton = new Button(true,-357,711,images.buttons.sprites[14],function(){
             document.cookie = `musicOn=${!self.musicButton.selected};Expires=Sun, 22 oct 2030 08:00:00 UTC;`;
             clearTimeout(musictimer)
             if(self.musicButton.selected){
@@ -586,7 +588,7 @@ class MainMenu {
 
         this.draw = function(){
             if(this.current){
-                drawRotatedImage(0,0,981*drawScale,552*drawScale,images.mainMenu.img[0],0,0,0,0,981,552)
+                drawRotatedImageFromSpriteSheet(0,0,981*drawScale,552*drawScale,images.mainMenu.sprites[0],0,0,0,0,981,552)
                 musicOn = !this.musicButton.selected;
                 this.localButton.visible = true;
                 this.onlineButton.visible = true;
@@ -657,7 +659,7 @@ async function init(){
     canvas.width = innerWidth;
     canvas.height = innerHeight;
     
-    preRender(images);
+    await preRender(images);
     loadSounds(sounds);   
 
 
@@ -750,11 +752,11 @@ function update(){
 function showBackground(){
     for(let x = -4; x <8; x++){
         for(let y = -4; y < 8; y++){
-            drawIsometricImage(-352*2    + 832*x,+832*y,images.background.img[1],false,0,0,832,416,0,0,1,backC)
+            drawIsometricImage(-352*2    + 832*x,+832*y,images.background.sprites[1],false,0,0,832,416,0,0,1,backC)
 
         }
     }
-    drawIsometricImage(-92,352,images.background.img[0],false,0,0,572,286,0,0)
+    drawIsometricImage(-92,352,images.background.sprites[0],false,0,0,572,286,0,0)
 }
 
 async function showOnlineLobby() {
@@ -770,7 +772,7 @@ async function showOnlineLobby() {
             players.forEach(e => buttons.splice(buttons.indexOf(e.playerBorder.button),1))
             players = [];
             data.players.forEach((player) => {
-                players.push(new Player(images.player.img[player.colorIndex], player.colorIndex, player.name, false));
+                players.push(new Player(images.player.sprites[player.colorIndex], player.colorIndex, player.name, false));
             });
             // Got no idea where the extra players come from, as they should be cleared aboved. But here's an extra check to remove them
             board.boardPieces[0].currentPlayer = board.boardPieces[0].currentPlayer.filter(x => players.indexOf(x) != -1);
@@ -790,7 +792,7 @@ async function showOnlineLobby() {
             board.settings = data.settings;
 
             data.players.forEach((player) => {
-                players.push(new Player(images.player.img[player.colorIndex], player.colorIndex, player.name, false));
+                players.push(new Player(images.player.sprites[player.colorIndex], player.colorIndex, player.name, false));
             });
 
             Api.currentPlayer = data.thisPlayer;
@@ -831,7 +833,7 @@ async function showOnlineLobby() {
 
         document.body.addEventListener("player_joined", (evt) => {
             if (evt.detail.index == Api.currentPlayer || Api.currentPlayer == -1) return;
-            players.push(new Player(images.player.img[evt.detail.index], evt.detail.index, evt.detail.username, false));
+            players.push(new Player(images.player.sprites[evt.detail.index], evt.detail.index, evt.detail.username, false));
 
             var player = document.createElement("div");
             var span = document.createElement("span");
@@ -1062,7 +1064,7 @@ class Board{
         this.auction = undefined;
         this.trade = undefined;
         let self = this;
-        this.musicButton = new Button(true,51,530,images.buttons.img[14],function(){
+        this.musicButton = new Button(true,51,530,images.buttons.sprites[14],function(){
             document.cookie = `musicOn=${!self.musicButton.selected};Expires=Sun, 22 oct 2030 08:00:00 UTC;`;
             clearTimeout(musictimer)
             if(self.musicButton.selected){
@@ -1078,14 +1080,14 @@ class Board{
         },40,40,false)
         this.musicButton.selected = !musicOn;
 
-        this.goToMainMenuButton = new Button(false,111,530,images.buttons.img[15],function(){
+        this.goToMainMenuButton = new Button(false,111,530,images.buttons.sprites[15],function(){
             board.getToMainMenuButton.selected = false;
             board.goToMainMenuButton.visible = false;
             board.escapeConfirm.visible = false;
             board.getToMainMenuButton.visible = true;
             board.musicButton.visible = false;
         },40,40,false,false,false,false,false,{x:722,y:336,w:256*drawScale,h:224*drawScale});
-        this.escapeConfirm = new Button(false,171,530,images.buttons.img[16],function(){
+        this.escapeConfirm = new Button(false,171,530,images.buttons.sprites[16],function(){
             board.getToMainMenuButton.selected = false;
             board.goToMainMenuButton.visible = false;
             board.escapeConfirm.visible = false;
@@ -1101,12 +1103,12 @@ class Board{
             timeouts = [];
         },40,40,false,false,false,false,false,);
 
-        this.getToMainMenuButton = new Button(true,90 ,691 + 20,images.buttons.img[17],function(){
+        this.getToMainMenuButton = new Button(true,90 ,691 + 20,images.buttons.sprites[17],function(){
         },80,40,false,false,false,true,false,false)
 
         this.getToMainMenuButton.visible = true;
 
-        this.payJailButton = new Button(false,-10,520,images.jailMenu.img[1],function(){
+        this.payJailButton = new Button(false,-10,520,images.jailMenu.sprites[1],function(){
             players[turn].money -= 50;
             if(board.settings.freeParking){
                 board.boardPieces[20].money += 50;
@@ -1119,7 +1121,7 @@ class Board{
             players[turn].playerBorder.startMoneyAnimation(-50);
                 
         },82,35);
-        this.rollJailButton = new Button(false,85,520,images.jailMenu.img[2],function(){
+        this.rollJailButton = new Button(false,85,520,images.jailMenu.sprites[2],function(){
             let dice1 = randomIntFromRange(1,6);
             let dice2 = randomIntFromRange(1,6);
             players[turn].rolls = true;
@@ -1142,15 +1144,15 @@ class Board{
             board.rollJailButton.visible = false;
             board.jailCardButton.visible = false;
         },82,35);
-        this.jailCardButton = new Button(false,180,520,images.jailMenu.img[3],function(){
+        this.jailCardButton = new Button(false,180,520,images.jailMenu.sprites[3],function(){
             players[turn].jailcardAmount--;
             players[turn].getOutOfJail("CARD");
             board.payJailButton.visible = false;
             board.rollJailButton.visible = false;
             board.jailCardButton.visible = false;
         },82,35);
-        this.rollDiceButton = new Button(false,76,530,images.buttons.img[0],function(){players[turn].rollDice()},107,23,false,false,false,true)
-        this.nextPlayerButton = new Button(false,76,530,images.buttons.img[1],function(){
+        this.rollDiceButton = new Button(false,76,530,images.buttons.sprites[0],function(){players[turn].rollDice()},107,23,false,false,false,true)
+        this.nextPlayerButton = new Button(false,76,530,images.buttons.sprites[1],function(){
             if(players[turn].money >= 0){
                 players[turn].rolls = false;
                 players[turn].numberOfRolls = 0;
@@ -1174,7 +1176,7 @@ class Board{
         }
 
         this.currentCard = undefined;
-        this.cardCloseButton = new Button(false,241,318,images.buttons.img[7],function(){
+        this.cardCloseButton = new Button(false,241,318,images.buttons.sprites[7],function(){
             board.currentCard = undefined;
             board.sellButton.visible = false;
             board.mortgageButton.visible = false;
@@ -1182,7 +1184,7 @@ class Board{
             board.downgradeButton.visible = false;
             board.getToMainMenuButton.visible = true;
         },18,18,false,false,false,false,false,{x:722,y:236,w:256*drawScale,h:324*drawScale})
-        this.sellButton = new Button(false,130,580,images.buttons.img[2],function(){
+        this.sellButton = new Button(false,130,580,images.buttons.sprites[2],function(){
             if(board.currentCard.mortgaged === false){
                 players[turn].money+= board.currentCard.piece.price/2
                 players[turn].checkDebt(board.boardPieces[20]);
@@ -1191,7 +1193,7 @@ class Board{
             players[turn].ownedPlaces.splice(players[turn].ownedPlaces.indexOf(board.currentCard),1);
             board.currentCard.owner = undefined;
         },40,40);
-        this.mortgageButton = new Button(false,80,580,images.buttons.img[3],function(){
+        this.mortgageButton = new Button(false,80,580,images.buttons.sprites[3],function(){
             if(board.currentCard.mortgaged === true){
                 if (Api.online) {
                     Api.tilePurchased(board.currentCard, (board.currentCard.piece.price/2)*1.1);
@@ -1216,7 +1218,7 @@ class Board{
                 players[turn].checkDebt(board.boardPieces[20]);
             }
         },40,40);
-        this.upgradeButton = new Button(false,75,580,images.buttons.img[4],function(){
+        this.upgradeButton = new Button(false,75,580,images.buttons.sprites[4],function(){
             if (Api.online) {
                 Api.propertyChangedLevel(board.currentCard, board.currentCard.level + 1, true);
                 return;
@@ -1229,7 +1231,7 @@ class Board{
             }
             players[turn].playerBorder.startMoneyAnimation(-board.currentCard.piece.housePrice)
         },40,40);
-            this.downgradeButton = new Button(false,25,580,images.buttons.img[5],function(){
+            this.downgradeButton = new Button(false,25,580,images.buttons.sprites[5],function(){
             if (Api.online) {
                 Api.propertyChangedLevel(board.currentCard, board.currentCard.level - 1, false);
                 return;
@@ -1239,7 +1241,7 @@ class Board{
             players[turn].playerBorder.startMoneyAnimation(board.currentCard.piece.housePrice/2)
             players[turn].checkDebt(board.boardPieces[20]);
         },40,40);
-        this.buyButton = new Button(false,25,580,images.buttons.img[6],function(){
+        this.buyButton = new Button(false,25,580,images.buttons.sprites[6],function(){
             if (Api.online) {
                 Api.tilePurchased(board.currentCard);
                 return;
@@ -1257,7 +1259,7 @@ class Board{
             board.auctionButton.visible = false;
         },97,40);
 
-        this.auctionButton = new Button(false,25 + 117,580,images.buttons.img[8],function(){
+        this.auctionButton = new Button(false,25 + 117,580,images.buttons.sprites[8],function(){
             if (Api.online) {
                 Api.auctionShow(board.currentCard);
                 return;
@@ -1271,9 +1273,9 @@ class Board{
 
             for(let n = 0; n < 40; n++){
                 if(n%10 === 0){
-                    this.boardPieces.push(new BoardPiece(n,images.corner.img))
+                    this.boardPieces.push(new BoardPiece(n,images.corner.sprites))
                 }else{
-                    this.boardPieces.push(new BoardPiece(n,images.part.img))
+                    this.boardPieces.push(new BoardPiece(n,images.part.sprites))
                 }
         }
 
@@ -1353,7 +1355,7 @@ class Board{
         this.confirmMenu = function(){
             this.getToMainMenuButton.visible = false;
             c.fillRect(722*scale,336*scale,512*scale,448*scale)
-            drawRotatedImage(722,336,512,448,images.exitMenu.img[0],0,false,0,0,256,224)  
+            drawRotatedImageFromSpriteSheet(722,336,512,448,images.exitMenu.sprites[0],0,false,0,0,256,224)  
 
             this.goToMainMenuButton.visible = true;
             this.goToMainMenuButton.draw();
@@ -1368,7 +1370,7 @@ class Board{
         }
         this.showCard = function (){
             if(this.currentCard !== undefined){
-                drawRotatedImage(722,236,images.card.img[this.currentCard.piece.card].width*drawScale,images.card.img[this.currentCard.piece.card].height*drawScale,images.card.img[this.currentCard.piece.card],0,false,0,0,images.card.img[this.currentCard.piece.card].width,images.card.img[this.currentCard.piece.card].height)
+                drawRotatedImageFromSpriteSheet(722,236,images.card.sprites[this.currentCard.piece.card].frame.w*drawScale,images.card.sprites[this.currentCard.piece.card].frame.h*drawScale,images.card.sprites[this.currentCard.piece.card],0,false,0,0,images.card.sprites[this.currentCard.piece.card].frame.w,images.card.sprites[this.currentCard.piece.card].frame.h)
 
                 this.cardCloseButton.draw();
                 c.fillStyle = "black";
@@ -1474,7 +1476,7 @@ class Board{
                 this.nextPlayerButton.visible = false;
                 this.rollDiceButton.visible = false;
                 if(this.currentCard.mortgaged === true){
-                    drawRotatedImage(722,236,images.mortgageOverlay.img[0].width*drawScale,images.mortgageOverlay.img[0].height*drawScale,images.mortgageOverlay.img[0],0,false,0,0,images.mortgageOverlay.img[0].width,images.mortgageOverlay.img[0].height)
+                    drawRotatedImageFromSpriteSheet(722,236,images.mortgageOverlay.sprites[0].frame.w*drawScale,images.mortgageOverlay.sprites[0].frame.h*drawScale,images.mortgageOverlay.sprites[0],0,false,0,0,images.mortgageOverlay.sprites[0].frame.w,images.mortgageOverlay.sprites[0].frame.h)
                 }
             }else{
                 this.cardCloseButton.visible = false;
@@ -1482,7 +1484,7 @@ class Board{
             
         }
         this.showJailmenu = function(){
-            drawIsometricImage(0,0,images.jailMenu.img[0],false,0,0,300,90,-90,198)
+            drawIsometricImage(0,0,images.jailMenu.sprites[0],false,0,0,300,90,-90,198)
 
             this.payJailButton.visible = true;
             this.payJailButton.draw();
@@ -1504,8 +1506,8 @@ class Board{
 
         this.showDice = function () {
             if(players[turn].animationOffset !== 0 || this.showDices === true || this.animateDices === true){
-                drawIsometricImage(500,500,images.dice.img[0],false,this.dice1Type*64,(this.dice1-1)*64,64,64,0,0)
-                drawIsometricImage(550,400,images.dice.img[0],false,this.dice2Type*64,(this.dice2-1)*64,64,64,0,0)
+                drawIsometricImage(500,500,images.dice.sprites[0],false,this.dice1Type*64,(this.dice1-1)*64,64,64,0,0)
+                drawIsometricImage(550,400,images.dice.sprites[0],false,this.dice2Type*64,(this.dice2-1)*64,64,64,0,0)
                 this.nextPlayerButton.visible = false;
                 this.rollDiceButton.visible = false;
             }else{
@@ -1640,12 +1642,12 @@ class Trade{
         };
 
         let self = this;
-        this.closeButton = new Button(false,364,289,images.buttons.img[7],function(){if (Api.online) { Api.tradeConcluded(self.p2.colorIndex, false); } self.closeButton.visible = false;board.trade = undefined;board.getToMainMenuButton.visible = true; players.forEach(e => {e.playerBorder.button.disabled = false})},18,18,false,
+        this.closeButton = new Button(false,364,289,images.buttons.sprites[7],function(){if (Api.online) { Api.tradeConcluded(self.p2.colorIndex, false); } self.closeButton.visible = false;board.trade = undefined;board.getToMainMenuButton.visible = true; players.forEach(e => {e.playerBorder.button.disabled = false})},18,18,false,
         false,false,false,false,{x:466,y:170,w:1025,h:840})
         this.closeButton.visible = true;
 
         this.p1Slider = new Slider(500,300,400,60,0,this.p1.money,10,true,30,"kr","")
-        this.p1ConfirmButton = new Button(true,-70,650,images.trade.img[1],function(){
+        this.p1ConfirmButton = new Button(true,-70,650,images.trade.sprites[1],function(){
             if (Api.online && self.p1.colorIndex == Api.currentPlayer) {
                 if (self.p2ConfirmButton.selected) {
                     Api.tradeConcluded(self.p2.colorIndex, true, self.contents);
@@ -1662,7 +1664,7 @@ class Trade{
             this.p1Slider.disabled = true;
         }
 
-        this.p2ConfirmButton = new Button(true,180,650,images.trade.img[1],function(){},150,50)
+        this.p2ConfirmButton = new Button(true,180,650,images.trade.sprites[1],function(){},150,50)
         this.p2Slider = new Slider(1050,300,400,60,0,this.p2.money,10,true,30,"kr","")
         if(this.p2.bot === undefined){
             this.p2ConfirmButton.visible = true;
@@ -1680,7 +1682,7 @@ class Trade{
             if(i%2 === 1){
                 tmp = 107
             }
-            let but = (new Button(true,-300 + tmp + 198,280 + 18*Math.floor(i/2) + 110,images.trade.img[2],function(){
+            let but = (new Button(true,-300 + tmp + 198,280 + 18*Math.floor(i/2) + 110,images.trade.sprites[2],function(){
                 if (Api.online) {
                     if (this.selected) {
                         self.contents.p1.tiles.push(e.piece);
@@ -1707,7 +1709,7 @@ class Trade{
             if(i%2 === 1){
                 tmp = 107
             }
-            let but = (new Button(true,-30 + tmp + 200,280 + 18*Math.floor(i/2) + 110,images.trade.img[2],function(){},106,17,false,false,false,false,false,false,e.piece.name + " " + e.piece.price + "kr",15,e.piece.color))
+            let but = (new Button(true,-30 + tmp + 200,280 + 18*Math.floor(i/2) + 110,images.trade.sprites[2],function(){},106,17,false,false,false,false,false,false,e.piece.name + " " + e.piece.price + "kr",15,e.piece.color))
 
             if(self.p2.bot !== undefined || (Api.online && self.p2.colorIndex != Api.currentPlayer)){
                 but.disabled = true;
@@ -1721,7 +1723,7 @@ class Trade{
         });
 
         this.update = function(){
-            drawIsometricImage(0,0,images.trade.img[0],false,0,0,images.trade.img[0].width,images.trade.img[0].height,-192,images.trade.img[0].height/50,1)
+            drawIsometricImage(0,0,images.trade.sprites[0],false,0,0,images.trade.sprites[0].frame.w,images.trade.sprites[0].frame.h,-192,images.trade.sprites[0].frame.h/50,1)
             this.closeButton.draw();
             this.p1ConfirmButton.draw();
             this.p2ConfirmButton.draw();
@@ -1799,7 +1801,7 @@ class PlayerBorder{
         let textsize = measureText({font:"Arcade",text:this.player.name})
 
         
-        this.button = new Button(true,this.x,this.y,images.playerOverlay.img[8],function(){            
+        this.button = new Button(true,this.x,this.y,images.playerOverlay.sprites[8],function(){            
             players.forEach(e =>{if(e.playerBorder != self){e.playerBorder.button.selected = false;e.playerBorder.createTradebutton.visible = false;}})
             self.createTradebutton.visible = false;
             if (Api.online) {
@@ -1815,8 +1817,7 @@ class PlayerBorder{
 
         },250,54,false,false,false,true,false,{x:0,y:0,w:249,h:54,onlySelected:true}) 
 
-        console.log(buttons.indexOf(this.button))
-        this.createTradebutton = new Button(false,this.x,this.y,images.buttons.img[9],function(){
+        this.createTradebutton = new Button(false,this.x,this.y,images.buttons.sprites[9],function(){
             self.createTradebutton.visible = false;
             self.showInfo = false;
             if (Api.online && board.trade == undefined) {
@@ -1960,7 +1961,7 @@ class PlayerBorder{
                 mirrorAdder = 370;
             }
             if(this.button.mirror === false){
-                drawRotatedImage(this.x*drawScale+466 + 694,this.y*drawScale+5 - 400,48,96,images.player.img[this.player.colorIndex],0,false,0,0,24,48,false)
+                drawRotatedImageFromSpriteSheet(this.x*drawScale+466 + 694,this.y*drawScale+5 - 400,48,96,images.player.sprites[this.player.colorIndex],0,false,0,0,24,48,false)
                 let fontsize = (1/textsize.width)*25000 > 50 ? 50 : (1/textsize.width)*25000
                 c.font = fontsize*scale + "px Arcade";
                 c.fillStyle ="black"
@@ -1972,7 +1973,7 @@ class PlayerBorder{
                     c.fillText(this.player.money + "kr",this.x*drawScale*scale+1150*scale,this.y*drawScale*scale-335*scale)
                 }
             }else{
-                drawRotatedImage(this.x*drawScale +720,this.y*drawScale -396,48,96,images.player.img[this.player.colorIndex],0,false,0,0,24,48,false)
+                drawRotatedImageFromSpriteSheet(this.x*drawScale +720,this.y*drawScale -396,48,96,images.player.sprites[this.player.colorIndex],0,false,0,0,24,48,false)
                 let fontsize = (1/textsize.width)*25000 > 50 ? 50 : (1/textsize.width)*25000
                 c.font = fontsize*scale + "px Arcade";
 
@@ -1995,9 +1996,9 @@ class PlayerBorder{
                     this.button.invertedHitbox.w = this.button.w*drawScale
                     this.button.invertedHitbox.h = this.player.ownedPlaces.length*27*drawScale + 27*3*drawScale;
                     this.createTradebutton.y = this.y + 80 + 27*this.player.ownedPlaces.length;
-                    drawRotatedImage(this.x*drawScale+715,this.y*drawScale + 54*drawScale -400,260*drawScale,27*drawScale,images.playerOverlay.img[11],0,this.button.mirror,0,0,260,27,false)
+                    drawRotatedImageFromSpriteSheet(this.x*drawScale+715,this.y*drawScale + 54*drawScale -400,260*drawScale,27*drawScale,images.playerOverlay.sprites[11],0,this.button.mirror,0,0,260,27,false)
                     for(let i = 0; i < this.player.ownedPlaces.length; i++){
-                        drawRotatedImage(this.x*drawScale+715,this.y*drawScale + 67 *drawScale + 27*drawScale*i + 27 - 400,260*drawScale,27*drawScale,images.playerOverlay.img[10],0,this.button.mirror,0,0,260,27,false)
+                        drawRotatedImageFromSpriteSheet(this.x*drawScale+715,this.y*drawScale + 67 *drawScale + 27*drawScale*i + 27 - 400,260*drawScale,27*drawScale,images.playerOverlay.sprites[10],0,this.button.mirror,0,0,260,27,false)
                         c.font = 30*scale+"px Arcade";
                         c.fillStyle ="black"
                         c.textAlign = "left"
@@ -2025,8 +2026,8 @@ class PlayerBorder{
                             c.fillText(this.player.ownedPlaces[i].piece.name + "  " + multiply + " x tärning kr",this.x*scale+400*scale+ mirrorAdder*drawScale*scale,this.y*drawScale*scale + 80*drawScale*scale + 27*drawScale*i*scale - 354*scale)
                         }
                     }
-                    drawRotatedImage(this.x*drawScale +715,this.y*drawScale + 53*drawScale*1.5 +27*drawScale*this.player.ownedPlaces.length -400,260*drawScale ,27*drawScale,images.playerOverlay.img[10],0,this.button.mirror,0,0,260,27,false)
-                    drawRotatedImage(this.x*drawScale +715,this.y*drawScale + 53*drawScale*1.5 +27*drawScale*(this.player.ownedPlaces.length+1) -400,260*drawScale ,27*drawScale,images.playerOverlay.img[9],0,this.button.mirror,0,0,260,27,false)
+                    drawRotatedImageFromSpriteSheet(this.x*drawScale +715,this.y*drawScale + 53*drawScale*1.5 +27*drawScale*this.player.ownedPlaces.length -400,260*drawScale ,27*drawScale,images.playerOverlay.sprites[10],0,this.button.mirror,0,0,260,27,false)
+                    drawRotatedImageFromSpriteSheet(this.x*drawScale +715,this.y*drawScale + 53*drawScale*1.5 +27*drawScale*(this.player.ownedPlaces.length+1) -400,260*drawScale ,27*drawScale,images.playerOverlay.sprites[9],0,this.button.mirror,0,0,260,27,false)
                     if (!Api.online) {
                         if(players[turn] !== this.player && board.currentCard === undefined && board.trade === undefined && players[turn].bot === undefined && players[turn].animationOffset === 0 && board.animateDices === false && board.showDices === false && this.player.bot === undefined){
                             this.createTradebutton.visible = true;
@@ -2041,9 +2042,9 @@ class PlayerBorder{
                     this.button.invertedHitbox.y = this.y*drawScale - 400-this.player.ownedPlaces.length*27*drawScale - 27*3*drawScale;
                     this.button.invertedHitbox.w = this.button.w*drawScale
                     this.button.invertedHitbox.h = this.player.ownedPlaces.length*27*drawScale + 27*3*drawScale;
-                    drawRotatedImage(this.x*drawScale +715,this.y*drawScale - 27*drawScale -400,260*drawScale,27*drawScale,images.playerOverlay.img[11],180,!this.button.mirror,0,0,260,27,false)
+                    drawRotatedImageFromSpriteSheet(this.x*drawScale +715,this.y*drawScale - 27*drawScale -400,260*drawScale,27*drawScale,images.playerOverlay.sprites[11],180,!this.button.mirror,0,0,260,27,false)
                     for(let i = 0; i < this.player.ownedPlaces.length; i++){
-                        drawRotatedImage(this.x*drawScale +715,this.y*drawScale - 67 *drawScale - 27*drawScale*i + 27 -400,260*drawScale,27*drawScale,images.playerOverlay.img[10],180,!this.button.mirror,0,0,260,27,false)
+                        drawRotatedImageFromSpriteSheet(this.x*drawScale +715,this.y*drawScale - 67 *drawScale - 27*drawScale*i + 27 -400,260*drawScale,27*drawScale,images.playerOverlay.sprites[10],180,!this.button.mirror,0,0,260,27,false)
                         c.font = 30*scale+"px Arcade";
                         c.fillStyle ="black"
                         c.textAlign = "left"
@@ -2071,8 +2072,8 @@ class PlayerBorder{
                             c.fillText(this.player.ownedPlaces[i].piece.name + "  " + multiply + " x tärning kr",this.x*scale+400*scale+ mirrorAdder*drawScale*scale,this.y*drawScale*scale + 80*drawScale*scale - 27*drawScale*i*scale - 634*scale)
                         }                    
                     }
-                    drawRotatedImage(this.x*drawScale +715,this.y*drawScale - 35*drawScale*1.5 -27*drawScale*this.player.ownedPlaces.length -400,260*drawScale ,27*drawScale,images.playerOverlay.img[10],0,this.button.mirror,0,0,260,27,false)
-                    drawRotatedImage(this.x*drawScale +715,this.y*drawScale - 35*drawScale*1.5 -27*drawScale*(this.player.ownedPlaces.length+1) -400,260*drawScale ,27*drawScale,images.playerOverlay.img[9],180,!this.button.mirror,0,0,260,27,false)
+                    drawRotatedImageFromSpriteSheet(this.x*drawScale +715,this.y*drawScale - 35*drawScale*1.5 -27*drawScale*this.player.ownedPlaces.length -400,260*drawScale ,27*drawScale,images.playerOverlay.sprites[10],0,this.button.mirror,0,0,260,27,false)
+                    drawRotatedImageFromSpriteSheet(this.x*drawScale +715,this.y*drawScale - 35*drawScale*1.5 -27*drawScale*(this.player.ownedPlaces.length+1) -400,260*drawScale ,27*drawScale,images.playerOverlay.sprites[9],180,!this.button.mirror,0,0,260,27,false)
                     this.createTradebutton.y = this.y - 60 - 27*this.player.ownedPlaces.length;
                     if(players[turn] !== this.player && board.currentCard === undefined && board.trade === undefined && players[turn].bot === undefined && players[turn].animationOffset === 0 && board.animateDices === false && board.showDices === false && this.player.bot === undefined){
                         this.createTradebutton.visible = true;
@@ -2102,16 +2103,16 @@ class Auction{
         this.playerlist = [...players];
 
 
-        this.addMoneyButton2 = new Button(false,-80,540,images.auction.img[1],function(){     
+        this.addMoneyButton2 = new Button(false,-80,540,images.auction.sprites[1],function(){     
             board.auction.addMoney(2);
         },54,54,false)
-        this.addMoneyButton10 = new Button(false,10,540,images.auction.img[2],function(){
+        this.addMoneyButton10 = new Button(false,10,540,images.auction.sprites[2],function(){
             board.auction.addMoney(10);
         },54,54,false)
-        this.addMoneyButton100 = new Button(false,100,540,images.auction.img[3],function(){
+        this.addMoneyButton100 = new Button(false,100,540,images.auction.sprites[3],function(){
             board.auction.addMoney(100);
         },54,54,false)
-        this.startAuctionButton = new Button(false,-85,540,images.auction.img[5],function(){
+        this.startAuctionButton = new Button(false,-85,540,images.auction.sprites[5],function(){
             if (Api.online) {
                 Api.auctionStart(board.auction.card);
                 return;
@@ -2125,8 +2126,8 @@ class Auction{
         },240,40,false)
         
         this.draw = function(){
-            drawIsometricImage(0,0,images.card.img[card.piece.card],false,0,0,images.card.img[this.card.piece.card].width,images.card.img[this.card.piece.card].height,images.card.img[this.card.piece.card].width/3,images.card.img[this.card.piece.card].height/7.5,1)
-            drawIsometricImage(0,0,images.auction.img[0],false,0,0,images.auction.img[0].width,images.card.img[this.card.piece.card].height,-images.card.img[this.card.piece.card].width/1.5,images.card.img[this.card.piece.card].height/7.5,1)
+            drawIsometricImage(0,0,images.card.sprites[card.piece.card],false,0,0,images.card.sprites[this.card.piece.card].frame.w,images.card.sprites[this.card.piece.card].frame.h,images.card.sprites[this.card.piece.card].frame.w/3,images.card.sprites[this.card.piece.card].frame.h/7.5,1)
+            drawIsometricImage(0,0,images.auction.sprites[0],false,0,0,images.auction.sprites[0].frame.w,images.card.sprites[this.card.piece.card].frame.h,-images.card.sprites[this.card.piece.card].frame.w/1.5,images.card.sprites[this.card.piece.card].frame.h/7.5,1)
             c.fillStyle = "black";
             c.font = 80*scale+"px Arcade";
             c.textAlign = "center";
@@ -2152,7 +2153,7 @@ class Auction{
                     this.addMoneyButton100.visible = false;
                 }
                 
-                drawIsometricImage(0,0,images.auction.img[4],false,0,30,240,30,-150,220,1)
+                drawIsometricImage(0,0,images.auction.sprites[4],false,0,30,240,30,-150,220,1)
                 if(this.time > 472){
                     this.time = 472
                 }
@@ -2295,50 +2296,50 @@ class Button{
             if(this.visible && this.img !== undefined){
                 if(!this.disabled && this.selected === false){
                     if(detectCollition(this.x*drawScale*scale+715*scale,this.y*drawScale*scale-400*scale,this.w*drawScale*scale,this.h*drawScale*scale,mouse.realX,mouse.realY,1,1)){
-                        if(this.img.width > this.w){
-                            drawRotatedImage(this.x*drawScale+715,this.y*drawScale-400,this.w*drawScale,this.h*drawScale,this.img,0,this.mirror,this.w,0,this.w,this.h)
+                        if(this.img.frame.w > this.w){
+                            drawRotatedImageFromSpriteSheet(this.x*drawScale+715,this.y*drawScale-400,this.w*drawScale,this.h*drawScale,this.img,0,this.mirror,this.w,0,this.w,this.h)
                         }else{
-                            drawRotatedImage(this.x*drawScale+715,this.y*drawScale-400,this.w*drawScale,this.h*drawScale,this.img,0,this.mirror,0,0,this.w,this.h)
+                            drawRotatedImageFromSpriteSheet(this.x*drawScale+715,this.y*drawScale-400,this.w*drawScale,this.h*drawScale,this.img,0,this.mirror,0,0,this.w,this.h)
                         }
                         this.hover = true;
                     }else{
                         this.hover = false;
-                        drawRotatedImage(this.x*drawScale+715,this.y*drawScale-400,this.w*drawScale,this.h*drawScale,this.img,0,this.mirror,0,0,this.w,this.h)
+                        drawRotatedImageFromSpriteSheet(this.x*drawScale+715,this.y*drawScale-400,this.w*drawScale,this.h*drawScale,this.img,0,this.mirror,0,0,this.w,this.h)
                     }    
                 }else{
                     if(this.disabled){
                         this.hover = false;
                         if(this.select === false){
-                            drawRotatedImage(this.x*drawScale+715,this.y*drawScale-400,this.w*drawScale,this.h*drawScale,this.img,0,this.mirror,this.w*2,0,this.w,this.h)
+                            drawRotatedImageFromSpriteSheet(this.x*drawScale+715,this.y*drawScale-400,this.w*drawScale,this.h*drawScale,this.img,0,this.mirror,this.w*2,0,this.w,this.h)
                         }else{
-                            if(this.img.width > this.w*2){
+                            if(this.img.frame.w > this.w*2){
                                 if(this.selected){
-                                    drawRotatedImage(this.x*drawScale+715,this.y*drawScale-400,this.w*drawScale,this.h*drawScale,this.img,0,this.mirror,this.w*3,0,this.w,this.h)
+                                    drawRotatedImageFromSpriteSheet(this.x*drawScale+715,this.y*drawScale-400,this.w*drawScale,this.h*drawScale,this.img,0,this.mirror,this.w*3,0,this.w,this.h)
                                 }else{
-                                    drawRotatedImage(this.x*drawScale+715,this.y*drawScale-400,this.w*drawScale,this.h*drawScale,this.img,0,this.mirror,this.w*1,0,this.w,this.h)
+                                    drawRotatedImageFromSpriteSheet(this.x*drawScale+715,this.y*drawScale-400,this.w*drawScale,this.h*drawScale,this.img,0,this.mirror,this.w*1,0,this.w,this.h)
                                 }
                             }else{
-                                drawRotatedImage(this.x*drawScale+715,this.y*drawScale-400,this.w*drawScale,this.h*drawScale,this.img,0,this.mirror,0,0,this.w,this.h)
+                                drawRotatedImageFromSpriteSheet(this.x*drawScale+715,this.y*drawScale-400,this.w*drawScale,this.h*drawScale,this.img,0,this.mirror,0,0,this.w,this.h)
                             }
                         }
                     }else{
                         if(detectCollition(this.x*drawScale*scale+715*scale,this.y*drawScale*scale-400*scale,this.w*drawScale*scale,this.h*drawScale*scale,mouse.realX,mouse.realY,1,1)){
-                            if(this.img.width < this.w*2){
+                            if(this.img.frame.w < this.w*2){
                                 if(this.disableselectTexture){
-                                    drawRotatedImage(this.x*drawScale+715,this.y*drawScale-400,this.w*drawScale,this.h*drawScale,this.img,0,this.mirror,this.w*1,0,this.w,this.h)
+                                    drawRotatedImageFromSpriteSheet(this.x*drawScale+715,this.y*drawScale-400,this.w*drawScale,this.h*drawScale,this.img,0,this.mirror,this.w*1,0,this.w,this.h)
                                 }else{
-                                    drawRotatedImage(this.x*drawScale+715,this.y*drawScale-400,this.w*drawScale,this.h*drawScale,this.img,0,this.mirror,this.w*2,0,this.w,this.h)
+                                    drawRotatedImageFromSpriteSheet(this.x*drawScale+715,this.y*drawScale-400,this.w*drawScale,this.h*drawScale,this.img,0,this.mirror,this.w*2,0,this.w,this.h)
                                 }
                             }else{
-                                drawRotatedImage(this.x*drawScale+715,this.y*drawScale-400,this.w*drawScale,this.h*drawScale,this.img,0,this.mirror,this.w,0,this.w,this.h)
+                                drawRotatedImageFromSpriteSheet(this.x*drawScale+715,this.y*drawScale-400,this.w*drawScale,this.h*drawScale,this.img,0,this.mirror,this.w,0,this.w,this.h)
                             }
                             this.hover = true;
                         }else{
                             this.hover = false;
                                 if(this.disableselectTexture){
-                                    drawRotatedImage(this.x*drawScale+715,this.y*drawScale-400,this.w*drawScale,this.h*drawScale,this.img,0,this.mirror,this.w,0,this.w,this.h)
+                                    drawRotatedImageFromSpriteSheet(this.x*drawScale+715,this.y*drawScale-400,this.w*drawScale,this.h*drawScale,this.img,0,this.mirror,this.w,0,this.w,this.h)
                                 }else{
-                                    drawRotatedImage(this.x*drawScale+715,this.y*drawScale-400,this.w*drawScale,this.h*drawScale,this.img,0,this.mirror,this.w*2,0,this.w,this.h)
+                                    drawRotatedImageFromSpriteSheet(this.x*drawScale+715,this.y*drawScale-400,this.w*drawScale,this.h*drawScale,this.img,0,this.mirror,this.w*2,0,this.w,this.h)
                                 }
                             
                         }
@@ -2413,6 +2414,7 @@ class BoardPiece{
         this.money = 0;
         this.freeParking = false;
         this.currentOffsetvalue = 0;
+        this.visible = true;
         buttons.push(this);
         
         
@@ -2493,13 +2495,13 @@ class BoardPiece{
                 if(this.mortgaged === false){
                     drawIsometricImage(this.x,this.y,this.img,false,96*this.imgSide,0,96,48,this.offsetX,this.offsetY);
                 }else{
-                    drawIsometricImage(this.x,this.y,images.part.img[17],false,96*this.imgSide,0,96,48,this.offsetX,this.offsetY);
+                    drawIsometricImage(this.x,this.y,images.part.sprites[17],false,96*this.imgSide,0,96,48,this.offsetX,this.offsetY);
                 }
                 if(this.owner !== undefined){
                     if(this.side === 2){
-                        drawIsometricImage(this.x-10,this.y,images.playerOverlay.img[this.owner.colorIndex],false,96*this.imgSide,0,96,48,this.offsetX,this.offsetY);
+                        drawIsometricImage(this.x-10,this.y,images.playerOverlay.sprites[this.owner.colorIndex],false,96*this.imgSide,0,96,48,this.offsetX,this.offsetY);
                     }else{
-                        drawIsometricImage(this.x,this.y,images.playerOverlay.img[this.owner.colorIndex],false,96*this.imgSide,0,96,48,this.offsetX,this.offsetY);
+                        drawIsometricImage(this.x,this.y,images.playerOverlay.sprites[this.owner.colorIndex],false,96*this.imgSide,0,96,48,this.offsetX,this.offsetY);
                     }
                 }
             }else{
@@ -2515,30 +2517,30 @@ class BoardPiece{
             if(this.level < 5 && this.piece.housePrice !== undefined){
                 for(let i = 0; i < this.level; i++){
                     if(this.imgSide === 0){
-                        drawIsometricImage(this.x+13*drawScale + i*8*drawScale,this.y-31*drawScale,images.house.img[0],false,0,0,24,24,this.offsetX,this.offsetY);
+                        drawIsometricImage(this.x+13*drawScale + i*8*drawScale,this.y-31*drawScale,images.house.sprites[0],false,0,0,24,24,this.offsetX,this.offsetY);
                     }
                     if(this.imgSide === 1){
-                        drawIsometricImage(this.x+13*drawScale + i*8*drawScale,this.y+15*drawScale,images.house.img[0],false,0,0,24,24,this.offsetX,this.offsetY);
+                        drawIsometricImage(this.x+13*drawScale + i*8*drawScale,this.y+15*drawScale,images.house.sprites[0],false,0,0,24,24,this.offsetX,this.offsetY);
                     }
                     if(this.imgSide === 2){
-                        drawIsometricImage(this.x+5*drawScale ,this.y-21*drawScale+ i*8*drawScale,images.house.img[0],false,24,0,24,24,this.offsetX,this.offsetY);
+                        drawIsometricImage(this.x+5*drawScale ,this.y-21*drawScale+ i*8*drawScale,images.house.sprites[0],false,24,0,24,24,this.offsetX,this.offsetY);
                     }
                     if(this.imgSide === 3){
-                        drawIsometricImage(this.x+50*drawScale ,this.y-21*drawScale+ i*8*drawScale,images.house.img[0],false,24,0,24,24,this.offsetX,this.offsetY);
+                        drawIsometricImage(this.x+50*drawScale ,this.y-21*drawScale+ i*8*drawScale,images.house.sprites[0],false,24,0,24,24,this.offsetX,this.offsetY);
                     }
                 }
             }else if(this.piece.housePrice !== undefined){
                 if(this.imgSide === 0){
-                    drawIsometricImage(this.x+28*drawScale,this.y-31*drawScale,images.house.img[1],false,0,0,24,24,this.offsetX,this.offsetY);
+                    drawIsometricImage(this.x+28*drawScale,this.y-31*drawScale,images.house.sprites[1],false,0,0,24,24,this.offsetX,this.offsetY);
                 }
                 if(this.imgSide === 1){
-                    drawIsometricImage(this.x+28*drawScale,this.y+15*drawScale,images.house.img[1],false,0,0,24,24,this.offsetX,this.offsetY);
+                    drawIsometricImage(this.x+28*drawScale,this.y+15*drawScale,images.house.sprites[1],false,0,0,24,24,this.offsetX,this.offsetY);
                 }
                 if(this.imgSide === 2){
-                    drawIsometricImage(this.x+5*drawScale ,this.y-8*drawScale,images.house.img[1],false,24,0,24,24,this.offsetX,this.offsetY);
+                    drawIsometricImage(this.x+5*drawScale ,this.y-8*drawScale,images.house.sprites[1],false,24,0,24,24,this.offsetX,this.offsetY);
                 }
                 if(this.imgSide === 3){
-                    drawIsometricImage(this.x+50*drawScale ,this.y-8*drawScale,images.house.img[1],false,24,0,24,24,this.offsetX,this.offsetY);
+                    drawIsometricImage(this.x+50*drawScale ,this.y-8*drawScale,images.house.sprites[1],false,24,0,24,24,this.offsetX,this.offsetY);
                 }
             }
         }
