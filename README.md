@@ -13,6 +13,7 @@
 
 ## Config
 * För att ändra inställningar i online-versionen så ska du ändra i server/config.json filen. Ändra inte i några andra filer, då detta har en stor risk att förstöra spelet.
+
 ### Filstruktur
 ```
 {

@@ -62,10 +62,16 @@ class Player {
         this.isReady = false;
     }
 
+    /**
+     * @returns {Tile[]}
+     */
     getOwnedPlaces() {
         return TileManager.getTiles().filter(x => x.owner == this, this);
     }
 
+    /**
+     * @param {number} steps 
+     */
     teleportTo(steps) {
         this.steps = steps;
         api.teleportTo(this.steps, this.colorIndex);
@@ -73,5 +79,6 @@ class Player {
 }
 
 module.exports = {
-    PlayerManager
+    PlayerManager,
+    Player
 }

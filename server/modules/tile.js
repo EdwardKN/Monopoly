@@ -55,5 +55,6 @@ class TileManager {
 }
 
 module.exports = {
-    TileManager
+    TileManager,
+    Tile
 }
