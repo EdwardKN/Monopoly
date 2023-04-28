@@ -1,4 +1,5 @@
 var api = require('./api');
+const { TileManager } = require('./tile');
 
 class PlayerManager {
     static players = [];
@@ -51,9 +52,6 @@ class Player {
         // Whether or not this player is in jail
         this.inJail = false;
 
-        // All of the tiles owned by this player
-        this.ownedPlaces = [];
-
         // Whether or not this player has a negative amount of money, e.g. when they've gone bankrupt and lost the game.
         this.negative = false;
 
@@ -62,6 +60,10 @@ class Player {
 
         // Whether or not this player is ready to start the game
         this.isReady = false;
+    }
+
+    getOwnedPlaces() {
+        return TileManager.getTiles().filter(x => x.owner == this, this);
     }
 
     teleportTo(steps) {

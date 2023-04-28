@@ -4,9 +4,10 @@ var websocket = require('websocket');
 var { readFileSync } = require('node:fs');
 var { ClientRequest, ServerResponse } = require('node:http');
 
-var api = require("./api");
-var { PlayerManager } = require('./player');
-const { Logger } = require('./Logger');
+var api = require("./modules/api");
+var { PlayerManager } = require('./modules/player');
+var { TileManager } = require("./modules/tile");
+const { Logger } = require('./modules/logger');
 
 const CONFIG = JSON.parse(readFileSync("./config.json", "utf-8"));
 
@@ -21,6 +22,7 @@ if (network == undefined) {
 }
 
 Logger.setOutputLevel(CONFIG.LOGGING_LEVEL);
+TileManager.initBoard();
 
 var port = CONFIG.PORT;
 var server = https.createServer({ key: readFileSync("./certs/monopoly.key"), cert: readFileSync("./certs/monopoly.crt"), passphrase: readFileSync("./certs/passphrase", "utf-8") }, serverHandler)
@@ -99,29 +101,55 @@ function websocketHandler(request) {
                         player.money += 200;
                     }
 
+                    var tile = TileManager.getTile(event.tiles_moved);
+                    if (tile.owner != undefined && tile.owner != player) {
+                        var rent = tile.getRent();
+                        player.money -= rent;
+                        tile.owner.money += rent;
+                    }
+
                     Logger.log(`Player (${player.name}) moved to tile: ${event.tiles_moved}`, "Event::onMove", Logger.STANDARD);
                     Logger.log(JSON.stringify(player), "Event::onMove", Logger.VERBOSE);
+
                     player.teleportTo(event.tiles_moved);
                     break;
                 case "change_turn":
                     var newPlayer = PlayerManager.players[(PlayerManager.players.indexOf(player) + 1) % PlayerManager.getNumberOfPlayers()];
+
                     Logger.log(`Turn changed from player (${player.name}) to player (${newPlayer.name})`, "Event::onChangeTurn", Logger.STANDARD);
                     Logger.log(JSON.stringify(player), "Event::onChangeTurn", Logger.VERBOSE);
                     Logger.log(JSON.stringify(newPlayer), "Event::onChangeTurn", Logger.VERBOSE);
+
                     api.newTurn(newPlayer.colorIndex);
                     break;
                 case "tile_purchased":
-                    player.money -= event.price || event.tile.price;
+                    var tile = TileManager.getFromID(event.tile.card);
+
+                    if (player.money - (event.price || tile.piece.price) < 0) {
+                        Logger.log(`Player (${player.name}) tried to purchase (${tile.piece.name}), probably through hack, but doesn't have enough money. Has: ${player.money}. Needs: ${event.price || tile.price}`, "Event::onTilePurchase", Logger.STANDARD);
+                        Logger.log(JSON.stringify(player), "Event::onTilePurchase", Logger.VERBOSE);
+                        break;
+                    }
+
+                    player.money -= event.price || tile.piece.price;
+
+                    tile.owner = player;
+                    tile.level = 0;
+                    tile.mortaged = false;
+
                     Logger.log(`Player (${player.name}) purchased the tile: (${event.tile.name}). Remaining balance: ${player.money}kr`, "Event::onTilePurchase", Logger.STANDARD);
                     Logger.log(JSON.stringify(player), "Event::onTilePurchase", Logger.VERBOSE);
 
-                    // BoardPiece.piece.card is the image it should be, therefore this can be used as an id in the same manner that Player.colorIndex is used as an id.
                     api.tilePurchased(player.colorIndex, player.money, event.tile.card);
                     break;
                 case "property_changed":
                     // The cost of houses seems to be decided by which side the tile is on, first is 50, then 100, then 150 and lastly 200.
                     var price = Math.round((event.tile.side + 1) * 50 * (event.is_upgrade ? 1 : -1/2));
+                    var tile = TileManager.getFromID(event.tile.card);
+
                     player.money -= price;
+                    tile.level = event.new_level;
+
                     Logger.log(`Player (${player.name}) purchased property on the tile: (${event.tile.name}). Remaining balance: ${player.money}kr, level: ${event.new_level}`, "Event::onPropertyPurchase", Logger.STANDARD);
                     Logger.log(JSON.stringify(player), "Event::onPropertyPurchase", Logger.VERBOSE);
                     api.propertyChanged(player.colorIndex, event.tile.card, player.money, event.new_level);
@@ -141,6 +169,7 @@ function websocketHandler(request) {
                     api.auctionShow(event.tile.card);
                     break;
                 case "auction_bid":
+                    // Probable bug below, it uses the list of all the players in the game, not those who are in the auction
                     var newPlayer = PlayerManager.players[(PlayerManager.players.indexOf(player) + 1) % PlayerManager.getNumberOfPlayers()];
                     Logger.log(`Player (${player.name}) bid ${event.bid}kr on the tile (${event.tile.name})`, "Event::onAuctionBid", Logger.STANDARD);
                     Logger.log(JSON.stringify(player), "Event::onAuctionBid", Logger.VERBOSE);
@@ -149,7 +178,8 @@ function websocketHandler(request) {
                     break;
                 case "ready_up":
                     player.isReady = !player.isReady;
-                    Logger.log(`Player (${player.name}) is ready`, "Event::onReadyUp", Logger.STANDARD);
+
+                    Logger.log(`Player (${player.name}) is ${player.isReady ? "" : "not"} ready`, "Event::onReadyUp", Logger.STANDARD);
                     Logger.log(JSON.stringify(player), "Event::onReadyUp", Logger.VERBOSE);
 
                     if (PlayerManager.getNumberOfPlayers() >= 2 && PlayerManager.players.every(x => x.isReady)) {
@@ -161,6 +191,8 @@ function websocketHandler(request) {
                     break;
                 case "tile_mortgaged":
                     player.money += event.tile.price / 2;
+                    TileManager.getFromID(event.tile.card).mortaged = true;
+
                     Logger.log(`Player (${player.name}) mortgaged the tile (${event.tile.name}). Balance ${player.money}kr`, "Event::onTileMortgaged", Logger.STANDARD);
                     Logger.log(JSON.stringify(player), "Event::onTileMortgaged", Logger.VERBOSE);
 
@@ -195,30 +227,48 @@ function websocketHandler(request) {
                         var p2 = PlayerManager.players.find(p => p.colorIndex == event.target_player);
                         p2.money -= event.contents.p2.money;
                         p2.money += event.contents.p1.money;
+
+                        event.contents.p1.tiles.forEach(t => {
+                            var tile = TileManager.getFromID(t.card);
+                            tile.owner = p2;
+                        });
+
+                        event.contents.p2.tiles.forEach(t => {
+                            var tile = TileManager.getFromID(t.card);
+                            tile.owner = p1;
+                        });
                     }
+
                     Logger.log(JSON.stringify(player), "Event::onTradeConcluded", Logger.VERBOSE);
                     Logger.log(JSON.stringify(PlayerManager.players.find(x => x.colorIndex == event.target_player)), "Event::onTradeConcluded", Logger.VERBOSE);
+                    Logger.log(JSON.stringify(event.contents), "Event::onTradeConcluded", Logger.VERBOSE);
+
                     api.tradeConcluded(player.colorIndex, event.target_player, event.successful, event.contents);
                     break;
                 case "exited_jail":
-                    Logger.log(`Player (${player.name}) exited jail`, "Event::onJailExit", Logger.STANDARD);
                     if (event.type == "MONEY") {
                         player.money -= 50;
                     }
                     
+                    Logger.log(`Player (${player.name}) exited jail`, "Event::onJailExit", Logger.STANDARD);
                     Logger.log(JSON.stringify(player), "Event::onJailExit", Logger.VERBOSE);
+
                     api.exitedJail(player.colorIndex, event.type);
                     break;
                 case "tile_sold":
+                    var tile = TileManager.getFromID(event.tile.card);
+
+                    player.money += event.tile.price / 2;
+                    tile.owner = undefined;
+
                     Logger.log(`Player (${player.name}) sold the tile: (${event.tile.name})`, "Event::onTileSold", Logger.STANDARD);
                     Logger.log(JSON.stringify(player), "Event::onTileSold", Logger.VERBOSE);
                     Logger.log(JSON.stringify(event.tile), "Event::onTileSold", Logger.VERBOSE);
 
-                    player.money += event.tile.price / 2;
                     api.tileSold(player.colorIndex, event.tile.card);
                     break;
                 default:
-                    console.log(event);
+                    Logger.log(JSON.stringify(event), "No Handler", Logger.VERBOSE);
                     Logger.log(`Event (${event.event_type}) doesn't have any handler`, "No Handler", Logger.VERBOSE);
 
             }

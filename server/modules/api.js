@@ -1,4 +1,4 @@
-const { Logger } = require("./Logger");
+const { Logger } = require("./logger");
 
 // WebsocketServer, used to broadcast messages to all
 var websocket = undefined;
