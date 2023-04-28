@@ -1795,7 +1795,8 @@ class PlayerBorder{
         this.moneyTime = 0;
 
         let self = this;
-        
+        let textsize = measureText({font:"Arcade",text:this.player.name})
+
         
         this.button = new Button(true,this.x,this.y,images.playerOverlay.img[8],function(){            
             players.forEach(e =>{if(e.playerBorder != self){e.playerBorder.button.selected = false;e.playerBorder.createTradebutton.visible = false;}})
@@ -1947,7 +1948,6 @@ class PlayerBorder{
             this.button.y = this.y
             this.button.x = this.x
             
-
             
 
             this.button.visible = true;
@@ -1960,10 +1960,11 @@ class PlayerBorder{
             }
             if(this.button.mirror === false){
                 drawRotatedImage(this.x*drawScale+466 + 694,this.y*drawScale+5 - 400,48,96,images.player.img[this.player.colorIndex],0,false,0,0,24,48,false)
-                c.font = (50 - this.player.name.length*2.3)*scale+"px Arcade";
+                let fontsize = (1/textsize.width)*25000 > 50 ? 50 : (1/textsize.width)*25000
+                c.font = fontsize*scale + "px Arcade";
                 c.fillStyle ="black"
                 c.textAlign = "left"
-                c.fillText(this.player.name,this.x*drawScale*scale+750*scale,this.y*drawScale*scale-335*scale)
+                c.fillText(this.player.name,this.x*drawScale*scale+750*scale,this.y*drawScale*scale-335*scale,200*scale)
                 c.textAlign = "right"
                 c.font = (50)*scale+"px Arcade";
                 if(this.moneyTime <= 0){
@@ -1971,7 +1972,9 @@ class PlayerBorder{
                 }
             }else{
                 drawRotatedImage(this.x*drawScale +720,this.y*drawScale -396,48,96,images.player.img[this.player.colorIndex],0,false,0,0,24,48,false)
-                c.font = (50 - this.player.name.length*2.3)*scale+"px Arcade";
+                let fontsize = (1/textsize.width)*25000 > 50 ? 50 : (1/textsize.width)*25000
+                c.font = fontsize*scale + "px Arcade";
+
                 c.fillStyle ="black"
                 c.textAlign = "left"
                 c.fillText(this.player.name,this.x*scale+420*scale,this.y*drawScale*scale-335*scale)
@@ -3227,4 +3230,45 @@ function getCookie(cname) {
     };
     return -1;
 }
+const measureText = (() => {
+    var data, w, size =  120; // for higher accuracy increase this size in pixels.
+    const isColumnEmpty = x => {
+       var idx = x, h = size * 2;
+       while (h--) {
+           if (data[idx]) { return false }
+           idx += can.width;
+       }
+       return true;
+    }
+    const can = document.createElement("canvas");
+    const ctx = can.getContext("2d");
+    return ({text, font, baseSize = size}) => {   
+        size = baseSize;
+        can.height = size * 2;
+        font = size + "px "+ font;          
+        if (text.trim() === "") { return }
+        ctx.font = font;
+        can.width = (w = ctx.measureText(text).width) + 8;
+        ctx.font = font;
+        ctx.textBaseline = "middle";
+        ctx.textAlign = "left";
+        ctx.fillText(text, 0, size);
+        data = new Uint32Array(ctx.getImageData(0, 0, can.width, can.height).data.buffer);
+        var left, right;
+        var lIdx = 0, rIdx = can.width - 1;
+        while(lIdx < rIdx) {
+            if (left === undefined && !isColumnEmpty(lIdx)) { left = lIdx }
+            if (right === undefined && !isColumnEmpty(rIdx)) { right = rIdx }
+            if (right !== undefined && left !== undefined) { break }
+            lIdx += 1;
+            rIdx -= 1;
+        }
+        data = undefined; // release RAM held
+        can.width = 1; // release RAM held
+        return right - left >= 1 ? {
+            left, right, rightOffset: w - right,  width: right - left, 
+            measuredWidth: w, font, baseSize} : undefined;
+    }   
+})();
+
 init();
