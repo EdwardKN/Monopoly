@@ -20,13 +20,13 @@
     "ALLOWED_DOMAINS": Lista med domäner som man kan spela ifrån,
     "LOGGING_LEVEL": Antingen "NONE", "STANDARD" eller "VERBOSE" beroende på hur mycket information du vill ha i konsolen,
     "GAME_SETTINGS": {
-        "freeParking":      true/false | Ifall fri parkering ska hålla i pengar,
-        "allFreeparking":   true/false | Ifall fri parkering ska hålla i alla pengar,
-        "doubleincome":     true/false | Man behöver betala dubbelt så mycket i ränta när man landar på en annan persons ruta,
-        "auctions":         true/false | Auktioner är tillåtna,
+        "freeParking":      true/false | Ifall fri parkering ska hålla i skattepengar,
+        "allFreeparking":   true/false | Ifall fri parkering ska hålla i alla bankpengar,
+        "doubleincome":     true/false | Man behöver betala dubbelt så mycket i ränta när man landar på en annan persons ruta och den äger alla av den färggruppen,
+        "auctions":         true/false | Man ska kunna auktionera ut rutor om man inte vill köpa den,
         "prisonmoney":      true/false | Man kan betala / få in pengar i fängelse,
         "mortgage":         true/false | Man kan inteckna rutor,
-        "even":             true/false | När man bygger byggnader på rutor måste man hålla levlarna på alla byggnader lika,
+        "even":             true/false | När man bygger byggnader på rutor måste man hålla levlarna på alla byggnader lika (±1),
         "startmoney":           Siffra | Hur mycket pengar man startar med,
         "roundsBeforePurchase": Siffra | Antal varv innan man får köpa rutor
     }
