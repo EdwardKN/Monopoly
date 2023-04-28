@@ -43,17 +43,11 @@ class Player {
         this.steps = 0;
 
         // Money
-        this.money = 1400;
+        this.money = 0;
 
         // Color of the piece, also a sort of id
         this.colorIndex = index;
         
-        // Used for when the player rolls doubles
-        this.rolls = false;
-
-        // The number of times the player has rolled doubles in a row
-        this.numberOfRolls = false;
-
         // Whether or not this player is in jail
         this.inJail = false;
 

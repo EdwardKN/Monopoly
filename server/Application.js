@@ -77,6 +77,7 @@ function websocketHandler(request) {
     // Send message with info about the game
     var playerInfo = PlayerManager.playerJoined(playername);
     var player = PlayerManager.players[playerInfo.length - 1];
+    player.money = CONFIG.GAME_SETTINGS.startmoney;
     connection.sendUTF(JSON.stringify({
         event_type: "join_info",
         data: {
