@@ -925,6 +925,7 @@ async function showOnlineLobby() {
                 board.auction.turn = board.auction.playerlist.findIndex(x => x.colorIndex == data.nextPlayer);
             }
             board.auction.time = 472;
+            board.auction.startTime = performance.now();
 
 
             if (data.player == Api.currentPlayer) {
