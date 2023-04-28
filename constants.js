@@ -18,8 +18,10 @@ if(disableAlert){
 
 
 var f = new FontFace('Arcade', 'url(./fonts/SFPixelate.ttf)');
+var fb = new FontFace('ArcadeBold', 'url(./fonts/SFPixelate-Bold.ttf)');
 
 f.load().then(function(font){document.fonts.add(font);});
+fb.load().then(function(font){document.fonts.add(font);});
 
 var buttons = [];
 
