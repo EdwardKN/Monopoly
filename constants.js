@@ -18,8 +18,10 @@ if(disableAlert){
 
 
 var f = new FontFace('Arcade', 'url(./fonts/SFPixelate.ttf)');
+var fb = new FontFace('ArcadeBold', 'url(./fonts/SFPixelate-Bold.ttf)');
 
 f.load().then(function(font){document.fonts.add(font);});
+fb.load().then(function(font){document.fonts.add(font);});
 
 var buttons = [];
 
@@ -62,10 +64,23 @@ if(fastSpeed === true){
         
     }
 }
+var spritesheet;
+var spritesheetImage
+
+async function loadSpriteSheet(){
+    var response = await fetch("./images/texture.json")
+    spritesheet = await response.json();
+    spritesheetImage = new Image();
+    spritesheetImage.src = "./images/texture.png";
+}
+
 
 
 
 var images = {
+    spritesheet:{
+        src:["./images/spritesheet"]
+    },
     part:{
         src:["./images/plates/brown","./images/plates/light_blue",
         "./images/plates/pink","./images/plates/orange",
@@ -73,7 +88,8 @@ var images = {
         "./images/plates/green","./images/plates/blue",
         "./images/plates/chance","./images/plates/chance2","./images/plates/chance3",
         "./images/plates/train", "./images/plates/water", "./images/plates/electric",
-        "./images/plates/supertax","./images/plates/chest","./images/plates/incometax"
+        "./images/plates/supertax","./images/plates/chest","./images/plates/incometax",
+        "./images/plates/mortgaged"
         ]
     },
     card:{
@@ -81,8 +97,8 @@ var images = {
             ,"./images/Cards/pinkcard1","./images/Cards/pinkcard2","./images/Cards/pinkcard3","./images/Cards/orangecard1","./images/Cards/orangecard2","./images/Cards/orangecard3"
             ,"./images/Cards/redcard1","./images/Cards/redcard2","./images/Cards/redcard3","./images/Cards/yellowcard1","./images/Cards/yellowcard2","./images/Cards/yellowcard3"
             ,"./images/Cards/greencard1","./images/Cards/greencard2","./images/Cards/greencard3","./images/Cards/bluecard1","./images/Cards/bluecard2"
-            ,"./images/cards/electricitycard","./images/cards/waterworkscard"
-            ,"./images/cards/eaststation","./images/cards/northstation","./images/cards/centralstation","./images/cards/southstation"
+            ,"./images/Cards/electricitycard","./images/Cards/waterworkscard"
+            ,"./images/Cards/eaststation","./images/Cards/northstation","./images/Cards/centralstation","./images/Cards/southstation"
         ]
     },
     corner:{
@@ -142,8 +158,8 @@ var images = {
         src:["./images/Cards/mortgageoverlay"]
     },
     colorButtons:{
-        src:["./images/playercolorbuttons/player","./images/playercolorbuttons/player2","./images/playercolorbuttons/player3","./images/playercolorbuttons/player4",
-        "./images/playercolorbuttons/player5","./images/playercolorbuttons/player6","./images/playercolorbuttons/player7","./images/playercolorbuttons/player8","./images/playercolorbuttons/unselected"
+        src:["./images/playercolorbuttons/playercolorbutton","./images/playercolorbuttons/playercolorbutton2","./images/playercolorbuttons/playercolorbutton3","./images/playercolorbuttons/playercolorbutton4",
+        "./images/playercolorbuttons/playercolorbutton5","./images/playercolorbuttons/playercolorbutton6","./images/playercolorbuttons/playercolorbutton7","./images/playercolorbuttons/playercolorbutton8","./images/playercolorbuttons/unselected"
         ]
     }
 };
@@ -163,28 +179,23 @@ var sounds = {
     },
     movement:{
         type:"multiple",
-        src:"./sounds/movement/move-",
-        amount:46
+        src:"./sounds/movement.mp3",
     },
     cash:{
         type:"multiple",
-        src:"./sounds/cash/cash-",
-        amount:5
+        src:"./sounds/cash.mp3",
     },
     music:{
         type:"multiple",
-        src:"./sounds/music/music-",
-        amount:8
+        src:"./sounds/music.mp3",
     },
     key:{
         type:"multiple",
-        src:"./sounds/keyboard/key-",
-        amount:9
+        src:"./sounds/keyboard.mp3",
     },
     clicks:{
         type:"multiple",
-        src:"./sounds/clicks/click-",
-        amount:11
+        src:"./sounds/slider.mp3",
     }
 }
 
