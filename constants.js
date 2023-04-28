@@ -177,28 +177,23 @@ var sounds = {
     },
     movement:{
         type:"multiple",
-        src:"./sounds/movement/move-",
-        amount:46
+        src:"./sounds/movement.mp3",
     },
     cash:{
         type:"multiple",
-        src:"./sounds/cash/cash-",
-        amount:5
+        src:"./sounds/cash.mp3",
     },
     music:{
         type:"multiple",
-        src:"./sounds/music/music-",
-        amount:8
+        src:"./sounds/music.mp3",
     },
     key:{
         type:"multiple",
-        src:"./sounds/keyboard/key-",
-        amount:9
+        src:"./sounds/keyboard.mp3",
     },
     clicks:{
         type:"multiple",
-        src:"./sounds/clicks/click-",
-        amount:11
+        src:"./sounds/slider.mp3",
     }
 }
 

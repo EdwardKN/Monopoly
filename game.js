@@ -78,6 +78,11 @@ window.addEventListener("mouseup",function(e){
     })
 
 })
+function split(str, index) {
+    const result = [str.slice(0, index), str.slice(index)];
+  
+    return result;
+  }
 
 async function preRender(imageObject){
     await loadSpriteSheet();
@@ -90,20 +95,20 @@ async function preRender(imageObject){
         }
     });
 }
-function loadSounds(soundObject){
-    Object.entries(soundObject).forEach(sound => {
-        if(sound[1].type === "single"){
-            sound[1].sound = new Audio(sound[1].src)
-        }
+async function loadSounds(soundObject){
+    Object.entries(soundObject).forEach(async function(sound) {
+        sound[1].sound = new Audio(sound[1].src)
         if(sound[1].type === "multiple"){
-            sound[1].sounds = []
-            for(let i = 1; i<sound[1].amount+1; i++){
-                if(i < 10){
-                    sound[1].sounds.push(new Audio(sound[1].src + "0" + i + ".mp3"))
-                }else{
-                    sound[1].sounds.push(new Audio(sound[1].src + i + ".mp3"))
-                }
-            }
+            sound[1].labels = []
+            let tmp = await fetch("."+sound[1].src.split(".")[0]+sound[1].src.split(".")[1] + ".txt")
+            let tmp2 = (await tmp.text()).split("\n")
+            let tmp3 = (tmp2.map(e => e.replaceAll("\t","")))
+            let tmp4 = (tmp3.map(e => e.replaceAll(" ","")))
+            let tmp5 = (tmp4.map(e => e.replaceAll("\r","")))
+            let tmp6 = (tmp5.map(e => split(e,8)[0]))
+            let tmp7 = (tmp6.filter(e => e != ""))
+            let tmp8 = (tmp7.map(e => JSON.parse(e)))
+            sound[1].labels = tmp8
         }
     });
 }
@@ -198,15 +203,23 @@ function playSound(sound,volume,repeat){
         myClonedAudio.volume = volume;
         myClonedAudio.play();
     }else{
-        let random = Math.floor(Math.random() * sound.sounds.length)
-        let myClonedAudio = sound.sounds[random].cloneNode();
+        let random = Math.floor(Math.random() * sound.labels.length)
+        let myClonedAudio = sound.sound.cloneNode();
         myClonedAudio.volume = volume;
+        myClonedAudio.currentTime = sound.labels[random]
         myClonedAudio.play();
+        let start = sound.labels[random];
+        let end = sound.labels[random+1] != undefined ? sound.labels[random+1] : sound.sound.duration
+
+        setTimeout(function(){
+            myClonedAudio.pause();
+        },(end - start)*1000)
+
         if(repeat && musicOn){
             musicPlaying = myClonedAudio;
             musictimer = setTimeout(function(){
                 playSound(sound,volume,true)
-            },sound.sounds[random].duration*1000)
+            },(end - start)*1000)
         }
     }
 
