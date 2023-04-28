@@ -696,7 +696,7 @@ async function init(){
         menus[0].musicButton.visible = false;
         menus[0].current = false;
         let playerlist = []
-        let playerAmount = 8;
+        let playerAmount = 2;
         let botAmount = 0;
         let useableColors = [0,1,2,3,4,5,6,7]
         for(let i = 0; i < (playerAmount+botAmount); i++){
@@ -1655,12 +1655,12 @@ class Trade{
         };
 
         let self = this;
-        this.closeButton = new Button(false,364,289,images.buttons.sprites[7],function(){if (Api.online) { Api.tradeConcluded(self.p2.colorIndex, false); } self.closeButton.visible = false;board.trade = undefined;board.getToMainMenuButton.visible = true; players.forEach(e => {e.playerBorder.button.disabled = false})},18,18,false,
-        false,false,false,false,{x:466,y:170,w:1025,h:840})
+        this.closeButton = new Button(false,364 + 128 +71,289-50,images.buttons.sprites[7],function(){if (Api.online) { Api.tradeConcluded(self.p2.colorIndex, false); } self.closeButton.visible = false;board.trade = undefined;board.getToMainMenuButton.visible = true; players.forEach(e => {e.playerBorder.button.disabled = false})},18,18,false,
+        false,false,false,false,{x:466-256,y:170,w:1025+512,h:840})
         this.closeButton.visible = true;
 
-        this.p1Slider = new Slider(500,300,400,60,0,this.p1.money,10,true,30,"kr","")
-        this.p1ConfirmButton = new Button(true,-70,650,images.trade.sprites[1],function(){
+        this.p1Slider = new Slider(300-142,220,742,60,0,this.p1.money,10,true,30,"kr","")
+        this.p1ConfirmButton = new Button(true,-70 -64-35,680,images.trade.sprites[1],function(){
             if (Api.online && self.p1.colorIndex == Api.currentPlayer) {
                 if (self.p2ConfirmButton.selected) {
                     Api.tradeConcluded(self.p2.colorIndex, true, self.contents);
@@ -1677,8 +1677,8 @@ class Trade{
             this.p1Slider.disabled = true;
         }
 
-        this.p2ConfirmButton = new Button(true,180,650,images.trade.sprites[1],function(){},150,50)
-        this.p2Slider = new Slider(1050,300,400,60,0,this.p2.money,10,true,30,"kr","")
+        this.p2ConfirmButton = new Button(true,180 +64+35,680,images.trade.sprites[1],function(){},150,50)
+        this.p2Slider = new Slider(1050,220,742,60,0,this.p2.money,10,true,30,"kr","")
         if(this.p2.bot === undefined){
             this.p2ConfirmButton.visible = true;
         }
@@ -1693,9 +1693,19 @@ class Trade{
         this.p1.ownedPlaces.forEach(function(e,i){
             let tmp = 0;
             if(i%2 === 1){
-                tmp = 107
+                tmp = 190
             }
-            let but = (new Button(true,-300 + tmp + 198,280 + 18*Math.floor(i/2) + 110,images.trade.sprites[2],function(){
+            let textColor = e.piece.color;
+            let text = e.piece.name + " " + e.piece.price + "kr"
+            let fontSize = 21
+            if(e.mortgaged){
+                textColor = "black"
+                text = e.piece.name + "(Intecknad)"
+                if(e.piece.name === "Vattenledningsverket"){
+                    fontSize = 18;
+                }
+            }
+            let but = (new Button(true,-360 + tmp + 198 - 128+10,240 + 22*Math.floor(i/2) + 110,images.trade.sprites[2],function(){
                 if (Api.online) {
                     if (this.selected) {
                         self.contents.p1.tiles.push(e.piece);
@@ -1704,7 +1714,7 @@ class Trade{
                     }
                     Api.tradeContentUpdated(self.p2.colorIndex, self.contents.p1);
                 }
-            },106,17,false,false,false,false,false,false,e.piece.name + " " + e.piece.price + "kr",15,e.piece.color))
+            },186,21,false,false,false,false,false,false,text,fontSize,textColor,"ArcadeBold"))
 
             if(self.p1.bot !== undefined){
                 but.disabled = true;
@@ -1720,9 +1730,19 @@ class Trade{
         this.p2.ownedPlaces.forEach(function(e,i){
             let tmp = 0;
             if(i%2 === 1){
-                tmp = 107
+                tmp = 190
             }
-            let but = (new Button(true,-30 + tmp + 200,280 + 18*Math.floor(i/2) + 110,images.trade.sprites[2],function(){},106,17,false,false,false,false,false,false,e.piece.name + " " + e.piece.price + "kr",15,e.piece.color))
+            let textColor = e.piece.color;
+            let text = e.piece.name + " " + e.piece.price + "kr"
+            let fontSize = 21;
+            if(e.mortgaged){
+                textColor = "black"
+                text = e.piece.name + "(Intecknad)"
+                if(e.piece.name === "Vattenledningsverket"){
+                    fontSize = 18;
+                }
+            }
+            let but = (new Button(true,-30 + tmp + 200+10,240 + 22*Math.floor(i/2) + 110,images.trade.sprites[2],function(){},186,21,false,false,false,false,false,false,text,fontSize,textColor,"ArcadeBold"))
 
             if(self.p2.bot !== undefined || (Api.online && self.p2.colorIndex != Api.currentPlayer)){
                 but.disabled = true;
@@ -1736,7 +1756,7 @@ class Trade{
         });
 
         this.update = function(){
-            drawIsometricImage(0,0,images.trade.sprites[0],false,0,0,images.trade.sprites[0].frame.w,images.trade.sprites[0].frame.h,-192,images.trade.sprites[0].frame.h/50,1)
+            drawIsometricImage(0,0,images.trade.sprites[0],false,0,0,images.trade.sprites[0].frame.w,images.trade.sprites[0].frame.h,-320-71,images.trade.sprites[0].frame.h/50 - 50,1)
             this.closeButton.draw();
             this.p1ConfirmButton.draw();
             this.p2ConfirmButton.draw();
@@ -1751,9 +1771,9 @@ class Trade{
             c.font = 50*scale+"px Arcade";
             c.fillStyle = "black"
             c.textAlign = "right"
-            c.fillText(this.p1.name,880*scale,280*scale)
+            c.fillText(this.p2.money + "kr" + "   " +this.p1.name,880*scale,180*scale)
             c.textAlign = "left"
-            c.fillText(this.p2.name,1070*scale,280*scale)
+            c.fillText(this.p2.name+ "   " +this.p2.money + "kr",1070*scale,180*scale)
             this.p1PropertyButtons.forEach(e => {e.visible=true;e.draw()});
             this.p2PropertyButtons.forEach(e => {e.visible=true;e.draw()});
 
@@ -1859,13 +1879,13 @@ class PlayerBorder{
                 c.globalAlpha = this.moneyTime;
                 c.textAlign = "right"
                 c.font = (50)*scale+"px Arcade";
-                c.fillText(Math.abs(this.latestTrancaction) + "kr",this.x*drawScale*scale+1150*scale,this.y*drawScale*scale-335*scale - (-this.moneyTime+1)*20*scale)
+                c.fillText(Math.abs(Math.floor(this.latestTrancaction)) + "kr",this.x*drawScale*scale+1150*scale,this.y*drawScale*scale-335*scale - (-this.moneyTime+1)*20*scale)
                 c.globalAlpha = 1;
             }else{
                 c.globalAlpha = this.moneyTime;
                 c.textAlign = "right"
                 c.font = (50)*scale+"px Arcade";
-                c.fillText(Math.abs(this.latestTrancaction) + "kr",this.x*scale+850*scale,this.y*drawScale*scale-335*scale- (-this.moneyTime+1)*20*scale)
+                c.fillText(Math.abs(Math.floor(this.latestTrancaction)) + "kr",this.x*scale+850*scale,this.y*drawScale*scale-335*scale- (-this.moneyTime+1)*20*scale)
                 c.globalAlpha = 1;
             }
         }
@@ -2009,16 +2029,16 @@ class PlayerBorder{
                     this.button.invertedHitbox.x = this.x*drawScale +715
                     this.button.invertedHitbox.y = this.y*drawScale - 400 + 54*drawScale;
                     this.button.invertedHitbox.w = this.button.w*drawScale
-                    this.button.invertedHitbox.h = this.player.ownedPlaces.length*27*drawScale + 27*3*drawScale;
-                    this.createTradebutton.y = this.y + 80 + 27*this.player.ownedPlaces.length;
+                    this.button.invertedHitbox.h = this.player.ownedPlaces.length*15*drawScale + 15*4*drawScale;
+                    this.createTradebutton.y = this.y + 70 + 15*this.player.ownedPlaces.length;
                     drawRotatedImageFromSpriteSheet(this.x*drawScale+715,this.y*drawScale + 54*drawScale -400,260*drawScale,27*drawScale,images.playerOverlay.sprites[11],0,this.button.mirror,0,0,260,27,false)
                     for(let i = 0; i < this.player.ownedPlaces.length; i++){
-                        drawRotatedImageFromSpriteSheet(this.x*drawScale+715,this.y*drawScale + 67 *drawScale + 27*drawScale*i + 27 - 400,260*drawScale,27*drawScale,images.playerOverlay.sprites[10],0,this.button.mirror,0,0,260,27,false)
-                        c.font = 30*scale+"px Arcade";
+                        drawRotatedImageFromSpriteSheet(this.x*drawScale+715,this.y*drawScale + 67 *drawScale + 15*drawScale*i + 27 - 400,260*drawScale,27*drawScale,images.playerOverlay.sprites[10],0,this.button.mirror,0,0,260,27,false)
+                        c.font = 25*scale+"px Arcade";
                         c.fillStyle ="black"
                         c.textAlign = "left"
                         if(this.player.ownedPlaces[i].piece.type !== "station" && this.player.ownedPlaces[i].piece.type !== "utility"){
-                            c.fillText(this.player.ownedPlaces[i].piece.name + "  " + this.player.ownedPlaces[i].piece.rent[this.player.ownedPlaces[i].level] + "kr",this.x*scale+400*scale+ mirrorAdder*drawScale*scale,this.y*drawScale*scale + 80*drawScale*scale + 27*drawScale*i*scale - 354*scale)
+                            c.fillText(this.player.ownedPlaces[i].piece.name + "  " + this.player.ownedPlaces[i].piece.rent[this.player.ownedPlaces[i].level] + "kr",this.x*scale+400*scale+ mirrorAdder*drawScale*scale,this.y*drawScale*scale + 70*drawScale*scale + 15*drawScale*i*scale - 354*scale)
                         }else if(this.player.ownedPlaces[i].piece.type === "station"){
                             let tmp = -1;
                             this.player.ownedPlaces.forEach(e => {
@@ -2027,7 +2047,7 @@ class PlayerBorder{
                                 }
                             })
                             
-                            c.fillText(this.player.ownedPlaces[i].piece.name + "  " + 25 * Math.pow(2,tmp) + "kr",this.x*scale+400*scale+ mirrorAdder*drawScale*scale,this.y*drawScale*scale + 80*drawScale*scale + 27*drawScale*i*scale - 354*scale)
+                            c.fillText(this.player.ownedPlaces[i].piece.name + "  " + 25 * Math.pow(2,tmp) + "kr",this.x*scale+400*scale+ mirrorAdder*drawScale*scale,this.y*drawScale*scale + 70*drawScale*scale + 15*drawScale*i*scale - 354*scale)
                         }else{
                             let tmp = 0;
                             let multiply = 0;
@@ -2038,11 +2058,11 @@ class PlayerBorder{
                             })
                             if(tmp === 1){multiply = 4;}
                             if(tmp === 2){multiply = 10}
-                            c.fillText(this.player.ownedPlaces[i].piece.name + "  " + multiply + " x tärning kr",this.x*scale+400*scale+ mirrorAdder*drawScale*scale,this.y*drawScale*scale + 80*drawScale*scale + 27*drawScale*i*scale - 354*scale)
+                            c.fillText(this.player.ownedPlaces[i].piece.name + "  " + multiply + " x tärning kr",this.x*scale+400*scale+ mirrorAdder*drawScale*scale,this.y*drawScale*scale + 70*drawScale*scale + 15*drawScale*i*scale - 354*scale)
                         }
                     }
-                    drawRotatedImageFromSpriteSheet(this.x*drawScale +715,this.y*drawScale + 53*drawScale*1.5 +27*drawScale*this.player.ownedPlaces.length -400,260*drawScale ,27*drawScale,images.playerOverlay.sprites[10],0,this.button.mirror,0,0,260,27,false)
-                    drawRotatedImageFromSpriteSheet(this.x*drawScale +715,this.y*drawScale + 53*drawScale*1.5 +27*drawScale*(this.player.ownedPlaces.length+1) -400,260*drawScale ,27*drawScale,images.playerOverlay.sprites[9],0,this.button.mirror,0,0,260,27,false)
+                    drawRotatedImageFromSpriteSheet(this.x*drawScale +715,this.y*drawScale + 53*drawScale*1.5 +15*drawScale*this.player.ownedPlaces.length -400,260*drawScale ,20*drawScale,images.playerOverlay.sprites[10],0,this.button.mirror,0,0,260,27,false)
+                    drawRotatedImageFromSpriteSheet(this.x*drawScale +715,this.y*drawScale + 53*drawScale*1.5 +15*drawScale*(this.player.ownedPlaces.length+1) -400,260*drawScale ,20*drawScale,images.playerOverlay.sprites[9],0,this.button.mirror,0,0,260,27,false)
                     if (!Api.online) {
                         if(players[turn] !== this.player && board.currentCard === undefined && board.trade === undefined && players[turn].bot === undefined && players[turn].animationOffset === 0 && board.animateDices === false && board.showDices === false && this.player.bot === undefined){
                             this.createTradebutton.visible = true;
@@ -2267,7 +2287,7 @@ class Auction{
 }
 
 class Button{
-    constructor(select,x,y,img,onClick,w,h,showBorder,mirror,screencenter,disableselectTexture,disablesound,invertedHitbox,text,font,textcolor){
+    constructor(select,x,y,img,onClick,w,h,showBorder,mirror,screencenter,disableselectTexture,disablesound,invertedHitbox,text,font,textcolor,textFont){
         this.x = x;
         this.y = y;
         this.w = w;
@@ -2287,6 +2307,7 @@ class Button{
         this.textcolor = textcolor
         this.disableselectTexture = disableselectTexture;
         this.invertedHitbox = invertedHitbox;
+        this.textFont = textFont;
         if(textcolor == undefined){
             this.textcolor = "black"
         }    
@@ -2296,6 +2317,9 @@ class Button{
         if(screencenter === true){
             this.screencenter = true;
         }
+        if(textFont == undefined){
+            this.textcolor = "Arcade"
+        }    
 
         this.showBorder = showBorder;
         if(buttons.includes(this)){
@@ -2362,7 +2386,7 @@ class Button{
                     
                 }
                 if(this.text !== undefined){
-                    c.font = this.font*scale + "px Arcade";
+                    c.font = this.font*scale + "px " + this.textFont;
                     c.fillStyle = this.textcolor
                     c.textAlign = "center"
                     c.fillText(this.text,this.x*drawScale*scale + 715*scale + this.w*scale,this.y*drawScale*scale -400*scale + this.h*scale/2 + this.font*scale/2 + this.h*scale/2.5)
