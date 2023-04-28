@@ -1857,12 +1857,14 @@ class PlayerBorder{
 
             if(this.button.mirror === false){
                 c.globalAlpha = this.moneyTime;
-                c.textAlign = "left"
-                c.fillText(Math.abs(this.latestTrancaction) + "kr",this.x*drawScale*scale+1020*scale,this.y*drawScale*scale-335*scale - (-this.moneyTime+1)*20*scale)
+                c.textAlign = "right"
+                c.font = (50)*scale+"px Arcade";
+                c.fillText(Math.abs(this.latestTrancaction) + "kr",this.x*drawScale*scale+1150*scale,this.y*drawScale*scale-335*scale - (-this.moneyTime+1)*20*scale)
                 c.globalAlpha = 1;
             }else{
                 c.globalAlpha = this.moneyTime;
                 c.textAlign = "right"
+                c.font = (50)*scale+"px Arcade";
                 c.fillText(Math.abs(this.latestTrancaction) + "kr",this.x*scale+850*scale,this.y*drawScale*scale-335*scale- (-this.moneyTime+1)*20*scale)
                 c.globalAlpha = 1;
             }
