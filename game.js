@@ -3118,7 +3118,7 @@ class Player{
                 step = -step
             }
 
-            this.steps = step;
+            this.steps = step%40;
 
             var dicesum = this.steps - oldStep;
             if (this.steps < oldStep) dicesum += 40;
