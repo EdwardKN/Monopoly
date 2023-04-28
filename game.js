@@ -907,10 +907,7 @@ async function showOnlineLobby() {
         });
 
         document.body.addEventListener("auction_start_event", (evt) => {
-            board.auction.started = true;
-            board.auction.timer = setInterval(() => {
-                board.auction.time -= 1;
-            }, 10);
+            board.auction.startAuctionButton.onClick(false);
         })
 
         document.body.addEventListener("auction_bid_event", (evt) => {
@@ -2155,11 +2152,12 @@ class Auction{
         this.addMoneyButton100 = new Button(false,100,540,images.auction.sprites[3],function(){
             board.auction.addMoney(100);
         },54,54,false)
-        this.startAuctionButton = new Button(false,-85,540,images.auction.sprites[5],function(){
-            if (Api.online) {
+        this.startAuctionButton = new Button(false,-85,540,images.auction.sprites[5],function(sendToServer = true){
+            if (Api.online && sendToServer) {
                 Api.auctionStart(board.auction.card);
                 return;
             }
+
             board.auction.started = true;
             board.auction.duration = 10 * speeds.auctionSpeed;
             board.auction.startTime = performance.now();
