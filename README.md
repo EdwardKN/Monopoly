@@ -14,6 +14,7 @@
 ## Config
 * För att ändra inställningar i online-versionen så ska du ändra i server/config.json filen. Ändra inte i några andra filer, då detta har en stor risk att förstöra spelet.
 ### Filstruktur
+```
 {
     "PORT": Siffra mellan 1 och 65 000,
     "ALLOWED_DOMAINS": Lista med domäner som man kan spela ifrån,
@@ -30,3 +31,4 @@
         "roundsBeforePurchase": Siffra | Antal varv innan man får köpa rutor
     }
 }
+```
