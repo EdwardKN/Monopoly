@@ -1135,6 +1135,7 @@ class Board{
                 }
                 if(dice1 === dice2){
                     self.teleportTo(self.steps + dice1 + dice2);
+                    players[turn].rolls = false;
                 }
             })
             board.payJailButton.visible = false;
