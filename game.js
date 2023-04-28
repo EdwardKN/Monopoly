@@ -1964,7 +1964,7 @@ class PlayerBorder{
                 c.font = fontsize*scale + "px Arcade";
                 c.fillStyle ="black"
                 c.textAlign = "left"
-                c.fillText(this.player.name,this.x*drawScale*scale+750*scale,this.y*drawScale*scale-335*scale,200*scale)
+                c.fillText(this.player.name,this.x*drawScale*scale+750*scale,this.y*drawScale*scale-335*scale)
                 c.textAlign = "right"
                 c.font = (50)*scale+"px Arcade";
                 if(this.moneyTime <= 0){
