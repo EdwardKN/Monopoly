@@ -565,7 +565,7 @@ class MainMenu {
         this.current = true;
         let self = this;
 
-        this.localButton = new Button(false,-322,341,images.mainMenu.sprites[1],function(){
+        this.localButton = new Button(false,-322,381,images.mainMenu.sprites[1],function(){
             self.current = false;
             menus[1].current = true;
             self.localButton.visible = false;
