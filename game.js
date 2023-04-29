@@ -1398,6 +1398,7 @@ class Board{
             this.escapeConfirm.draw();
             this.musicButton.visible = true;
             this.fullScreenButton.visible = true;
+            this.fullScreenButton.selected = document.fullscreenElement != null;
             this.musicButton.draw();
             this.fullScreenButton.draw();
         }
