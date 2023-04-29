@@ -2051,24 +2051,24 @@
       }
     },
     {
-      "filename": "buttons/playerborder.png",
+      "filename": "corners/prison.png",
       "frame": {
         "x": 995,
         "y": 478,
-        "w": 500,
-        "h": 54
+        "w": 512,
+        "h": 64
       },
       "rotated": false,
       "trimmed": false,
       "spriteSourceSize": {
         "x": 0,
         "y": 0,
-        "w": 500,
-        "h": 54
+        "w": 512,
+        "h": 64
       },
       "sourceSize": {
-        "w": 500,
-        "h": 54
+        "w": 512,
+        "h": 64
       },
       "pivot": {
         "x": 0.5,
@@ -2076,24 +2076,24 @@
       }
     },
     {
-      "filename": "corners/prison.png",
+      "filename": "buttons/playerborder.png",
       "frame": {
         "x": 1,
-        "y": 503,
-        "w": 512,
-        "h": 64
+        "y": 518,
+        "w": 708,
+        "h": 54
       },
       "rotated": false,
       "trimmed": false,
       "spriteSourceSize": {
         "x": 0,
         "y": 0,
-        "w": 512,
-        "h": 64
+        "w": 708,
+        "h": 54
       },
       "sourceSize": {
-        "w": 512,
-        "h": 64
+        "w": 708,
+        "h": 54
       },
       "pivot": {
         "x": 0.5,
@@ -2103,8 +2103,8 @@
     {
       "filename": "buttons/back.png",
       "frame": {
-        "x": 515,
-        "y": 534,
+        "x": 711,
+        "y": 544,
         "w": 650,
         "h": 60
       },
@@ -2126,24 +2126,24 @@
       }
     },
     {
-      "filename": "buttons/start.png",
+      "filename": "menus/prisonmenu.png",
       "frame": {
-        "x": 1167,
-        "y": 534,
-        "w": 776,
-        "h": 80
+        "x": 1509,
+        "y": 524,
+        "w": 300,
+        "h": 90
       },
       "rotated": false,
       "trimmed": false,
       "spriteSourceSize": {
         "x": 0,
         "y": 0,
-        "w": 776,
-        "h": 80
+        "w": 300,
+        "h": 90
       },
       "sourceSize": {
-        "w": 776,
-        "h": 80
+        "w": 300,
+        "h": 90
       },
       "pivot": {
         "x": 0.5,
@@ -2176,24 +2176,24 @@
       }
     },
     {
-      "filename": "menus/prisonmenu.png",
+      "filename": "buttons/start.png",
       "frame": {
         "x": 1,
         "y": 658,
-        "w": 300,
-        "h": 90
+        "w": 776,
+        "h": 80
       },
       "rotated": false,
       "trimmed": false,
       "spriteSourceSize": {
         "x": 0,
         "y": 0,
-        "w": 300,
-        "h": 90
+        "w": 776,
+        "h": 80
       },
       "sourceSize": {
-        "w": 300,
-        "h": 90
+        "w": 776,
+        "h": 80
       },
       "pivot": {
         "x": 0.5,
@@ -2203,7 +2203,7 @@
     {
       "filename": "menus/playerinfomiddle.png",
       "frame": {
-        "x": 303,
+        "x": 779,
         "y": 658,
         "w": 260,
         "h": 108
@@ -2228,7 +2228,7 @@
     {
       "filename": "menus/exitmenu.png",
       "frame": {
-        "x": 565,
+        "x": 1041,
         "y": 658,
         "w": 256,
         "h": 224
@@ -2253,7 +2253,7 @@
     {
       "filename": "static/insideboard.png",
       "frame": {
-        "x": 823,
+        "x": 1299,
         "y": 658,
         "w": 572,
         "h": 286
@@ -2278,8 +2278,8 @@
     {
       "filename": "Cards/bluecard1.png",
       "frame": {
-        "x": 1397,
-        "y": 658,
+        "x": 1,
+        "y": 740,
         "w": 256,
         "h": 324
       },
@@ -2303,8 +2303,8 @@
     {
       "filename": "Cards/bluecard2.png",
       "frame": {
-        "x": 1655,
-        "y": 658,
+        "x": 259,
+        "y": 740,
         "w": 256,
         "h": 324
       },
@@ -2328,8 +2328,8 @@
     {
       "filename": "Cards/browncard1.png",
       "frame": {
-        "x": 1,
-        "y": 750,
+        "x": 517,
+        "y": 740,
         "w": 256,
         "h": 324
       },
@@ -2353,7 +2353,7 @@
     {
       "filename": "Cards/browncard2.png",
       "frame": {
-        "x": 259,
+        "x": 775,
         "y": 768,
         "w": 256,
         "h": 324
@@ -2378,7 +2378,7 @@
     {
       "filename": "Cards/centralstation.png",
       "frame": {
-        "x": 517,
+        "x": 1033,
         "y": 884,
         "w": 256,
         "h": 324
@@ -2403,7 +2403,7 @@
     {
       "filename": "Cards/eaststation.png",
       "frame": {
-        "x": 775,
+        "x": 1291,
         "y": 946,
         "w": 256,
         "h": 324
@@ -2428,7 +2428,7 @@
     {
       "filename": "Cards/electricitycard.png",
       "frame": {
-        "x": 1033,
+        "x": 1549,
         "y": 946,
         "w": 256,
         "h": 324
@@ -2453,8 +2453,8 @@
     {
       "filename": "Cards/emptytraincardtemplate.png",
       "frame": {
-        "x": 1291,
-        "y": 984,
+        "x": 1,
+        "y": 1066,
         "w": 256,
         "h": 324
       },
@@ -2478,8 +2478,8 @@
     {
       "filename": "Cards/greencard1.png",
       "frame": {
-        "x": 1549,
-        "y": 984,
+        "x": 259,
+        "y": 1066,
         "w": 256,
         "h": 324
       },
@@ -2503,8 +2503,8 @@
     {
       "filename": "Cards/greencard2.png",
       "frame": {
-        "x": 1,
-        "y": 1076,
+        "x": 517,
+        "y": 1066,
         "w": 256,
         "h": 324
       },
@@ -2528,7 +2528,7 @@
     {
       "filename": "Cards/greencard3.png",
       "frame": {
-        "x": 259,
+        "x": 775,
         "y": 1094,
         "w": 256,
         "h": 324
@@ -2553,7 +2553,7 @@
     {
       "filename": "Cards/lightbluecard1.png",
       "frame": {
-        "x": 517,
+        "x": 1033,
         "y": 1210,
         "w": 256,
         "h": 324
@@ -2578,7 +2578,7 @@
     {
       "filename": "Cards/lightbluecard2.png",
       "frame": {
-        "x": 775,
+        "x": 1291,
         "y": 1272,
         "w": 256,
         "h": 324
@@ -2603,7 +2603,7 @@
     {
       "filename": "Cards/lightbluecard3.png",
       "frame": {
-        "x": 1033,
+        "x": 1549,
         "y": 1272,
         "w": 256,
         "h": 324
@@ -2628,8 +2628,8 @@
     {
       "filename": "Cards/mortgageoverlay.png",
       "frame": {
-        "x": 1291,
-        "y": 1310,
+        "x": 1,
+        "y": 1392,
         "w": 256,
         "h": 324
       },
@@ -2653,8 +2653,8 @@
     {
       "filename": "Cards/northstation.png",
       "frame": {
-        "x": 1549,
-        "y": 1310,
+        "x": 259,
+        "y": 1392,
         "w": 256,
         "h": 324
       },
@@ -2678,8 +2678,8 @@
     {
       "filename": "Cards/orangecard1.png",
       "frame": {
-        "x": 1,
-        "y": 1402,
+        "x": 517,
+        "y": 1392,
         "w": 256,
         "h": 324
       },
@@ -2703,7 +2703,7 @@
     {
       "filename": "Cards/orangecard2.png",
       "frame": {
-        "x": 259,
+        "x": 775,
         "y": 1420,
         "w": 256,
         "h": 324
@@ -2728,7 +2728,7 @@
     {
       "filename": "Cards/orangecard3.png",
       "frame": {
-        "x": 517,
+        "x": 1033,
         "y": 1536,
         "w": 256,
         "h": 324
@@ -2753,7 +2753,7 @@
     {
       "filename": "Cards/pinkcard1.png",
       "frame": {
-        "x": 775,
+        "x": 1291,
         "y": 1598,
         "w": 256,
         "h": 324
@@ -2778,7 +2778,7 @@
     {
       "filename": "Cards/pinkcard2.png",
       "frame": {
-        "x": 1033,
+        "x": 1549,
         "y": 1598,
         "w": 256,
         "h": 324
@@ -2803,8 +2803,8 @@
     {
       "filename": "Cards/pinkcard3.png",
       "frame": {
-        "x": 1291,
-        "y": 1636,
+        "x": 1,
+        "y": 1718,
         "w": 256,
         "h": 324
       },
@@ -2828,8 +2828,8 @@
     {
       "filename": "Cards/redcard1.png",
       "frame": {
-        "x": 1549,
-        "y": 1636,
+        "x": 259,
+        "y": 1718,
         "w": 256,
         "h": 324
       },
@@ -2853,8 +2853,8 @@
     {
       "filename": "Cards/redcard2.png",
       "frame": {
-        "x": 1,
-        "y": 1728,
+        "x": 517,
+        "y": 1718,
         "w": 256,
         "h": 324
       },
@@ -2878,7 +2878,7 @@
     {
       "filename": "Cards/redcard3.png",
       "frame": {
-        "x": 259,
+        "x": 775,
         "y": 1746,
         "w": 256,
         "h": 324
@@ -2903,7 +2903,7 @@
     {
       "filename": "Cards/southstation.png",
       "frame": {
-        "x": 517,
+        "x": 1033,
         "y": 1862,
         "w": 256,
         "h": 324
@@ -2928,7 +2928,7 @@
     {
       "filename": "Cards/waterworkscard.png",
       "frame": {
-        "x": 775,
+        "x": 1291,
         "y": 1924,
         "w": 256,
         "h": 324
@@ -2953,7 +2953,7 @@
     {
       "filename": "Cards/yellowcard1.png",
       "frame": {
-        "x": 1033,
+        "x": 1549,
         "y": 1924,
         "w": 256,
         "h": 324
@@ -2978,8 +2978,8 @@
     {
       "filename": "Cards/yellowcard2.png",
       "frame": {
-        "x": 1291,
-        "y": 1962,
+        "x": 1,
+        "y": 2044,
         "w": 256,
         "h": 324
       },
@@ -3003,8 +3003,8 @@
     {
       "filename": "Cards/yellowcard3.png",
       "frame": {
-        "x": 1549,
-        "y": 1962,
+        "x": 259,
+        "y": 2044,
         "w": 256,
         "h": 324
       },
@@ -3028,7 +3028,7 @@
     {
       "filename": "menus/auctionmenubackground.png",
       "frame": {
-        "x": 1,
+        "x": 517,
         "y": 2072,
         "w": 267,
         "h": 324
@@ -3053,7 +3053,7 @@
     {
       "filename": "dices/dices.png",
       "frame": {
-        "x": 270,
+        "x": 786,
         "y": 2188,
         "w": 256,
         "h": 384
@@ -3078,8 +3078,8 @@
     {
       "filename": "static/realbackground.png",
       "frame": {
-        "x": 528,
-        "y": 2288,
+        "x": 1044,
+        "y": 2250,
         "w": 832,
         "h": 416
       },
@@ -3104,7 +3104,7 @@
       "filename": "menus/tradingmenu.png",
       "frame": {
         "x": 1,
-        "y": 2706,
+        "y": 2574,
         "w": 910,
         "h": 512
       },
@@ -3129,7 +3129,7 @@
       "filename": "menus/lobbymenu.png",
       "frame": {
         "x": 913,
-        "y": 2706,
+        "y": 2668,
         "w": 981,
         "h": 552
       },
@@ -3154,7 +3154,7 @@
       "filename": "menus/mainmenu.png",
       "frame": {
         "x": 1,
-        "y": 3260,
+        "y": 3222,
         "w": 981,
         "h": 552
       },
@@ -3183,7 +3183,7 @@
     "format": "RGBA8888",
     "size": {
       "w": 2044,
-      "h": 3813
+      "h": 3775
     },
     "scale": 1
   }
