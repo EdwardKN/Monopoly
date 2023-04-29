@@ -571,13 +571,14 @@ class MainMenu {
             self.localButton.visible = false;
             self.onlineButton.visible = false;
             self.musicButton.visible = false;
+            self.fullScreenButton.visible = false;
         },195,52,false,false,true)
         this.onlineButton = new Button(false,-322,539,images.mainMenu.sprites[2],function(){
             self.current = false;
             self.localButton.visible = false;
             self.onlineButton.visible = false;
             self.musicButton.visible = false;
-
+            self.fullScreenButton.visible = false;
             showOnlineLobby();
         },195,52,false,false,true)
 
@@ -595,6 +596,13 @@ class MainMenu {
                 playSound(sounds.music,1,true)
             }
         },40,40,false)
+        this.fullScreenButton = new Button(true,-357+40,711,images.buttons.sprites[18],function(){
+            if(this.selected){
+                document.documentElement.requestFullscreen()
+            }else{
+                document.exitFullscreen()
+            }
+        },40,40,false)
         this.musicButton.selected = !musicOn
         
         this.onlineButton.disabled = false;
@@ -606,9 +614,13 @@ class MainMenu {
                 this.localButton.visible = true;
                 this.onlineButton.visible = true;
                 this.musicButton.visible = true;
+                this.fullScreenButton.visible = true;
+                this.fullScreenButton.selected = document.fullscreenElement != null;
                 this.localButton.draw();
                 this.onlineButton.draw();
                 this.musicButton.draw();
+                this.fullScreenButton.draw();
+
             }
         }
     }
@@ -1077,7 +1089,7 @@ class Board{
         this.auction = undefined;
         this.trade = undefined;
         let self = this;
-        this.musicButton = new Button(true,51,530,images.buttons.sprites[14],function(){
+        this.musicButton = new Button(true,31,530,images.buttons.sprites[14],function(){
             document.cookie = `musicOn=${!self.musicButton.selected};Expires=Sun, 22 oct 2030 08:00:00 UTC;`;
             clearTimeout(musictimer)
             if(self.musicButton.selected){
@@ -1092,20 +1104,28 @@ class Board{
             }
         },40,40,false)
         this.musicButton.selected = !musicOn;
+        this.fullScreenButton = new Button(true,81,530,images.buttons.sprites[18],function(){
+            if(this.selected){
+                document.documentElement.requestFullscreen()
+            }else{
+                document.exitFullscreen()
+            }
+        },40,40,false)
 
-        this.goToMainMenuButton = new Button(false,111,530,images.buttons.sprites[15],function(){
+        this.goToMainMenuButton = new Button(false,143,530,images.buttons.sprites[15],function(){
             board.getToMainMenuButton.selected = false;
             board.goToMainMenuButton.visible = false;
             board.escapeConfirm.visible = false;
             board.getToMainMenuButton.visible = true;
             board.musicButton.visible = false;
+            board.fullScreenButton.visible = false;
         },40,40,false,false,false,false,false,{x:722,y:336,w:256*drawScale,h:224*drawScale});
-        this.escapeConfirm = new Button(false,171,530,images.buttons.sprites[16],function(){
+        this.escapeConfirm = new Button(false,191,530,images.buttons.sprites[16],function(){
             board.getToMainMenuButton.selected = false;
             board.goToMainMenuButton.visible = false;
             board.escapeConfirm.visible = false;
             board.getToMainMenuButton.visible = false;
-            board.musicButton.visible = false;
+            board.fullScreenButton.visible = false;
             players.forEach(e => buttons.splice(buttons.indexOf(e.playerBorder.button),1))
             players = [];
             menus[0].current = true;
@@ -1377,7 +1397,9 @@ class Board{
             this.escapeConfirm.visible = true;
             this.escapeConfirm.draw();
             this.musicButton.visible = true;
+            this.fullScreenButton.visible = true;
             this.musicButton.draw();
+            this.fullScreenButton.draw();
         }
         this.randomizeDice = function () {
             this.dice1Type = randomIntFromRange(0,3);
