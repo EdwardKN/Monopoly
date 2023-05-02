@@ -10,7 +10,7 @@ var firstclick = false;
 
 var musictimer;
 
-var musicOn = JSON.parse(getCookie("musicOn") === -1 ? false : getCookie("musicOn"));;
+var musicOn = JSON.parse(getCookie("musicOn") === undefined ? false : getCookie("musicOn"));;
 
 var musicPlaying;
 
@@ -3312,8 +3312,9 @@ function getCookie(cname) {
         return c.substring(name.length, c.length);
         };
     };
-    return -1;
+    return undefined;
 }
+
 const measureText = (() => {
     var data, w, size =  120; // for higher accuracy increase this size in pixels.
     const isColumnEmpty = x => {
