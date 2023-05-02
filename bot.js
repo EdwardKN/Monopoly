@@ -155,14 +155,17 @@ class Bot{
                 board.buyButton.visible = false
                 board.auctionButton.visible = false
             } else {
-                let group = bP.piece.group || bP.piece.type
-                let owners = {}
-                for (let id of groups[group] || []) { 
-                    if (!board.boardPieces[id].owner) { continue }
-                    owners[players.indexOf(board.boardPieces[id].owner)]++ 
+                let func = bP
+                let args = []
+                if (bP.piece.group) {
+                    func = 'ownedGroup'
+                    args.push(bP.piece.group)
+                } else {
+                    func = bP.piece.type === 'utility' ? 'ownedUtility' : 'ownedStations'
                 }
+
                 // Someone owns more than half
-                if (moneyLeft > 2 * this.getAverageLoss(12) || Object.values(owners).some(amount => amount / groups[group].length >= 0.5)) {
+                if (moneyLeft > 2 * this.getAverageLoss(12) || players.some(player => window[func](player, ...args).length >= 0.5)) {
                     this.buyPiece(bP)  
                 }
             }
@@ -289,15 +292,8 @@ class Bot{
                 maxValueToSpend *= specialWeights.station[ownedStations(this.player).length]
             } else if (bP.piece.group === 'utility') {
                 maxValueToSpend *= specialWeights.utility[ownedUtility(this.player).length]
-            } else {
-                let owners = {}
-                for (let id of groups[bP.piece.group]) {
-                    let bP = board.boardPieces[id]
-                    if (!bP.owner) { continue }
-                    owners[players.indexOf(bP.owner)] = (owners[players.indexOf(bP.owner)] || 0) + 1
-                }
-
-                if (Object.values(owners).some(value => value / groups[bP.piece.group].length >= 0.5)) {
+            } else {                
+                if (players.some(player => ownedGroup(player, bP.piece.group).length >= 0.5)) {
                     maxValueToSpend *= specialWeights.group[bP.piece.group]
                 } else { maxValueToSpend *= boardWeights[bP.n] }
             }
