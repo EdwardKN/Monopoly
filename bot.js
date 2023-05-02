@@ -71,6 +71,8 @@ class Bot{
     }
 
     async update() {
+        if (board.trade) { await this.handleTrade('receive') }
+
         if (Bot.thinking) { return }
         
         // Bid And Start Auction
@@ -315,6 +317,55 @@ class Bot{
             }
         }
     }
+
+    async handleTrade(type) { // Handle Trade Request
+        if (type === 'start') {
+            /*
+            What does the bot want?
+            Is there a trade that satisfies that?
+            */
+
+        } else if (type === 'receive') {
+            // Before Trade 
+            let otherPlayer = board.trade.p1 
+
+            let before1 = 0
+            let before2 = 0
+            
+            otherPlayer.ownedPlaces.forEach(bP => before1 += getPieceRent(bP, 7, this.player))
+            this.player.ownedPlaces.forEach(bP => before2 += getPieceRent(bP, 7, otherPlayer))
+
+            // After Imaginary Trade
+            let after1 = 0
+            let after2 = 0
+
+            // Also add the other money to the other player
+            otherPlayer.ownedPlaces.forEach((bP, i) => {
+                const cost = getPieceRent(bP, 7, this.player)
+                if (!board.trade.p1PropertyButtons[i].selected) {
+                    after1 += cost
+                } else { after2 += cost }
+            })
+            this.player.ownedPlaces.forEach((bP, i) => {
+                const cost = getPieceRent(bP, 7, otherPlayer)
+                if (!board.trade.p2PropertyButtons[i].selected) {
+                    after2 += cost
+                } { after1 += cost }
+            })
+
+            console.log(after1, before1, after2, before2)
+            // Negative? Lose On It
+            let d1 = after1 - before1
+            let d2 = after2 - before2
+            let money = board.trade.p1Slider.value - board.trade.p2Slider.value
+
+            let random = this.randomness * (2 * Math.random() - 1)
+            console.log(d1, d2, money)
+            if (d2 + random + money > 0 && d2 + random + money > d1) { // Better than before
+                board.trade.p2ConfirmButton.selected = true
+            } else { board.trade.p2ConfirmButton.selected = false }
+        }
+    }
 }
 
 function probabilityOfNumber(target) {
@@ -350,4 +401,17 @@ function rankPlayers() {
         b.ownedPlaces.forEach(bP => valueB += bP.piece.price + bP.level * bP.piece.housePrice)
         return valueA > valueB
     })
+}
+
+
+function setItUp() {
+    let p1 = players[turn]
+    let p2 = players[1 - turn]
+    let bP = board.boardPieces[1]
+    bP.owner = p1
+    p1.ownedPlaces.push(bP)
+
+    board.trade = new Trade(p1, p2)
+    board.trade.p1PropertyButtons[0].selected = true
+    board.trade.p1Slider.value = 100
 }

@@ -672,8 +672,8 @@ function init(){
         menus.push(new LocalLobby())
     }else{
         let playerlist = []
-        let playerAmount = 0;
-        let botAmount = 2;
+        let playerAmount = 1;
+        let botAmount = 1;
         let useableColors = [0,1,2,3,4,5,6,7]
         for(let i = 0; i < (playerAmount+botAmount); i++){
             let random = randomIntFromRange(0,useableColors.length-1)
@@ -2631,7 +2631,6 @@ class Player{
         }
         
         this.rollDice = function(){
-            console.log("Hi")
             if(this.negative === false){
                 if(this.inJail === false){
                     if(this.rolls === false){
