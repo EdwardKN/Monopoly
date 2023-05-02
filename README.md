@@ -18,7 +18,7 @@
 ```
 {
     "PORT": Siffra mellan 1 och 65 000,
-    "ALLOWED_DOMAINS": Lista med domäner som man kan spela ifrån, om man vill tillåta spel från *https://example.com* så ska man skriva in *example.com*,
+    "ALLOWED_DOMAINS": Lista med domäner som man kan spela ifrån, om man vill tillåta spel från "https://example.com" så ska man skriva in "example.com",
     "LOGGING_LEVEL": Antingen "NONE", "STANDARD" eller "VERBOSE" beroende på hur mycket information du vill ha i konsolen,
     "GAME_SETTINGS": {
         "freeParking":      true/false | Ifall fri parkering ska hålla i skattepengar,

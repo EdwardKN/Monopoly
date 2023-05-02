@@ -11,7 +11,6 @@ assignees: ''
 Tydlig förklaring av buggen
 
 **Hur man återskapar buggen**
-Steg för att återskapa buggen:
 1. Gå till '...'
 2. Klicka på '....'
 3. Gör detta '....'
