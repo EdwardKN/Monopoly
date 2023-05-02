@@ -1682,7 +1682,7 @@ class Trade{
         };
 
         let self = this;
-        this.closeButton = new Button([false,false],364 + 128 +71,289-50,images.buttons.sprites[7],function(){if (Api.online) { Api.tradeConcluded(self.p2.colorIndex, false); } self.closeButton.visible = false;board.trade = undefined;board.getToMainMenuButton.visible = true; players.forEach(e => {e.playerBorder.button.disabled = false})},18,18,true,
+        this.closeButton = new Button([false,false],364 + 128 +71,290-50,images.buttons.sprites[7],function(){if (Api.online) { Api.tradeConcluded(self.p2.colorIndex, false); } self.closeButton.visible = false;board.trade = undefined;board.getToMainMenuButton.visible = true; players.forEach(e => {e.playerBorder.button.disabled = false})},18,18,true,
         false,false,false,false,{x:66,y:70,w:1025+512+280,h:1020})
         this.closeButton.visible = true;
 
