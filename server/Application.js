@@ -158,10 +158,10 @@ function websocketHandler(request) {
 
                     api.propertyChanged(player.colorIndex, event.tile.card, player.money, event.new_level);
                     break;
-                case "random_event":
+                case "card_event":
                     player.money = event.money;
 
-                    Logger.log(`Random event with id: (${event.id}; ${event.type}) happened to player (${player.name})`, location, Logger.STANDARD);
+                    Logger.log(`Card event with id: (${event.id}; ${event.type}) happened to player (${player.name})`, location, Logger.STANDARD);
                     Logger.log(JSON.stringify(player), location, Logger.VERBOSE);
 
                     api.randomEvent(event.id, player, event.type);
