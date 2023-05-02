@@ -1053,6 +1053,29 @@ async function showOnlineLobby() {
 
         document.body.addEventListener("tile_sold_event", (evt) => board.sellButton.onClick(board.boardPieces.find(x => x.piece.card == evt.detail.tile), false));
 
+        document.body.addEventListener("reject", (evt) => {
+            switch(evt.detail.reason) {
+                case "INVALID_ORIGIN":
+                    alert("The address you're playing from isn't supported by the server");
+                    break;
+                case "GAME_FULL":
+                    alert("Sorry, but the game you tried to join was full.");
+                    break;
+                case "GAME_ONGOING":
+                    alert("The game at that address is already ongoing.\nYou can't join in the middle of it.");
+                    break;
+                case "DUPLICATE_NAME":
+                    alert("Please choose another name, the one you chose is already taken.");
+                    break;
+                default:
+                    console.log(evt.detail);
+                    alert("Unknown reject reason, see console");
+                    break;
+            }
+
+            location.reload();
+        });
+
         await Api.openWebsocketConnection(serverURL, username);
     } catch(err) {
         alert("VIKTIGT!\nDu kommer att hamna på en annan webbsida.\nFör att gå med i spelet måste du klicka på:\nAvancerat...>Acceptera risken och fortsätt\nOm du inte gör detta så kommer du inte kunna ansluta till spelet.");

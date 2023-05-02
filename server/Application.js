@@ -61,20 +61,28 @@ function originIsAllowed(origin) {
 function websocketHandler(request) {
     var playername = decodeURI(request.resourceURL.search.substring(1));
     if (!originIsAllowed(request.origin)) {
-        request.reject(undefined, "INVALID_ORIGIN");
+        var connection = request.accept(null, request.origin);
+        connection.sendUTF(JSON.stringify({ event_type: "reject", data: { reason: "INVALID_ORIGIN" } }));
+        connection.close();
         return;
     } else if (gameHasStarted) {
-        request.reject(undefined, "GAME_ONGOING");
+        var connection = request.accept(null, request.origin);
+        connection.sendUTF(JSON.stringify({ event_type: "reject", data: { reason: "GAME_ONGOING" } }));
+        connection.close();
         return;
     } else if (PlayerManager.getNumberOfPlayers() >= 8) {
-        request.reject(undefined, "GAME_FULL");
+        var connection = request.accept(null, request.origin);
+        connection.sendUTF(JSON.stringify({ event_type: "reject", data: { reason: "GAME_FULL" } }));
+        connection.close();
         return;
     } else if (PlayerManager.players.some(p => p.name == playername)) {
-        request.reject(undefined, "DUPLICATE_NAME");
+        var connection = request.accept(null, request.origin);
+        connection.sendUTF(JSON.stringify({ event_type: "reject", data: { reason: "DUPLICATE_NAME" } }));
+        connection.close();
         return;
     }
 
-    var connection = request.accept('', request.origin);    
+    var connection = request.accept(null, request.origin);    
     
     // Send message with info about the game
     var playerInfo = PlayerManager.playerJoined(playername);
