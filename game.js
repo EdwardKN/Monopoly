@@ -2401,15 +2401,17 @@ class Button{
                         }
                     }else{
                         if(detectCollition(this.x*drawScale*scale+715*scale,this.y*drawScale*scale-400*scale,this.w*drawScale*scale,this.h*drawScale*scale,mouse.realX,mouse.realY,1,1)){
-                            if(this.img.frame.w <= this.w*2){
+
+                            if(this.img.frame.w <= this.w*3){
                                 if(this.disableselectTexture){
                                     drawRotatedImageFromSpriteSheet(this.x*drawScale+715,this.y*drawScale-400,this.w*drawScale,this.h*drawScale,this.img,0,this.mirror,this.w*1,0,this.w,this.h)
                                 }else if(!this.select[1]){
-                                    drawRotatedImageFromSpriteSheet(this.x*drawScale+715,this.y*drawScale-400,this.w*drawScale,this.h*drawScale,this.img,0,this.mirror,this.w*2,0,this.w,this.h)
+                                    drawRotatedImageFromSpriteSheet(this.x*drawScale+715,this.y*drawScale-400,this.w*drawScale,this.h*drawScale,this.img,0,this.mirror,this.w*1,0,this.w,this.h)
                                 }else{
                                     drawRotatedImageFromSpriteSheet(this.x*drawScale+715,this.y*drawScale-400,this.w*drawScale,this.h*drawScale,this.img,0,this.mirror,this.w*2,0,this.w,this.h)
                                 }
                             }else{
+                                
                                 drawRotatedImageFromSpriteSheet(this.x*drawScale+715,this.y*drawScale-400,this.w*drawScale,this.h*drawScale,this.img,0,this.mirror,this.w*3,0,this.w,this.h)
                             }
                             this.hover = true;
