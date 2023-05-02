@@ -2053,9 +2053,9 @@ class PlayerBorder{
             }
             let mirrorAdder2 = 0;
             if(!this.button.mirror){
-                mirrorAdder2 = 208;
+                mirrorAdder2 = 0;
             }
-            this.createTradebutton.x = this.x + 20  + mirrorAdder2/2
+            this.createTradebutton.x = this.x + 60
 
             
             if(this.button.selected){
@@ -2066,10 +2066,10 @@ class PlayerBorder{
                     this.button.invertedHitbox.y = this.y*drawScale - 400 + 54*drawScale;
                     this.button.invertedHitbox.w = this.button.w*drawScale
                     this.button.invertedHitbox.h = this.player.ownedPlaces.length*12*drawScale + 12*5*drawScale;
-                    this.createTradebutton.y = this.y + 83 + 12*this.player.ownedPlaces.length;
-                    drawRotatedImageFromSpriteSheet(this.x*drawScale+715+mirrorAdder2,this.y*drawScale + 54*drawScale -400,260*drawScale,27*drawScale,images.playerOverlay.sprites[11],0,this.button.mirror,0,0,260,27,false)
+                    this.createTradebutton.y = this.y + 73 + 12*this.player.ownedPlaces.length;
+                    drawRotatedImageFromSpriteSheet(this.x*drawScale+715+mirrorAdder2,this.y*drawScale + 54*drawScale -400,354*drawScale,27*drawScale,images.playerOverlay.sprites[11],0,this.button.mirror,0,0,354,27,false)
                     for(let i = 0; i < this.player.ownedPlaces.length; i++){
-                        drawRotatedImageFromSpriteSheet(this.x*drawScale+715+mirrorAdder2,this.y*drawScale + 67 *drawScale + 13*drawScale*i + 27 - 400,260*drawScale,27*drawScale,images.playerOverlay.sprites[10],0,this.button.mirror,0,0,260,27,false)
+                        drawRotatedImageFromSpriteSheet(this.x*drawScale+715+mirrorAdder2,this.y*drawScale + 67 *drawScale + 12*drawScale*i + 27 - 400,354*drawScale,15*drawScale,images.playerOverlay.sprites[10],0,this.button.mirror,0,0,354,15,false)
                         c.font = 24*scale+"px Arcade";
                         c.fillStyle ="black"
                         c.textAlign = "left"
@@ -2097,9 +2097,9 @@ class PlayerBorder{
                             c.fillText(this.player.ownedPlaces[i].piece.name + "  " + multiply + "*slag kr",this.x*scale+400*scale+ mirrorAdder*drawScale*scale,this.y*drawScale*scale + 65*drawScale*scale + 12*drawScale*i*scale - 354*scale)
                         }
                     }
-                    drawRotatedImageFromSpriteSheet(this.x*drawScale +715+mirrorAdder2,this.y*drawScale + 53*drawScale*1.5 +12*drawScale*this.player.ownedPlaces.length -400,260*drawScale ,20*drawScale,images.playerOverlay.sprites[10],0,this.button.mirror,0,0,260,27,false)
-                    drawRotatedImageFromSpriteSheet(this.x*drawScale +715+mirrorAdder2,this.y*drawScale + 55*drawScale*1.5 +12*drawScale*(this.player.ownedPlaces.length+1) -400,260*drawScale ,20*drawScale,images.playerOverlay.sprites[10],0,this.button.mirror,0,0,260,27,false)
-                    drawRotatedImageFromSpriteSheet(this.x*drawScale +715+mirrorAdder2,this.y*drawScale + 52*drawScale*1.5 +12*drawScale*(this.player.ownedPlaces.length+3) -400,260*drawScale ,20*drawScale,images.playerOverlay.sprites[9],0,this.button.mirror,0,0,260,27,false)
+                    drawRotatedImageFromSpriteSheet(this.x*drawScale +715+mirrorAdder2,this.y*drawScale + 80*drawScale +12*drawScale*this.player.ownedPlaces.length -400,354*drawScale ,13*drawScale,images.playerOverlay.sprites[10],0,this.button.mirror,0,0,354,13,false)
+                    drawRotatedImageFromSpriteSheet(this.x*drawScale +715+mirrorAdder2,this.y*drawScale + 80*drawScale +12*drawScale*(this.player.ownedPlaces.length+1) -400,354*drawScale ,13*drawScale,images.playerOverlay.sprites[10],0,this.button.mirror,0,0,354,13,false)
+                    drawRotatedImageFromSpriteSheet(this.x*drawScale +715+mirrorAdder2,this.y*drawScale + 80*drawScale +12*drawScale*(this.player.ownedPlaces.length+2) -400,354*drawScale ,20*drawScale,images.playerOverlay.sprites[9],0,this.button.mirror,0,0,354,27,false)
                     if (!Api.online) {
                         if(players[turn] !== this.player && board.currentCard === undefined && board.trade === undefined && players[turn].bot === undefined && players[turn].animationOffset === 0 && board.animateDices === false && board.showDices === false && this.player.bot === undefined){
                             this.createTradebutton.visible = true;
@@ -2114,9 +2114,9 @@ class PlayerBorder{
                     this.button.invertedHitbox.y = this.y*drawScale - 400-this.player.ownedPlaces.length*12*drawScale - 12*5*drawScale;
                     this.button.invertedHitbox.w = this.button.w*drawScale
                     this.button.invertedHitbox.h = this.player.ownedPlaces.length*12*drawScale + 12*5*drawScale;
-                    drawRotatedImageFromSpriteSheet(this.x*drawScale +715+mirrorAdder2,this.y*drawScale - 27*drawScale -400,260*drawScale,27*drawScale,images.playerOverlay.sprites[11],180,!this.button.mirror,0,0,260,27,false)
+                    drawRotatedImageFromSpriteSheet(this.x*drawScale +715+mirrorAdder2,this.y*drawScale - 27*drawScale -400,354*drawScale,27*drawScale,images.playerOverlay.sprites[11],180,!this.button.mirror,0,0,354,27,false)
                     for(let i = 0; i < this.player.ownedPlaces.length; i++){
-                        drawRotatedImageFromSpriteSheet(this.x*drawScale +715+mirrorAdder2,this.y*drawScale - 67 *drawScale - 12*drawScale*i + 27+10 -400,260*drawScale,27*drawScale,images.playerOverlay.sprites[10],180,!this.button.mirror,0,0,260,27,false)
+                        drawRotatedImageFromSpriteSheet(this.x*drawScale +715+mirrorAdder2,this.y*drawScale - 57 *drawScale - 12*drawScale*i + 27+10 -400,354*drawScale,13*drawScale,images.playerOverlay.sprites[10],180,!this.button.mirror,0,0,354,13,false)
                         c.font = 25*scale+"px Arcade";
                         c.fillStyle ="black"
                         c.textAlign = "left"
@@ -2144,9 +2144,9 @@ class PlayerBorder{
                             c.fillText(this.player.ownedPlaces[i].piece.name + "  " + multiply + "*slag kr",this.x*scale+400*scale+ mirrorAdder*drawScale*scale,this.y*drawScale*scale + 110*drawScale*scale - 12*drawScale*i*scale - 634*scale)
                         }                    
                     }
-                    drawRotatedImageFromSpriteSheet(this.x*drawScale +715+mirrorAdder2,this.y*drawScale - 25*drawScale*1.5 -12*drawScale*this.player.ownedPlaces.length -400,260*drawScale ,27*drawScale,images.playerOverlay.sprites[10],0,this.button.mirror,0,0,260,27,false)
-                    drawRotatedImageFromSpriteSheet(this.x*drawScale +715+mirrorAdder2,this.y*drawScale - 25*drawScale*1.5 -12*drawScale*(this.player.ownedPlaces.length+1) -400,260*drawScale ,27*drawScale,images.playerOverlay.sprites[10],0,this.button.mirror,0,0,260,27,false)
-                    drawRotatedImageFromSpriteSheet(this.x*drawScale +715+mirrorAdder2,this.y*drawScale - 25*drawScale*1.5 -12*drawScale*(this.player.ownedPlaces.length+3) -400,260*drawScale ,27*drawScale,images.playerOverlay.sprites[9],180,!this.button.mirror,0,0,260,27,false)
+                    drawRotatedImageFromSpriteSheet(this.x*drawScale +715,this.y*drawScale - 25*drawScale*1.5 -12*drawScale*this.player.ownedPlaces.length -400,354*drawScale ,13*drawScale,images.playerOverlay.sprites[10],0,this.button.mirror,0,0,354,13,false)
+                    drawRotatedImageFromSpriteSheet(this.x*drawScale +715,this.y*drawScale - 25*drawScale*1.5 -12*drawScale*(this.player.ownedPlaces.length+1) -400,354*drawScale ,13*drawScale,images.playerOverlay.sprites[10],0,this.button.mirror,0,0,354,13,false)
+                    drawRotatedImageFromSpriteSheet(this.x*drawScale +715,this.y*drawScale - 25*drawScale*1.5 -12*drawScale*(this.player.ownedPlaces.length+3) -400,354*drawScale ,27*drawScale,images.playerOverlay.sprites[9],180,!this.button.mirror,0,0,354,27,false)
                     this.createTradebutton.y = this.y - 50 - 12*this.player.ownedPlaces.length;
                     if(players[turn] !== this.player && board.currentCard === undefined && board.trade === undefined && players[turn].bot === undefined && players[turn].animationOffset === 0 && board.animateDices === false && board.showDices === false && this.player.bot === undefined){
                         this.createTradebutton.visible = true;
@@ -2401,7 +2401,7 @@ class Button{
                         }
                     }else{
                         if(detectCollition(this.x*drawScale*scale+715*scale,this.y*drawScale*scale-400*scale,this.w*drawScale*scale,this.h*drawScale*scale,mouse.realX,mouse.realY,1,1)){
-                            if(this.img.frame.w < this.w*2){
+                            if(this.img.frame.w <= this.w*2){
                                 if(this.disableselectTexture){
                                     drawRotatedImageFromSpriteSheet(this.x*drawScale+715,this.y*drawScale-400,this.w*drawScale,this.h*drawScale,this.img,0,this.mirror,this.w*1,0,this.w,this.h)
                                 }else if(!this.select[1]){
