@@ -773,10 +773,15 @@ function showBackground(){
 }
 
 async function showOnlineLobby() {
+    var username, serverURL;
     Api.online = true;
-    var username = location.search == "" ? prompt("Vad vill du ha för namn?") : decodeURI(location.search.split("&")[1]);
-    var serverURL = location.search == "" ? prompt("Ange addressen som servern visar, för att gå med i ett spel.\n(Obs. Om du inte har en server, följ anvisningarna på github)") : atob(location.search.substring(1).split("&")[0]);
+
+    // Set username and server address
+    while (username == "" || username == undefined) username = location.search == "" ? prompt("Vad vill du ha för namn?") : decodeURI(location.search.split("&")[1]);
+    while (serverURL == "" || serverURL == undefined) serverURL = location.search == "" ? prompt("Ange addressen som servern visar, för att gå med i ett spel.\n(Obs. Om du inte har en server, följ anvisningarna på github)") : atob(location.search.substring(1).split("&")[0]);
+
     history.replaceState(undefined, undefined, location.href.replace(location.search, ""));
+
     try {
         document.body.addEventListener("start_game", (evt) => {
             var data = evt.detail;
