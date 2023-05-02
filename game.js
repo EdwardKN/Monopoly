@@ -1682,8 +1682,8 @@ class Trade{
         };
 
         let self = this;
-        this.closeButton = new Button([false,false],364 + 128 +71,289-50,images.buttons.sprites[7],function(){if (Api.online) { Api.tradeConcluded(self.p2.colorIndex, false); } self.closeButton.visible = false;board.trade = undefined;board.getToMainMenuButton.visible = true; players.forEach(e => {e.playerBorder.button.disabled = false})},18,18,false,
-        false,false,false,false,{x:466-256,y:170,w:1025+512,h:840})
+        this.closeButton = new Button([false,false],364 + 128 +71,289-50,images.buttons.sprites[7],function(){if (Api.online) { Api.tradeConcluded(self.p2.colorIndex, false); } self.closeButton.visible = false;board.trade = undefined;board.getToMainMenuButton.visible = true; players.forEach(e => {e.playerBorder.button.disabled = false})},18,18,true,
+        false,false,false,false,{x:66,y:70,w:1025+512+280,h:1020})
         this.closeButton.visible = true;
 
         this.p1Slider = new Slider(300-142,220,742,60,0,this.p1.money,10,true,30,"kr","")

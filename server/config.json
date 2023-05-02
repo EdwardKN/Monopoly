@@ -1,5 +1,5 @@
 {
-    "PORT": 55045,
+    "PORT": 55042,
     "ALLOWED_DOMAINS": [ "edwardkn.github.io", "localhost" ],
     "LOGGING_LEVEL": "STANDARD",
     "GAME_SETTINGS": {
