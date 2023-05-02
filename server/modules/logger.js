@@ -19,17 +19,17 @@ class Logger {
         if (text == undefined) throw "[Logger::log] Logger must have text input";
         if (Logger.#LEVELS.indexOf(level) <= Logger.#LEVELS.indexOf(Logger.#OUTPUT_LEVEL)) {
             if (location != undefined) {
-                console.log("[%s] %s", location, text);
+                console.log("[%s] [%s] %s", new Date().toLocaleString(), location, text);
             } else {
-                console.log(text);
+                console.log("[%s] %s", new Date().toLocaleString(), text);
             }
         }
 
-        fs.appendFileSync(Logger.#OUTPUT_FILE_LOCATION, (location == undefined ? "" : `[${location}] `) + `${text}\n`);
+        fs.appendFileSync(Logger.#OUTPUT_FILE_LOCATION, `[${new Date().toLocaleString()}] ${(location == undefined ? "" : `[${location}] `)}${text}\n`);
     }
 
     static setOutputLocation(location) {
-        if (!fs.existsSync(location)) throw `[Logger::setOutputLocation] Location (${location}) doesn't exist`;
+        if (!fs.existsSync(location)) throw `[${new Date().toLocaleString()}] [Logger::setOutputLocation] Location (${location}) doesn't exist`;
         Logger.#OUTPUT_FILE_LOCATION = location;
     }
 
