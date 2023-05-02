@@ -10,7 +10,7 @@
         "prisonmoney": true,
         "mortgage": true,
         "even": true,
-        "startmoney": 1500,
+        "startmoney": 2000,
         "roundsBeforePurchase": 0
     }
 }

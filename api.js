@@ -94,7 +94,7 @@ class Api {
         if (!/^(CHANCE_CARD|COMMUNITY_CHEST)$/.test(type)) throw "Invalid event type";
         var money = players.find(x => x.colorIndex == Api.currentPlayer).money;
         // ID system should work, given that both clients play the same version of the game
-        Api.getWebSocket().send(JSON.stringify({ event_type: "random_event", type, id, money }));
+        Api.getWebSocket().send(JSON.stringify({ event_type: "card_event", type, id, money }));
     }
 
     /**
@@ -111,6 +111,14 @@ class Api {
      */
     static tilePurchased(tile, price) {
         Api.getWebSocket().send(JSON.stringify({ event_type: "tile_purchased", tile: tile.piece, price }));
+    }
+
+    /**
+     * Sell a tile
+     * @param {BoardPiece} tile 
+     */
+    static tileSold(tile) {
+        Api.getWebSocket().send(JSON.stringify({ event_type: "tile_sold", tile: tile.piece }));
     }
 
     /**

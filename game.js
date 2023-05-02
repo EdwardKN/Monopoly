@@ -773,10 +773,15 @@ function showBackground(){
 }
 
 async function showOnlineLobby() {
+    var username, serverURL;
     Api.online = true;
-    var username = location.search == "" ? prompt("Vad vill du ha för namn?") : decodeURI(location.search.split("&")[1]);
-    var serverURL = location.search == "" ? prompt("Ange addressen som servern visar, för att gå med i ett spel.\n(Obs. Om du inte har en server, följ anvisningarna på github)") : atob(location.search.substring(1).split("&")[0]);
+
+    // Set username and server address
+    while (username == "" || username == undefined) username = location.search == "" ? prompt("Vad vill du ha för namn?") : decodeURI(location.search.split("&")[1]);
+    while (serverURL == "" || serverURL == undefined) serverURL = location.search == "" ? prompt("Ange addressen som servern visar, för att gå med i ett spel.\n(Obs. Om du inte har en server, följ anvisningarna på github)") : atob(location.search.substring(1).split("&")[0]);
+
     history.replaceState(undefined, undefined, location.href.replace(location.search, ""));
+
     try {
         document.body.addEventListener("start_game", (evt) => {
             var data = evt.detail;
@@ -907,10 +912,7 @@ async function showOnlineLobby() {
         });
 
         document.body.addEventListener("auction_start_event", (evt) => {
-            board.auction.started = true;
-            board.auction.timer = setInterval(() => {
-                board.auction.time -= 1;
-            }, 10);
+            board.auction.startAuctionButton.onClick(false);
         })
 
         document.body.addEventListener("auction_bid_event", (evt) => {
@@ -928,6 +930,7 @@ async function showOnlineLobby() {
                 board.auction.turn = board.auction.playerlist.findIndex(x => x.colorIndex == data.nextPlayer);
             }
             board.auction.time = 472;
+            board.auction.startTime = performance.now();
 
 
             if (data.player == Api.currentPlayer) {
@@ -1051,6 +1054,31 @@ async function showOnlineLobby() {
                 } 
             }
             player.getOutOfJail(undefined, false);
+        });
+
+        document.body.addEventListener("tile_sold_event", (evt) => board.sellButton.onClick(board.boardPieces.find(x => x.piece.card == evt.detail.tile), false));
+
+        document.body.addEventListener("reject", (evt) => {
+            switch(evt.detail.reason) {
+                case "INVALID_ORIGIN":
+                    alert("The address you're playing from isn't supported by the server");
+                    break;
+                case "GAME_FULL":
+                    alert("Sorry, but the game you tried to join was full.");
+                    break;
+                case "GAME_ONGOING":
+                    alert("The game at that address is already ongoing.\nYou can't join in the middle of it.");
+                    break;
+                case "DUPLICATE_NAME":
+                    alert("Please choose another name, the one you chose is already taken.");
+                    break;
+                default:
+                    console.log(evt.detail);
+                    alert("Unknown reject reason, see console");
+                    break;
+            }
+
+            location.reload();
         });
 
         await Api.openWebsocketConnection(serverURL, username);
@@ -1197,14 +1225,20 @@ class Board{
             board.downgradeButton.visible = false;
             board.getToMainMenuButton.visible = true;
         },18,18,false,false,false,false,false,{x:722,y:236,w:256*drawScale,h:324*drawScale})
-        this.sellButton = new Button(false,130,580,images.buttons.sprites[2],function(){
+        this.sellButton = new Button(false,130,580,images.buttons.sprites[2],function(sendToServer = true, card){
             if(board.currentCard.mortgaged === false){
-                players[turn].money+= board.currentCard.piece.price/2
+                if (Api.online && sendToServer && board.currentCard != undefined) {
+                    Api.tileSold(board.currentCard);
+                    return;
+                }
+                players[turn].money += card.piece.price/2;
                 players[turn].checkDebt(board.boardPieces[20]);
-                players[turn].playerBorder.startMoneyAnimation(board.currentCard.piece.price/2);
+                players[turn].playerBorder.startMoneyAnimation(card.piece.price/2);
             }
-            players[turn].ownedPlaces.splice(players[turn].ownedPlaces.indexOf(board.currentCard),1);
-            board.currentCard.owner = undefined;
+
+            players[turn].ownedPlaces.splice(players[turn].ownedPlaces.indexOf(card),1);
+            card.owner = undefined;
+            board.currentCard = undefined;
         },40,40);
         this.mortgageButton = new Button(false,80,580,images.buttons.sprites[3],function(){
             if(board.currentCard.mortgaged === true){
@@ -2147,11 +2181,12 @@ class Auction{
         this.addMoneyButton100 = new Button(false,100,540,images.auction.sprites[3],function(){
             board.auction.addMoney(100);
         },54,54,false)
-        this.startAuctionButton = new Button(false,-85,540,images.auction.sprites[5],function(){
-            if (Api.online) {
+        this.startAuctionButton = new Button(false,-85,540,images.auction.sprites[5],function(sendToServer = true){
+            if (Api.online && sendToServer) {
                 Api.auctionStart(board.auction.card);
                 return;
             }
+
             board.auction.started = true;
             board.auction.duration = 10 * speeds.auctionSpeed;
             board.auction.startTime = performance.now();

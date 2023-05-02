@@ -1,4 +1,5 @@
 var api = require('./api');
+const { TileManager } = require('./tile');
 
 class PlayerManager {
     static players = [];
@@ -43,22 +44,13 @@ class Player {
         this.steps = 0;
 
         // Money
-        this.money = 1400;
+        this.money = 0;
 
         // Color of the piece, also a sort of id
         this.colorIndex = index;
         
-        // Used for when the player rolls doubles
-        this.rolls = false;
-
-        // The number of times the player has rolled doubles in a row
-        this.numberOfRolls = false;
-
         // Whether or not this player is in jail
         this.inJail = false;
-
-        // All of the tiles owned by this player
-        this.ownedPlaces = [];
 
         // Whether or not this player has a negative amount of money, e.g. when they've gone bankrupt and lost the game.
         this.negative = false;
@@ -70,6 +62,16 @@ class Player {
         this.isReady = false;
     }
 
+    /**
+     * @returns {Tile[]}
+     */
+    getOwnedPlaces() {
+        return TileManager.getTiles().filter(x => x.owner == this, this);
+    }
+
+    /**
+     * @param {number} steps 
+     */
     teleportTo(steps) {
         this.steps = steps;
         api.teleportTo(this.steps, this.colorIndex);
@@ -77,5 +79,6 @@ class Player {
 }
 
 module.exports = {
-    PlayerManager
+    PlayerManager,
+    Player
 }
