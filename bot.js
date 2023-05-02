@@ -353,15 +353,15 @@ class Bot{
                 } { after1 += cost }
             })
 
-            console.log(after1, before1, after2, before2)
             // Negative? Lose On It
             let d1 = after1 - before1
             let d2 = after2 - before2
             let money = board.trade.p1Slider.value - board.trade.p2Slider.value
 
             let random = this.randomness * (2 * Math.random() - 1)
-            console.log(d1, d2, money)
-            if (d2 + random + money > 0 && d2 + random + money > d1) { // Better than before
+            let d = d2 + random + money
+
+            if (d > 0 && d > d1) { // Better than before
                 board.trade.p2ConfirmButton.selected = true
             } else { board.trade.p2ConfirmButton.selected = false }
         }
@@ -401,17 +401,4 @@ function rankPlayers() {
         b.ownedPlaces.forEach(bP => valueB += bP.piece.price + bP.level * bP.piece.housePrice)
         return valueA > valueB
     })
-}
-
-
-function setItUp() {
-    let p1 = players[turn]
-    let p2 = players[1 - turn]
-    let bP = board.boardPieces[1]
-    bP.owner = p1
-    p1.ownedPlaces.push(bP)
-
-    board.trade = new Trade(p1, p2)
-    board.trade.p1PropertyButtons[0].selected = true
-    board.trade.p1Slider.value = 100
 }
