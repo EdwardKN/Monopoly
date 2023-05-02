@@ -230,6 +230,7 @@ function startGame(playerlist,settings){
         tmpArray.splice(tmpI,1)
     }
     turn = randomIntFromRange(0,playerlist.length-1)
+    board.textsize = measureText({font:"Arcade",text:"Just nu: " + players[turn].name});
     players.forEach(e=> e.playerBorder.init())
     Bot.boardInfo = players.reduce((dict, player, i) => { dict[i] = player.ownedPlaces; return dict }, {})
 }
@@ -870,6 +871,7 @@ async function showOnlineLobby() {
 
         document.body.addEventListener("new_turn_event", (evt) => {
             turn = evt.detail.id;
+            board.textsize = measureText({font:"Arcade",text:"Just nu: " + players[turn].name});
             if (Api.currentPlayer == turn) {
                 board.rollDiceButton.visible = true;
                 board.nextPlayerButton.visible = false;
@@ -1080,6 +1082,7 @@ class Board{
         this.auction = undefined;
         this.trade = undefined;
         let self = this;
+        this.textsize = 0;
         this.musicButton = new Button([true,false],31,530,images.buttons.sprites[14],function(){
             document.cookie = `musicOn=${!self.musicButton.selected};Expires=Sun, 22 oct 2030 08:00:00 UTC;`;
             clearTimeout(musictimer)
@@ -1184,6 +1187,7 @@ class Board{
                     Api.changeTurn();
                 } else {
                     turn = (turn+1)%players.length;
+                    board.textsize = measureText({font:"Arcade",text:"Just nu: " + players[turn].name});
                 }
                 board.dice1 = 0;
                 board.dice2 = 0;
@@ -1304,8 +1308,7 @@ class Board{
         }
 
         this.update = function () {
-                let textsize = measureText({font:"Arcade",text:"Just nu: " + players[turn].name})
-                let fontsize = (1/textsize.width)*65000 > 50 ? 50 : (1/textsize.width)*65000
+                let fontsize = (1/this.textsize.width)*65000 > 50 ? 50 : (1/this.textsize.width)*65000
                 c.fillStyle = "white";
                 c.font = fontsize*scale+"px Arcade";
                 c.textAlign = "center";
@@ -2309,6 +2312,7 @@ class Auction{
 
             this.auctionMoney += money;
             this.turn = (this.turn+1) % this.playerlist.length;
+            
             this.time = 472;
             this.startTime = performance.now();
         }
@@ -3007,6 +3011,8 @@ class Player{
                 } else {
                     delete Bot.boardInfo[turn]
                     turn = turn%(players.length-1);
+                    board.textsize = measureText({font:"Arcade",text:"Just nu: " + players[turn].name});
+
                 }
 
                 if(players.length-1 === 1){
