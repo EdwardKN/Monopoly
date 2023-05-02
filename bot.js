@@ -286,9 +286,9 @@ class Bot{
             let maxValueToSpend = bP.piece.price * (board.settings.doubleincome ? 1.05 : 1)
 
             if (bP.piece.group === 'station') {
-                maxValueToSpend *= specialWeights.station[ownedStations().length]
+                maxValueToSpend *= specialWeights.station[ownedStations(this.player).length]
             } else if (bP.piece.group === 'utility') {
-                maxValueToSpend *= specialWeights.utility[ownedUtility().length]
+                maxValueToSpend *= specialWeights.utility[ownedUtility(this.player).length]
             } else {
                 let owners = {}
                 for (let id of groups[bP.piece.group]) {
@@ -324,6 +324,9 @@ class Bot{
             What does the bot want?
             Is there a trade that satisfies that?
             */
+           // What does the bot want
+           let wants = []
+
 
         } else if (type === 'receive') {
             // Before Trade 
@@ -401,4 +404,16 @@ function rankPlayers() {
         b.ownedPlaces.forEach(bP => valueB += bP.piece.price + bP.level * bP.piece.housePrice)
         return valueA > valueB
     })
+}
+
+function ownedStations(player) {
+    return player.ownedPlaces.filter(bP => bP.piece.type === 'station')
+}
+
+function ownedUtility(player) {
+    return player.ownedPlaces.filter(bP => bP.piece.type === 'utility')
+}
+
+function ownedGroup(player, group) {
+    return player.ownedGroup.filter(bP => bP.piece.group === group)
 }
