@@ -1769,7 +1769,7 @@ class Trade{
                     fontSize = 18;
                 }
             }
-            let but = (new Button([true,false],-30 + tmp + 200+10,240 + 22*Math.floor(i/2) + 110,images.trade.sprites[2],function(){},186,21,false,false,false,false,false,false,text,fontSize,textColor,"ArcadeBold"))
+            let but = (new Button([true,false],-30 + tmp + 200,240 + 22*Math.floor(i/2) + 110,images.trade.sprites[2],function(){},186,21,false,false,false,false,false,false,text,fontSize,textColor,"ArcadeBold"))
 
             if(self.p2.bot !== undefined || (Api.online && self.p2.colorIndex != Api.currentPlayer)){
                 but.disabled = true;
@@ -1798,7 +1798,7 @@ class Trade{
             c.font = 50*scale+"px Arcade";
             c.fillStyle = "black"
             c.textAlign = "right"
-            c.fillText(this.p2.money + "kr" + "   " +this.p1.name,880*scale,180*scale)
+            c.fillText(this.p1.money + "kr" + "   " +this.p1.name,880*scale,180*scale)
             c.textAlign = "left"
             c.fillText(this.p2.name+ "   " +this.p2.money + "kr",1070*scale,180*scale)
             this.p1PropertyButtons.forEach(e => {e.visible=true;e.draw()});
@@ -2049,7 +2049,7 @@ class PlayerBorder{
             
             let mirrorAdder = -10;
             if(!this.button.mirror){
-                mirrorAdder = 410;
+                mirrorAdder = 310;
             }
             let mirrorAdder2 = 0;
             if(!this.button.mirror){
@@ -2074,7 +2074,7 @@ class PlayerBorder{
                         c.fillStyle ="black"
                         c.textAlign = "left"
                         if(this.player.ownedPlaces[i].piece.type !== "station" && this.player.ownedPlaces[i].piece.type !== "utility"){
-                            c.fillText(this.player.ownedPlaces[i].piece.name + "  " + this.player.ownedPlaces[i].piece.rent[this.player.ownedPlaces[i].level] + "kr",this.x*scale+400*scale+ mirrorAdder*drawScale*scale,this.y*drawScale*scale + 65*drawScale*scale + 12*drawScale*i*scale - 354*scale)
+                            c.fillText(this.player.ownedPlaces[i].piece.name + "  " + this.player.ownedPlaces[i].piece.rent[this.player.ownedPlaces[i].level] + "kr",this.x*scale+400*scale+ mirrorAdder*drawScale*scale,this.y*drawScale*scale + 65*drawScale*scale + 12*drawScale*i*scale - 364*scale)
                         }else if(this.player.ownedPlaces[i].piece.type === "station"){
                             let tmp = -1;
                             this.player.ownedPlaces.forEach(e => {
@@ -2083,7 +2083,7 @@ class PlayerBorder{
                                 }
                             })
                             
-                            c.fillText(this.player.ownedPlaces[i].piece.name + "  " + 25 * Math.pow(2,tmp) + "kr",this.x*scale+400*scale+ mirrorAdder*drawScale*scale,this.y*drawScale*scale + 65*drawScale*scale + 12*drawScale*i*scale - 354*scale)
+                            c.fillText(this.player.ownedPlaces[i].piece.name + "  " + 25 * Math.pow(2,tmp) + "kr",this.x*scale+400*scale+ mirrorAdder*drawScale*scale,this.y*drawScale*scale + 65*drawScale*scale + 12*drawScale*i*scale - 364*scale)
                         }else{
                             let tmp = 0;
                             let multiply = 0;
@@ -2094,7 +2094,7 @@ class PlayerBorder{
                             })
                             if(tmp === 1){multiply = 4;}
                             if(tmp === 2){multiply = 10}
-                            c.fillText(this.player.ownedPlaces[i].piece.name + "  " + multiply + "*slag kr",this.x*scale+400*scale+ mirrorAdder*drawScale*scale,this.y*drawScale*scale + 65*drawScale*scale + 12*drawScale*i*scale - 354*scale)
+                            c.fillText(this.player.ownedPlaces[i].piece.name + "  " + multiply + "*slag kr",this.x*scale+400*scale+ mirrorAdder*drawScale*scale,this.y*drawScale*scale + 65*drawScale*scale + 12*drawScale*i*scale - 364*scale)
                         }
                     }
                     drawRotatedImageFromSpriteSheet(this.x*drawScale +715+mirrorAdder2,this.y*drawScale + 80*drawScale +12*drawScale*this.player.ownedPlaces.length -400,354*drawScale ,13*drawScale,images.playerOverlay.sprites[10],0,this.button.mirror,0,0,354,13,false)
