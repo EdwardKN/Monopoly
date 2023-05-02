@@ -120,7 +120,6 @@ class Bot{
             }
         }
 
-
         // Roll Dice | Random awaits For Temporary Alerts Fix
         Bot.thinking = true
         this.player.rollDice()
@@ -163,9 +162,9 @@ class Bot{
                 } else {
                     func = bP.piece.type === 'utility' ? 'ownedUtility' : 'ownedStations'
                 }
-
+                
                 // Someone owns more than half
-                if (moneyLeft > 2 * this.getAverageLoss(12) || players.some(player => window[func](player, ...args).length >= 0.5)) {
+                if (moneyLeft > 2 * this.getAverageLoss(12) || players.some(player => this[func](player, ...args).length >= 0.5)) {
                     this.buyPiece(bP)  
                 }
             }
