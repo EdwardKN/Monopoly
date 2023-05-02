@@ -17,20 +17,11 @@ var musicPlaying;
 var timeouts = [];
 var intervals = [];
 
-setTimeout(() => {
-    if(window.innerWidth*9 < window.innerHeight*16){
-        canvas.width = window.innerWidth;
-        canvas.height = (window.innerWidth*9)/16;
-    }else{
-        canvas.width = (window.innerHeight*16)/9;
-        canvas.height = window.innerHeight;
-    }
-    backCanvas.width = window.innerWidth;
-    backCanvas.height = window.innerHeight;
-    scale = Math.sqrt(Math.pow(canvas.width,2) + Math.pow(canvas.height,2))/2250
-}, 100);
+window.onload = fixCanvas;
 
-window.addEventListener("resize", e=> {
+window.addEventListener("resize", fixCanvas)
+
+function fixCanvas(){
     if(window.innerWidth*9 < window.innerHeight*16){
         canvas.width = window.innerWidth;
         canvas.height = (window.innerWidth*9)/16;
@@ -45,7 +36,7 @@ window.addEventListener("resize", e=> {
         y:Math.floor(window.innerHeight/2) - 416*drawScale/2
     }
     scale = Math.sqrt(Math.pow(canvas.width,2) + Math.pow(canvas.height,2))/2250
-})
+}
 
 canvas.addEventListener("mousemove",function(e){
     mouse = {
