@@ -351,7 +351,6 @@ class Bot{
                 } { after1 += cost }
             })
 
-            // Negative? Lose On It
             let d1 = after1 - before1
             let d2 = after2 - before2
             let money = board.trade.p1Slider.value - board.trade.p2Slider.value
@@ -359,7 +358,11 @@ class Bot{
             let random = this.randomness * (2 * Math.random() - 1)
             let d = d2 + random + money
 
-            if (d > 0 && d > d1) { // Better than before
+            /*
+            Better than before?
+            The other player doesn't gain more than 1/4
+            */
+            if (d > 0 && d > d1 - d / 4) {
                 board.trade.p2ConfirmButton.selected = true
             } else { board.trade.p2ConfirmButton.selected = false }
         }
