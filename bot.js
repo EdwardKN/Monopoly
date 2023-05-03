@@ -145,7 +145,7 @@ class Bot{
 
 
         if (!bP.owner && Object.keys(boardWeights).includes(`${bP.n}`) &&
-        this.player.laps >= board.settings.roundsBeforePurchase) {
+            this.player.laps >= board.settings.roundsBeforePurchase) {
             // Buy or Auction
             let moneyLeft = this.player.money - bP.piece.price
             if (moneyLeft < this.getAverageLoss(12) && board.settings.auction) { 
@@ -154,17 +154,10 @@ class Bot{
                 board.buyButton.visible = false
                 board.auctionButton.visible = false
             } else {
-                let func = bP
-                let args = []
-                if (bP.piece.group) {
-                    func = 'ownedGroup'
-                    args.push(bP.piece.group)
-                } else {
-                    func = bP.piece.type === 'utility' ? 'ownedUtility' : 'ownedStations'
-                }
-                
+                let func = bP.piece.group ? 'ownedGroup' : (bP.piece.type === 'utility' ? 'ownedUtility' : 'ownedStations')
                 // Someone owns more than half
-                if (moneyLeft > 2 * this.getAverageLoss(12) || players.some(player => this[func](player, ...args).length >= 0.5)) {
+                if (moneyLeft > 2 * this.getAverageLoss(12) || 
+                    players.some(player => window[func](player, bP.piece.group).length >= 0.5)) {
                     this.buyPiece(bP)  
                 }
             }
@@ -319,9 +312,8 @@ class Bot{
             What does the bot want?
             Is there a trade that satisfies that?
             */
-           // What does the bot want
-           let wants = []
-
+            // What does the bot want
+            let wants = []
 
         } else if (type === 'receive') {
             // Before Trade 
