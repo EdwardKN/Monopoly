@@ -189,6 +189,10 @@ var sounds = {
         type:"multiple",
         src:"./sounds/music.mp3",
     },
+    msc:{
+        type:"multiple",
+        src:"./sounds/msc.mp3",
+    },
     key:{
         type:"multiple",
         src:"./sounds/keyboard.mp3",
