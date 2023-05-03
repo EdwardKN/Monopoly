@@ -10,9 +10,13 @@ var firstclick = false;
 
 var musictimer;
 
-var musicOn = JSON.parse(getCookie("musicOn") === undefined ? false : getCookie("musicOn"));;
+var musicOn = JSON.parse(getCookie("musicOn") === undefined ? false : getCookie("musicOn"));
 
 var musicPlaying;
+
+var finish = false;
+
+var musicVolume = JSON.parse(getCookie("musicVolume") === undefined ? 100 : getCookie("musicVolume"));
 
 var timeouts = [];
 var intervals = [];
@@ -249,8 +253,8 @@ class LocalLobby {
         this.settingsButtons.push(new Button([true,false],100,220 + this.settingsButtons.length*45,images.buttons.sprites[10],function(){},500,40,false,false,false,false,false,false,"Få/förlora pengar i fängelset",42,"black"))
         this.settingsButtons.push(new Button([true,false],100,220 + this.settingsButtons.length*45,images.buttons.sprites[10],function(){},500,40,false,false,false,false,false,false,"Möjlighet att inteckna",42,"black"))
         this.settingsButtons.push(new Button([true,false],100,220 + this.settingsButtons.length*45,images.buttons.sprites[10],function(){},500,40,false,false,false,false,false,false,"Jämn utbyggnad",42,"black"))
-        this.settingsButtons.push(new Slider(456*drawScale,300*drawScale + this.settingsButtons.length*12,502*drawScale,40*drawScale,0,3000,100,true,30,"kr","Startkapital: "))
-        this.settingsButtons.push(new Slider(456*drawScale,300*drawScale + this.settingsButtons.length*12*drawScale,502*drawScale,40*drawScale,0,5,1,true,30,"","Antal varv innan köp: "))
+        this.settingsButtons.push(new Slider(456*drawScale,300*drawScale + this.settingsButtons.length*12,502*drawScale,40*drawScale,0,3000,100,true,50,"kr","Startkapital: "))
+        this.settingsButtons.push(new Slider(456*drawScale,300*drawScale + this.settingsButtons.length*12*drawScale,502*drawScale,40*drawScale,0,5,1,true,50,"","Antal varv innan köp: "))
         this.settingsButtons[2].selected = true
         this.settingsButtons[3].selected = true
         this.settingsButtons[4].selected = true
@@ -574,7 +578,7 @@ class MainMenu {
             showOnlineLobby();
         },195,52,false,false,true)
 
-        this.musicButton = new Button([true,false],-357,711,images.buttons.sprites[14],function(){
+        this.musicButton = new Button([true,false],-317+40+140,711,images.buttons.sprites[14],function(){
             document.cookie = `musicOn=${!self.musicButton.selected};Expires=Sun, 22 oct 2030 08:00:00 UTC;`;
             clearTimeout(musictimer)
             if(self.musicButton.selected){
@@ -585,16 +589,51 @@ class MainMenu {
             }else{
                 firstclick = true;
                 musicOn = true;
-                playSound(sounds.music,1,true)
+                if(finish){
+                    playSound(sounds.msc,1,true)
+                }else{
+                    playSound(sounds.music,1,true)
+                }            
             }
         },40,40,false)
-        this.fullScreenButton = new Button([true,true],-357+40,711,images.buttons.sprites[18],function(){
+        this.finishButton = new Button([true,false],-317,711,images.buttons.sprites[14],function(){
+            if(self.finishButton.selected){
+                finish = true;
+            }else{
+                finish = false;
+                
+            }
+            clearTimeout(musictimer)
+            if(musicOn){
+                musicPlaying.pause();
+            }
+            musicOn = false;
+            firstclick = true;
+            musicOn = true;
+            if(finish){
+                playSound(sounds.msc,musicVolume,true)
+            }else{
+                playSound(sounds.music,musicVolume,true)
+            }
+
+        },40,40,false)
+        this.fullScreenButton = new Button([true,true],-357,711,images.buttons.sprites[18],function(){
             if(this.selected){
                 document.documentElement.requestFullscreen()
             }else{
                 document.exitFullscreen()
             }
         },40,40,false)
+        this.volume = new Slider(240-80,1022,280,80,0,100,1,true,50,"%","",function(){
+            musicVolume = self.volume.value/100;
+            document.cookie = `musicVolume=${musicVolume};Expires=Sun, 22 oct 2030 08:00:00 UTC;`;
+            if(musicOn){
+                musicPlaying.volume = musicVolume;
+            }
+        })
+
+        this.volume.percentage = musicVolume
+
         this.musicButton.selected = !musicOn
         
         this.onlineButton.disabled = false;
@@ -606,12 +645,17 @@ class MainMenu {
                 this.localButton.visible = true;
                 this.onlineButton.visible = true;
                 this.musicButton.visible = true;
+                this.finishButton.visible = true;
                 this.fullScreenButton.visible = true;
                 this.fullScreenButton.selected = document.fullscreenElement != null;
                 this.localButton.draw();
                 this.onlineButton.draw();
                 this.musicButton.draw();
+                this.finishButton.draw();
                 this.fullScreenButton.draw();
+                this.volume.visible = true;
+                this.volume.draw();
+                
 
             }
         }
@@ -1070,8 +1114,8 @@ class Board{
         this.boardSettings = {
             freeParking:false
         }
-        this.dice1 = 0;
-        this.dice2 = 0;
+        this.dice1 = 1;
+        this.dice2 = 1;
         this.dice1Type = 0;
         this.dice2Type = 0;
         this.boardPieces = [];
@@ -1189,8 +1233,6 @@ class Board{
                     turn = (turn+1)%players.length;
                     board.textsize = measureText({font:"Arcade",text:"Just nu: " + players[turn].name});
                 }
-                board.dice1 = 0;
-                board.dice2 = 0;
 
                 board.nextPlayerButton.visible = false;
             }
@@ -1540,6 +1582,7 @@ class Board{
 
         this.showDice = function () {
             if(players[turn].animationOffset !== 0 || this.showDices === true || this.animateDices === true){
+                console.log(this.dice1Type,this.dice1-1)
                 drawIsometricImage(500,500,images.dice.sprites[0],false,this.dice1Type*64,(this.dice1-1)*64,64,64,0,0)
                 drawIsometricImage(550,400,images.dice.sprites[0],false,this.dice2Type*64,(this.dice2-1)*64,64,64,0,0)
                 this.nextPlayerButton.visible = false;
@@ -1574,7 +1617,7 @@ class Board{
     }
 }
 class Slider{
-    constructor(x,y,w,h,from,to,steps,showtext,font,unit,beginningText){
+    constructor(x,y,w,h,from,to,steps,showtext,font,unit,beginningText,onChange){
         this.x = x;
         this.y = y;
         this.w = w;
@@ -1594,7 +1637,11 @@ class Slider{
         this.from = from;
         this.to = to;
         this.last = this.value;
-
+        if(onChange === undefined){
+            this.onChange = function(){}
+        }else{
+            this.onChange = onChange;
+        }
         buttons.push(this);
         this.draw = function(){
             if (this.disabled) this.hover = false;
@@ -1605,6 +1652,7 @@ class Slider{
                 if(this.value !== this.last){
                     this.last = this.value;
                     playSound(sounds.clicks,0.1,false)
+                    this.onChange();
                 }
                 if(this.value > this.to){
                     this.value = this.to;
@@ -1617,9 +1665,11 @@ class Slider{
                 c.fillStyle = "white";
                 c.fillRect(this.x*scale + 4*scale,this.y*scale + 4*scale,this.w*scale-8*scale,this.h*scale-8*scale)
                 c.fillStyle = "black";
-                c.font = this.font*scale + " Arcade";
+                if(this.showtext){
+                c.font = this.font*scale + "px Arcade";
                 c.textAlign = "center";
-                c.fillText(this.beginningText + this.value+this.unit,this.x*scale+ + this.w/2*scale,this.y*scale + this.h/1.5*scale)
+                    c.fillText(this.beginningText + this.value+this.unit,this.x*scale+ + this.w/2*scale,this.y*scale + this.h/1.5*scale)
+                }
                 c.fillRect(this.x*scale + (this.percentage*(this.w-8))*scale,this.y*scale,10*scale,this.h*scale)
             }
             if(detectCollition(this.x*scale,this.y*scale,this.w*scale,this.h*scale,mouse.realX,mouse.realY,1,1)){
@@ -1676,7 +1726,7 @@ class Trade{
         };
 
         let self = this;
-        this.closeButton = new Button([false,false],364 + 128 +71,290-50,images.buttons.sprites[7],function(){if (Api.online) { Api.tradeConcluded(self.p2.colorIndex, false); } self.closeButton.visible = false;board.trade = undefined;board.getToMainMenuButton.visible = true; players.forEach(e => {e.playerBorder.button.disabled = false})},18,18,true,
+        this.closeButton = new Button([false,false],364 + 128 +71,290-50,images.buttons.sprites[7],function(){if (Api.online) { Api.tradeConcluded(self.p2.colorIndex, false); } self.closeButton.visible = false;board.trade = undefined;board.getToMainMenuButton.visible = true; players.forEach(e => {e.playerBorder.button.disabled = false})},18,18,false,
         false,false,false,false,{x:66,y:70,w:1025+512+280,h:1020})
         this.closeButton.visible = true;
 
@@ -1690,9 +1740,12 @@ class Trade{
                 }
             }
         },150,50)
-        if(this.p1.bot === undefined){
-            this.p1ConfirmButton.visible = true;
+        if(this.p1.bot !== undefined){
+            this.p1ConfirmButton.disabled = true;
+            this.p1Slider.disabled = true;
         }
+        this.p1ConfirmButton.visible = true;
+
         if (Api.online && this.p1.colorIndex != Api.currentPlayer) {
             this.p2ConfirmButton.disabled = true;
             this.p1Slider.disabled = true;
@@ -1700,9 +1753,12 @@ class Trade{
 
         this.p2ConfirmButton = new Button([true,false],180 +64+35,680,images.trade.sprites[1],function(){},150,50)
         this.p2Slider = new Slider(1050,220,742,60,0,this.p2.money,10,true,30,"kr","")
-        if(this.p2.bot === undefined){
-            this.p2ConfirmButton.visible = true;
+        if(this.p2.bot !== undefined){
+            this.p2ConfirmButton.disabled = true;
+            this.p2Slider.disabled = true;
         }
+        this.p2ConfirmButton.visible = true;
+
         if (Api.online && this.p2.colorIndex != Api.currentPlayer) {
             this.p2ConfirmButton.disabled = true;
             this.p2Slider.disabled = true;
@@ -1781,14 +1837,11 @@ class Trade{
             this.closeButton.draw();
             this.p1ConfirmButton.draw();
             this.p2ConfirmButton.draw();
-            if(p1.bot === undefined){
-                this.p1Slider.visible = true;
-                this.p1Slider.draw();
-            }
-            if(p2.bot === undefined){
-                this.p2Slider.visible = true;
-                this.p2Slider.draw();
-            }
+            
+            this.p1Slider.visible = true;
+            this.p1Slider.draw();
+            this.p2Slider.visible = true;
+            this.p2Slider.draw();
             c.font = 50*scale+"px Arcade";
             c.fillStyle = "black"
             c.textAlign = "right"
@@ -2095,7 +2148,7 @@ class PlayerBorder{
                     drawRotatedImageFromSpriteSheet(this.x*drawScale +715+mirrorAdder2,this.y*drawScale + 80*drawScale +12*drawScale*(this.player.ownedPlaces.length+1) -400,354*drawScale ,13*drawScale,images.playerOverlay.sprites[10],0,this.button.mirror,0,0,354,13,false)
                     drawRotatedImageFromSpriteSheet(this.x*drawScale +715+mirrorAdder2,this.y*drawScale + 80*drawScale +12*drawScale*(this.player.ownedPlaces.length+2) -400,354*drawScale ,20*drawScale,images.playerOverlay.sprites[9],0,this.button.mirror,0,0,354,27,false)
                     if (!Api.online) {
-                        if(players[turn] !== this.player && board.currentCard === undefined && board.trade === undefined && players[turn].bot === undefined && players[turn].animationOffset === 0 && board.animateDices === false && board.showDices === false && this.player.bot === undefined){
+                        if(players[turn] !== this.player && board.currentCard === undefined && board.trade === undefined && players[turn].bot === undefined && players[turn].animationOffset === 0 && board.animateDices === false && board.showDices === false){
                             this.createTradebutton.visible = true;
                         }else{
                             this.createTradebutton.visible = false;
@@ -2142,7 +2195,7 @@ class PlayerBorder{
                     drawRotatedImageFromSpriteSheet(this.x*drawScale +715,this.y*drawScale - 25*drawScale*1.5 -12*drawScale*(this.player.ownedPlaces.length+1) -400,354*drawScale ,13*drawScale,images.playerOverlay.sprites[10],0,this.button.mirror,0,0,354,13,false)
                     drawRotatedImageFromSpriteSheet(this.x*drawScale +715,this.y*drawScale - 25*drawScale*1.5 -12*drawScale*(this.player.ownedPlaces.length+3) -400,354*drawScale ,27*drawScale,images.playerOverlay.sprites[9],180,!this.button.mirror,0,0,354,27,false)
                     this.createTradebutton.y = this.y - 50 - 12*this.player.ownedPlaces.length;
-                    if(players[turn] !== this.player && board.currentCard === undefined && board.trade === undefined && players[turn].bot === undefined && players[turn].animationOffset === 0 && board.animateDices === false && board.showDices === false && this.player.bot === undefined){
+                    if(players[turn] !== this.player && board.currentCard === undefined && board.trade === undefined && players[turn].bot === undefined && players[turn].animationOffset === 0 && board.animateDices === false && board.showDices === false){
                         this.createTradebutton.visible = true;
                     }else{
                         this.createTradebutton.visible = false;
