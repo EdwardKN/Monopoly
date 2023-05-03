@@ -318,7 +318,6 @@ class Bot{
         } else if (type === 'receive') {
             // Before Trade 
             let otherPlayer = board.trade.p1 
-
             let before1 = 0
             let before2 = 0
             
@@ -345,16 +344,17 @@ class Bot{
 
             let d1 = after1 - before1
             let d2 = after2 - before2
-            let money = board.trade.p1Slider.value - board.trade.p2Slider.value
-
-            let random = this.randomness * (2 * Math.random() - 1)
-            let d = d2 + random + money
+            let moneyDiff = board.trade.p1Slider.value - board.trade.p2Slider.value
+            d1 -= moneyDiff
+            d2 += moneyDiff
+            d2 += this.randomness * (2 * Math.random() - 1)
 
             /*
             Better than before?
             The other player doesn't gain more than 1/4
+            that the bot gains
             */
-            if (d > 0 && d > d1 - d / 4) {
+            if (d2 > 0 && d2 > d1 - d2 / 4) {
                 board.trade.p2ConfirmButton.selected = true
             } else { board.trade.p2ConfirmButton.selected = false }
         }
