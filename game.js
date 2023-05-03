@@ -596,7 +596,7 @@ class MainMenu {
                 }            
             }
         },40,40,false)
-        this.finishButton = new Button([true,false],-317,711,images.buttons.sprites[14],function(){
+        this.finishButton = new Button([true,false],-317,711,images.buttons.sprites[19],function(){
             if(self.finishButton.selected){
                 finish = true;
             }else{
