@@ -14,7 +14,7 @@ var musicOn = JSON.parse(getCookie("musicOn") === undefined ? false : getCookie(
 
 var musicPlaying;
 
-var finish = false;
+var finish = JSON.parse(getCookie("finish") === undefined ? false : getCookie("finish"));;
 
 var musicVolume = JSON.parse(getCookie("musicVolume") === undefined ? 100 : getCookie("musicVolume"));
 
@@ -603,6 +603,7 @@ class MainMenu {
                 finish = false;
                 
             }
+            document.cookie = `finish=${finish};Expires=Sun, 22 oct 2030 08:00:00 UTC;`;
             clearTimeout(musictimer)
             if(musicOn){
                 musicPlaying.pause();
@@ -617,6 +618,7 @@ class MainMenu {
             }
 
         },40,40,false)
+        this.finishButton.selected = finish;
         this.fullScreenButton = new Button([true,true],-357,711,images.buttons.sprites[18],function(){
             if(this.selected){
                 document.documentElement.requestFullscreen()
