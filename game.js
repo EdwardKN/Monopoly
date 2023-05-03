@@ -2941,7 +2941,7 @@ class BoardPiece{
                 alert("Få 10kr av alla andra spelare")
                 player.money += (players.length-1)*10
                 player.playerBorder.startMoneyAnimation((players.length-1)*10)
-                players.forEach(e=> {if(e !== player){e.money-=10;e.playerBorder.startMoneyAnimation(-50,true)}})
+                players.forEach(e=> {if(e !== player){e.money-=10;e.playerBorder.startMoneyAnimation(-10,true)}})
             }
             if(random === 11){
                 alert("Få 100kr")
