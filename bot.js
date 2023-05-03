@@ -393,8 +393,8 @@ function getPieceRent(boardPiece, steps, player) {
 
 function rankPlayers() {
     return players.slice().sort((a,b) => {
-        let valueA = 0
-        let valueB = 0
+        let valueA = a.money
+        let valueB = b.money
         a.ownedPlaces.forEach(bP => valueA += bP.piece.price + bP.level * bP.piece.housePrice)
         b.ownedPlaces.forEach(bP => valueB += bP.piece.price + bP.level * bP.piece.housePrice)
         return valueA > valueB
