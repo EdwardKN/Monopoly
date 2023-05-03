@@ -410,5 +410,5 @@ function ownedUtility(player) {
 }
 
 function ownedGroup(player, group) {
-    return player.ownedGroup.filter(bP => bP.piece.group === group)
+    return player.ownedPlaces.filter(bP => bP.piece.group === group)
 }
