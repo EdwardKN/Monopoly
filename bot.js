@@ -170,14 +170,12 @@ class Bot{
         3. Trade
         */
 
-
         // Unmortgage
         // 1.1 * (bP.piece.price / 2)
         for (let bP of this.player.ownedPlaces) {
             if (!bP.mortgaged) { continue }
 
         }
-
 
         if (this.player.rolls) {
             this.player.numberOfRolls = 0
@@ -188,7 +186,6 @@ class Bot{
         Bot.thinking = false
         this.player.rolls = false
     }
-
 
     buyPiece(boardPiece) {
         this.player.money -= boardPiece.piece.price
@@ -314,6 +311,8 @@ class Bot{
             */
             // What does the bot want
             let wants = []
+            // Filter groups, stations, utility
+
 
         } else if (type === 'receive') {
             // Before Trade 
@@ -370,9 +369,8 @@ function probabilityOfNumber(target) {
     return count / 36
 }
 
-function hasGroup(group, player) {
-    return groups[group].every(pos => !board.boardPieces[pos].mortgaged
-        && board.boardPieces[pos].owner === player)
+function hasGroup(player, group) {
+    return ownedGroup(player, group).length === groups[group].length
 }
 
 function getPieceRent(boardPiece, steps, player) {
@@ -382,7 +380,7 @@ function getPieceRent(boardPiece, steps, player) {
     } else if (boardPiece.piece.type === 'utility') {
         return steps * (boardPiece.owner.ownedPlaces.some(bP => bP.piece.type === 'utility') ? 10 : 4)
     } else {
-        return boardPiece.piece.rent[boardPiece.level] * (hasGroup(boardPiece.piece.group, boardPiece.owner) ? 2 : 1)
+        return boardPiece.piece.rent[boardPiece.level] * (hasGroup(boardPiece.owner, boardPiece.piece.group) ? 2 : 1)
     }
 }
 
