@@ -37,7 +37,7 @@ if(fastSpeed === true){
     speeds = {
         botMin: 100,
         botMax: 200,
-        stepSpeed: 100,
+        stepSpeed: 50,
         auctionSpeed: 100,
         diceSpeed:{
             counter:1,
@@ -133,7 +133,8 @@ var images = {
         "./images/buttons/sellbutton","./images/buttons/mortgage","./images/buttons/arrowup","./images/buttons/arrowdown",
         "./images/buttons/buythislawn","./images/buttons/exitCard","./images/buttons/auction","./images/buttons/suggestatrade",
         "./images/buttons/setting","./images/buttons/start","./images/buttons/back","./images/buttons/bot","./images/buttons/music",
-        "./images/buttons/no","./images/buttons/yes","./images/buttons/menu",
+        "./images/buttons/no","./images/buttons/yes","./images/buttons/menu","./images/buttons/fullscreen","./images/buttons/flag",
+        "./images/buttons/okej"
         ]
     },
     auction:{
@@ -161,6 +162,12 @@ var images = {
         src:["./images/playercolorbuttons/playercolorbutton","./images/playercolorbuttons/playercolorbutton2","./images/playercolorbuttons/playercolorbutton3","./images/playercolorbuttons/playercolorbutton4",
         "./images/playercolorbuttons/playercolorbutton5","./images/playercolorbuttons/playercolorbutton6","./images/playercolorbuttons/playercolorbutton7","./images/playercolorbuttons/playercolorbutton8","./images/playercolorbuttons/unselected"
         ]
+    },
+    chanceCards:{
+        src:["./images/community card and chance card/emptychancecard","./images/community card and chance card/gatillstart","./images/community card and chance card/gatillhassleholm"]
+    },
+    communityCards:{
+        src:["./images/community card and chance card/emptycommunitycard"]
     }
 };
 
@@ -188,6 +195,10 @@ var sounds = {
     music:{
         type:"multiple",
         src:"./sounds/music.mp3",
+    },
+    msc:{
+        type:"multiple",
+        src:"./sounds/msc.mp3",
     },
     key:{
         type:"multiple",

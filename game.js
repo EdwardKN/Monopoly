@@ -10,27 +10,22 @@ var firstclick = false;
 
 var musictimer;
 
-var musicOn = JSON.parse(getCookie("musicOn") === -1 ? false : getCookie("musicOn"));;
+var musicOn = JSON.parse(getCookie("musicOn") === undefined ? false : getCookie("musicOn"));
 
 var musicPlaying;
+
+var finish = JSON.parse(getCookie("finish") === undefined ? false : getCookie("finish"));;
+
+var musicVolume = JSON.parse(getCookie("musicVolume") === undefined ? 100 : getCookie("musicVolume"));
 
 var timeouts = [];
 var intervals = [];
 
-setTimeout(() => {
-    if(window.innerWidth*9 < window.innerHeight*16){
-        canvas.width = window.innerWidth;
-        canvas.height = (window.innerWidth*9)/16;
-    }else{
-        canvas.width = (window.innerHeight*16)/9;
-        canvas.height = window.innerHeight;
-    }
-    backCanvas.width = window.innerWidth;
-    backCanvas.height = window.innerHeight;
-    scale = Math.sqrt(Math.pow(canvas.width,2) + Math.pow(canvas.height,2))/2250
-}, 100);
+window.onload = fixCanvas;
 
-window.addEventListener("resize", e=> {
+window.addEventListener("resize", fixCanvas)
+
+function fixCanvas(){
     if(window.innerWidth*9 < window.innerHeight*16){
         canvas.width = window.innerWidth;
         canvas.height = (window.innerWidth*9)/16;
@@ -45,7 +40,7 @@ window.addEventListener("resize", e=> {
         y:Math.floor(window.innerHeight/2) - 416*drawScale/2
     }
     scale = Math.sqrt(Math.pow(canvas.width,2) + Math.pow(canvas.height,2))/2250
-})
+}
 
 canvas.addEventListener("mousemove",function(e){
     mouse = {
@@ -61,7 +56,11 @@ canvas.addEventListener("mousemove",function(e){
 window.addEventListener("mousedown",function(e){
     if(firstclick === false && musicOn){
         firstclick = true;
-        playSound(sounds.music,1,true)
+        if(finish){
+            playSound(sounds.msc,musicVolume,true)
+        }else{
+            playSound(sounds.music,musicVolume,true)
+        }
     }
     buttons.forEach(e =>{
         e.click();
@@ -239,6 +238,7 @@ function startGame(playerlist,settings){
         tmpArray.splice(tmpI,1)
     }
     turn = randomIntFromRange(0,playerlist.length-1)
+    board.textsize = measureText({font:"Arcade",text:"Just nu: " + players[turn].name});
     players.forEach(e=> e.playerBorder.init())
     Bot.boardInfo = players.reduce((dict, player, i) => { dict[i] = player.ownedPlaces; return dict }, {})
 }
@@ -250,15 +250,15 @@ class LocalLobby {
         this.playerInputs = [];
         this.amountBots = 0;
         this.settingsButtons = [];
-        this.settingsButtons.push(new Button(true,100,220,images.buttons.sprites[10],function(){},500,40,false,false,false,false,false,false,"Ge alla skattepengar till fri parkering",42,"black"))
-        this.settingsButtons.push(new Button(true,100,220+ this.settingsButtons.length*45,images.buttons.sprites[10],function(){},500,40,false,false,false,false,false,false,"Ge alla bankpengar till fri parkering",42,"black"))
-        this.settingsButtons.push(new Button(true,100,220 + this.settingsButtons.length*45,images.buttons.sprites[10],function(){},500,40,false,false,false,false,false,false,"Dubbel hyra på komplett färggrupp",42,"black"))
-        this.settingsButtons.push(new Button(true,100,220 + this.settingsButtons.length*45,images.buttons.sprites[10],function(){},500,40,false,false,false,false,false,false,"Auktioner",42,"black"))
-        this.settingsButtons.push(new Button(true,100,220 + this.settingsButtons.length*45,images.buttons.sprites[10],function(){},500,40,false,false,false,false,false,false,"Få/förlora pengar i fängelset",42,"black"))
-        this.settingsButtons.push(new Button(true,100,220 + this.settingsButtons.length*45,images.buttons.sprites[10],function(){},500,40,false,false,false,false,false,false,"Möjlighet att inteckna",42,"black"))
-        this.settingsButtons.push(new Button(true,100,220 + this.settingsButtons.length*45,images.buttons.sprites[10],function(){},500,40,false,false,false,false,false,false,"Jämn utbyggnad",42,"black"))
-        this.settingsButtons.push(new Slider(456*drawScale,300*drawScale + this.settingsButtons.length*12,502*drawScale,40*drawScale,0,3000,100,true,30,"kr","Startkapital: "))
-        this.settingsButtons.push(new Slider(456*drawScale,300*drawScale + this.settingsButtons.length*12*drawScale,502*drawScale,40*drawScale,0,5,1,true,30,"","Antal varv innan köp: "))
+        this.settingsButtons.push(new Button([true,false],100,220,images.buttons.sprites[10],function(){},500,40,false,false,false,false,false,false,"Ge alla skattepengar till fri parkering",42,"black"))
+        this.settingsButtons.push(new Button([true,false],100,220+ this.settingsButtons.length*45,images.buttons.sprites[10],function(){},500,40,false,false,false,false,false,false,"Ge alla bankpengar till fri parkering",42,"black"))
+        this.settingsButtons.push(new Button([true,false],100,220 + this.settingsButtons.length*45,images.buttons.sprites[10],function(){},500,40,false,false,false,false,false,false,"Dubbel hyra på komplett färggrupp",42,"black"))
+        this.settingsButtons.push(new Button([true,false],100,220 + this.settingsButtons.length*45,images.buttons.sprites[10],function(){},500,40,false,false,false,false,false,false,"Auktioner",42,"black"))
+        this.settingsButtons.push(new Button([true,false],100,220 + this.settingsButtons.length*45,images.buttons.sprites[10],function(){},500,40,false,false,false,false,false,false,"Få/förlora pengar i fängelset",42,"black"))
+        this.settingsButtons.push(new Button([true,false],100,220 + this.settingsButtons.length*45,images.buttons.sprites[10],function(){},500,40,false,false,false,false,false,false,"Möjlighet att inteckna",42,"black"))
+        this.settingsButtons.push(new Button([true,false],100,220 + this.settingsButtons.length*45,images.buttons.sprites[10],function(){},500,40,false,false,false,false,false,false,"Jämn utbyggnad",42,"black"))
+        this.settingsButtons.push(new Slider(456*drawScale,300*drawScale + this.settingsButtons.length*12,502*drawScale,40*drawScale,0,3000,100,true,50,"kr","Startkapital: "))
+        this.settingsButtons.push(new Slider(456*drawScale,300*drawScale + this.settingsButtons.length*12*drawScale,502*drawScale,40*drawScale,0,5,1,true,50,"","Antal varv innan köp: "))
         this.settingsButtons[2].selected = true
         this.settingsButtons[3].selected = true
         this.settingsButtons[4].selected = true
@@ -268,7 +268,7 @@ class LocalLobby {
         this.readyPlayers = [];
         this.settingsButtons[1].disabled = true;
 
-        this.backButton = new Button(false,-337,220,images.buttons.sprites[12],function(){
+        this.backButton = new Button([false,false],-337,220,images.buttons.sprites[12],function(){
             self.current = false;
             menus[0].current = true;
             self.backButton.visible = false;
@@ -281,7 +281,7 @@ class LocalLobby {
                 e.colorButtons.forEach(g => g.visible = false)
                 })
         },325,60,false,false,false,false,false,false)
-        this.startButton = new Button(false,250,650,images.buttons.sprites[11],function(){
+        this.startButton = new Button([false,false],250,650,images.buttons.sprites[11],function(){
             let playerlist = []
 
             self.readyPlayers.forEach(e =>{
@@ -343,7 +343,7 @@ class LocalLobby {
                 colorId:undefined,
                 y:(self.playerInputs.length*110 - 100),
                 textInput: new TextInput(40,300,560,80,true,50,10),
-                botButton: new Button(true,-50 +42,self.playerInputs.length*55 - 32,images.buttons.sprites[13],function(){
+                botButton: new Button([true,false],-50 +42,self.playerInputs.length*55 - 32,images.buttons.sprites[13],function(){
                     self.playerInputs[id].textInput.htmlElement.value = ""
                     if(self.playerInputs[id].botButton.selected){
                         if(self.playerInputs[id].colorId !== undefined){
@@ -360,7 +360,7 @@ class LocalLobby {
                         self.playerInputs[id].textInput.htmlElement.disabled = false;
                     }
                 },40,40,false,false),
-                colorButton: new Button(true,-50,self.playerInputs.length*55 - 32,images.colorButtons.sprites[8],function(){
+                colorButton: new Button([true,false],-50,self.playerInputs.length*55 - 32,images.colorButtons.sprites[8],function(){
                     if(self.playerInputs[id].colorButton.selected){
                         self.disableAll = true;
                         if(id < 4){
@@ -380,7 +380,7 @@ class LocalLobby {
                 colorButtons: []
             }
             for(let i = 0; i < 8; i++){
-                tmp.colorButtons.push(new Button(true,110 + (i%4)*47,self.playerInputs.length*55 +150 + Math.floor(i/2)*50,images.colorButtons.sprites[i],function(){
+                tmp.colorButtons.push(new Button([true,false],110 + (i%4)*47,self.playerInputs.length*55 +150 + Math.floor(i/2)*50,images.colorButtons.sprites[i],function(){
                     let select = self.playerInputs[id].colorButtons[i].selected;
                     self.playerInputs[id].colorButtons.forEach(e => {
                         e.selected = false;
@@ -565,23 +565,24 @@ class MainMenu {
         this.current = true;
         let self = this;
 
-        this.localButton = new Button(false,-322,341,images.mainMenu.sprites[1],function(){
+        this.localButton = new Button([false,false],-322,381,images.mainMenu.sprites[1],function(){
             self.current = false;
             menus[1].current = true;
             self.localButton.visible = false;
             self.onlineButton.visible = false;
             self.musicButton.visible = false;
+            self.fullScreenButton.visible = false;
         },195,52,false,false,true)
-        this.onlineButton = new Button(false,-322,539,images.mainMenu.sprites[2],function(){
+        this.onlineButton = new Button([false,false],-322,539,images.mainMenu.sprites[2],function(){
             self.current = false;
             self.localButton.visible = false;
             self.onlineButton.visible = false;
             self.musicButton.visible = false;
-
+            self.fullScreenButton.visible = false;
             showOnlineLobby();
         },195,52,false,false,true)
 
-        this.musicButton = new Button(true,-357,711,images.buttons.sprites[14],function(){
+        this.musicButton = new Button([true,false],-317+40+140,711,images.buttons.sprites[14],function(){
             document.cookie = `musicOn=${!self.musicButton.selected};Expires=Sun, 22 oct 2030 08:00:00 UTC;`;
             clearTimeout(musictimer)
             if(self.musicButton.selected){
@@ -592,9 +593,53 @@ class MainMenu {
             }else{
                 firstclick = true;
                 musicOn = true;
-                playSound(sounds.music,1,true)
+                if(finish){
+                    playSound(sounds.msc,1,true)
+                }else{
+                    playSound(sounds.music,1,true)
+                }            
             }
         },40,40,false)
+        this.finishButton = new Button([true,false],-317,711,images.buttons.sprites[19],function(){
+            if(self.finishButton.selected){
+                finish = true;
+            }else{
+                finish = false;
+                
+            }
+            document.cookie = `finish=${finish};Expires=Sun, 22 oct 2030 08:00:00 UTC;`;
+            clearTimeout(musictimer)
+            if(musicOn){
+                musicPlaying.pause();
+            }
+            musicOn = false;
+            firstclick = true;
+            musicOn = true;
+            if(finish){
+                playSound(sounds.msc,musicVolume,true)
+            }else{
+                playSound(sounds.music,musicVolume,true)
+            }
+
+        },40,40,false)
+        this.finishButton.selected = finish;
+        this.fullScreenButton = new Button([true,true],-357,711,images.buttons.sprites[18],function(){
+            if(this.selected){
+                document.documentElement.requestFullscreen()
+            }else{
+                document.exitFullscreen()
+            }
+        },40,40,false)
+        this.volume = new Slider(240-80,1022,280,80,0,100,1,true,50,"%","",function(){
+            musicVolume = self.volume.value/100;
+            document.cookie = `musicVolume=${musicVolume};Expires=Sun, 22 oct 2030 08:00:00 UTC;`;
+            if(musicOn){
+                musicPlaying.volume = musicVolume;
+            }
+        })
+
+        this.volume.percentage = musicVolume
+
         this.musicButton.selected = !musicOn
         
         this.onlineButton.disabled = false;
@@ -606,9 +651,18 @@ class MainMenu {
                 this.localButton.visible = true;
                 this.onlineButton.visible = true;
                 this.musicButton.visible = true;
+                this.finishButton.visible = true;
+                this.fullScreenButton.visible = true;
+                this.fullScreenButton.selected = document.fullscreenElement != null;
                 this.localButton.draw();
                 this.onlineButton.draw();
                 this.musicButton.draw();
+                this.finishButton.draw();
+                this.fullScreenButton.draw();
+                this.volume.visible = true;
+                this.volume.draw();
+                
+
             }
         }
     }
@@ -690,13 +744,15 @@ async function init(){
     }else{
         menus.push(new MainMenu())
         menus.push(new LocalLobby())
-        update();
+
+
         menus[0].localButton.visible = false;
         menus[0].onlineButton.visible = false;
         menus[0].musicButton.visible = false;
         menus[0].current = false;
+
         let playerlist = []
-        let playerAmount = 2;
+        let playerAmount = 4;
         let botAmount = 0;
         let useableColors = [0,1,2,3,4,5,6,7]
         for(let i = 0; i < (playerAmount+botAmount); i++){
@@ -719,6 +775,7 @@ async function init(){
             useableColors.splice(random,1)
             
         }
+
         let settings = {
             freeParking:false,
             allFreeparking:false,
@@ -731,13 +788,15 @@ async function init(){
             roundsBeforePurchase:0,
         }
         startGame(playerlist,settings)
+        update();
+
     }
 }
 
 function update(){
     requestAnimationFrame(update);
 
-    c.imageSmoothingEnabled = true;
+    c.imageSmoothingEnabled = false;
     c.clearRect(0,0,canvas.width,canvas.height);
     showBackground();
 
@@ -867,6 +926,7 @@ async function showOnlineLobby() {
 
         document.body.addEventListener("new_turn_event", (evt) => {
             turn = evt.detail.id;
+            board.textsize = measureText({font:"Arcade",text:"Just nu: " + players[turn].name});
             if (Api.currentPlayer == turn) {
                 board.rollDiceButton.visible = true;
                 board.nextPlayerButton.visible = false;
@@ -1065,8 +1125,8 @@ class Board{
         this.boardSettings = {
             freeParking:false
         }
-        this.dice1 = 0;
-        this.dice2 = 0;
+        this.dice1 = 1;
+        this.dice2 = 1;
         this.dice1Type = 0;
         this.dice2Type = 0;
         this.boardPieces = [];
@@ -1076,8 +1136,10 @@ class Board{
         this.win = false;
         this.auction = undefined;
         this.trade = undefined;
+        this.currentShowingCard = undefined;
         let self = this;
-        this.musicButton = new Button(true,51,530,images.buttons.sprites[14],function(){
+        this.textsize = 0;
+        this.musicButton = new Button([true,false],31,530,images.buttons.sprites[14],function(){
             document.cookie = `musicOn=${!self.musicButton.selected};Expires=Sun, 22 oct 2030 08:00:00 UTC;`;
             clearTimeout(musictimer)
             if(self.musicButton.selected){
@@ -1088,24 +1150,36 @@ class Board{
             }else{
                 firstclick = true;
                 musicOn = true;
-                playSound(sounds.music,1,true)
+                if(finish){
+                    playSound(sounds.msc,1,true)
+                }else{
+                    playSound(sounds.music,1,true)
+                }            
             }
         },40,40,false)
         this.musicButton.selected = !musicOn;
+        this.fullScreenButton = new Button([true,true],81,530,images.buttons.sprites[18],function(){
+            if(this.selected){
+                document.documentElement.requestFullscreen()
+            }else{
+                document.exitFullscreen()
+            }
+        },40,40,false)
 
-        this.goToMainMenuButton = new Button(false,111,530,images.buttons.sprites[15],function(){
+        this.goToMainMenuButton = new Button([false,false],143,530,images.buttons.sprites[15],function(){
             board.getToMainMenuButton.selected = false;
             board.goToMainMenuButton.visible = false;
             board.escapeConfirm.visible = false;
             board.getToMainMenuButton.visible = true;
             board.musicButton.visible = false;
+            board.fullScreenButton.visible = false;
         },40,40,false,false,false,false,false,{x:722,y:336,w:256*drawScale,h:224*drawScale});
-        this.escapeConfirm = new Button(false,171,530,images.buttons.sprites[16],function(){
+        this.escapeConfirm = new Button([false,false],191,530,images.buttons.sprites[16],function(){
             board.getToMainMenuButton.selected = false;
             board.goToMainMenuButton.visible = false;
             board.escapeConfirm.visible = false;
             board.getToMainMenuButton.visible = false;
-            board.musicButton.visible = false;
+            board.fullScreenButton.visible = false;
             players.forEach(e => buttons.splice(buttons.indexOf(e.playerBorder.button),1))
             players = [];
             menus[0].current = true;
@@ -1116,12 +1190,12 @@ class Board{
             timeouts = [];
         },40,40,false,false,false,false,false,);
 
-        this.getToMainMenuButton = new Button(true,90 ,691 + 20,images.buttons.sprites[17],function(){
+        this.getToMainMenuButton = new Button([true,false],90 ,691 + 20,images.buttons.sprites[17],function(){
         },80,40,false,false,false,true,false,false)
 
         this.getToMainMenuButton.visible = true;
 
-        this.payJailButton = new Button(false,-10,520,images.jailMenu.sprites[1],function(){
+        this.payJailButton = new Button([false,false],-10,520,images.jailMenu.sprites[1],function(){
             players[turn].money -= 50;
             if(board.settings.freeParking){
                 board.boardPieces[20].money += 50;
@@ -1134,7 +1208,7 @@ class Board{
             players[turn].playerBorder.startMoneyAnimation(-50);
                 
         },82,35);
-        this.rollJailButton = new Button(false,85,520,images.jailMenu.sprites[2],function(){
+        this.rollJailButton = new Button([false,false],85,520,images.jailMenu.sprites[2],function(){
             let dice1 = randomIntFromRange(1,6);
             let dice2 = randomIntFromRange(1,6);
             players[turn].rolls = true;
@@ -1157,15 +1231,15 @@ class Board{
             board.rollJailButton.visible = false;
             board.jailCardButton.visible = false;
         },82,35);
-        this.jailCardButton = new Button(false,180,520,images.jailMenu.sprites[3],function(){
+        this.jailCardButton = new Button([false,false],180,520,images.jailMenu.sprites[3],function(){
             players[turn].jailcardAmount--;
             players[turn].getOutOfJail("CARD");
             board.payJailButton.visible = false;
             board.rollJailButton.visible = false;
             board.jailCardButton.visible = false;
         },82,35);
-        this.rollDiceButton = new Button(false,76,530,images.buttons.sprites[0],function(){players[turn].rollDice()},107,23,false,false,false,true)
-        this.nextPlayerButton = new Button(false,76,530,images.buttons.sprites[1],function(){
+        this.rollDiceButton = new Button([false,false],76,530,images.buttons.sprites[0],function(){players[turn].rollDice()},107,23,false,false,false,true)
+        this.nextPlayerButton = new Button([false,false],76,530,images.buttons.sprites[1],function(){
             if(players[turn].money >= 0){
                 players[turn].rolls = false;
                 players[turn].numberOfRolls = 0;
@@ -1173,9 +1247,8 @@ class Board{
                     Api.changeTurn();
                 } else {
                     turn = (turn+1)%players.length;
+                    board.textsize = measureText({font:"Arcade",text:"Just nu: " + players[turn].name});
                 }
-                board.dice1 = 0;
-                board.dice2 = 0;
 
                 board.nextPlayerButton.visible = false;
             }
@@ -1189,7 +1262,7 @@ class Board{
         }
 
         this.currentCard = undefined;
-        this.cardCloseButton = new Button(false,241,318,images.buttons.sprites[7],function(){
+        this.cardCloseButton = new Button([false,false],241,318,images.buttons.sprites[7],function(){
             board.currentCard = undefined;
             board.sellButton.visible = false;
             board.mortgageButton.visible = false;
@@ -1197,7 +1270,7 @@ class Board{
             board.downgradeButton.visible = false;
             board.getToMainMenuButton.visible = true;
         },18,18,false,false,false,false,false,{x:722,y:236,w:256*drawScale,h:324*drawScale})
-        this.sellButton = new Button(false,130,580,images.buttons.sprites[2],function(){
+        this.sellButton = new Button([false,false],130,580,images.buttons.sprites[2],function(){
             if(board.currentCard.mortgaged === false){
                 players[turn].money+= board.currentCard.piece.price/2
                 players[turn].checkDebt(board.boardPieces[20]);
@@ -1206,7 +1279,7 @@ class Board{
             players[turn].ownedPlaces.splice(players[turn].ownedPlaces.indexOf(board.currentCard),1);
             board.currentCard.owner = undefined;
         },40,40);
-        this.mortgageButton = new Button(false,80,580,images.buttons.sprites[3],function(){
+        this.mortgageButton = new Button([false,false],80,580,images.buttons.sprites[3],function(){
             if(board.currentCard.mortgaged === true){
                 if (Api.online) {
                     Api.tilePurchased(board.currentCard, (board.currentCard.piece.price/2)*1.1);
@@ -1231,7 +1304,7 @@ class Board{
                 players[turn].checkDebt(board.boardPieces[20]);
             }
         },40,40);
-        this.upgradeButton = new Button(false,75,580,images.buttons.sprites[4],function(){
+        this.upgradeButton = new Button([false,false],75,580,images.buttons.sprites[4],function(){
             if (Api.online) {
                 Api.propertyChangedLevel(board.currentCard, board.currentCard.level + 1, true);
                 return;
@@ -1244,7 +1317,7 @@ class Board{
             }
             players[turn].playerBorder.startMoneyAnimation(-board.currentCard.piece.housePrice)
         },40,40);
-            this.downgradeButton = new Button(false,25,580,images.buttons.sprites[5],function(){
+            this.downgradeButton = new Button([false,false],25,580,images.buttons.sprites[5],function(){
             if (Api.online) {
                 Api.propertyChangedLevel(board.currentCard, board.currentCard.level - 1, false);
                 return;
@@ -1254,7 +1327,7 @@ class Board{
             players[turn].playerBorder.startMoneyAnimation(board.currentCard.piece.housePrice/2)
             players[turn].checkDebt(board.boardPieces[20]);
         },40,40);
-        this.buyButton = new Button(false,25,580,images.buttons.sprites[6],function(){
+        this.buyButton = new Button([false,false],25,580,images.buttons.sprites[6],function(){
             if (Api.online) {
                 Api.tilePurchased(board.currentCard);
                 return;
@@ -1272,7 +1345,7 @@ class Board{
             board.auctionButton.visible = false;
         },97,40);
 
-        this.auctionButton = new Button(false,25 + 117,580,images.buttons.sprites[8],function(){
+        this.auctionButton = new Button([false,false],25 + 117,580,images.buttons.sprites[8],function(){
             if (Api.online) {
                 Api.auctionShow(board.currentCard);
                 return;
@@ -1293,8 +1366,9 @@ class Board{
         }
 
         this.update = function () {
+                let fontsize = (1/this.textsize.width)*65000 > 50 ? 50 : (1/this.textsize.width)*65000
                 c.fillStyle = "white";
-                c.font = 50*scale+"px Arcade";
+                c.font = fontsize*scale+"px Arcade";
                 c.textAlign = "center";
                 c.fillText("Just nu: " + players[turn].name, canvas.width/2, 50*scale);
             
@@ -1346,6 +1420,8 @@ class Board{
                 c.textAlign = "center"
                 c.fillText("Grattis " + players[0].name + "! Du vann!",1000*scale,600*scale)
             }
+            players.forEach(e => e.playerBorder.drawButton())
+
             for(let i = players.length-1; i>-1; i--){
                 if(players[i].playerBorder.index !== 2 && players[i].playerBorder.index !== 3){
                     players[i].playerBorder.draw()
@@ -1363,6 +1439,9 @@ class Board{
             if(this.getToMainMenuButton.selected){
                 this.confirmMenu();
             }
+            if(this.currentShowingCard !== undefined){
+                this.currentShowingCard.draw();
+            }
         }  
 
         this.confirmMenu = function(){
@@ -1375,7 +1454,10 @@ class Board{
             this.escapeConfirm.visible = true;
             this.escapeConfirm.draw();
             this.musicButton.visible = true;
+            this.fullScreenButton.visible = true;
+            this.fullScreenButton.selected = document.fullscreenElement != null;
             this.musicButton.draw();
+            this.fullScreenButton.draw();
         }
         this.randomizeDice = function () {
             this.dice1Type = randomIntFromRange(0,3);
@@ -1531,7 +1613,7 @@ class Board{
                 }
 
                 if(players[turn].rolls === false){
-                    if(players[turn].bot === undefined && this.auction === undefined && players[turn].inJail === false && !this.getToMainMenuButton.selected){
+                    if(players[turn].bot === undefined && this.auction === undefined && players[turn].inJail === false && !this.getToMainMenuButton.selected && this.currentShowingCard === undefined){
                         this.rollDiceButton.visible = true;
                         this.nextPlayerButton.visible = false;
                     }else{
@@ -1539,7 +1621,7 @@ class Board{
                         this.nextPlayerButton.visible = false;
                     }
                 }else{
-                    if(players[turn].bot === undefined && this.auction === undefined && !this.getToMainMenuButton.selected){
+                    if(players[turn].bot === undefined && this.auction === undefined && !this.getToMainMenuButton.selected && this.currentShowingCard === undefined){
                         this.rollDiceButton.visible = false;
                         this.nextPlayerButton.visible = true;
                     }else{
@@ -1553,7 +1635,7 @@ class Board{
     }
 }
 class Slider{
-    constructor(x,y,w,h,from,to,steps,showtext,font,unit,beginningText){
+    constructor(x,y,w,h,from,to,steps,showtext,font,unit,beginningText,onChange){
         this.x = x;
         this.y = y;
         this.w = w;
@@ -1573,7 +1655,11 @@ class Slider{
         this.from = from;
         this.to = to;
         this.last = this.value;
-
+        if(onChange === undefined){
+            this.onChange = function(){}
+        }else{
+            this.onChange = onChange;
+        }
         buttons.push(this);
         this.draw = function(){
             if (this.disabled) this.hover = false;
@@ -1584,6 +1670,7 @@ class Slider{
                 if(this.value !== this.last){
                     this.last = this.value;
                     playSound(sounds.clicks,0.1,false)
+                    this.onChange();
                 }
                 if(this.value > this.to){
                     this.value = this.to;
@@ -1596,9 +1683,11 @@ class Slider{
                 c.fillStyle = "white";
                 c.fillRect(this.x*scale + 4*scale,this.y*scale + 4*scale,this.w*scale-8*scale,this.h*scale-8*scale)
                 c.fillStyle = "black";
-                c.font = this.font*scale + " Arcade";
+                if(this.showtext){
+                c.font = this.font*scale + "px Arcade";
                 c.textAlign = "center";
-                c.fillText(this.beginningText + this.value+this.unit,this.x*scale+ + this.w/2*scale,this.y*scale + this.h/1.5*scale)
+                    c.fillText(this.beginningText + this.value+this.unit,this.x*scale+ + this.w/2*scale,this.y*scale + this.h/1.5*scale)
+                }
                 c.fillRect(this.x*scale + (this.percentage*(this.w-8))*scale,this.y*scale,10*scale,this.h*scale)
             }
             if(detectCollition(this.x*scale,this.y*scale,this.w*scale,this.h*scale,mouse.realX,mouse.realY,1,1)){
@@ -1655,12 +1744,12 @@ class Trade{
         };
 
         let self = this;
-        this.closeButton = new Button(false,364 + 128 +71,289-50,images.buttons.sprites[7],function(){if (Api.online) { Api.tradeConcluded(self.p2.colorIndex, false); } self.closeButton.visible = false;board.trade = undefined;board.getToMainMenuButton.visible = true; players.forEach(e => {e.playerBorder.button.disabled = false})},18,18,false,
-        false,false,false,false,{x:466-256,y:170,w:1025+512,h:840})
+        this.closeButton = new Button([false,false],364 + 128 +71,290-50,images.buttons.sprites[7],function(){if (Api.online) { Api.tradeConcluded(self.p2.colorIndex, false); } self.closeButton.visible = false;board.trade = undefined;board.getToMainMenuButton.visible = true; players.forEach(e => {e.playerBorder.button.disabled = false})},18,18,false,
+        false,false,false,false,{x:66,y:70,w:1025+512+280,h:1020})
         this.closeButton.visible = true;
 
         this.p1Slider = new Slider(300-142,220,742,60,0,this.p1.money,10,true,30,"kr","")
-        this.p1ConfirmButton = new Button(true,-70 -64-35,680,images.trade.sprites[1],function(){
+        this.p1ConfirmButton = new Button([true,false],-70 -64-35,680,images.trade.sprites[1],function(){
             if (Api.online && self.p1.colorIndex == Api.currentPlayer) {
                 if (self.p2ConfirmButton.selected) {
                     Api.tradeConcluded(self.p2.colorIndex, true, self.contents);
@@ -1669,19 +1758,25 @@ class Trade{
                 }
             }
         },150,50)
-        if(this.p1.bot === undefined){
-            this.p1ConfirmButton.visible = true;
+        if(this.p1.bot !== undefined){
+            this.p1ConfirmButton.disabled = true;
+            this.p1Slider.disabled = true;
         }
+        this.p1ConfirmButton.visible = true;
+
         if (Api.online && this.p1.colorIndex != Api.currentPlayer) {
             this.p2ConfirmButton.disabled = true;
             this.p1Slider.disabled = true;
         }
 
-        this.p2ConfirmButton = new Button(true,180 +64+35,680,images.trade.sprites[1],function(){},150,50)
+        this.p2ConfirmButton = new Button([true,false],180 +64+35,680,images.trade.sprites[1],function(){},150,50)
         this.p2Slider = new Slider(1050,220,742,60,0,this.p2.money,10,true,30,"kr","")
-        if(this.p2.bot === undefined){
-            this.p2ConfirmButton.visible = true;
+        if(this.p2.bot !== undefined){
+            this.p2ConfirmButton.disabled = true;
+            this.p2Slider.disabled = true;
         }
+        this.p2ConfirmButton.visible = true;
+
         if (Api.online && this.p2.colorIndex != Api.currentPlayer) {
             this.p2ConfirmButton.disabled = true;
             this.p2Slider.disabled = true;
@@ -1705,7 +1800,7 @@ class Trade{
                     fontSize = 18;
                 }
             }
-            let but = (new Button(true,-360 + tmp + 198 - 128+10,240 + 22*Math.floor(i/2) + 110,images.trade.sprites[2],function(){
+            let but = (new Button([true,false],-360 + tmp + 198 - 128+10,240 + 22*Math.floor(i/2) + 110,images.trade.sprites[2],function(){
                 if (Api.online) {
                     if (this.selected) {
                         self.contents.p1.tiles.push(e.piece);
@@ -1742,7 +1837,7 @@ class Trade{
                     fontSize = 18;
                 }
             }
-            let but = (new Button(true,-30 + tmp + 200+10,240 + 22*Math.floor(i/2) + 110,images.trade.sprites[2],function(){},186,21,false,false,false,false,false,false,text,fontSize,textColor,"ArcadeBold"))
+            let but = (new Button([true,false],-30 + tmp + 200,240 + 22*Math.floor(i/2) + 110,images.trade.sprites[2],function(){},186,21,false,false,false,false,false,false,text,fontSize,textColor,"ArcadeBold"))
 
             if(self.p2.bot !== undefined || (Api.online && self.p2.colorIndex != Api.currentPlayer)){
                 but.disabled = true;
@@ -1760,18 +1855,15 @@ class Trade{
             this.closeButton.draw();
             this.p1ConfirmButton.draw();
             this.p2ConfirmButton.draw();
-            if(p1.bot === undefined){
-                this.p1Slider.visible = true;
-                this.p1Slider.draw();
-            }
-            if(p2.bot === undefined){
-                this.p2Slider.visible = true;
-                this.p2Slider.draw();
-            }
+            
+            this.p1Slider.visible = true;
+            this.p1Slider.draw();
+            this.p2Slider.visible = true;
+            this.p2Slider.draw();
             c.font = 50*scale+"px Arcade";
             c.fillStyle = "black"
             c.textAlign = "right"
-            c.fillText(this.p2.money + "kr" + "   " +this.p1.name,880*scale,180*scale)
+            c.fillText(this.p1.money + "kr" + "   " +this.p1.name,880*scale,180*scale)
             c.textAlign = "left"
             c.fillText(this.p2.name+ "   " +this.p2.money + "kr",1070*scale,180*scale)
             this.p1PropertyButtons.forEach(e => {e.visible=true;e.draw()});
@@ -1834,7 +1926,7 @@ class PlayerBorder{
         let textsize = measureText({font:"Arcade",text:this.player.name})
 
         
-        this.button = new Button(true,this.x,this.y,images.playerOverlay.sprites[8],function(){            
+        this.button = new Button([true,false],this.x,this.y,images.playerOverlay.sprites[8],function(){            
             players.forEach(e =>{if(e.playerBorder != self){e.playerBorder.button.selected = false;e.playerBorder.createTradebutton.visible = false;}})
             self.createTradebutton.visible = false;
             if (Api.online) {
@@ -1848,9 +1940,9 @@ class PlayerBorder{
             }
             players.forEach( e => e.playerBorder.button.disabled = false)
 
-        },250,54,false,false,false,true,false,{x:0,y:0,w:249,h:54,onlySelected:true}) 
+        },354,54,false,false,false,true,false,{x:0,y:0,w:249,h:54,onlySelected:true}) 
 
-        this.createTradebutton = new Button(false,this.x,this.y,images.buttons.sprites[9],function(){
+        this.createTradebutton = new Button([false,false],this.x,this.y,images.buttons.sprites[9],function(){
             self.createTradebutton.visible = false;
             self.showInfo = false;
             if (Api.online && board.trade == undefined) {
@@ -1879,13 +1971,13 @@ class PlayerBorder{
                 c.globalAlpha = this.moneyTime;
                 c.textAlign = "right"
                 c.font = (50)*scale+"px Arcade";
-                c.fillText(Math.abs(Math.floor(this.latestTrancaction)) + "kr",this.x*drawScale*scale+1150*scale,this.y*drawScale*scale-335*scale - (-this.moneyTime+1)*20*scale)
+                c.fillText(Math.abs(Math.floor(this.latestTrancaction)) + "kr",this.x*drawScale*scale+1350*scale,this.y*drawScale*scale-335*scale - (-this.moneyTime+1)*20*scale)
                 c.globalAlpha = 1;
             }else{
                 c.globalAlpha = this.moneyTime;
                 c.textAlign = "right"
                 c.font = (50)*scale+"px Arcade";
-                c.fillText(Math.abs(Math.floor(this.latestTrancaction)) + "kr",this.x*scale+850*scale,this.y*drawScale*scale-335*scale- (-this.moneyTime+1)*20*scale)
+                c.fillText(Math.abs(Math.floor(this.latestTrancaction)) + "kr",this.x*scale+1050*scale,this.y*drawScale*scale-335*scale- (-this.moneyTime+1)*20*scale)
                 c.globalAlpha = 1;
             }
         }
@@ -1938,6 +2030,37 @@ class PlayerBorder{
                 }
             }
         }
+        this.drawButton = function(){
+            this.button.visible = true;
+            this.button.draw()
+            if(this.button.mirror === false){
+                drawRotatedImageFromSpriteSheet(this.x*drawScale+466 + 694+209,this.y*drawScale+5 - 400,48,96,images.player.sprites[this.player.colorIndex],0,false,0,0,24,48,false)
+                let fontsize = (1/textsize.width)*40000 > 50 ? 50 : (1/textsize.width)*40000
+                c.font = fontsize*scale + "px Arcade";
+                c.fillStyle ="black"
+                c.textAlign = "left"
+                c.fillText(this.player.name,this.x*drawScale*scale+750*scale,this.y*drawScale*scale-335*scale)
+                c.textAlign = "right"
+                c.font = (50)*scale+"px Arcade";
+                if(this.moneyTime <= 0){
+                    c.fillText(this.player.money + "kr",this.x*drawScale*scale+1350*scale,this.y*drawScale*scale-335*scale)
+                }
+            }else{
+                drawRotatedImageFromSpriteSheet(this.x*drawScale +723,this.y*drawScale -396,48,96,images.player.sprites[this.player.colorIndex],0,false,0,0,24,48,false)
+                let fontsize = (1/textsize.width)*40000 > 50 ? 50 : (1/textsize.width)*40000
+                c.font = fontsize*scale + "px Arcade";
+
+                c.fillStyle ="black"
+                c.textAlign = "left"
+                c.fillText(this.player.name,this.x*scale+420*scale,this.y*drawScale*scale-335*scale)
+                c.textAlign = "right"
+                c.font = (50)*scale+"px Arcade";
+                if(this.moneyTime <= 0){
+                    c.fillText(this.player.money + "kr",this.x*scale+1030*scale,this.y*drawScale*scale-335*scale)
+                }
+
+            }
+        }
         
         this.draw = function() {
             this.moneyTime -= speeds.moneyAnimationSpeed;
@@ -1948,7 +2071,7 @@ class PlayerBorder{
                 this.button.mirror = true;
             }
             if(this.index === 1){
-                this.x = 374
+                this.x = 374-104
                 this.y = 200;
                 this.button.mirror = false;
             }
@@ -1958,7 +2081,7 @@ class PlayerBorder{
                 this.button.mirror = true;
             }
             if(this.index === 3){
-                this.x = 374
+                this.x = 374-104
                 this.y = 700;
                 this.button.mirror = false;
             }
@@ -1968,7 +2091,7 @@ class PlayerBorder{
                 this.button.mirror = true;
             }
             if(this.index === 5){
-                this.x = 374
+                this.x = 374-104
                 this.y = 200 +54;
                 this.button.mirror = false;
             }
@@ -1978,7 +2101,7 @@ class PlayerBorder{
                 this.button.mirror = true;
             }
             if(this.index === 7){
-                this.x = 374
+                this.x = 374-104
                 this.y = 700 -54;
                 this.button.mirror = false;
             }
@@ -1987,41 +2110,19 @@ class PlayerBorder{
             
             
 
-            this.button.visible = true;
-            this.button.draw()
-            this.createTradebutton.x = this.x + 20 
             
-            let mirrorAdder = 0;
+            
+            let mirrorAdder = -10;
             if(!this.button.mirror){
-                mirrorAdder = 370;
+                mirrorAdder = 310;
             }
-            if(this.button.mirror === false){
-                drawRotatedImageFromSpriteSheet(this.x*drawScale+466 + 694,this.y*drawScale+5 - 400,48,96,images.player.sprites[this.player.colorIndex],0,false,0,0,24,48,false)
-                let fontsize = (1/textsize.width)*25000 > 50 ? 50 : (1/textsize.width)*25000
-                c.font = fontsize*scale + "px Arcade";
-                c.fillStyle ="black"
-                c.textAlign = "left"
-                c.fillText(this.player.name,this.x*drawScale*scale+750*scale,this.y*drawScale*scale-335*scale)
-                c.textAlign = "right"
-                c.font = (50)*scale+"px Arcade";
-                if(this.moneyTime <= 0){
-                    c.fillText(this.player.money + "kr",this.x*drawScale*scale+1150*scale,this.y*drawScale*scale-335*scale)
-                }
-            }else{
-                drawRotatedImageFromSpriteSheet(this.x*drawScale +720,this.y*drawScale -396,48,96,images.player.sprites[this.player.colorIndex],0,false,0,0,24,48,false)
-                let fontsize = (1/textsize.width)*25000 > 50 ? 50 : (1/textsize.width)*25000
-                c.font = fontsize*scale + "px Arcade";
-
-                c.fillStyle ="black"
-                c.textAlign = "left"
-                c.fillText(this.player.name,this.x*scale+420*scale,this.y*drawScale*scale-335*scale)
-                c.textAlign = "right"
-                c.font = (50)*scale+"px Arcade";
-                if(this.moneyTime <= 0){
-                    c.fillText(this.player.money + "kr",this.x*scale+830*scale,this.y*drawScale*scale-335*scale)
-                }
-
+            let mirrorAdder2 = 0;
+            if(!this.button.mirror){
+                mirrorAdder2 = 0;
             }
+            this.createTradebutton.x = this.x + 60
+
+            
             if(this.button.selected){
                 players.forEach( e => e.playerBorder.button.disabled = true)
                 this.button.disabled = false;
@@ -2029,16 +2130,16 @@ class PlayerBorder{
                     this.button.invertedHitbox.x = this.x*drawScale +715
                     this.button.invertedHitbox.y = this.y*drawScale - 400 + 54*drawScale;
                     this.button.invertedHitbox.w = this.button.w*drawScale
-                    this.button.invertedHitbox.h = this.player.ownedPlaces.length*15*drawScale + 15*4*drawScale;
-                    this.createTradebutton.y = this.y + 70 + 15*this.player.ownedPlaces.length;
-                    drawRotatedImageFromSpriteSheet(this.x*drawScale+715,this.y*drawScale + 54*drawScale -400,260*drawScale,27*drawScale,images.playerOverlay.sprites[11],0,this.button.mirror,0,0,260,27,false)
+                    this.button.invertedHitbox.h = this.player.ownedPlaces.length*12*drawScale + 12*5*drawScale;
+                    this.createTradebutton.y = this.y + 73 + 12*this.player.ownedPlaces.length;
+                    drawRotatedImageFromSpriteSheet(this.x*drawScale+715+mirrorAdder2,this.y*drawScale + 54*drawScale -400,354*drawScale,27*drawScale,images.playerOverlay.sprites[11],0,this.button.mirror,0,0,354,27,false)
                     for(let i = 0; i < this.player.ownedPlaces.length; i++){
-                        drawRotatedImageFromSpriteSheet(this.x*drawScale+715,this.y*drawScale + 67 *drawScale + 15*drawScale*i + 27 - 400,260*drawScale,27*drawScale,images.playerOverlay.sprites[10],0,this.button.mirror,0,0,260,27,false)
-                        c.font = 25*scale+"px Arcade";
+                        drawRotatedImageFromSpriteSheet(this.x*drawScale+715+mirrorAdder2,this.y*drawScale + 67 *drawScale + 12*drawScale*i + 27 - 400,354*drawScale,15*drawScale,images.playerOverlay.sprites[10],0,this.button.mirror,0,0,354,15,false)
+                        c.font = 24*scale+"px Arcade";
                         c.fillStyle ="black"
                         c.textAlign = "left"
                         if(this.player.ownedPlaces[i].piece.type !== "station" && this.player.ownedPlaces[i].piece.type !== "utility"){
-                            c.fillText(this.player.ownedPlaces[i].piece.name + "  " + this.player.ownedPlaces[i].piece.rent[this.player.ownedPlaces[i].level] + "kr",this.x*scale+400*scale+ mirrorAdder*drawScale*scale,this.y*drawScale*scale + 70*drawScale*scale + 15*drawScale*i*scale - 354*scale)
+                            c.fillText(this.player.ownedPlaces[i].piece.name + "  " + this.player.ownedPlaces[i].piece.rent[this.player.ownedPlaces[i].level] + "kr",this.x*scale+400*scale+ mirrorAdder*drawScale*scale,this.y*drawScale*scale + 65*drawScale*scale + 12*drawScale*i*scale - 364*scale)
                         }else if(this.player.ownedPlaces[i].piece.type === "station"){
                             let tmp = -1;
                             this.player.ownedPlaces.forEach(e => {
@@ -2047,7 +2148,7 @@ class PlayerBorder{
                                 }
                             })
                             
-                            c.fillText(this.player.ownedPlaces[i].piece.name + "  " + 25 * Math.pow(2,tmp) + "kr",this.x*scale+400*scale+ mirrorAdder*drawScale*scale,this.y*drawScale*scale + 70*drawScale*scale + 15*drawScale*i*scale - 354*scale)
+                            c.fillText(this.player.ownedPlaces[i].piece.name + "  " + 25 * Math.pow(2,tmp) + "kr",this.x*scale+400*scale+ mirrorAdder*drawScale*scale,this.y*drawScale*scale + 65*drawScale*scale + 12*drawScale*i*scale - 364*scale)
                         }else{
                             let tmp = 0;
                             let multiply = 0;
@@ -2058,13 +2159,14 @@ class PlayerBorder{
                             })
                             if(tmp === 1){multiply = 4;}
                             if(tmp === 2){multiply = 10}
-                            c.fillText(this.player.ownedPlaces[i].piece.name + "  " + multiply + " x tärning kr",this.x*scale+400*scale+ mirrorAdder*drawScale*scale,this.y*drawScale*scale + 70*drawScale*scale + 15*drawScale*i*scale - 354*scale)
+                            c.fillText(this.player.ownedPlaces[i].piece.name + "  " + multiply + "*slag kr",this.x*scale+400*scale+ mirrorAdder*drawScale*scale,this.y*drawScale*scale + 65*drawScale*scale + 12*drawScale*i*scale - 364*scale)
                         }
                     }
-                    drawRotatedImageFromSpriteSheet(this.x*drawScale +715,this.y*drawScale + 53*drawScale*1.5 +15*drawScale*this.player.ownedPlaces.length -400,260*drawScale ,20*drawScale,images.playerOverlay.sprites[10],0,this.button.mirror,0,0,260,27,false)
-                    drawRotatedImageFromSpriteSheet(this.x*drawScale +715,this.y*drawScale + 53*drawScale*1.5 +15*drawScale*(this.player.ownedPlaces.length+1) -400,260*drawScale ,20*drawScale,images.playerOverlay.sprites[9],0,this.button.mirror,0,0,260,27,false)
+                    drawRotatedImageFromSpriteSheet(this.x*drawScale +715+mirrorAdder2,this.y*drawScale + 80*drawScale +12*drawScale*this.player.ownedPlaces.length -400,354*drawScale ,13*drawScale,images.playerOverlay.sprites[10],0,this.button.mirror,0,0,354,13,false)
+                    drawRotatedImageFromSpriteSheet(this.x*drawScale +715+mirrorAdder2,this.y*drawScale + 80*drawScale +12*drawScale*(this.player.ownedPlaces.length+1) -400,354*drawScale ,13*drawScale,images.playerOverlay.sprites[10],0,this.button.mirror,0,0,354,13,false)
+                    drawRotatedImageFromSpriteSheet(this.x*drawScale +715+mirrorAdder2,this.y*drawScale + 80*drawScale +12*drawScale*(this.player.ownedPlaces.length+2) -400,354*drawScale ,20*drawScale,images.playerOverlay.sprites[9],0,this.button.mirror,0,0,354,27,false)
                     if (!Api.online) {
-                        if(players[turn] !== this.player && board.currentCard === undefined && board.trade === undefined && players[turn].bot === undefined && players[turn].animationOffset === 0 && board.animateDices === false && board.showDices === false && this.player.bot === undefined){
+                        if(players[turn] !== this.player && board.currentCard === undefined && board.trade === undefined && players[turn].bot === undefined && players[turn].animationOffset === 0 && board.animateDices === false && board.showDices === false){
                             this.createTradebutton.visible = true;
                         }else{
                             this.createTradebutton.visible = false;
@@ -2074,17 +2176,17 @@ class PlayerBorder{
                     this.createTradebutton.draw();
                 }else{
                     this.button.invertedHitbox.x = this.x*drawScale +715
-                    this.button.invertedHitbox.y = this.y*drawScale - 400-this.player.ownedPlaces.length*27*drawScale - 27*3*drawScale;
+                    this.button.invertedHitbox.y = this.y*drawScale - 400-this.player.ownedPlaces.length*12*drawScale - 12*5*drawScale;
                     this.button.invertedHitbox.w = this.button.w*drawScale
-                    this.button.invertedHitbox.h = this.player.ownedPlaces.length*27*drawScale + 27*3*drawScale;
-                    drawRotatedImageFromSpriteSheet(this.x*drawScale +715,this.y*drawScale - 27*drawScale -400,260*drawScale,27*drawScale,images.playerOverlay.sprites[11],180,!this.button.mirror,0,0,260,27,false)
+                    this.button.invertedHitbox.h = this.player.ownedPlaces.length*12*drawScale + 12*5*drawScale;
+                    drawRotatedImageFromSpriteSheet(this.x*drawScale +715+mirrorAdder2,this.y*drawScale - 27*drawScale -400,354*drawScale,27*drawScale,images.playerOverlay.sprites[11],180,!this.button.mirror,0,0,354,27,false)
                     for(let i = 0; i < this.player.ownedPlaces.length; i++){
-                        drawRotatedImageFromSpriteSheet(this.x*drawScale +715,this.y*drawScale - 67 *drawScale - 27*drawScale*i + 27 -400,260*drawScale,27*drawScale,images.playerOverlay.sprites[10],180,!this.button.mirror,0,0,260,27,false)
-                        c.font = 30*scale+"px Arcade";
+                        drawRotatedImageFromSpriteSheet(this.x*drawScale +715+mirrorAdder2,this.y*drawScale - 57 *drawScale - 12*drawScale*i + 27+10 -400,354*drawScale,13*drawScale,images.playerOverlay.sprites[10],180,!this.button.mirror,0,0,354,13,false)
+                        c.font = 25*scale+"px Arcade";
                         c.fillStyle ="black"
                         c.textAlign = "left"
                         if(this.player.ownedPlaces[i].piece.type !== "station" && this.player.ownedPlaces[i].piece.type !== "utility"){
-                            c.fillText(this.player.ownedPlaces[i].piece.name + "  " + this.player.ownedPlaces[i].piece.rent[this.player.ownedPlaces[i].level] + "kr",this.x*scale+400*scale+ mirrorAdder*drawScale*scale,this.y*drawScale*scale + 80*drawScale*scale - 27*drawScale*i*scale - 634*scale)
+                            c.fillText(this.player.ownedPlaces[i].piece.name + "  " + this.player.ownedPlaces[i].piece.rent[this.player.ownedPlaces[i].level] + "kr",this.x*scale+400*scale+ mirrorAdder*drawScale*scale,this.y*drawScale*scale + 110*drawScale*scale - 12*drawScale*i*scale - 634*scale)
                         }else if(this.player.ownedPlaces[i].piece.type === "station"){
                             let tmp = -1;
                             this.player.ownedPlaces.forEach(e => {
@@ -2093,7 +2195,7 @@ class PlayerBorder{
                                 }
                             })
                             
-                            c.fillText(this.player.ownedPlaces[i].piece.name + "  " + 25 * Math.pow(2,tmp) + "kr",this.x*scale+400*scale+ mirrorAdder*drawScale*scale,this.y*drawScale*scale + 80*drawScale*scale - 27*drawScale*i*scale - 634*scale)
+                            c.fillText(this.player.ownedPlaces[i].piece.name + "  " + 25 * Math.pow(2,tmp) + "kr",this.x*scale+400*scale+ mirrorAdder*drawScale*scale,this.y*drawScale*scale + 110*drawScale*scale - 12*drawScale*i*scale - 634*scale)
                         }else{
                             let tmp = 0;
                             let multiply = 0;
@@ -2104,13 +2206,14 @@ class PlayerBorder{
                             })
                             if(tmp === 1){multiply = 4;}
                             if(tmp === 2){multiply = 10}
-                            c.fillText(this.player.ownedPlaces[i].piece.name + "  " + multiply + " x tärning kr",this.x*scale+400*scale+ mirrorAdder*drawScale*scale,this.y*drawScale*scale + 80*drawScale*scale - 27*drawScale*i*scale - 634*scale)
+                            c.fillText(this.player.ownedPlaces[i].piece.name + "  " + multiply + "*slag kr",this.x*scale+400*scale+ mirrorAdder*drawScale*scale,this.y*drawScale*scale + 110*drawScale*scale - 12*drawScale*i*scale - 634*scale)
                         }                    
                     }
-                    drawRotatedImageFromSpriteSheet(this.x*drawScale +715,this.y*drawScale - 35*drawScale*1.5 -27*drawScale*this.player.ownedPlaces.length -400,260*drawScale ,27*drawScale,images.playerOverlay.sprites[10],0,this.button.mirror,0,0,260,27,false)
-                    drawRotatedImageFromSpriteSheet(this.x*drawScale +715,this.y*drawScale - 35*drawScale*1.5 -27*drawScale*(this.player.ownedPlaces.length+1) -400,260*drawScale ,27*drawScale,images.playerOverlay.sprites[9],180,!this.button.mirror,0,0,260,27,false)
-                    this.createTradebutton.y = this.y - 60 - 27*this.player.ownedPlaces.length;
-                    if(players[turn] !== this.player && board.currentCard === undefined && board.trade === undefined && players[turn].bot === undefined && players[turn].animationOffset === 0 && board.animateDices === false && board.showDices === false && this.player.bot === undefined){
+                    drawRotatedImageFromSpriteSheet(this.x*drawScale +715,this.y*drawScale - 25*drawScale*1.5 -12*drawScale*this.player.ownedPlaces.length -400,354*drawScale ,13*drawScale,images.playerOverlay.sprites[10],0,this.button.mirror,0,0,354,13,false)
+                    drawRotatedImageFromSpriteSheet(this.x*drawScale +715,this.y*drawScale - 25*drawScale*1.5 -12*drawScale*(this.player.ownedPlaces.length+1) -400,354*drawScale ,13*drawScale,images.playerOverlay.sprites[10],0,this.button.mirror,0,0,354,13,false)
+                    drawRotatedImageFromSpriteSheet(this.x*drawScale +715,this.y*drawScale - 25*drawScale*1.5 -12*drawScale*(this.player.ownedPlaces.length+3) -400,354*drawScale ,27*drawScale,images.playerOverlay.sprites[9],180,!this.button.mirror,0,0,354,27,false)
+                    this.createTradebutton.y = this.y - 50 - 12*this.player.ownedPlaces.length;
+                    if(players[turn] !== this.player && board.currentCard === undefined && board.trade === undefined && players[turn].bot === undefined && players[turn].animationOffset === 0 && board.animateDices === false && board.showDices === false){
                         this.createTradebutton.visible = true;
                     }else{
                         this.createTradebutton.visible = false;
@@ -2138,16 +2241,16 @@ class Auction{
         this.playerlist = [...players];
 
 
-        this.addMoneyButton2 = new Button(false,-80,540,images.auction.sprites[1],function(){     
+        this.addMoneyButton2 = new Button([false,false],-80,540,images.auction.sprites[1],function(){     
             board.auction.addMoney(2);
         },54,54,false)
-        this.addMoneyButton10 = new Button(false,10,540,images.auction.sprites[2],function(){
+        this.addMoneyButton10 = new Button([false,false],10,540,images.auction.sprites[2],function(){
             board.auction.addMoney(10);
         },54,54,false)
-        this.addMoneyButton100 = new Button(false,100,540,images.auction.sprites[3],function(){
+        this.addMoneyButton100 = new Button([false,false],100,540,images.auction.sprites[3],function(){
             board.auction.addMoney(100);
         },54,54,false)
-        this.startAuctionButton = new Button(false,-85,540,images.auction.sprites[5],function(){
+        this.startAuctionButton = new Button([false,false],-85,540,images.auction.sprites[5],function(){
             if (Api.online) {
                 Api.auctionStart(board.auction.card);
                 return;
@@ -2280,6 +2383,7 @@ class Auction{
 
             this.auctionMoney += money;
             this.turn = (this.turn+1) % this.playerlist.length;
+            
             this.time = 472;
             this.startTime = performance.now();
         }
@@ -2348,7 +2452,7 @@ class Button{
                 }else{
                     if(this.disabled){
                         this.hover = false;
-                        if(this.select === false){
+                        if(this.select[0] === false){
                             drawRotatedImageFromSpriteSheet(this.x*drawScale+715,this.y*drawScale-400,this.w*drawScale,this.h*drawScale,this.img,0,this.mirror,this.w*2,0,this.w,this.h)
                         }else{
                             if(this.img.frame.w > this.w*2){
@@ -2363,14 +2467,18 @@ class Button{
                         }
                     }else{
                         if(detectCollition(this.x*drawScale*scale+715*scale,this.y*drawScale*scale-400*scale,this.w*drawScale*scale,this.h*drawScale*scale,mouse.realX,mouse.realY,1,1)){
-                            if(this.img.frame.w < this.w*2){
+
+                            if(this.img.frame.w <= this.w*3){
                                 if(this.disableselectTexture){
+                                    drawRotatedImageFromSpriteSheet(this.x*drawScale+715,this.y*drawScale-400,this.w*drawScale,this.h*drawScale,this.img,0,this.mirror,this.w*1,0,this.w,this.h)
+                                }else if(!this.select[1]){
                                     drawRotatedImageFromSpriteSheet(this.x*drawScale+715,this.y*drawScale-400,this.w*drawScale,this.h*drawScale,this.img,0,this.mirror,this.w*1,0,this.w,this.h)
                                 }else{
                                     drawRotatedImageFromSpriteSheet(this.x*drawScale+715,this.y*drawScale-400,this.w*drawScale,this.h*drawScale,this.img,0,this.mirror,this.w*2,0,this.w,this.h)
                                 }
                             }else{
-                                drawRotatedImageFromSpriteSheet(this.x*drawScale+715,this.y*drawScale-400,this.w*drawScale,this.h*drawScale,this.img,0,this.mirror,this.w,0,this.w,this.h)
+                                
+                                drawRotatedImageFromSpriteSheet(this.x*drawScale+715,this.y*drawScale-400,this.w*drawScale,this.h*drawScale,this.img,0,this.mirror,this.w*3,0,this.w,this.h)
                             }
                             this.hover = true;
                         }else{
@@ -2413,7 +2521,7 @@ class Button{
             if(detectCollition(this.x*drawScale*scale+715*scale,this.y*drawScale*scale-400*scale,this.w*drawScale*scale,this.h*drawScale*scale,mouse.realX,mouse.realY,1,1)||
             this.invertedHitbox !== undefined && this.invertedHitbox !== false && this.invertedHitbox.onlySelected === undefined && !detectCollition(this.invertedHitbox.x*scale,this.invertedHitbox.y*scale,this.invertedHitbox.w*scale,this.invertedHitbox.h*scale,mouse.realX,mouse.realY,1,1) ||
             this.invertedHitbox !== undefined && this.invertedHitbox !== false && this.invertedHitbox.onlySelected === true && this.selected && !detectCollition(this.invertedHitbox.x*scale,this.invertedHitbox.y*scale,this.invertedHitbox.w*scale,this.invertedHitbox.h*scale,mouse.realX,mouse.realY,1,1)){
-                if(this.select === true){
+                if(this.select[0] === true){
                     if(this.selected){
                         this.selected = false;
                     }else{
@@ -2503,7 +2611,7 @@ class BoardPiece{
 
             let mouseSquareX = (to_grid_coordinate(mouse.realX,mouse.realY).x - 1270*scale)  /(64*scale)
             let mouseSquareY = (to_grid_coordinate(mouse.realX,mouse.realY).y + 680*scale)/(64*scale)
-            if(board.currentCard !== undefined|| this.piece.type === "chance" || this.piece.type === "community Chest" || this.piece.type === "income tax" || this.piece.type === "tax" ||this.n%10 === 0 || board.auction !== undefined || board.trade !== undefined || players[turn].inJail === true || board.showDices || board.animateDices || players[turn].animationOffset !== 0 || board.getToMainMenuButton.selected){
+            if(board.currentCard !== undefined|| this.piece.type === "chance" || this.piece.type === "community Chest" || this.piece.type === "income tax" || this.piece.type === "tax" ||this.n%10 === 0 || board.auction !== undefined || board.trade !== undefined || players[turn].inJail === true || board.showDices || board.animateDices || players[turn].animationOffset !== 0 || board.getToMainMenuButton.selected  || board.currentShowingCard !== undefined){
                 this.offsetY = this.currentOffsetvalue;
                 this.hover = false;
             }else if(this.x/64*drawScale > mouseSquareX-1*drawScale && this.x/64*drawScale < mouseSquareX && this.side === 2 && this.n%10 !== 0 && mouseSquareY >= 0*drawScale && mouseSquareY < 2*drawScale
@@ -2702,61 +2810,51 @@ class BoardPiece{
         }
 
         this.doChanceCard = (random, player) => {
+            board.currentShowingCard = new CurrentCard(random,"chance")
             if(random === 1){
-                alert("Gå till start!")
-                player.teleportTo(0, true, false)
+                board.currentShowingCard.onContinue = function(){player.teleportTo(0, true, false)}
             }
             if(random === 2){
-                alert("Gå till Hässleholm")
-                player.teleportTo(24, true, false)
+                board.currentShowingCard.onContinue = function(){player.teleportTo(24, true, false)}
             }
             if(random === 3){
-                alert("Gå till Simrishamn")
-                player.teleportTo(11, true, false)
+                board.currentShowingCard.onContinue = function(){player.teleportTo(11, true, false)}
             }
             if(random === 4){
-                alert("Gå till närmsta anläggning")
                 if(this.n === 7 ){
-                    player.teleportTo(12, undefined, false)
+                    board.currentShowingCard.onContinue = function(){player.teleportTo(12, undefined, false)}
                 }
                 if(this.n === 22){
-                    player.teleportTo(28, true, false)
+                    board.currentShowingCard.onContinue = function(){player.teleportTo(28, true, false)}
                 }
                 if(this.n === 36){
-                    player.teleportTo(-28, false)
+                    board.currentShowingCard.onContinue = function(){player.teleportTo(-28, false,false)}
                 }
             }
             if(random === 5){
-                alert("Gå till närmsta tågstation")
                 if(this.n === 7){
-                    player.teleportTo(-5, false)
+                    board.currentShowingCard.onContinue = function(){player.teleportTo(-5, false,false)}
                 }
                 if(this.n === 22){
-                    player.teleportTo(25, false)
+                    board.currentShowingCard.onContinue = function(){player.teleportTo(25, false,false)}
                 }
                 if(this.n === 36){
-                    player.teleportTo(-35, false)
+                    board.currentShowingCard.onContinue = function(){player.teleportTo(-35, false,false)}
                 }
             }
             if(random === 6){
-                alert("Få 50kr")
-                player.money += 50;
-                player.playerBorder.startMoneyAnimation(50)
+                board.currentShowingCard.onContinue = function(){player.money += 50;player.playerBorder.startMoneyAnimation(50)}   
             }
             if(random === 7){
-                alert("Get out of jail card")
-                player.jailcardAmount++;
+                board.currentShowingCard.onContinue = function(){player.jailcardAmount++;}
             }
             if(random === 8){
-                alert("Gå bak tre steg")
-                player.teleportTo(-(player.steps-3), false)
+                board.currentShowingCard.onContinue = function(){player.teleportTo(-(player.steps-3), false,false)}
             }
             if(random === 9){
-                alert("Gå till finkan!")
-                player.goToPrison();
+                board.currentShowingCard.onContinue = function(){player.goToPrison();}
             }
             if(random === 10){
-                alert("Betala 25kr för varje hus du har och 100kr för varje hotell")
                 let tmp = 0;
                 board.boardPieces.forEach(function(e){
                     if(player === e.owner){
@@ -2776,147 +2874,203 @@ class BoardPiece{
                     }
                 })
                 if(tmp !== 0){
-                    player.playerBorder.startMoneyAnimation(-tmp)
+                    board.currentShowingCard.onContinue = function(){player.money -= tmp;player.playerBorder.startMoneyAnimation(-tmp)}
+                }else{
+                    board.currentShowingCard.onContinue = function(){player.money -= tmp;}
                 }
             }
             if(random === 11){
-                alert("Gå till södra stationen")
-                player.teleportTo(5, undefined, false);
+                board.currentShowingCard.onContinue = function(){player.teleportTo(5, undefined, false);}
             }
             if(random === 12){
-                alert("Gå till Malmö")
-                player.teleportTo(39, undefined, false);
+                board.currentShowingCard.onContinue = function(){player.teleportTo(39, undefined, false);}
             }
             if(random === 13){
-                alert("Få 50kr av alla andra spelare")
-                player.money += (players.length-1)*50
-                player.playerBorder.startMoneyAnimation(((players.length-1)*50),true)
-                players.forEach(e=> {if(e !== player){e.money-=50;e.playerBorder.startMoneyAnimation(-50)}})
+                board.currentShowingCard.onContinue = function(){
+                    player.money += (players.length-1)*50
+                    player.playerBorder.startMoneyAnimation(((players.length-1)*50),true)
+                    players.forEach(e=> {if(e !== player){e.money-=50;e.playerBorder.startMoneyAnimation(-50)}})                
+                }
+                
             }
             if(random === 14){
-                alert("Få 150kr")
-                player.money += 150
-                player.playerBorder.startMoneyAnimation(150)
+                board.currentShowingCard.onContinue = function(){player.money += 150;player.playerBorder.startMoneyAnimation(150)}  
             }
         }
 
         this.doCommunityChest = (random, player) => {
+            board.currentShowingCard = new CurrentCard(random,"community")
             if(random === 1){
-                alert("Gå till start")
-                player.teleportTo(0, undefined, false)
+                board.currentShowingCard.onContinue = function(){player.teleportTo(0, undefined, false)}  
             }
             if(random === 2){
-                alert("Få 200kr")
-                player.money += 200;
-                player.playerBorder.startMoneyAnimation(200)
+                board.currentShowingCard.onContinue = function(){player.money += 200;player.playerBorder.startMoneyAnimation(200)}  
             }
             if(random === 3){
-                alert("Förlora 50kr")
-                player.money -= 50;
-                if(board.settings.freeParking){
-                    board.boardPieces[20].money += 50;
-                }
-                player.playerBorder.startMoneyAnimation(-50)
+                board.currentShowingCard.onContinue = function(){
+                    player.money -= 50;
+                    if(board.settings.freeParking){
+                        board.boardPieces[20].money += 50;
+                    }
+                    player.playerBorder.startMoneyAnimation(-50)
+                }  
             }
             if(random === 4){
-                alert("Få 50kr")
-                player.money += 50;
-                player.playerBorder.startMoneyAnimation(50)
+                board.currentShowingCard.onContinue = function(){
+                    player.money += 50;
+                    player.playerBorder.startMoneyAnimation(50)
+                }
             }
             if(random === 5){
-                alert("Get out of jail card")
-                player.jailcardAmount++;
+                board.currentShowingCard.onContinue = function(){
+                    player.jailcardAmount++;
+                }
             }
             if(random === 6){
-                alert("Gå till finkan")
-                player.goToPrison()
+                board.currentShowingCard.onContinue = function(){
+                    player.goToPrison()
+                }
             }
             if(random === 7){
-                alert("Få 50kr av alla andra spelare")
-                player.money += (players.length-1)*50
-                player.playerBorder.startMoneyAnimation(((players.length-1)*50))
-                players.forEach(e=> {if(e !== player){e.money-=50;e.playerBorder.startMoneyAnimation(-50,true)}})
+                board.currentShowingCard.onContinue = function(){
+                    player.money += (players.length-1)*50
+                    player.playerBorder.startMoneyAnimation(((players.length-1)*50))
+                    players.forEach(e=> {if(e !== player){e.money-=50;e.playerBorder.startMoneyAnimation(-50,true)}})
+                }
             }
             if(random === 8){
-                alert("Få 100kr")
-                player.money += 100;
-                player.playerBorder.startMoneyAnimation(100)
+                board.currentShowingCard.onContinue = function(){
+                    player.money += 100;
+                    player.playerBorder.startMoneyAnimation(100)
+                }
             }
             if(random === 9){
-                alert("Få 20kr")
-                player.money += 20;
-                player.playerBorder.startMoneyAnimation(20)
+                board.currentShowingCard.onContinue = function(){
+                    player.money += 20;
+                    player.playerBorder.startMoneyAnimation(20)
+                }   
             }
             if(random === 10){
-                alert("Få 10kr av alla andra spelare")
-                player.money += (players.length-1)*10
-                player.playerBorder.startMoneyAnimation((players.length-1)*10)
-                players.forEach(e=> {if(e !== player){e.money-=10;e.playerBorder.startMoneyAnimation(-50,true)}})
+                board.currentShowingCard.onContinue = function(){
+                    player.money += (players.length-1)*10
+                    player.playerBorder.startMoneyAnimation((players.length-1)*10)
+                    players.forEach(e=> {if(e !== player){e.money-=10;e.playerBorder.startMoneyAnimation(-10,true)}})
+                }
             }
             if(random === 11){
-                alert("Få 100kr")
-                player.money += 100;
-                player.playerBorder.startMoneyAnimation(100)
+                board.currentShowingCard.onContinue = function(){
+                    player.money += 100;
+                    player.playerBorder.startMoneyAnimation(100)
+                }
             }
             if(random === 12){
-                alert("Förlora 50kr")
-                player.money -= 50;
-                if(board.settings.freeParking){
-                    board.boardPieces[20].money += 50;
+                board.currentShowingCard.onContinue = function(){
+                    player.money -= 50;
+                    if(board.settings.freeParking){
+                        board.boardPieces[20].money += 50;
+                    }
+                    player.playerBorder.startMoneyAnimation(-50)
                 }
-                player.playerBorder.startMoneyAnimation(-50)
             }
             if(random === 13){
-                alert("Förlora 50kr")
-                player.money -= 50;
-                if(board.settings.freeParking){
-                    board.boardPieces[20].money += 50;
+                board.currentShowingCard.onContinue = function(){
+                    player.money -= 50;
+                    if(board.settings.freeParking){
+                        board.boardPieces[20].money += 50;
+                    }
+                    player.playerBorder.startMoneyAnimation(-50)
                 }
-                player.playerBorder.startMoneyAnimation(-50)
             }
             if(random === 14){
-                alert("Förlora 25kr")
-                player.money -= 25;
-                if(board.settings.freeParking){
-                    board.boardPieces[20].money += 25;
+                board.currentShowingCard.onContinue = function(){
+                    player.money -= 25;
+                    if(board.settings.freeParking){
+                        board.boardPieces[20].money += 25;
+                    }
+                    player.playerBorder.startMoneyAnimation(-25)
                 }
-                player.playerBorder.startMoneyAnimation(-25)
             }
             if(random === 15){
-                alert("Betala 40 för varje hus du har och 115 för varje hotell")
-                let tmp = 0;
-                board.boardPieces.forEach(function(e){
-                    if(player === e.owner){
-                        if(e.level < 5){
-                            player.money -= 40*e.level
-                            if(board.settings.freeParking){
-                                board.boardPieces[20].money += 40*e.level;
-                            }
-                            tmp += 40*e.level
-                        }else{
-                            player.money -= 115
-                            tmp += 115
-                            if(board.settings.freeParking){
-                                board.boardPieces[20].money += 115;
+                board.currentShowingCard.onContinue = function(){
+                    let tmp = 0;
+                    board.boardPieces.forEach(function(e){
+                        if(player === e.owner){
+                            if(e.level < 5){
+                                player.money -= 40*e.level
+                                if(board.settings.freeParking){
+                                    board.boardPieces[20].money += 40*e.level;
+                                }
+                                tmp += 40*e.level
+                            }else{
+                                player.money -= 115
+                                tmp += 115
+                                if(board.settings.freeParking){
+                                    board.boardPieces[20].money += 115;
+                                }
                             }
                         }
+                    })
+                    if(tmp != 0){
+                        player.playerBorder.startMoneyAnimation(-tmp)
                     }
-                })
-                if(tmp != 0){
-                    player.playerBorder.startMoneyAnimation(-tmp)
                 }
             }
             if(random === 16){
-                alert("Få 10kr")
-                player.money += 10;
-                player.playerBorder.startMoneyAnimation(10)
+                board.currentShowingCard.onContinue = function(){
+                    player.money += 10;
+                    player.playerBorder.startMoneyAnimation(10)
+                }
             }
             if(random === 17){
-                alert("Få 100kr")
-                player.money += 100;
-                player.playerBorder.startMoneyAnimation(100)
+                board.currentShowingCard.onContinue = function(){
+                    player.money += 100;
+                    player.playerBorder.startMoneyAnimation(100)
+                }
             }
         }
+    }
+}
+class CurrentCard{
+    constructor(card,type) {
+        let self = this;
+        this.card = card;
+        this.type = type;
+        this.continue = function(){};
+        
+        if(this.type == "chance"){
+            this.img = images.chanceCards.sprites[card]
+            if(this.img === undefined){
+                this.img = images.chanceCards.sprites[0]
+            }
+        }else if(this.type == "community"){
+            console.log(images.communityCards)
+            this.img = images.communityCards.sprites[card]
+            if(this.img === undefined){
+                this.img = images.communityCards.sprites[0]
+            }
+        }
+        
+        this.onContinue = undefined;
+        this.cardCloseButton = new Button([false,false],369,352,images.buttons.sprites[7],function(){self.continue()},18,18,false,false,false,false,false,{x:371+98,y:350-50,w:512*drawScale,h:256*drawScale})
+        this.cardCloseButton.visible = true;
+        this.okayButton = new Button([false,false],40,530,images.buttons.sprites[20],function(){self.continue()},200,60,false,false,false)
+        this.okayButton.visible = true;
+
+        this.draw = function(){
+            drawRotatedImageFromSpriteSheet(470,300,512*2,256*2,this.img,0,false,0,0,512,256,0,c)            
+            this.cardCloseButton.draw();
+            this.okayButton.draw();
+        }
+        this.continue = function(){
+            self.card = undefined;
+            self.cardCloseButton.visible = false;
+            self.okayButton.visible = false;
+            board.currentShowingCard = undefined;
+            self.onContinue();
+        }
+
+        
+
     }
 }
 
@@ -2974,6 +3128,8 @@ class Player{
                 } else {
                     delete Bot.boardInfo[turn]
                     turn = turn%(players.length-1);
+                    board.textsize = measureText({font:"Arcade",text:"Just nu: " + players[turn].name});
+
                 }
 
                 if(players.length-1 === 1){
@@ -3270,8 +3426,9 @@ function getCookie(cname) {
         return c.substring(name.length, c.length);
         };
     };
-    return -1;
+    return undefined;
 }
+
 const measureText = (() => {
     var data, w, size =  120; // for higher accuracy increase this size in pixels.
     const isColumnEmpty = x => {
