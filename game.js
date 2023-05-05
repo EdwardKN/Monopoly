@@ -2611,7 +2611,7 @@ class BoardPiece{
 
             let mouseSquareX = (to_grid_coordinate(mouse.realX,mouse.realY).x - 1270*scale)  /(64*scale)
             let mouseSquareY = (to_grid_coordinate(mouse.realX,mouse.realY).y + 680*scale)/(64*scale)
-            if(board.currentCard !== undefined|| this.piece.type === "chance" || this.piece.type === "community Chest" || this.piece.type === "income tax" || this.piece.type === "tax" ||this.n%10 === 0 || board.auction !== undefined || board.trade !== undefined || players[turn].inJail === true || board.showDices || board.animateDices || players[turn].animationOffset !== 0 || board.getToMainMenuButton.selected  || board.currentShowingCard === undefined){
+            if(board.currentCard !== undefined|| this.piece.type === "chance" || this.piece.type === "community Chest" || this.piece.type === "income tax" || this.piece.type === "tax" ||this.n%10 === 0 || board.auction !== undefined || board.trade !== undefined || players[turn].inJail === true || board.showDices || board.animateDices || players[turn].animationOffset !== 0 || board.getToMainMenuButton.selected  || board.currentShowingCard !== undefined){
                 this.offsetY = this.currentOffsetvalue;
                 this.hover = false;
             }else if(this.x/64*drawScale > mouseSquareX-1*drawScale && this.x/64*drawScale < mouseSquareX && this.side === 2 && this.n%10 !== 0 && mouseSquareY >= 0*drawScale && mouseSquareY < 2*drawScale
@@ -3051,7 +3051,7 @@ class CurrentCard{
         }
         
         this.onContinue = undefined;
-        this.cardCloseButton = new Button([false,false],371,350,images.buttons.sprites[7],function(){self.continue()},18,18,false,false,false,false,false,{x:371+98,y:350-50,w:512*drawScale,h:256*drawScale})
+        this.cardCloseButton = new Button([false,false],369,352,images.buttons.sprites[7],function(){self.continue()},18,18,false,false,false,false,false,{x:371+98,y:350-50,w:512*drawScale,h:256*drawScale})
         this.cardCloseButton.visible = true;
         this.okayButton = new Button([false,false],40,530,images.buttons.sprites[20],function(){self.continue()},200,60,false,false,false)
         this.okayButton.visible = true;
