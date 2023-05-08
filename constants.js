@@ -212,9 +212,7 @@ var sounds = {
 
 var mouse = {
     x:10000,
-    y:10000,
-    realX:10000,
-    realY:10000
+    y:10000
 }
 const pieces = [
     {

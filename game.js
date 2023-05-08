@@ -35,21 +35,14 @@ function fixCanvas(){
     }
     backCanvas.width = window.innerWidth;
     backCanvas.height = window.innerHeight;
-    offsets = {
-        x:Math.floor(window.innerWidth/2) - 416*2*drawScale/2,
-        y:Math.floor(window.innerHeight/2) - 416*drawScale/2
-    }
-    scale = Math.sqrt(Math.pow(canvas.width,2) + Math.pow(canvas.height,2))/2250
+    scale = Math.sqrt(Math.pow(canvas.width,2) + Math.pow(canvas.height,2))/Math.sqrt(Math.pow(1920,2) + Math.pow(1080,2))
+    console.log(scale)
 }
 
 canvas.addEventListener("mousemove",function(e){
     mouse = {
-        x:e.offsetX - offsets.x,
-        y:e.offsetY - offsets.y,
-        realX:e.offsetX,
-        realY:e.offsetY,
-        offsetX:e.offsetX,
-        offsety:e.offsetY,
+        x:e.offsetX,
+        y:e.offsetY,
     }
 })
 
@@ -114,10 +107,6 @@ async function loadSounds(soundObject){
 
 function drawRotatedImageFromSpriteSheet(x,y,w,h,frame,angle,mirrored,cropX,cropY,cropW,cropH,offset,drawcanvas){
     let degree = angle * Math.PI / 180;
-    if(offset){
-        //x+= offsets.x;
-        //y+= offsets.y
-    }
 
     let middlePoint = {
         x:Math.floor(x*scale+w/2*scale),
@@ -187,7 +176,7 @@ function drawIsometricImage(x,y,img,mirror,cropX,cropY,cropW,cropH,offsetX,offse
     if(drawcanvas === undefined){
         drawcanvas = c;
     }
-    drawRotatedImageFromSpriteSheet(to_screen_coordinate(x*drawScale,y*drawScale).x + 850 + offsetX*drawScale,to_screen_coordinate(x*drawScale,y*drawScale).y + 150 + offsetY*drawScale,cropW*scaleOfThis,cropH*scaleOfThis,img,0,mirror,cropX,cropY,cropW,cropH,true,drawcanvas)
+    drawRotatedImageFromSpriteSheet(to_screen_coordinate(x*drawScale,y*drawScale).x + 850 + offsetX*drawScale,to_screen_coordinate(x*drawScale,y*drawScale).y + 120 + offsetY*drawScale,cropW*scaleOfThis,cropH*scaleOfThis,img,0,mirror,cropX,cropY,cropW,cropH,true,drawcanvas)
 }
 
 
@@ -565,7 +554,7 @@ class MainMenu {
         this.current = true;
         let self = this;
 
-        this.localButton = new Button([false,false],-322,381,images.mainMenu.sprites[1],function(){
+        this.localButton = new Button([false,false],-322,380,images.mainMenu.sprites[1],function(){
             self.current = false;
             menus[1].current = true;
             self.localButton.visible = false;
@@ -573,7 +562,7 @@ class MainMenu {
             self.musicButton.visible = false;
             self.fullScreenButton.visible = false;
         },195,52,false,false,true)
-        this.onlineButton = new Button([false,false],-322,539,images.mainMenu.sprites[2],function(){
+        this.onlineButton = new Button([false,false],-322,540,images.mainMenu.sprites[2],function(){
             self.current = false;
             self.localButton.visible = false;
             self.onlineButton.visible = false;
@@ -582,7 +571,7 @@ class MainMenu {
             showOnlineLobby();
         },195,52,false,false,true)
 
-        this.musicButton = new Button([true,false],-317+40+140,711,images.buttons.sprites[14],function(){
+        this.musicButton = new Button([true,false],-317+40+140,700,images.buttons.sprites[14],function(){
             document.cookie = `musicOn=${!self.musicButton.selected};Expires=Sun, 22 oct 2030 08:00:00 UTC;`;
             clearTimeout(musictimer)
             if(self.musicButton.selected){
@@ -600,7 +589,7 @@ class MainMenu {
                 }            
             }
         },40,40,false)
-        this.finishButton = new Button([true,false],-317,711,images.buttons.sprites[19],function(){
+        this.finishButton = new Button([true,false],-317,700,images.buttons.sprites[19],function(){
             if(self.finishButton.selected){
                 finish = true;
             }else{
@@ -623,14 +612,14 @@ class MainMenu {
 
         },40,40,false)
         this.finishButton.selected = finish;
-        this.fullScreenButton = new Button([true,true],-357,711,images.buttons.sprites[18],function(){
+        this.fullScreenButton = new Button([true,true],-357,700,images.buttons.sprites[18],function(){
             if(this.selected){
                 document.documentElement.requestFullscreen()
             }else{
                 document.exitFullscreen()
             }
         },40,40,false)
-        this.volume = new Slider(240-80,1022,280,80,0,100,1,true,50,"%","",function(){
+        this.volume = new Slider(240-80,1000,280,80,0,100,1,true,50,"%","",function(){
             musicVolume = self.volume.value/100;
             document.cookie = `musicVolume=${musicVolume};Expires=Sun, 22 oct 2030 08:00:00 UTC;`;
             if(musicOn){
@@ -752,7 +741,7 @@ async function init(){
         menus[0].current = false;
 
         let playerlist = []
-        let playerAmount = 4;
+        let playerAmount = 8;
         let botAmount = 0;
         let useableColors = [0,1,2,3,4,5,6,7]
         for(let i = 0; i < (playerAmount+botAmount); i++){
@@ -796,7 +785,7 @@ async function init(){
 function update(){
     requestAnimationFrame(update);
 
-    c.imageSmoothingEnabled = false;
+    c.imageSmoothingEnabled = true;
     c.clearRect(0,0,canvas.width,canvas.height);
     showBackground();
 
@@ -1190,7 +1179,7 @@ class Board{
             timeouts = [];
         },40,40,false,false,false,false,false,);
 
-        this.getToMainMenuButton = new Button([true,false],90 ,691 + 20,images.buttons.sprites[17],function(){
+        this.getToMainMenuButton = new Button([true,false],90 ,700,images.buttons.sprites[17],function(){
         },80,40,false,false,false,true,false,false)
 
         this.getToMainMenuButton.visible = true;
@@ -1690,13 +1679,13 @@ class Slider{
                 }
                 c.fillRect(this.x*scale + (this.percentage*(this.w-8))*scale,this.y*scale,10*scale,this.h*scale)
             }
-            if(detectCollition(this.x*scale,this.y*scale,this.w*scale,this.h*scale,mouse.realX,mouse.realY,1,1)){
+            if(detectCollition(this.x*scale,this.y*scale,this.w*scale,this.h*scale,mouse.x,mouse.y,1,1)){
                 this.hover = true;
             }else{
                 this.hover = false;
             }
             if(this.follow === true){
-                this.percentage = (mouse.realX-(this.x*scale))/(this.w*scale-4*scale);
+                this.percentage = (mouse.x-(this.x*scale))/(this.w*scale-4*scale);
             }
             if(this.percentage <= 0){
                 this.percentage = 0;
@@ -1715,7 +1704,7 @@ class Slider{
         this.release = function(){
             if (this.disabled) return;
             if(this.follow === true){
-                this.percentage = (mouse.realX-(this.x*scale))/(this.w*scale-4*scale);
+                this.percentage = (mouse.x-(this.x*scale))/(this.w*scale-4*scale);
             }
             if (Api.online && board.trade != undefined) {
                 // Update money
@@ -2071,18 +2060,18 @@ class PlayerBorder{
                 this.button.mirror = true;
             }
             if(this.index === 1){
-                this.x = 374-104
+                this.x = 374-124
                 this.y = 200;
                 this.button.mirror = false;
             }
             if(this.index === 2){
                 this.x = -358
-                this.y = 700;
+                this.y = 700-14;
                 this.button.mirror = true;
             }
             if(this.index === 3){
-                this.x = 374-104
-                this.y = 700;
+                this.x = 374-124
+                this.y = 700-14;
                 this.button.mirror = false;
             }
             if(this.index === 4){
@@ -2091,18 +2080,18 @@ class PlayerBorder{
                 this.button.mirror = true;
             }
             if(this.index === 5){
-                this.x = 374-104
+                this.x = 374-124
                 this.y = 200 +54;
                 this.button.mirror = false;
             }
             if(this.index === 6){
                 this.x = -358
-                this.y = 700 -54;
+                this.y = 700 -54-14;
                 this.button.mirror = true;
             }
             if(this.index === 7){
-                this.x = 374-104
-                this.y = 700 -54;
+                this.x = 374-124
+                this.y = 700 -54-14;
                 this.button.mirror = false;
             }
             this.button.y = this.y
@@ -2114,7 +2103,7 @@ class PlayerBorder{
             
             let mirrorAdder = -10;
             if(!this.button.mirror){
-                mirrorAdder = 310;
+                mirrorAdder = 300;
             }
             let mirrorAdder2 = 0;
             if(!this.button.mirror){
@@ -2438,7 +2427,7 @@ class Button{
 
             if(this.visible && this.img !== undefined){
                 if(!this.disabled && this.selected === false){
-                    if(detectCollition(this.x*drawScale*scale+715*scale,this.y*drawScale*scale-400*scale,this.w*drawScale*scale,this.h*drawScale*scale,mouse.realX,mouse.realY,1,1)){
+                    if(detectCollition(this.x*drawScale*scale+715*scale,this.y*drawScale*scale-400*scale,this.w*drawScale*scale,this.h*drawScale*scale,mouse.x,mouse.y,1,1)){
                         if(this.img.frame.w > this.w){
                             drawRotatedImageFromSpriteSheet(this.x*drawScale+715,this.y*drawScale-400,this.w*drawScale,this.h*drawScale,this.img,0,this.mirror,this.w,0,this.w,this.h)
                         }else{
@@ -2466,7 +2455,7 @@ class Button{
                             }
                         }
                     }else{
-                        if(detectCollition(this.x*drawScale*scale+715*scale,this.y*drawScale*scale-400*scale,this.w*drawScale*scale,this.h*drawScale*scale,mouse.realX,mouse.realY,1,1)){
+                        if(detectCollition(this.x*drawScale*scale+715*scale,this.y*drawScale*scale-400*scale,this.w*drawScale*scale,this.h*drawScale*scale,mouse.x,mouse.y,1,1)){
 
                             if(this.img.frame.w <= this.w*3){
                                 if(this.disableselectTexture){
@@ -2501,7 +2490,7 @@ class Button{
                 }
                 
             }else if(this.visible){
-                if(detectCollition(this.x*drawScale*scale+715*scale,this.y*drawScale*scale-400*scale,this.w*drawScale*scale,this.h*drawScale*scale,mouse.realX,mouse.realY,1,1)){
+                if(detectCollition(this.x*drawScale*scale+715*scale,this.y*drawScale*scale-400*scale,this.w*drawScale*scale,this.h*drawScale*scale,mouse.x,mouse.y,1,1)){
                     this.hover = true;
                 }else{
                     this.hover = false;
@@ -2518,9 +2507,9 @@ class Button{
         }
         this.click = function(){
             if (this.disabled || !this.visible) return;
-            if(detectCollition(this.x*drawScale*scale+715*scale,this.y*drawScale*scale-400*scale,this.w*drawScale*scale,this.h*drawScale*scale,mouse.realX,mouse.realY,1,1)||
-            this.invertedHitbox !== undefined && this.invertedHitbox !== false && this.invertedHitbox.onlySelected === undefined && !detectCollition(this.invertedHitbox.x*scale,this.invertedHitbox.y*scale,this.invertedHitbox.w*scale,this.invertedHitbox.h*scale,mouse.realX,mouse.realY,1,1) ||
-            this.invertedHitbox !== undefined && this.invertedHitbox !== false && this.invertedHitbox.onlySelected === true && this.selected && !detectCollition(this.invertedHitbox.x*scale,this.invertedHitbox.y*scale,this.invertedHitbox.w*scale,this.invertedHitbox.h*scale,mouse.realX,mouse.realY,1,1)){
+            if(detectCollition(this.x*drawScale*scale+715*scale,this.y*drawScale*scale-400*scale,this.w*drawScale*scale,this.h*drawScale*scale,mouse.x,mouse.y,1,1)||
+            this.invertedHitbox !== undefined && this.invertedHitbox !== false && this.invertedHitbox.onlySelected === undefined && !detectCollition(this.invertedHitbox.x*scale,this.invertedHitbox.y*scale,this.invertedHitbox.w*scale,this.invertedHitbox.h*scale,mouse.x,mouse.y,1,1) ||
+            this.invertedHitbox !== undefined && this.invertedHitbox !== false && this.invertedHitbox.onlySelected === true && this.selected && !detectCollition(this.invertedHitbox.x*scale,this.invertedHitbox.y*scale,this.invertedHitbox.w*scale,this.invertedHitbox.h*scale,mouse.x,mouse.y,1,1)){
                 if(this.select[0] === true){
                     if(this.selected){
                         this.selected = false;
@@ -2609,8 +2598,8 @@ class BoardPiece{
                 }
             }
 
-            let mouseSquareX = (to_grid_coordinate(mouse.realX,mouse.realY).x - 1270*scale)  /(64*scale)
-            let mouseSquareY = (to_grid_coordinate(mouse.realX,mouse.realY).y + 680*scale)/(64*scale)
+            let mouseSquareX = (to_grid_coordinate(mouse.x,mouse.y).x - 1210*scale)  /(64*scale)
+            let mouseSquareY = (to_grid_coordinate(mouse.x,mouse.y).y + 740*scale)/(64*scale)
             if(board.currentCard !== undefined|| this.piece.type === "chance" || this.piece.type === "community Chest" || this.piece.type === "income tax" || this.piece.type === "tax" ||this.n%10 === 0 || board.auction !== undefined || board.trade !== undefined || players[turn].inJail === true || board.showDices || board.animateDices || players[turn].animationOffset !== 0 || board.getToMainMenuButton.selected  || board.currentShowingCard !== undefined){
                 this.offsetY = this.currentOffsetvalue;
                 this.hover = false;
