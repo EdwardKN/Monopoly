@@ -170,7 +170,7 @@ class Bot{
         */
 
         /* Buy house */
-        // Check most expensive --> cheapest
+        // Group: Expensive --> cheapest
         let keys = Object.keys(groups)
 
         for (let i = keys.length - 1; i >= 0; i--) {
@@ -183,7 +183,7 @@ class Bot{
                 let minLevel = Math.min(...levels)
                 let minN = nums.filter(n => n == minLevel)
 
-                // Expensive --> Cheap
+                // Boardpiece: Expensive --> Cheap
                 for (let j = minN.length - 1; j >= 0; j--) {
                     let bP = board.boardPieces[minN[j]]
                     if (this.player.money - bP.piece.housePrice > this.getAverageLoss(40)) {
