@@ -143,7 +143,6 @@ class Bot{
             return
         }
 
-
         if (!bP.owner && Object.keys(boardWeights).includes(`${bP.n}`) &&
             this.player.laps >= board.settings.roundsBeforePurchase) {
             // Buy or Auction
@@ -170,6 +169,32 @@ class Bot{
         3. Trade
         */
 
+        /* Buy house */
+        // Check most expensive --> cheapest
+        let keys = Object.keys(groups)
+
+        for (let i = keys.length - 1; i >= 0; i--) {
+            let group = keys[i]
+            let bought = false
+
+            if (hasGroup(this.player, group)) {
+                let nums = groups[group]
+                let levels = nums.map(n => board.boardPieces[n].level )
+                let minLevel = Math.min(...levels)
+                let minN = nums.filter(n => n == minLevel)
+
+                // Expensive --> Cheap
+                for (let j = minN.length - 1; j >= 0; j--) {
+                    let bP = board.boardPieces[minN[j]]
+                    if (this.player.money - bP.piece.housePrice > this.getAverageLoss(40)) {
+                        this.buyHouse(bP)
+                        bought = true
+                    }
+                }
+            }
+            if (bought) { i++ } // May want to continue upgrading the same group
+        }
+
         // Unmortgage
         // 1.1 * (bP.piece.price / 2)
         for (let bP of this.player.ownedPlaces) {
@@ -185,6 +210,11 @@ class Bot{
         }
         Bot.thinking = false
         this.player.rolls = false
+    }
+
+    buyHouse(boardPiece) {
+        this.player.money -= boardPiece.piece.housePrice
+        boardPiece.level++
     }
 
     buyPiece(boardPiece) {
@@ -432,6 +462,13 @@ function testAuction(group, station, utility) {
     board.auctionButton.visible = false
 }
 
-function testGroup() {
-
+function testBuyProperty(player) {
+    let group = Object.values(groups)[randomIntFromRange(0, Object.keys(groups).length - 1)]
+    let lowest = randomIntFromRange(0, 4)
+    for (let n of group) {
+        let bP = board.boardPieces[n]
+        bP.owner = player
+        player.ownedPlaces.push(bP)
+        bP.level = lowest + (Math.random() > 0.5 ? 1 : 0)
+    }
 }
