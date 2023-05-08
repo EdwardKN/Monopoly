@@ -281,8 +281,8 @@ class Bot{
                 maxValueToSpend *= specialWeights.station[ownedStations(this.player).length]
             } else if (bP.piece.group === 'utility') {
                 maxValueToSpend *= specialWeights.utility[ownedUtility(this.player).length]
-            } else {                
-                if (players.some(player => ownedGroup(player, bP.piece.group).length >= 0.5)) {
+            } else {
+                if (players.some(player => ownedGroup(player, bP.piece.group).length / groups[bP.piece.group].length >= 0.5)) {
                     maxValueToSpend *= specialWeights.group[bP.piece.group]
                 } else { maxValueToSpend *= boardWeights[bP.n] }
             }
@@ -404,4 +404,34 @@ function ownedUtility(player) {
 
 function ownedGroup(player, group) {
     return player.ownedPlaces.filter(bP => bP.piece.group === group)
+}
+
+
+function testAuction(group, station, utility) {
+    let nums = []
+    let amount = 0
+
+    if (group) { nums = groups[group].map(e => e); amount = randomIntFromRange(1, nums.length - 1) }
+    else if (station) { nums = [5, 15, 25, 35]; amount = randomIntFromRange(0, 3) }
+    else if (utility) { nums = [12, 28]; amount = randomIntFromRange(0, 1) }
+    else { nums = board.boardPieces.filter(e => e.piece.group).map(e => e.n); amount = 0 }
+
+    for (let i = 0; i < amount; i++) {
+        let r = randomIntFromRange(0, nums.length - 1)
+        let bP = board.boardPieces[nums[r]]
+        bP.owner = players[turn]
+        players[turn].ownedPlaces.push(bP)
+        nums.splice(r, 1)
+    }
+    
+    let n = nums[randomIntFromRange(0, nums.length - 1)]
+    let bP = board.boardPieces[n]
+    board.auction = new Auction(bP)
+    board.currentCard = undefined
+    board.buyButton.visible = false
+    board.auctionButton.visible = false
+}
+
+function testGroup() {
+
 }
