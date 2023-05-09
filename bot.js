@@ -197,12 +197,33 @@ class Bot{
             if (bought) { i++ } // May want to continue upgrading the same group
         }
 
-        // Unmortgage
-        // 1.1 * (bP.piece.price / 2)
-        for (let bP of this.player.ownedPlaces) {
-            if (!bP.mortgaged) { continue }
-
+        /* Unmortgage */
+        let mortgaged = []
+        let added = new Set()
+        // Sort by importance
+        for (let group of Object.keys(groups).reverse()) {
+            let pO = ownedGroup(this.player, group)
+            if (pO.length === groups[group].length) {
+                pO.forEach(bP => {
+                    if (bP.mortgaged) {
+                        mortgaged.push(bP)
+                        added.add(bP.n)
+                    }
+                })
+            }
         }
+        mortgaged.concat(
+            this.player.ownedPlaces.filter(bP => bP.mortgaged && !added.has(bP.n))
+            .sort((a, b) => b.n - a.n))
+
+        for (let bP of mortgaged) {
+            if (this.player.money - 1.1 * bP.piece.price / 2 > this.getAverageLoss(40)) {
+                this.unmortgagePiece(bP)
+            }
+        }
+
+
+
 
         if (this.player.rolls) {
             this.player.numberOfRolls = 0
@@ -212,6 +233,16 @@ class Bot{
         }
         Bot.thinking = false
         this.player.rolls = false
+    }
+
+    mortgagePiece(boardPiece) {
+        this.player += boardPiece.piece.price / 2
+        boardPiece.mortgaged = true
+    }
+
+    unmortgagePiece(boardPiece) {
+        this.player.money -= 1.1 * boardPiece.piece.price / 2
+        boardPiece.mortgaged = false
     }
 
     buyHouse(boardPiece) {
@@ -303,7 +334,7 @@ class Bot{
 
         for (const option of [100, 10, 2]) {
             const cost = currentPrice + option
-            // Current Money, Current Price, Bid | (Average Income, Average Loss) > Average Money Change Next Cycle
+
             if (this.player.money - cost < this.getAverageLoss(12)) { continue }
 
             // Dubbel hyra? 
@@ -335,7 +366,8 @@ class Bot{
         }
     }
 
-    async handleTrade(type) { // Handle Trade Request
+    // Handle trade requests
+    async handleTrade(type) {
         if (type === 'start') {
             /*
             What does the bot want?
@@ -402,7 +434,10 @@ function probabilityOfNumber(target) {
 }
 
 function hasGroup(player, group) {
-    return ownedGroup(player, group).length === groups[group].length
+    let ownes = ownedGroup(player, group)
+
+    return ownes.length === groups[group].length &&
+        ownes.every(bP => !bP.mortgaged)
 }
 
 function getPieceRent(boardPiece, steps, player) {
