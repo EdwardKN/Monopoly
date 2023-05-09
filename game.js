@@ -1387,7 +1387,7 @@ class Board{
         }
 
         this.update = function () {
-                let fontsize = (1/this.textsize.width)*65000 > 50 ? 50 : (1/this.textsize.width)*65000
+                let fontsize = (1/this.textsize.width)*50000 > 50 ? 50 : (1/this.textsize.width)*50000
                 c.fillStyle = "white";
                 c.font = fontsize*scale+"px Arcade";
                 c.textAlign = "center";
