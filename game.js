@@ -29,6 +29,15 @@ function fixCanvas(){
    
     backCanvas.width = window.innerWidth;
     backCanvas.height = window.innerHeight;
+    
+    calculateScaleStuff();
+    calculateScaleStuff();
+    calculateScaleStuff();
+    calculateScaleStuff();
+
+}
+function calculateScaleStuff(){
+    const scaleSteps = Math.pow(2,0.5);
     let tmp = {
         width:undefined,
         height:undefined
@@ -40,10 +49,28 @@ function fixCanvas(){
         tmp.width = (window.screen.availHeight*16)/9;
         tmp.height = window.screen.availHeight;
     }
+    if(window.innerWidth*9 <= window.innerHeight*16){
+
+        if(canvas.width > window.innerWidth){
+            scaleMultiplier /= scaleSteps;
+        }
+        if(window.innerWidth >= (canvas.width/scaleMultiplier)*(scaleMultiplier*scaleSteps)){
+            scaleMultiplier *= scaleSteps;
+        }
+    }else{
+        if(canvas.height > window.innerHeight){
+            scaleMultiplier /= scaleSteps;
+        }
+        if(window.innerHeight >= (canvas.height/scaleMultiplier)*(scaleMultiplier*scaleSteps)){
+            scaleMultiplier *= scaleSteps;
+        }
+    }
+    
+    
     scale = Math.sqrt(Math.pow(tmp.width,2) + Math.pow(tmp.height,2))/Math.sqrt(Math.pow(1920,2) + Math.pow(1080,2))/window.devicePixelRatio*scaleMultiplier
+    
     canvas.width = 1920*scale;
     canvas.height = 1080*scale;
-
 }
 
 canvas.addEventListener("mousemove",function(e){
@@ -633,14 +660,6 @@ class MainMenu {
                 musicPlaying.volume = musicVolume;
             }
         })
-        this.scalePlus = new Button([false,false],562,700,images.lobbyMenu.sprites[0],function(){
-           scaleMultiplier *= Math.sqrt(2);
-           fixCanvas();
-        },40,40,false)
-        this.scaleMinus = new Button([false,false],522,700,images.lobbyMenu.sprites[1],function(){
-            scaleMultiplier /= Math.sqrt(2);
-            fixCanvas();
-         },40,40,false)
         this.volume.percentage = musicVolume
 
 
@@ -665,15 +684,6 @@ class MainMenu {
                 this.fullScreenButton.draw();
                 this.volume.visible = true;
                 this.volume.draw();
-                if(canvas.width == window.screen.availWidth){
-                    this.scalePlus.disabled = true;
-                }else{
-                    this.scalePlus.disabled = false;
-                }
-                this.scalePlus.visible  = true;
-                this.scalePlus.draw();
-                this.scaleMinus.visible = true;
-                this.scaleMinus.draw()
             }
         }
     }
@@ -3062,7 +3072,6 @@ class CurrentCard{
                 this.img = images.chanceCards.sprites[0]
             }
         }else if(this.type == "community"){
-            console.log(images.communityCards)
             this.img = images.communityCards.sprites[card]
             if(this.img === undefined){
                 this.img = images.communityCards.sprites[0]
