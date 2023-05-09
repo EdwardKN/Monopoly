@@ -27,7 +27,7 @@ window.addEventListener("resize", fixCanvas)
 
 function fixCanvas(){
    
-     backCanvas.width = window.innerWidth;
+    backCanvas.width = window.innerWidth;
     backCanvas.height = window.innerHeight;
     let tmp = {
         width:undefined,
@@ -40,15 +40,10 @@ function fixCanvas(){
         tmp.width = (window.screen.availHeight*16)/9;
         tmp.height = window.screen.availHeight;
     }
-    
     scale = Math.sqrt(Math.pow(tmp.width,2) + Math.pow(tmp.height,2))/Math.sqrt(Math.pow(1920,2) + Math.pow(1080,2))/window.devicePixelRatio*scaleMultiplier
-    if(window.innerWidth*9 < window.innerHeight*16){
-        canvas.width = window.innerWidth;
-        canvas.height = (window.innerWidth*9)/16;
-    }else{
-        canvas.width = (window.innerHeight*16)/9;
-        canvas.height = window.innerHeight;
-    }
+    canvas.width = 1920*scale;
+    canvas.height = 1080*scale;
+
 }
 
 canvas.addEventListener("mousemove",function(e){
@@ -59,7 +54,6 @@ canvas.addEventListener("mousemove",function(e){
 })
 
 window.addEventListener("mousedown",function(e){
-    document.documentElement.requestFullscreen()
     if(firstclick === false && musicOn){
         firstclick = true;
         if(finish){
@@ -671,7 +665,7 @@ class MainMenu {
                 this.fullScreenButton.draw();
                 this.volume.visible = true;
                 this.volume.draw();
-                if(Math.round(canvas.width/scale) == 1920){
+                if(canvas.width == window.screen.availWidth){
                     this.scalePlus.disabled = true;
                 }else{
                     this.scalePlus.disabled = false;
