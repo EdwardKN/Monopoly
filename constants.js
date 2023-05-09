@@ -29,9 +29,19 @@ var offsets = {
     x:Math.floor(window.innerWidth/2) - 832*drawScale/2,
     y:Math.floor(window.innerHeight/2) - 416*drawScale/2
 }
+let tmp = {
+    width:undefined,
+    height:undefined
+}
+if(window.screen.availWidth*9 < window.screen.availHeight*16){
+    tmp.width = window.screen.availWidth;
+    tmp.height = (window.screen.availWidth*9)/16;
+}else{
+    tmp.width = (window.screen.availHeight*16)/9;
+    tmp.height = window.screen.availHeight;
+}
 
-var scale = Math.sqrt(Math.pow(window.innerWidth,2) + Math.pow(window.innerHeight,2))/2000
-
+var scale = Math.sqrt(Math.pow(tmp.width,2) + Math.pow(tmp.height,2))/Math.sqrt(Math.pow(1920,2) + Math.pow(1080,2))
 var speeds;
 if(fastSpeed === true){
     speeds = {

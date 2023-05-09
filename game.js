@@ -33,10 +33,8 @@ function fixCanvas(){
         canvas.width = (window.innerHeight*16)/9;
         canvas.height = window.innerHeight;
     }
-    backCanvas.width = window.innerWidth;
+     backCanvas.width = window.innerWidth;
     backCanvas.height = window.innerHeight;
-    scale = Math.sqrt(Math.pow(canvas.width,2) + Math.pow(canvas.height,2))/Math.sqrt(Math.pow(1920,2) + Math.pow(1080,2))
-    console.log(scale)
 }
 
 canvas.addEventListener("mousemove",function(e){
@@ -47,6 +45,7 @@ canvas.addEventListener("mousemove",function(e){
 })
 
 window.addEventListener("mousedown",function(e){
+    document.documentElement.requestFullscreen()
     if(firstclick === false && musicOn){
         firstclick = true;
         if(finish){
@@ -626,7 +625,6 @@ class MainMenu {
                 musicPlaying.volume = musicVolume;
             }
         })
-
         this.volume.percentage = musicVolume
 
         this.musicButton.selected = !musicOn
@@ -650,8 +648,6 @@ class MainMenu {
                 this.fullScreenButton.draw();
                 this.volume.visible = true;
                 this.volume.draw();
-                
-
             }
         }
     }
@@ -1624,7 +1620,7 @@ class Board{
     }
 }
 class Slider{
-    constructor(x,y,w,h,from,to,steps,showtext,font,unit,beginningText,onChange){
+    constructor(x,y,w,h,from,to,steps,showtext,font,unit,beginningText,onChange,onrelease){
         this.x = x;
         this.y = y;
         this.w = w;
@@ -1649,13 +1645,17 @@ class Slider{
         }else{
             this.onChange = onChange;
         }
+        if(onrelease === undefined){
+            this.onrelease = function(){}
+        }else{
+            this.onrelease = onrelease;
+        }
         buttons.push(this);
         this.draw = function(){
             if (this.disabled) this.hover = false;
             if (!this.visible) return;
             
             if(this.visible){
-                this.value = Math.round((((this.to-this.from)*this.percentage) + this.from)/this.steps)*this.steps;
                 if(this.value !== this.last){
                     this.last = this.value;
                     playSound(sounds.clicks,0.1,false)
@@ -1686,6 +1686,7 @@ class Slider{
             }
             if(this.follow === true){
                 this.percentage = (mouse.x-(this.x*scale))/(this.w*scale-4*scale);
+                this.value = Math.round((((this.to-this.from)*this.percentage) + this.from)/this.steps)*this.steps;
             }
             if(this.percentage <= 0){
                 this.percentage = 0;
@@ -1705,6 +1706,8 @@ class Slider{
             if (this.disabled) return;
             if(this.follow === true){
                 this.percentage = (mouse.x-(this.x*scale))/(this.w*scale-4*scale);
+                this.value = Math.round((((this.to-this.from)*this.percentage) + this.from)/this.steps)*this.steps;
+                this.onrelease();
             }
             if (Api.online && board.trade != undefined) {
                 // Update money
