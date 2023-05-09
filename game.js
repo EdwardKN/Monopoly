@@ -26,15 +26,29 @@ window.onload = fixCanvas;
 window.addEventListener("resize", fixCanvas)
 
 function fixCanvas(){
-    if(window.screen.availWidth*9 < window.screen.availHeight*16){
-        canvas.width = window.screen.availWidth;
-        canvas.height = (window.screen.availWidth*9)/16;
-    }else{
-        canvas.width = (window.screen.availHeight*16)/9;
-        canvas.height = window.screen.availHeight;
-    }
+   
      backCanvas.width = window.innerWidth;
     backCanvas.height = window.innerHeight;
+    let tmp = {
+        width:undefined,
+        height:undefined
+    }
+    if(window.screen.availWidth*9 < window.screen.availHeight*16){
+        tmp.width = window.screen.availWidth;
+        tmp.height = (window.screen.availWidth*9)/16;
+    }else{
+        tmp.width = (window.screen.availHeight*16)/9;
+        tmp.height = window.screen.availHeight;
+    }
+    
+    scale = Math.sqrt(Math.pow(tmp.width,2) + Math.pow(tmp.height,2))/Math.sqrt(Math.pow(1920,2) + Math.pow(1080,2))/window.devicePixelRatio*scaleMultiplier
+    if(window.innerWidth*9 < window.innerHeight*16){
+        canvas.width = window.innerWidth;
+        canvas.height = (window.innerWidth*9)/16;
+    }else{
+        canvas.width = (window.innerHeight*16)/9;
+        canvas.height = window.innerHeight;
+    }
 }
 
 canvas.addEventListener("mousemove",function(e){
@@ -625,6 +639,14 @@ class MainMenu {
                 musicPlaying.volume = musicVolume;
             }
         })
+        this.scalePlus = new Button([false,false],562,700,images.lobbyMenu.sprites[0],function(){
+           scaleMultiplier *= Math.sqrt(2);
+           fixCanvas();
+        },40,40,false)
+        this.scaleMinus = new Button([false,false],522,700,images.lobbyMenu.sprites[1],function(){
+            scaleMultiplier /= Math.sqrt(2);
+            fixCanvas();
+         },40,40,false)
         this.volume.percentage = musicVolume
 
 
@@ -649,6 +671,15 @@ class MainMenu {
                 this.fullScreenButton.draw();
                 this.volume.visible = true;
                 this.volume.draw();
+                if(Math.floor(scale*window.screen.availWidth) == 1080){
+                    this.scalePlus.disabled = true;
+                }else{
+                    this.scalePlus.disabled = false;
+                }
+                this.scalePlus.visible  = true;
+                this.scalePlus.draw();
+                this.scaleMinus.visible = true;
+                this.scaleMinus.draw()
             }
         }
     }
