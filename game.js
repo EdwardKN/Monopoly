@@ -671,7 +671,7 @@ class MainMenu {
                 this.fullScreenButton.draw();
                 this.volume.visible = true;
                 this.volume.draw();
-                if(Math.floor(scale*window.screen.availWidth) == 1080){
+                if(Math.round(canvas.width/scale) == 1920){
                     this.scalePlus.disabled = true;
                 }else{
                     this.scalePlus.disabled = false;
