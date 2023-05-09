@@ -178,15 +178,17 @@ class Bot{
             let bought = false
 
             if (hasGroup(this.player, group)) {
+
                 let nums = groups[group]
                 let levels = nums.map(n => board.boardPieces[n].level )
                 let minLevel = Math.min(...levels)
-                let minN = nums.filter(n => n == minLevel)
+                let minN = nums.filter(n => board.boardPieces[n].level == minLevel)
 
                 // Boardpiece: Expensive --> Cheap
+                let averageLoss = this.getAverageLoss(40)
                 for (let j = minN.length - 1; j >= 0; j--) {
                     let bP = board.boardPieces[minN[j]]
-                    if (this.player.money - bP.piece.housePrice > this.getAverageLoss(40)) {
+                    if (this.player.money - bP.piece.housePrice > averageLoss) {
                         this.buyHouse(bP)
                         bought = true
                     }
