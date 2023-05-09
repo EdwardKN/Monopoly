@@ -26,12 +26,12 @@ window.onload = fixCanvas;
 window.addEventListener("resize", fixCanvas)
 
 function fixCanvas(){
-    if(window.innerWidth*9 < window.innerHeight*16){
-        canvas.width = window.innerWidth;
-        canvas.height = (window.innerWidth*9)/16;
+    if(window.screen.availWidth*9 < window.screen.availHeight*16){
+        canvas.width = window.screen.availWidth;
+        canvas.height = (window.screen.availWidth*9)/16;
     }else{
-        canvas.width = (window.innerHeight*16)/9;
-        canvas.height = window.innerHeight;
+        canvas.width = (window.screen.availHeight*16)/9;
+        canvas.height = window.screen.availHeight;
     }
      backCanvas.width = window.innerWidth;
     backCanvas.height = window.innerHeight;
