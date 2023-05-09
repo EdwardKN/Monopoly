@@ -627,6 +627,7 @@ class MainMenu {
         })
         this.volume.percentage = musicVolume
 
+
         this.musicButton.selected = !musicOn
         
         this.onlineButton.disabled = false;
@@ -1656,6 +1657,8 @@ class Slider{
             if (!this.visible) return;
             
             if(this.visible){
+                this.value = Math.round((((this.to-this.from)*this.percentage) + this.from)/this.steps)*this.steps;
+
                 if(this.value !== this.last){
                     this.last = this.value;
                     playSound(sounds.clicks,0.1,false)
@@ -1686,7 +1689,6 @@ class Slider{
             }
             if(this.follow === true){
                 this.percentage = (mouse.x-(this.x*scale))/(this.w*scale-4*scale);
-                this.value = Math.round((((this.to-this.from)*this.percentage) + this.from)/this.steps)*this.steps;
             }
             if(this.percentage <= 0){
                 this.percentage = 0;
