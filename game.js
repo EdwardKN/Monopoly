@@ -2327,16 +2327,16 @@ class Auction{
                 }
                 c.fillStyle = "black"
                 if(this.time < 464 && this.time >6){
-                    c.fillRect(1028*scale,592*scale,-this.time*scale,56*scale)
+                    c.fillRect(1018*scale,560*scale,-this.time*scale,56*scale)
                 }
                 if(this.time > 4){
-                    c.fillRect(1028*scale,594*scale,2*scale,52*scale)
+                    c.fillRect(1018*scale,562*scale,2*scale,52*scale)
                 }
                 if(this.time > 2){
-                    c.fillRect(1028*scale,596*scale,4*scale,48*scale)
+                    c.fillRect(1018*scale,564*scale,4*scale,48*scale)
                 }
                 if(this.time > 0){
-                    c.fillRect(1028*scale,598*scale,6*scale,44*scale)
+                    c.fillRect(1018*scale,566*scale,6*scale,44*scale)
                 }
             
 
