@@ -2602,11 +2602,11 @@ class BoardPiece{
                 this.imgSide =0;
             }
             if(this.side === 1){
-                this.x = 32;
+                this.x = 34;
                 this.y = -32 + 128*10.5+ - this.n*64;
                 this.imgSide = 3;
                 if(this.n%10 === 0){
-                    this.x = 0;
+                    this.x = 1;
                     this.y = -32 + 128*10.75+ - this.n*64;
                 }
             }
@@ -2616,7 +2616,7 @@ class BoardPiece{
                 this.imgSide = 1;
                 if(this.n%10 !== 0){
                     this.x = (this.n%10)*64 + 64;
-                    this.y = 0;
+                    this.y = 2;
                 }
             }
 
