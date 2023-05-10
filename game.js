@@ -1299,6 +1299,7 @@ class Board{
             }
             players[turn].ownedPlaces.splice(players[turn].ownedPlaces.indexOf(board.currentCard),1);
             board.currentCard.owner = undefined;
+            players[turn].hasStepped = true;
         },40,40);
         this.mortgageButton = new Button([false,false],80,580,images.buttons.sprites[3],function(){
             if(board.currentCard.mortgaged === true){
@@ -1560,7 +1561,7 @@ class Board{
                 }else{
                     this.cardCloseButton.visible = true;
 
-                    if(this.currentCard === board.boardPieces[players[Api.online ? Api.currentPlayer : turn].steps] && this.auction === undefined && players[Api.online ? Api.currentPlayer : turn].bot === undefined){
+                    if(this.currentCard === board.boardPieces[players[Api.online ? Api.currentPlayer : turn].steps] && this.auction === undefined && players[Api.online ? Api.currentPlayer : turn].bot === undefined && players[turn].hasStepped === false){
                         if(board.settings.auctions){
                             this.auctionButton.disabled = false;
                             this.cardCloseButton.visible = false;
@@ -2749,7 +2750,7 @@ class BoardPiece{
                 }else if(this.piece.price > 0 && this.owner === undefined){
                     if(player.bot === undefined){
                         board.currentCard = this;     
-                        board.getToMainMenuButton.visible = false;   
+                        board.getToMainMenuButton.visible = false; 
                     }
                 }else if(this.owner !== player && this.owner !== undefined && board.settings.prisonmoney || this.owner !== player && this.owner !== undefined && !board.settings.prisonmoney && !this.owner.inJail){
                     if(this.piece.type === "utility"){
@@ -3127,6 +3128,7 @@ class Player{
         this.jailcardAmount = 0;
         this.timeInJail = 0;
         this.laps = 0;
+        this.hasStepped = false;
 
         this.playerBorder = new PlayerBorder(this)
         if(bot == true ){
@@ -3403,6 +3405,7 @@ class Player{
         
         this.rollDice = function(){
             if(this.negative === false){
+                this.hasStepped = false;
                 if(this.inJail === false){
                     if(this.rolls === false){
                         let dice1 = randomIntFromRange(1,6);
