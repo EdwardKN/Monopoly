@@ -164,7 +164,7 @@ var images = {
         ]
     },
     chanceCards:{
-        src:["./images/community card and chance card/emptychancecard","./images/community card and chance card/gatillstart","./images/community card and chance card/gatillhassleholm"]
+        src:["./images/community card and chance card/emptychancecard","./images/community card and chance card/gatillstart","./images/community card and chance card/gatillhassleholm","./images/community card and chance card/gatillsimrishamn","./images/community card and chance card/gatillnarmstaanlaggning","./images/community card and chance card/gatillnarmstatagstation"]
     },
     communityCards:{
         src:["./images/community card and chance card/emptycommunitycard"]
