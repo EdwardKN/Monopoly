@@ -1306,7 +1306,11 @@ class Board{
             board.currentCard.owner = undefined;
             players[turn].hasStepped = true;
             board.currentCard = undefined;
-            sellButton.visible = false;
+            board.sellButton.visible = false;
+            board.mortgageButton.visible = false;
+            board.upgradeButton.visible = false;
+            board.downgradeButton.visible = false;
+            board.getToMainMenuButton.visible = true;
         },40,40,false,false,false,true);
         this.mortgageButton = new Button([false,false],80,580,images.buttons.sprites[3],function(){
             if(board.currentCard.mortgaged === true){
