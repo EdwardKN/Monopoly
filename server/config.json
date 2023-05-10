@@ -9,6 +9,7 @@
         "auctions": true,
         "prisonmoney": true,
         "mortgage": true,
+        "sellable": true,
         "even": true,
         "startmoney": 1500,
         "roundsBeforePurchase": 0

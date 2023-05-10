@@ -29,9 +29,9 @@ var offsets = {
     x:Math.floor(window.innerWidth/2) - 832*drawScale/2,
     y:Math.floor(window.innerHeight/2) - 416*drawScale/2
 }
+var scale = 0;
 
-var scale = Math.sqrt(Math.pow(window.innerWidth,2) + Math.pow(window.innerHeight,2))/2000
-
+var scaleMultiplier = 1;
 var speeds;
 if(fastSpeed === true){
     speeds = {
@@ -212,9 +212,7 @@ var sounds = {
 
 var mouse = {
     x:10000,
-    y:10000,
-    realX:10000,
-    realY:10000
+    y:10000
 }
 const pieces = [
     {
