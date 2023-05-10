@@ -17,27 +17,27 @@ if(disableAlert){
 }
 
 
-var f = new FontFace('Arcade', 'url(./fonts/SFPixelate-Bold.ttf)');
+var f = new FontFace('Arcade', 'url(./fonts/SFPixelate.ttf)');
+var fb = new FontFace('ArcadeBold', 'url(./fonts/SFPixelate-Bold.ttf)');
 
 f.load().then(function(font){document.fonts.add(font);});
+fb.load().then(function(font){document.fonts.add(font);});
 
 var buttons = [];
-
-var textInputs = [];
 
 var offsets = {
     x:Math.floor(window.innerWidth/2) - 832*drawScale/2,
     y:Math.floor(window.innerHeight/2) - 416*drawScale/2
 }
+var scale = 0;
 
-var scale = Math.sqrt(Math.pow(window.innerWidth,2) + Math.pow(window.innerHeight,2))/2000
-
+var scaleMultiplier = 1;
 var speeds;
 if(fastSpeed === true){
     speeds = {
         botMin: 100,
         botMax: 200,
-        stepSpeed: 100,
+        stepSpeed: 50,
         auctionSpeed: 100,
         diceSpeed:{
             counter:1,
@@ -64,6 +64,16 @@ if(fastSpeed === true){
         
     }
 }
+var spritesheet;
+var spritesheetImage
+
+async function loadSpriteSheet(){
+    var response = await fetch("./images/texture.json")
+    spritesheet = await response.json();
+    spritesheetImage = new Image();
+    spritesheetImage.src = "./images/texture.png";
+}
+
 
 const groups = {
     'brown': [1, 3],
@@ -77,6 +87,9 @@ const groups = {
 }
 
 var images = {
+    spritesheet:{
+        src:["./images/spritesheet"]
+    },
     part:{
         src:["./images/plates/brown","./images/plates/light_blue",
         "./images/plates/pink","./images/plates/orange",
@@ -84,7 +97,8 @@ var images = {
         "./images/plates/green","./images/plates/blue",
         "./images/plates/chance","./images/plates/chance2","./images/plates/chance3",
         "./images/plates/train", "./images/plates/water", "./images/plates/electric",
-        "./images/plates/supertax","./images/plates/chest","./images/plates/incometax"
+        "./images/plates/supertax","./images/plates/chest","./images/plates/incometax",
+        "./images/plates/mortgaged"
         ]
     },
     card:{
@@ -92,8 +106,8 @@ var images = {
             ,"./images/Cards/pinkcard1","./images/Cards/pinkcard2","./images/Cards/pinkcard3","./images/Cards/orangecard1","./images/Cards/orangecard2","./images/Cards/orangecard3"
             ,"./images/Cards/redcard1","./images/Cards/redcard2","./images/Cards/redcard3","./images/Cards/yellowcard1","./images/Cards/yellowcard2","./images/Cards/yellowcard3"
             ,"./images/Cards/greencard1","./images/Cards/greencard2","./images/Cards/greencard3","./images/Cards/bluecard1","./images/Cards/bluecard2"
-            ,"./images/cards/electricitycard","./images/cards/waterworkscard"
-            ,"./images/cards/eaststation","./images/cards/northstation","./images/cards/centralstation","./images/cards/southstation"
+            ,"./images/Cards/electricitycard","./images/Cards/waterworkscard"
+            ,"./images/Cards/eaststation","./images/Cards/northstation","./images/Cards/centralstation","./images/Cards/southstation"
         ]
     },
     corner:{
@@ -128,6 +142,8 @@ var images = {
         "./images/buttons/sellbutton","./images/buttons/mortgage","./images/buttons/arrowup","./images/buttons/arrowdown",
         "./images/buttons/buythislawn","./images/buttons/exitCard","./images/buttons/auction","./images/buttons/suggestatrade",
         "./images/buttons/setting","./images/buttons/start","./images/buttons/back","./images/buttons/bot","./images/buttons/music",
+        "./images/buttons/no","./images/buttons/yes","./images/buttons/menu","./images/buttons/fullscreen","./images/buttons/flag",
+        "./images/buttons/okej"
         ]
     },
     auction:{
@@ -145,10 +161,22 @@ var images = {
     mainMenu:{
         src:["./images/menus/mainmenu","./images/buttons/local","./images/buttons/online","./images/menus/lobbymenu"]
     },
+    exitMenu:{
+        src:["./images/menus/exitmenu"]
+    },
+    mortgageOverlay:{
+        src:["./images/Cards/mortgageoverlay"]
+    },
     colorButtons:{
-        src:["./images/playercolorbuttons/player","./images/playercolorbuttons/player2","./images/playercolorbuttons/player3","./images/playercolorbuttons/player4",
-        "./images/playercolorbuttons/player5","./images/playercolorbuttons/player6","./images/playercolorbuttons/player7","./images/playercolorbuttons/player8","./images/playercolorbuttons/unselected"
+        src:["./images/playercolorbuttons/playercolorbutton","./images/playercolorbuttons/playercolorbutton2","./images/playercolorbuttons/playercolorbutton3","./images/playercolorbuttons/playercolorbutton4",
+        "./images/playercolorbuttons/playercolorbutton5","./images/playercolorbuttons/playercolorbutton6","./images/playercolorbuttons/playercolorbutton7","./images/playercolorbuttons/playercolorbutton8","./images/playercolorbuttons/unselected"
         ]
+    },
+    chanceCards:{
+        src:["./images/community card and chance card/emptychancecard","./images/community card and chance card/gatillstart","./images/community card and chance card/gatillhassleholm"]
+    },
+    communityCards:{
+        src:["./images/community card and chance card/emptycommunitycard"]
     }
 };
 
@@ -167,36 +195,33 @@ var sounds = {
     },
     movement:{
         type:"multiple",
-        src:"./sounds/movement/move-",
-        amount:46
+        src:"./sounds/movement.mp3",
     },
     cash:{
         type:"multiple",
-        src:"./sounds/cash/cash-",
-        amount:5
+        src:"./sounds/cash.mp3",
     },
     music:{
         type:"multiple",
-        src:"./sounds/music/music-",
-        amount:8
+        src:"./sounds/music.mp3",
+    },
+    msc:{
+        type:"multiple",
+        src:"./sounds/msc.mp3",
     },
     key:{
         type:"multiple",
-        src:"./sounds/keyboard/key-",
-        amount:9
+        src:"./sounds/keyboard.mp3",
     },
     clicks:{
         type:"multiple",
-        src:"./sounds/clicks/click-",
-        amount:11
+        src:"./sounds/slider.mp3",
     }
 }
 
 var mouse = {
     x:10000,
-    y:10000,
-    realX:10000,
-    realY:10000
+    y:10000
 }
 const pieces = [
     {
