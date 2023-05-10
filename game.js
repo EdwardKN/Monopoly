@@ -967,6 +967,7 @@ async function showOnlineLobby() {
 
             currentCard.owner = player;
             board.currentCard = undefined;
+            board.sellButton.visible = false;
 
             currentCard.mortgaged = false;
 
@@ -983,6 +984,7 @@ async function showOnlineLobby() {
 
             board.auction = new Auction(currentCard);
             board.currentCard = undefined;
+            board.sellButton.visible = false;
             board.buyButton.visible = false;
             board.auctionButton.visible = false;
         });
@@ -1362,6 +1364,7 @@ class Board{
             board.currentCard.owner = players[turn];
             players[turn].ownedPlaces.push(board.currentCard);
             board.currentCard = undefined;
+            board.sellButton.visible = false;
             board.getToMainMenuButton.visible = true;
             board.buyButton.visible = false;
             board.auctionButton.visible = false;
@@ -1374,6 +1377,7 @@ class Board{
             }
             board.auction = new Auction(board.currentCard)
             board.currentCard = undefined;
+            board.sellButton.visible = false;
             board.getToMainMenuButton.visible = true;
             board.buyButton.visible = false;
             board.auctionButton.visible = false;
@@ -2366,6 +2370,7 @@ class Auction{
                                     buttons.splice(buttons.indexOf(this.addMoneyButton100),1)
                                     buttons.splice(buttons.indexOf(this.startAuctionButton),1)
                                     board.currentCard = undefined;
+                                    board.sellButton.visible = false;
                                     board.getToMainMenuButton.visible = true;
                                     board.buyButton.visible = false;
                                     board.auction = undefined;
