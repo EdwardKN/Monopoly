@@ -274,20 +274,22 @@ class LocalLobby {
         this.amountBots = 0;
         this.settingsButtons = [];
         this.settingsButtons.push(new Button([true,false],100,220,images.buttons.sprites[10],function(){},500,40,false,false,false,false,false,false,"Ge alla skattepengar till fri parkering",42,"black"))
-        this.settingsButtons.push(new Button([true,false],100,220+ this.settingsButtons.length*45,images.buttons.sprites[10],function(){},500,40,false,false,false,false,false,false,"Ge alla bankpengar till fri parkering",42,"black"))
-        this.settingsButtons.push(new Button([true,false],100,220 + this.settingsButtons.length*45,images.buttons.sprites[10],function(){},500,40,false,false,false,false,false,false,"Dubbel hyra på komplett färggrupp",42,"black"))
-        this.settingsButtons.push(new Button([true,false],100,220 + this.settingsButtons.length*45,images.buttons.sprites[10],function(){},500,40,false,false,false,false,false,false,"Auktioner",42,"black"))
-        this.settingsButtons.push(new Button([true,false],100,220 + this.settingsButtons.length*45,images.buttons.sprites[10],function(){},500,40,false,false,false,false,false,false,"Få/förlora pengar i fängelset",42,"black"))
-        this.settingsButtons.push(new Button([true,false],100,220 + this.settingsButtons.length*45,images.buttons.sprites[10],function(){},500,40,false,false,false,false,false,false,"Möjlighet att inteckna",42,"black"))
-        this.settingsButtons.push(new Button([true,false],100,220 + this.settingsButtons.length*45,images.buttons.sprites[10],function(){},500,40,false,false,false,false,false,false,"Jämn utbyggnad",42,"black"))
-        this.settingsButtons.push(new Slider(456*drawScale,300*drawScale + this.settingsButtons.length*12,502*drawScale,40*drawScale,0,3000,100,true,50,"kr","Startkapital: "))
-        this.settingsButtons.push(new Slider(456*drawScale,300*drawScale + this.settingsButtons.length*12*drawScale,502*drawScale,40*drawScale,0,5,1,true,50,"","Antal varv innan köp: "))
+        this.settingsButtons.push(new Button([true,false],100,220+ this.settingsButtons.length*42,images.buttons.sprites[10],function(){},500,40,false,false,false,false,false,false,"Ge alla bankpengar till fri parkering",42,"black"))
+        this.settingsButtons.push(new Button([true,false],100,220 + this.settingsButtons.length*42,images.buttons.sprites[10],function(){},500,40,false,false,false,false,false,false,"Dubbel hyra på komplett färggrupp",42,"black"))
+        this.settingsButtons.push(new Button([true,false],100,220 + this.settingsButtons.length*42,images.buttons.sprites[10],function(){},500,40,false,false,false,false,false,false,"Auktioner",42,"black"))
+        this.settingsButtons.push(new Button([true,false],100,220 + this.settingsButtons.length*42,images.buttons.sprites[10],function(){},500,40,false,false,false,false,false,false,"Få/förlora pengar i fängelset",42,"black"))
+        this.settingsButtons.push(new Button([true,false],100,220 + this.settingsButtons.length*42,images.buttons.sprites[10],function(){},500,40,false,false,false,false,false,false,"Möjlighet att inteckna",42,"black"))
+        this.settingsButtons.push(new Button([true,false],100,220 + this.settingsButtons.length*42,images.buttons.sprites[10],function(){},500,40,false,false,false,false,false,false,"Möjlighet att sälja",42,"black"))
+        this.settingsButtons.push(new Button([true,false],100,220 + this.settingsButtons.length*42,images.buttons.sprites[10],function(){},500,40,false,false,false,false,false,false,"Jämn utbyggnad",42,"black"))
+        this.settingsButtons.push(new Slider(456*drawScale,40 + this.settingsButtons.length*42*drawScale,502*drawScale,40*drawScale,0,3000,100,true,50,"kr","Startkapital: "))
+        this.settingsButtons.push(new Slider(456*drawScale,40 + this.settingsButtons.length*42*drawScale,502*drawScale,40*drawScale,0,5,1,true,50,"","Antal varv innan köp: "))
         this.settingsButtons[2].selected = true
         this.settingsButtons[3].selected = true
         this.settingsButtons[4].selected = true
         this.settingsButtons[5].selected = true
         this.settingsButtons[6].selected = true
-        this.settingsButtons[7].percentage = 0.45
+        this.settingsButtons[7].selected = true
+        this.settingsButtons[8].percentage = 0.45
         this.readyPlayers = [];
         this.settingsButtons[1].disabled = true;
 
@@ -328,9 +330,10 @@ class LocalLobby {
                 auctions:self.settingsButtons[3].selected,
                 prisonmoney:self.settingsButtons[4].selected,
                 mortgage:self.settingsButtons[5].selected,
-                even:self.settingsButtons[6].selected,
-                startmoney:self.settingsButtons[7].value,
-                roundsBeforePurchase:self.settingsButtons[8].value,
+                sellable:self.settingsButtons[6].selected,
+                even:self.settingsButtons[7].selected,
+                startmoney:self.settingsButtons[8].value,
+                roundsBeforePurchase:self.settingsButtons[9].value,
             }
             startGame(playerlist,settings)
             self.current = false;
@@ -1302,7 +1305,9 @@ class Board{
             players[turn].ownedPlaces.splice(players[turn].ownedPlaces.indexOf(board.currentCard),1);
             board.currentCard.owner = undefined;
             players[turn].hasStepped = true;
-        },40,40);
+            board.currentCard = undefined;
+            sellButton.visible = false;
+        },40,40,false,false,false,true);
         this.mortgageButton = new Button([false,false],80,580,images.buttons.sprites[3],function(){
             if(board.currentCard.mortgaged === true){
                 if (Api.online) {
@@ -1507,6 +1512,7 @@ class Board{
 
                     if (players[Api.online ? Api.currentPlayer : turn].bot === undefined) this.cardCloseButton.visible = true;
                     if(this.currentCard.owner === players[Api.online ? Api.currentPlayer : turn] && players[Api.online ? Api.currentPlayer : turn].bot === undefined){
+                        this.sellButton.disabled = !this.settings.sellable
                         this.sellButton.draw();
                         this.sellButton.visible = true;
                         this.mortgageButton.draw();
@@ -1558,13 +1564,13 @@ class Board{
                             this.mortgageButton.disabled = false;
                         }
                         
+                        
                     }
                     this.cardCloseButton.visible = true;
 
 
                 }else{
                     this.cardCloseButton.visible = true;
-
                     if(this.currentCard === board.boardPieces[players[Api.online ? Api.currentPlayer : turn].steps] && this.auction === undefined && players[Api.online ? Api.currentPlayer : turn].bot === undefined && players[turn].hasStepped === false){
                         if(board.settings.auctions){
                             this.auctionButton.disabled = false;
