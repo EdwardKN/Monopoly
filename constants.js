@@ -164,7 +164,7 @@ var images = {
         ]
     },
     chanceCards:{
-        src:["./images/community card and chance card/emptychancecard","./images/community card and chance card/gatillstart","./images/community card and chance card/gatillhassleholm","./images/community card and chance card/gatillsimrishamn","./images/community card and chance card/gatillnarmstaanlaggning","./images/community card and chance card/gatillnarmstatagstation"]
+        src:["./images/community card and chance card/emptychancecard","./images/community card and chance card/gatillstart","./images/community card and chance card/gatillhassleholm","./images/community card and chance card/gatillsimrishamn","./images/community card and chance card/gatillnarmstaanlaggning","./images/community card and chance card/gatillnarmstatagstation","./images/community card and chance card/fa50kr","./images/community card and chance card/getoutofjailfree","./images/community card and chance card/gabaktresteg","./images/community card and chance card/gatillfinkan","./images/community card and chance card/betalahushotell","./images/community card and chance card/gatillsodrastationen","./images/community card and chance card/gatillmalmo","./images/community card and chance card/fa50kravallaandraspelare","./images/community card and chance card/fa150kr"]
     },
     communityCards:{
         src:["./images/community card and chance card/emptycommunitycard"]
