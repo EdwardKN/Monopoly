@@ -3170,7 +3170,7 @@ class Player {
         this.checkMoney = function () {
             let mortgaged = 0;
             this.ownedPlaces.forEach(e => { if (e.mortgaged === true) { mortgaged++ } })
-            if (this.money < 0 && this.ownedPlaces.length == 0 + mortgaged) {
+            if (this.money < 0 && this.ownedPlaces.length == 0 + mortgaged || this.money < 0 && !board.settings.sellable) {
                 if (Api.online) {
                     Api.changeTurn();
                 } else {
