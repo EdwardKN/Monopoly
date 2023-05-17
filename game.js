@@ -833,7 +833,7 @@ function update() {
 function showBackground() {
     for (let x = -4; x < 8; x++) {
         for (let y = -4; y < 8; y++) {
-            drawIsometricImage(-352 * 2 + 832 * x, +832 * y, images.background.sprites[1], false, 0, 0, 832, 416, 0, 0, 1, backC)
+            drawIsometricImage((-352 * 2 + 832 * x)*scale, (832 * y)*scale, images.background.sprites[1], false, 0, 0, 832, 416, 0, 0, scale, backC)
 
         }
     }
