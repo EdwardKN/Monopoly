@@ -611,8 +611,7 @@ class MainMenu {
         this.imageSmoothingButton = new Button([true, false], -317 + 40 + 140 + 40, 700, images.buttons.sprites[14], function () {
             renderC.imageSmoothingEnabled = self.imageSmoothingButton.selected;
         }, 40, 40, false)
-        this.imageSmoothingButton.selected = true;
-        
+
         this.finishButton = new Button([true, false], -317, 700, images.buttons.sprites[19], function () {
             if (self.finishButton.selected) {
                 finish = true;
@@ -624,15 +623,16 @@ class MainMenu {
             clearTimeout(musictimer)
             if (musicOn) {
                 musicPlaying.pause();
+                musicOn = false;
+                firstclick = true;
+                musicOn = true;
+                if (finish) {
+                    playSound(sounds.msc, musicVolume, true)
+                } else {
+                    playSound(sounds.music, musicVolume, true)
+                }
             }
-            musicOn = false;
-            firstclick = true;
-            musicOn = true;
-            if (finish) {
-                playSound(sounds.msc, musicVolume, true)
-            } else {
-                playSound(sounds.music, musicVolume, true)
-            }
+            
 
         }, 40, 40, false)
         this.finishButton.selected = finish;
@@ -668,6 +668,7 @@ class MainMenu {
                 this.finishButton.visible = true;
                 this.fullScreenButton.visible = true;
                 this.fullScreenButton.selected = document.fullscreenElement != null;
+                this.imageSmoothingButton.selected = renderC.imageSmoothingEnabled;
                 this.localButton.draw();
                 this.onlineButton.draw();
                 this.musicButton.draw();
@@ -1158,7 +1159,7 @@ class Board {
         this.currentShowingCard = undefined;
         let self = this;
         this.textsize = 0;
-        this.musicButton = new Button([true, false], 31, 530, images.buttons.sprites[14], function () {
+        this.musicButton = new Button([true, false], 15+49, 530, images.buttons.sprites[14], function () {
             document.cookie = `musicOn=${!self.musicButton.selected};Expires=Sun, 22 oct 2030 08:00:00 UTC;`;
             clearTimeout(musictimer)
             if (self.musicButton.selected) {
@@ -1176,8 +1177,11 @@ class Board {
                 }
             }
         }, 40, 40, false)
+        this.imageSmoothingButton = new Button([true, false], 15, 530, images.buttons.sprites[14], function () {
+            renderC.imageSmoothingEnabled = self.imageSmoothingButton.selected;
+        }, 40, 40, false)
         this.musicButton.selected = !musicOn;
-        this.fullScreenButton = new Button([true, true], 81, 530, images.buttons.sprites[18], function () {
+        this.fullScreenButton = new Button([true, true], 15+49*2, 530, images.buttons.sprites[18], function () {
             if (this.selected) {
                 document.documentElement.requestFullscreen()
             } else {
@@ -1185,7 +1189,7 @@ class Board {
             }
         }, 40, 40, false)
 
-        this.goToMainMenuButton = new Button([false, false], 143, 530, images.buttons.sprites[15], function () {
+        this.goToMainMenuButton = new Button([false, false], 15+49*3, 530, images.buttons.sprites[15], function () {
             board.getToMainMenuButton.selected = false;
             board.goToMainMenuButton.visible = false;
             board.escapeConfirm.visible = false;
@@ -1193,7 +1197,7 @@ class Board {
             board.musicButton.visible = false;
             board.fullScreenButton.visible = false;
         }, 40, 40, false, false, false, false, false, { x: 722, y: 336, w: 256 * drawScale, h: 224 * drawScale });
-        this.escapeConfirm = new Button([false, false], 191, 530, images.buttons.sprites[16], function () {
+        this.escapeConfirm = new Button([false, false], 15+49*4, 530, images.buttons.sprites[16], function () {
             board.getToMainMenuButton.selected = false;
             board.goToMainMenuButton.visible = false;
             board.escapeConfirm.visible = false;
@@ -1484,7 +1488,11 @@ class Board {
             this.fullScreenButton.visible = true;
             this.fullScreenButton.selected = document.fullscreenElement != null;
             this.musicButton.draw();
+            this.imageSmoothingButton.visible = true;
+            this.imageSmoothingButton.draw();
+            this.imageSmoothingButton.selected = renderC.imageSmoothingEnabled;
             this.fullScreenButton.draw();
+            
         }
         this.randomizeDice = function () {
             this.dice1Type = randomIntFromRange(0, 3);
@@ -1780,12 +1788,12 @@ class Trade {
         };
 
         let self = this;
-        this.closeButton = new Button([false, false], 364 + 128 + 71, 290 - 50, images.buttons.sprites[7], function () { if (Api.online) { Api.tradeConcluded(self.p2.colorIndex, false); } self.closeButton.visible = false; board.trade = undefined; board.getToMainMenuButton.visible = true; players.forEach(e => { e.playerBorder.button.disabled = false }) }, 18, 18, false,
+        this.closeButton = new Button([false, false], 364 + 128 + 71, 290 - 65, images.buttons.sprites[7], function () { if (Api.online) { Api.tradeConcluded(self.p2.colorIndex, false); } self.closeButton.visible = false; board.trade = undefined; board.getToMainMenuButton.visible = true; players.forEach(e => { e.playerBorder.button.disabled = false }) }, 18, 18, false,
             false, false, false, false, { x: 66, y: 70, w: 1025 + 512 + 280, h: 1020 })
         this.closeButton.visible = true;
 
-        this.p1Slider = new Slider(300 - 142, 220, 742, 60, 0, this.p1.money, 10, true, 30, "kr", "")
-        this.p1ConfirmButton = new Button([true, false], -70 - 64 - 35, 680, images.trade.sprites[1], function () {
+        this.p1Slider = new Slider(300 - 142, 200, 742, 60, 0, this.p1.money, 10, true, 30, "kr", "")
+        this.p1ConfirmButton = new Button([true, false], -70 - 64 - 35, 660, images.trade.sprites[1], function () {
             if (Api.online && self.p1.colorIndex == Api.currentPlayer) {
                 if (self.p2ConfirmButton.selected) {
                     Api.tradeConcluded(self.p2.colorIndex, true, self.contents);
@@ -1805,8 +1813,8 @@ class Trade {
             this.p1Slider.disabled = true;
         }
 
-        this.p2ConfirmButton = new Button([true, false], 180 + 64 + 35, 680, images.trade.sprites[1], function () { }, 150, 50)
-        this.p2Slider = new Slider(1050, 220, 742, 60, 0, this.p2.money, 10, true, 30, "kr", "")
+        this.p2ConfirmButton = new Button([true, false], 180 + 64 + 35, 660, images.trade.sprites[1], function () { }, 150, 50)
+        this.p2Slider = new Slider(1050, 200, 742, 60, 0, this.p2.money, 10, true, 30, "kr", "")
         if (this.p2.bot !== undefined) {
             this.p2ConfirmButton.disabled = true;
             this.p2Slider.disabled = true;
@@ -1836,7 +1844,7 @@ class Trade {
                     fontSize = 18;
                 }
             }
-            let but = (new Button([true, false], -360 + tmp + 198 - 128 + 10, 240 + 22 * Math.floor(i / 2) + 110, images.trade.sprites[2], function () {
+            let but = (new Button([true, false], -360 + tmp + 198 - 128, 240 + 22 * Math.floor(i / 2) + 110, images.trade.sprites[2], function () {
                 if (Api.online) {
                     if (this.selected) {
                         self.contents.p1.tiles.push(e.piece);
@@ -1896,12 +1904,12 @@ class Trade {
             this.p1Slider.draw();
             this.p2Slider.visible = true;
             this.p2Slider.draw();
-            c.font = 50  + "px Arcade";
+            c.font = 50/2  + "px Arcade";
             c.fillStyle = "black"
             c.textAlign = "right"
-            c.fillText(this.p1.money + "kr" + "   " + this.p1.name, 880 , 180 )
+            c.fillText(this.p1.money + "kr" + "   " + this.p1.name, 880/2 , 160/2 )
             c.textAlign = "left"
-            c.fillText(this.p2.name + "   " + this.p2.money + "kr", 1070 , 180 )
+            c.fillText(this.p2.name + "   " + this.p2.money + "kr", 1070/2 , 160/2 )
             this.p1PropertyButtons.forEach(e => { e.visible = true; e.draw() });
             this.p2PropertyButtons.forEach(e => { e.visible = true; e.draw() });
 
@@ -2303,11 +2311,11 @@ class Auction {
             drawIsometricImage(0, 0, images.card.sprites[card.piece.card], false, 0, 0, images.card.sprites[this.card.piece.card].frame.w, images.card.sprites[this.card.piece.card].frame.h, images.card.sprites[this.card.piece.card].frame.w / 3, images.card.sprites[this.card.piece.card].frame.h / 7.5, 1)
             drawIsometricImage(0, 0, images.auction.sprites[0], false, 0, 0, images.auction.sprites[0].frame.w, images.card.sprites[this.card.piece.card].frame.h, -images.card.sprites[this.card.piece.card].frame.w / 1.5, images.card.sprites[this.card.piece.card].frame.h / 7.5, 1)
             c.fillStyle = "black";
-            c.font = 80  + "px Arcade";
+            c.font = 80/2  + "px Arcade";
             c.textAlign = "center";
-            c.fillText(this.auctionMoney + "kr", 790 , 450 );
-            c.font = 80  + "px Arcade";
-            c.fillText(this.playerlist[this.turn].name, 790 , 550 );
+            c.fillText(this.auctionMoney + "kr", 790/2 , 450/2 );
+            c.font = 80/2  + "px Arcade";
+            c.fillText(this.playerlist[this.turn].name, 790/2 , 550/2 );
 
             if (this.started) {
                 if ((!Api.online && this.playerlist[this.turn].bot === undefined) || (Api.online && Api.currentPlayer == this.playerlist[this.turn].colorIndex)) {
@@ -2333,16 +2341,16 @@ class Auction {
                 }
                 c.fillStyle = "black"
                 if (this.time < 464 && this.time > 6) {
-                    c.fillRect(1018 , 560 , -this.time , 56 )
+                    c.fillRect(1022/2 , 560/2 , -this.time/2 , 58/2 )
                 }
                 if (this.time > 4) {
-                    c.fillRect(1018 , 562 , 2 , 52 )
+                    c.fillRect(1022/2 , 562/2 , 2/2 , 54/2 )
                 }
                 if (this.time > 2) {
-                    c.fillRect(1018 , 564 , 4 , 48 )
+                    c.fillRect(1022/2 , 564/2 , 4/2 , 50/2 )
                 }
                 if (this.time > 0) {
-                    c.fillRect(1018 , 566 , 6 , 44 )
+                    c.fillRect(1022/2 , 566/2 , 6/2 , 46/2 )
                 }
 
 
@@ -3421,8 +3429,8 @@ class Player {
                 this.hasStepped = false;
                 if (this.inJail === false) {
                     if (this.rolls === false) {
-                        let dice1 = randomIntFromRange(3, 3);
-                        let dice2 = randomIntFromRange(4, 4);
+                        let dice1 = randomIntFromRange(1, 1);
+                        let dice2 = randomIntFromRange(2, 2);
                         this.numberOfRolls++;
                         if (dice1 === dice2) {
                             this.rolls = false;
