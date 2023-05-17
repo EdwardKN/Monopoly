@@ -1,0 +1,90 @@
+{
+  "frames": [
+    {
+      "filename": "menus/tradingmenu.png",
+      "frame": {
+        "x": 1,
+        "y": 1,
+        "w": 910,
+        "h": 512
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 910,
+        "h": 512
+      },
+      "sourceSize": {
+        "w": 910,
+        "h": 512
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "menus/lobbymenu.png",
+      "frame": {
+        "x": 913,
+        "y": 1,
+        "w": 981,
+        "h": 552
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 981,
+        "h": 552
+      },
+      "sourceSize": {
+        "w": 981,
+        "h": 552
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "menus/mainmenu.png",
+      "frame": {
+        "x": 1,
+        "y": 555,
+        "w": 981,
+        "h": 552
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 981,
+        "h": 552
+      },
+      "sourceSize": {
+        "w": 981,
+        "h": 552
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    }
+  ],
+  "meta": {
+    "app": "http://free-tex-packer.com",
+    "version": "0.6.7",
+    "image": "texture-1.png",
+    "format": "RGBA8888",
+    "size": {
+      "w": 1895,
+      "h": 1108
+    },
+    "scale": 1
+  }
+}

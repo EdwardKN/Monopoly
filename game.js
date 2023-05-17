@@ -12,13 +12,14 @@ var firstclick = false;
 
 var musictimer;
 
-var musicOn = JSON.parse(getCookie("musicOn") === undefined ? false : getCookie("musicOn"));
 
 var musicPlaying;
 
 var finish = JSON.parse(getCookie("finish") === undefined ? false : getCookie("finish"));;
 
 var musicVolume = JSON.parse(getCookie("musicVolume") === undefined ? 100 : getCookie("musicVolume"));
+
+var musicOn = musicVolume === 0 ? 1 : 0;
 
 var timeouts = [];
 var intervals = [];
@@ -59,7 +60,7 @@ renderCanvas.addEventListener("mousemove", function (e) {
 })
 
 window.addEventListener("mousedown", function (e) {
-    if (firstclick === false && musicOn) {
+    if (firstclick === false) {
         firstclick = true;
         if (finish) {
             playSound(sounds.msc, musicVolume, true)
@@ -219,7 +220,7 @@ function playSound(sound, volume, repeat) {
             myClonedAudio.pause();
         }, (end - start) * 1000)
 
-        if (repeat && musicOn) {
+        if (repeat) {
             musicPlaying = myClonedAudio;
             musictimer = setTimeout(function () {
                 playSound(sound, volume, true)
@@ -591,22 +592,19 @@ class MainMenu {
         }, 195, 52, false, false, true)
 
         this.musicButton = new Button([true, false], -317 + 40 + 140, 700, images.buttons.sprites[14], function () {
-            document.cookie = `musicOn=${!self.musicButton.selected};Expires=Sun, 22 oct 2030 08:00:00 UTC;`;
-            clearTimeout(musictimer)
-            if (self.musicButton.selected) {
-                if (musicPlaying !== undefined && musicOn) {
-                    musicPlaying.pause();
-                    musicOn = false;
-                }
-            } else {
-                firstclick = true;
-                musicOn = true;
-                if (finish) {
-                    playSound(sounds.msc, 1, true)
-                } else {
-                    playSound(sounds.music, 1, true)
-                }
+            if(self.musicButton.selected){
+                document.cookie = `musicOn=${musicVolume};Expires=Sun, 22 oct 2030 08:00:00 UTC;`;
+                musicOn = musicVolume;
+                musicVolume = 0;
+                self.volume.percentage = 0
+            }else{
+                document.cookie = `musicOn=${musicVolume};Expires=Sun, 22 oct 2030 08:00:00 UTC;`;
+                musicVolume = musicOn;
+                self.volume.percentage = musicVolume
+                musicOn = 0;
             }
+            musicPlaying.volume = musicVolume;
+
         }, 40, 40, false)
         this.imageSmoothingButton = new Button([true, false], -317 + 40 + 140 + 40, 700, images.buttons.sprites[14], function () {
             renderC.imageSmoothingEnabled = self.imageSmoothingButton.selected;
@@ -621,17 +619,14 @@ class MainMenu {
             }
             document.cookie = `finish=${finish};Expires=Sun, 22 oct 2030 08:00:00 UTC;`;
             clearTimeout(musictimer)
-            if (musicOn) {
-                musicPlaying.pause();
-                musicOn = false;
-                firstclick = true;
-                musicOn = true;
-                if (finish) {
-                    playSound(sounds.msc, musicVolume, true)
-                } else {
-                    playSound(sounds.music, musicVolume, true)
-                }
+            musicPlaying.pause();
+            firstclick = true;
+            if (finish) {
+                playSound(sounds.msc, musicVolume, true)
+            } else {
+                playSound(sounds.music, musicVolume, true)
             }
+            
             
 
         }, 40, 40, false)
@@ -646,21 +641,16 @@ class MainMenu {
         this.volume = new Slider(240 - 80, 1000, 280, 80, 0, 100, 1, true, 50, "%", "", function () {
             musicVolume = self.volume.value / 100;
             document.cookie = `musicVolume=${musicVolume};Expires=Sun, 22 oct 2030 08:00:00 UTC;`;
-            if (musicOn) {
-                musicPlaying.volume = musicVolume;
-            }
+            musicPlaying.volume = musicVolume;
+            
         })
         this.volume.percentage = musicVolume
-
-
-        this.musicButton.selected = !musicOn
-
         this.onlineButton.disabled = false;
 
         this.draw = function () {
             if (this.current) {
                 drawRotatedImageFromSpriteSheet(0, 0, 981 * drawScale, 552 * drawScale, images.mainMenu.sprites[0], 0, 0, 0, 0, 981, 552)
-                musicOn = !this.musicButton.selected;
+                this.musicButton.selected = musicVolume === 0 ? true : false;
                 this.localButton.visible = true;
                 this.onlineButton.visible = true;
                 this.musicButton.visible = true;
@@ -1159,29 +1149,31 @@ class Board {
         this.currentShowingCard = undefined;
         let self = this;
         this.textsize = 0;
-        this.musicButton = new Button([true, false], 15+49, 530, images.buttons.sprites[14], function () {
-            document.cookie = `musicOn=${!self.musicButton.selected};Expires=Sun, 22 oct 2030 08:00:00 UTC;`;
-            clearTimeout(musictimer)
-            if (self.musicButton.selected) {
-                if (musicPlaying !== undefined && musicOn) {
-                    musicPlaying.pause();
-                    musicOn = false;
-                }
-            } else {
-                firstclick = true;
-                musicOn = true;
-                if (finish) {
-                    playSound(sounds.msc, 1, true)
-                } else {
-                    playSound(sounds.music, 1, true)
-                }
+        this.musicButton = new Button([true, false], 15+49*4, 530+40, images.buttons.sprites[14], function () {
+            if(self.musicButton.selected){
+                document.cookie = `musicOn=${musicVolume};Expires=Sun, 22 oct 2030 08:00:00 UTC;`;
+                musicOn = musicVolume;
+                musicVolume = 0;
+                self.volume.percentage = 0
+            }else{
+                document.cookie = `musicOn=${musicVolume};Expires=Sun, 22 oct 2030 08:00:00 UTC;`;
+                musicVolume = musicOn;
+                self.volume.percentage = musicVolume
+                musicOn = 0;
             }
+            musicPlaying.volume = musicVolume;
         }, 40, 40, false)
-        this.imageSmoothingButton = new Button([true, false], 15, 530, images.buttons.sprites[14], function () {
+        this.volume = new Slider(940, 540+200, 180, 80, 0, 100, 1, true, 50, "%", "", function () {
+            musicVolume = self.volume.value / 100;
+            document.cookie = `musicVolume=${musicVolume};Expires=Sun, 22 oct 2030 08:00:00 UTC;`;
+            musicPlaying.volume = musicVolume;
+            
+        })
+        this.volume.percentage = musicVolume
+        this.imageSmoothingButton = new Button([true, false], 15, 530+40, images.buttons.sprites[14], function () {
             renderC.imageSmoothingEnabled = self.imageSmoothingButton.selected;
         }, 40, 40, false)
-        this.musicButton.selected = !musicOn;
-        this.fullScreenButton = new Button([true, true], 15+49*2, 530, images.buttons.sprites[18], function () {
+        this.fullScreenButton = new Button([true, true], 15+49, 530+40, images.buttons.sprites[18], function () {
             if (this.selected) {
                 document.documentElement.requestFullscreen()
             } else {
@@ -1189,15 +1181,15 @@ class Board {
             }
         }, 40, 40, false)
 
-        this.goToMainMenuButton = new Button([false, false], 15+49*3, 530, images.buttons.sprites[15], function () {
+        this.goToMainMenuButton = new Button([false, false], 15+49*1.5, 520, images.buttons.sprites[15], function () {
             board.getToMainMenuButton.selected = false;
             board.goToMainMenuButton.visible = false;
             board.escapeConfirm.visible = false;
             board.getToMainMenuButton.visible = true;
             board.musicButton.visible = false;
             board.fullScreenButton.visible = false;
-        }, 40, 40, false, false, false, false, false, { x: 722, y: 336, w: 256 * drawScale, h: 224 * drawScale });
-        this.escapeConfirm = new Button([false, false], 15+49*4, 530, images.buttons.sprites[16], function () {
+        }, 40, 40, false, false, false, false, false, { x: 722, y: 336, w: 256 * drawScale, h: 256 * drawScale });
+        this.escapeConfirm = new Button([false, false], 15+49*2.5, 520, images.buttons.sprites[16], function () {
             board.getToMainMenuButton.selected = false;
             board.goToMainMenuButton.visible = false;
             board.escapeConfirm.visible = false;
@@ -1214,6 +1206,7 @@ class Board {
         }, 40, 40, false, false, false, false, false,);
 
         this.getToMainMenuButton = new Button([true, false], 90, 700, images.buttons.sprites[17], function () {
+            self.volume.percentage = musicVolume
         }, 80, 40, false, false, false, true, false, false)
 
         this.getToMainMenuButton.visible = true;
@@ -1478,12 +1471,15 @@ class Board {
 
         this.confirmMenu = function () {
             this.getToMainMenuButton.visible = false;
-            drawRotatedImageFromSpriteSheet(722, 336, 512, 448, images.exitMenu.sprites[0], 0, false, 0, 0, 256, 224)
+            drawRotatedImageFromSpriteSheet(722, 336, 512, 512, images.exitMenu.sprites[0], 0, false, 0, 0, 256, 256)
+            this.musicButton.selected = musicVolume === 0 ? true : false;
 
             this.goToMainMenuButton.visible = true;
             this.goToMainMenuButton.draw();
             this.escapeConfirm.visible = true;
             this.escapeConfirm.draw();
+            this.volume.visible = true;
+            this.volume.draw();
             this.musicButton.visible = true;
             this.fullScreenButton.visible = true;
             this.fullScreenButton.selected = document.fullscreenElement != null;
@@ -1492,6 +1488,7 @@ class Board {
             this.imageSmoothingButton.draw();
             this.imageSmoothingButton.selected = renderC.imageSmoothingEnabled;
             this.fullScreenButton.draw();
+            
             
         }
         this.randomizeDice = function () {
