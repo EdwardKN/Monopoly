@@ -2012,14 +2012,14 @@ class PlayerBorder {
             if (this.button.mirror === false) {
                 c.globalAlpha = this.moneyTime;
                 c.textAlign = "right"
-                c.font = (50)  + "px Arcade";
-                c.fillText(Math.abs(Math.floor(this.latestTrancaction)) + "kr", this.x * drawScale  + 1350 , this.y * drawScale  - 335  - (-this.moneyTime + 1) * 20 )
+                c.font = (50)/2  + "px Arcade";
+                c.fillText(Math.abs(Math.floor(this.latestTrancaction)) + "kr", this.x  + 1350/2 , this.y  - 335/2   - (-this.moneyTime + 1) * 20 )
                 c.globalAlpha = 1;
             } else {
                 c.globalAlpha = this.moneyTime;
                 c.textAlign = "right"
-                c.font = (50)  + "px Arcade";
-                c.fillText(Math.abs(Math.floor(this.latestTrancaction)) + "kr", this.x  + 1050 , this.y * drawScale  - 335  - (-this.moneyTime + 1) * 20 )
+                c.font = (50)/2  + "px Arcade";
+                c.fillText(Math.abs(Math.floor(this.latestTrancaction)) + "kr", this.x/2  + 1030/2 , this.y   - 335/2  - (-this.moneyTime + 1) * 20 )
                 c.globalAlpha = 1;
             }
         }
