@@ -12,7 +12,6 @@ var firstclick = false;
 
 var musictimer;
 
-
 var musicPlaying;
 
 var finish = JSON.parse(getCookie("finish") === undefined ? false : getCookie("finish"));;
@@ -29,6 +28,7 @@ window.onload = fixCanvas;
 window.addEventListener("resize", fixCanvas)
 
 function fixCanvas() {
+    let smoothing = renderC.imageSmoothingEnabled
 
     backCanvas.width = window.innerWidth;
     backCanvas.height = window.innerHeight;
@@ -45,7 +45,8 @@ function fixCanvas() {
         scale = renderCanvas.height/canvas.height
 
     }
-    
+    renderC.imageSmoothingEnabled = smoothing;
+
 }
 
 
