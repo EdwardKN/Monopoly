@@ -607,7 +607,7 @@ class MainMenu {
             musicPlaying.volume = musicVolume;
 
         }, 40, 40, false)
-        this.imageSmoothingButton = new Button([true, false], -317 + 40 + 140 + 40, 700, images.buttons.sprites[14], function () {
+        this.imageSmoothingButton = new Button([true, false], -317 + 40 + 140 + 40, 700, images.buttons.sprites[21], function () {
             renderC.imageSmoothingEnabled = self.imageSmoothingButton.selected;
         }, 40, 40, false)
 
@@ -1171,7 +1171,7 @@ class Board {
             
         })
         this.volume.percentage = musicVolume
-        this.imageSmoothingButton = new Button([true, false], 15, 530+40, images.buttons.sprites[14], function () {
+        this.imageSmoothingButton = new Button([true, false], 15, 530+40, images.buttons.sprites[21], function () {
             renderC.imageSmoothingEnabled = self.imageSmoothingButton.selected;
         }, 40, 40, false)
         this.fullScreenButton = new Button([true, true], 15+49, 530+40, images.buttons.sprites[18], function () {
