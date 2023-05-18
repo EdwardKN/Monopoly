@@ -280,6 +280,7 @@ class LocalLobby {
         this.backButton = new Button([false, false], -337, 220, images.buttons.sprites[12], function () {
             self.current = false;
             menus[0].current = true;
+            menus[0].volume.percentage = musicVolume
             self.backButton.visible = false;
             self.startButton.visible = false;
             self.playerInputs.forEach(e => {
@@ -1168,7 +1169,6 @@ class Board {
             musicVolume = self.volume.value / 100;
             document.cookie = `musicVolume=${musicVolume};Expires=Sun, 22 oct 2030 08:00:00 UTC;`;
             musicPlaying.volume = musicVolume;
-            
         })
         this.volume.percentage = musicVolume
         this.imageSmoothingButton = new Button([true, false], 15, 530+40, images.buttons.sprites[21], function () {
@@ -1196,9 +1196,13 @@ class Board {
             board.escapeConfirm.visible = false;
             board.getToMainMenuButton.visible = false;
             board.fullScreenButton.visible = false;
+            board.musicButton.visible = false;
+            board.volume.visible = false;
+            board.imageSmoothingButton.visible = false;
             players.forEach(e => buttons.splice(buttons.indexOf(e.playerBorder.button), 1))
             players = [];
             menus[0].current = true;
+            menus[0].volume.percentage = musicVolume
             board = undefined;
             if (Api.online) Api.disconnect();
             timeouts.forEach(e => clearTimeout(e));
@@ -1208,6 +1212,7 @@ class Board {
 
         this.getToMainMenuButton = new Button([true, false], 90, 700, images.buttons.sprites[17], function () {
             self.volume.percentage = musicVolume
+            
         }, 80, 40, false, false, false, true, false, false)
 
         this.getToMainMenuButton.visible = true;
@@ -1728,7 +1733,7 @@ class Slider {
                     c.textAlign = "center";
                     c.fillText(this.beginningText + this.value + this.unit, this.x  + + this.w / 2 , this.y  + this.h / 1.5 )
                 }
-                c.fillRect(this.x  + (this.percentage * (this.w - 8)) , this.y , 10 , this.h )
+                c.fillRect(this.x  + (this.percentage * (this.w-Math.min(8,this.w/12.5))) , this.y , Math.min(5,this.w/25) , this.h )
             }
             if (detectCollition(this.x , this.y , this.w , this.h , mouse.x, mouse.y, 1, 1)) {
                 this.hover = true;
