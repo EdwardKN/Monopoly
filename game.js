@@ -705,7 +705,7 @@ class TextInput {
             this.htmlElement.style.height = this.h*scale/2  + "px";
             this.htmlElement.style.fontSize = this.font  + "px"
             this.htmlElement.maxLength = this.maxLength;
-            this.htmlElement.style.border = 5  + "px solid black "
+            this.htmlElement.style.border = 5*scale/2  + "px solid black "
 
             if (this.visible) {
                 if (this.oldvalue !== this.htmlElement.value) {
