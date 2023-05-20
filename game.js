@@ -194,7 +194,7 @@ function drawIsometricImage(x, y, img, mirror, cropX, cropY, cropW, cropH, offse
     if (drawcanvas === undefined) {
         drawcanvas = c;
     }
-    drawRotatedImageFromSpriteSheet(to_screen_coordinate(x * drawScale, y * drawScale).x + 850 + offsetX * drawScale, to_screen_coordinate(x * drawScale, y * drawScale).y + 120 + offsetY * drawScale, cropW*scaleOfThis, cropH *scaleOfThis, img, 0, mirror, cropX, cropY, cropW, cropH, true, drawcanvas)
+    drawRotatedImageFromSpriteSheet(to_screen_coordinate(x * drawScale, y * drawScale).x + 832 + offsetX * drawScale, to_screen_coordinate(x * drawScale, y * drawScale).y + 120 + offsetY * drawScale, cropW*scaleOfThis, cropH *scaleOfThis, img, 0, mirror, cropX, cropY, cropW, cropH, true, drawcanvas)
 }
 
 
@@ -757,7 +757,7 @@ async function init() {
         menus[0].current = false;
 
         let playerlist = []
-        let playerAmount = 8;
+        let playerAmount = 2;
         let botAmount = 0;
         let useableColors = [0, 1, 2, 3, 4, 5, 6, 7]
         for (let i = 0; i < (playerAmount + botAmount); i++) {
@@ -834,7 +834,8 @@ function update() {
 function showBackground() {
     for (let x = -4; x < 8; x++) {
         for (let y = -4; y < 8; y++) {
-            drawIsometricImage((-352 * 2 + 832 * x)*scale, (832 * y)*scale, images.background.sprites[1], false, 0, 0, 832, 416, 0, 0, scale, backC)
+            let coords = to_screen_coordinate(x,y)
+            drawRotatedImageFromSpriteSheet((window.innerWidth-832*scale)+832*scale*1.9*coords.x,(window.innerHeight-416*scale)+832*scale*1.9*coords.y,832*scale*2,416*scale*2,images.background.sprites[1],0,false,0,0,832,416,0,backC)
 
         }
     }
@@ -1151,7 +1152,7 @@ class Board {
         this.currentShowingCard = undefined;
         let self = this;
         this.textsize = 0;
-        this.musicButton = new Button([true, false], 15+49*4, 530+40, images.buttons.sprites[14], function () {
+        this.musicButton = new Button([true, false], 5+49*4, 530+40, images.buttons.sprites[14], function () {
             if(self.musicButton.selected){
                 document.cookie = `musicOn=${musicVolume};Expires=Sun, 22 oct 2030 08:00:00 UTC;`;
                 musicOn = musicVolume;
@@ -1165,16 +1166,16 @@ class Board {
             }
             musicPlaying.volume = musicVolume;
         }, 40, 40, false)
-        this.volume = new Slider(940, 540+200, 180, 80, 0, 100, 1, true, 50, "%", "", function () {
+        this.volume = new Slider(920, 540+200, 180, 80, 0, 100, 1, true, 50, "%", "", function () {
             musicVolume = self.volume.value / 100;
             document.cookie = `musicVolume=${musicVolume};Expires=Sun, 22 oct 2030 08:00:00 UTC;`;
             musicPlaying.volume = musicVolume;
         })
         this.volume.percentage = musicVolume
-        this.imageSmoothingButton = new Button([true, false], 15, 530+40, images.buttons.sprites[21], function () {
+        this.imageSmoothingButton = new Button([true, false], 5, 530+40, images.buttons.sprites[21], function () {
             renderC.imageSmoothingEnabled = self.imageSmoothingButton.selected;
         }, 40, 40, false)
-        this.fullScreenButton = new Button([true, true], 15+49, 530+40, images.buttons.sprites[18], function () {
+        this.fullScreenButton = new Button([true, true], 5+49, 530+40, images.buttons.sprites[18], function () {
             if (this.selected) {
                 document.documentElement.requestFullscreen()
             } else {
@@ -1182,7 +1183,7 @@ class Board {
             }
         }, 40, 40, false)
 
-        this.goToMainMenuButton = new Button([false, false], 15+49*1.5, 520, images.buttons.sprites[15], function () {
+        this.goToMainMenuButton = new Button([false, false], 5+49*1.5, 520, images.buttons.sprites[15], function () {
             board.getToMainMenuButton.selected = false;
             board.goToMainMenuButton.visible = false;
             board.escapeConfirm.visible = false;
@@ -1190,7 +1191,7 @@ class Board {
             board.musicButton.visible = false;
             board.fullScreenButton.visible = false;
         }, 40, 40, false, false, false, false, false, { x: 722, y: 336, w: 256 * drawScale, h: 256 * drawScale });
-        this.escapeConfirm = new Button([false, false], 15+49*2.5, 520, images.buttons.sprites[16], function () {
+        this.escapeConfirm = new Button([false, false], 5+49*2.5, 520, images.buttons.sprites[16], function () {
             board.getToMainMenuButton.selected = false;
             board.goToMainMenuButton.visible = false;
             board.escapeConfirm.visible = false;
@@ -1210,14 +1211,14 @@ class Board {
             timeouts = [];
         }, 40, 40, false, false, false, false, false,);
 
-        this.getToMainMenuButton = new Button([true, false], 90, 700, images.buttons.sprites[17], function () {
+        this.getToMainMenuButton = new Button([true, false], 84, 700, images.buttons.sprites[17], function () {
             self.volume.percentage = musicVolume
             
         }, 80, 40, false, false, false, true, false, false)
 
         this.getToMainMenuButton.visible = true;
 
-        this.payJailButton = new Button([false, false], -10, 520, images.jailMenu.sprites[1], function () {
+        this.payJailButton = new Button([false, false], -15, 500, images.jailMenu.sprites[1], function () {
             players[turn].money -= 50;
             if (board.settings.freeParking) {
                 board.boardPieces[20].money += 50;
@@ -1230,7 +1231,7 @@ class Board {
             players[turn].playerBorder.startMoneyAnimation(-50);
 
         }, 82, 35);
-        this.rollJailButton = new Button([false, false], 85, 520, images.jailMenu.sprites[2], function () {
+        this.rollJailButton = new Button([false, false], 80, 500, images.jailMenu.sprites[2], function () {
             let dice1 = randomIntFromRange(1, 6);
             let dice2 = randomIntFromRange(1, 6);
             players[turn].rolls = true;
@@ -1253,15 +1254,15 @@ class Board {
             board.rollJailButton.visible = false;
             board.jailCardButton.visible = false;
         }, 82, 35);
-        this.jailCardButton = new Button([false, false], 180, 520, images.jailMenu.sprites[3], function () {
+        this.jailCardButton = new Button([false, false], 175, 500, images.jailMenu.sprites[3], function () {
             players[turn].jailcardAmount--;
             players[turn].getOutOfJail("CARD");
             board.payJailButton.visible = false;
             board.rollJailButton.visible = false;
             board.jailCardButton.visible = false;
         }, 82, 35);
-        this.rollDiceButton = new Button([false, false], 76, 530, images.buttons.sprites[0], function () { players[turn].rollDice() }, 107, 23, false, false, false, true)
-        this.nextPlayerButton = new Button([false, false], 76, 530, images.buttons.sprites[1], function () {
+        this.rollDiceButton = new Button([false, false], 70, 530, images.buttons.sprites[0], function () { players[turn].rollDice() }, 107, 23, false, false, false, true)
+        this.nextPlayerButton = new Button([false, false], 70, 530, images.buttons.sprites[1], function () {
             if (players[turn].money >= 0) {
                 players[turn].rolls = false;
                 players[turn].numberOfRolls = 0;
@@ -1477,7 +1478,7 @@ class Board {
 
         this.confirmMenu = function () {
             this.getToMainMenuButton.visible = false;
-            drawRotatedImageFromSpriteSheet(722, 336, 512, 512, images.exitMenu.sprites[0], 0, false, 0, 0, 256, 256)
+            drawRotatedImageFromSpriteSheet(704, 336, 512, 512, images.exitMenu.sprites[0], 0, false, 0, 0, 256, 256)
             this.musicButton.selected = musicVolume === 0 ? true : false;
 
             this.goToMainMenuButton.visible = true;
@@ -1618,7 +1619,7 @@ class Board {
 
         }
         this.showJailmenu = function () {
-            drawIsometricImage(0, 0, images.jailMenu.sprites[0], false, 0, 0, 300, 90, -90, 198)
+            drawIsometricImage(0, 0, images.jailMenu.sprites[0], false, 0, 0, 300, 90, -89, 200)
 
             this.payJailButton.visible = true;
             this.payJailButton.draw();
@@ -2657,8 +2658,8 @@ class BoardPiece {
                 }
             }
 
-            let mouseSquareX = (to_grid_coordinate(mouse.x, mouse.y).x - 1210/2 ) / (64 )
-            let mouseSquareY = (to_grid_coordinate(mouse.x, mouse.y).y + 740/2 ) / (64 )
+            let mouseSquareX = (to_grid_coordinate(mouse.x, mouse.y).x - 1200/2 ) / (64 )
+            let mouseSquareY = (to_grid_coordinate(mouse.x, mouse.y).y + 720/2 ) / (64 )
             if (board.currentCard !== undefined || this.piece.type === "chance" || this.piece.type === "community Chest" || this.piece.type === "income tax" || this.piece.type === "tax" || this.n % 10 === 0 || board.auction !== undefined || board.trade !== undefined || players[turn].inJail === true || board.showDices || board.animateDices || players[turn].animationOffset !== 0 || board.getToMainMenuButton.selected || board.currentShowingCard !== undefined) {
                 this.offsetY = this.currentOffsetvalue;
                 this.hover = false;
