@@ -1353,8 +1353,8 @@ class Board {
             board.rollJailButton.visible = false;
             board.jailCardButton.visible = false;
         }, 82, 35);
-        this.rollDiceButton = new Button([false, false], 70, 530, images.buttons.sprites[0], function () { players[turn].rollDice() }, 107, 23, false, false, false, true)
-        this.nextPlayerButton = new Button([false, false], 70, 530, images.buttons.sprites[1], function () {
+        this.rollDiceButton = new Button([false, false], 1, 480, images.buttons.sprites[0], function () { players[turn].rollDice() }, 246, 60, false, false, false, true)
+        this.nextPlayerButton = new Button([false, false], 1, 480, images.buttons.sprites[1], function () {
             if (players[turn].money >= 0) {
                 players[turn].rolls = false;
                 players[turn].numberOfRolls = 0;
@@ -1369,7 +1369,7 @@ class Board {
             }
             board.animateDices = false;
             board.showDices = false;
-        }, 107, 23)
+        }, 246, 60)
 
         if (Api.online && Api.currentPlayer == 0) {
             this.rollDiceButton.visible = true;
