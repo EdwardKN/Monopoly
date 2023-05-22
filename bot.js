@@ -359,16 +359,13 @@ class Bot{
                     if (bP.level > 0) { hasHouse.push(bP) }
                     else { noHouse.push(bP) }
                 }
-                if (noHouse.length === 0) {
-                    hasHouse.forEach(bP => result.push(bP))
-                } else if (hasHouse.length === 0) {
+
+                if (hasHouse.length === 0) {
                     noHouse.forEach(bP => result.push(bP))
                 } else {
                     hasHouse.forEach(bP => result.push(bP))
                 }
             }
-            result = this.player.ownedPlaces
-            
         }
         return result
             .filter(bP => !bP.mortgaged)
@@ -394,12 +391,7 @@ class Bot{
             return 25 * Math.pow(2, ownedStations(this.player).length - 1)
 
         } else if (bP.piece.type === 'utility') {
-            let owned = ownedUtility(this.player)
-            if (owned.length === 1) {
-                loss += steps * 4
-            } else {
-                loss += steps * 16
-            }
+            return steps * Math.pow(4, ownedUtility(this.player))
         }
         return loss
     }
