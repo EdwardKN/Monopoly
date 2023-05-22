@@ -894,9 +894,7 @@ async function showOnlineLobby() {
 
             currentCard.mortgaged = false;
 
-            intervals.forEach(t => clearInterval(t));
-            intervals = [];
-
+            clearInterval(board?.auction?.timer);
             board.auction = undefined;
 
             board.buyButton.visible = false;                        
@@ -922,17 +920,17 @@ async function showOnlineLobby() {
 
             if (data.is_out) {
                 if (board.auction == undefined) return;
-                board.auction.playerOut(false);
-//                board.auction.playerlist.splice(board.auction.playerlist.findIndex(x => x.colorIndex == data.player), 1);
-//                if (board.auction.playerlist.length == 1 && board.auction.playerlist[0].colorIndex == Api.currentPlayer) {
-//                    Api.tilePurchased(board.auction.card, board.auction.auctionMoney);
-//                }
+
+                board.auction.playerlist.splice(board.auction.playerlist.findIndex(x => x.colorIndex == data.player), 1);
+                if (board.auction.playerlist.length == 1 && board.auction.playerlist[0].colorIndex == Api.currentPlayer) {
+                    Api.tilePurchased(board.auction.card, board.auction.auctionMoney);
+                }
             } else {
                 board.auction.auctionMoney = data.money;
                 board.auction.turn = board.auction.playerlist.findIndex(x => x.colorIndex == data.nextPlayer);
-                board.auction.time = board.auction.MAX_TIME;
-                board.auction.startTime = performance.now();
             }
+            board.auction.time = 472;
+            board.auction.startTime = performance.now();
 
 
             if (data.player == Api.currentPlayer) {
@@ -2168,8 +2166,7 @@ class Auction{
         this.card = card;
         this.turn = turn;
         this.auctionMoney = 0;
-        this.MAX_TIME = 472;
-        this.time = this.MAX_TIME;
+        this.time = 472;
         this.started = false;
         this.timer = undefined;
         this.playerlist = [...players];
@@ -2194,7 +2191,7 @@ class Auction{
             board.auction.duration = 10 * speeds.auctionSpeed;
             board.auction.startTime = performance.now();
             board.auction.timer = intervals.push(setInterval(function(){
-                board.auction.time = self.MAX_TIME * (1 - (performance.now() - board.auction.startTime) / board.auction.duration);
+                board.auction.time = 472 * (1 - (performance.now() - board.auction.startTime) / board.auction.duration);
             },10));
         },240,40,false)
         
@@ -2227,8 +2224,8 @@ class Auction{
                 }
                 
                 drawIsometricImage(0,0,images.auction.sprites[4],false,0,30,240,30,-150,220,1)
-                if(this.time > this.MAX_TIME){
-                    this.time = this.MAX_TIME
+                if(this.time > 472){
+                    this.time = 472
                 }
                 c.fillStyle = "black"
                 if(this.time < 464 && this.time >6){
@@ -2246,7 +2243,38 @@ class Auction{
             
 
                 if(this.time < -6){
-                    this.playerOut();
+                    if (Api.online && this.playerlist[this.turn].colorIndex == Api.currentPlayer) Api.auctionBid(this.card, -1, true);
+                    
+                    this.playerlist.splice(this.playerlist.indexOf(this.playerlist[this.turn]),1)
+                    this.turn = (this.turn)%this.playerlist.length;
+                    this.time = 472;
+                    this.startTime = performance.now();
+                    if(this.playerlist.length === 1){
+                        for(let i = 0; i<players.length; i++){
+                            if(this.playerlist[0].colorIndex == players[i].colorIndex){
+                                intervals.forEach(e => clearInterval(e));
+                                clearInterval(this.timer)
+                                if(this.auctionMoney !== 0){
+                                    players[i].money -= this.auctionMoney;
+                                    if(board.settings.allFreeparking){
+                                        board.boardPieces[20].money += this.auctionMoney;
+                                    }
+                                    players[i].playerBorder.startMoneyAnimation(-this.auctionMoney)
+                                    board.auction.card.owner = players[i];
+                                    players[i].ownedPlaces.push(this.card);
+                                }
+                                    buttons.splice(buttons.indexOf(this.addMoneyButton2),1)
+                                    buttons.splice(buttons.indexOf(this.addMoneyButton10),1)
+                                    buttons.splice(buttons.indexOf(this.addMoneyButton100),1)
+                                    buttons.splice(buttons.indexOf(this.startAuctionButton),1)
+                                    board.currentCard = undefined;
+                                    board.getToMainMenuButton.visible = true;
+                                    board.buyButton.visible = false;
+                                    board.auction = undefined;
+                            }
+                        }
+                        
+                    }
                 }
             }else{
                 if (Api.online) {
@@ -2261,45 +2289,6 @@ class Auction{
                     }
                 }
 
-            }
-        }
-
-        this.playerOut = function(sendToServer = true) {
-            if (Api.online && sendToServer && this.playerlist[this.turn].colorIndex == Api.currentPlayer) {
-                Api.auctionBid(this.card, -1, true);
-                return;
-            }
-                    
-            this.playerlist.splice(this.playerlist.indexOf(this.playerlist[this.turn]),1)
-            this.turn = (this.turn)%this.playerlist.length;
-            this.time = this.MAX_TIME;
-            this.startTime = performance.now();
-            if(this.playerlist.length === 1){
-                for(let i = 0; i<players.length; i++){
-                    if(this.playerlist[0].colorIndex == players[i].colorIndex){
-                        intervals.forEach(e => clearInterval(e));
-                        intervals = [];
-
-                        if(this.auctionMoney !== 0){
-                            players[i].money -= this.auctionMoney;
-                            if(board.settings.allFreeparking){
-                                board.boardPieces[20].money += this.auctionMoney;
-                            }
-                            players[i].playerBorder.startMoneyAnimation(-this.auctionMoney)
-                            board.auction.card.owner = players[i];
-                            players[i].ownedPlaces.push(this.card);
-                        }
-
-                        buttons.splice(buttons.indexOf(this.addMoneyButton2),1)
-                        buttons.splice(buttons.indexOf(this.addMoneyButton10),1)
-                        buttons.splice(buttons.indexOf(this.addMoneyButton100),1)
-                        buttons.splice(buttons.indexOf(this.startAuctionButton),1)
-                        board.currentCard = undefined;
-                        board.getToMainMenuButton.visible = true;
-                        board.buyButton.visible = false;
-                        board.auction = undefined;
-                    }
-                }
             }
         }
 
@@ -2326,7 +2315,7 @@ class Auction{
 
             this.auctionMoney += money;
             this.turn = (this.turn+1) % this.playerlist.length;
-            this.time = this.MAX_TIME;
+            this.time = 472;
             this.startTime = performance.now();
         }
     }
