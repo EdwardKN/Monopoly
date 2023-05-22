@@ -3100,12 +3100,13 @@ class CurrentCard {
 
         this.onContinue = undefined;
         this.cardCloseButton = new Button([false, false], 369, 352, images.buttons.sprites[7], function () { self.continue() }, 18, 18, false, false, false, false, false, { x: 371 + 98, y: 350 - 50, w: 512 * drawScale, h: 256 * drawScale })
-        this.cardCloseButton.visible = true;
-        this.okayButton = new Button([false, false], 40, 530, images.buttons.sprites[20], function () { self.continue() }, 200, 60, false, false, false)
+        this.okayButton = new Button([false, false], 40, 530, images.buttons.sprites[20], function () { self.continue() }, 200, 60, false, false, false, false, false, { x: 371 + 98, y: 350 - 50, w: 512 * drawScale, h: 256 * drawScale })
         if (players[turn].bot === undefined) {
             this.okayButton.visible = true;
+            this.cardCloseButton.visible = false;
         } else {
             this.okayButton.visible = false;
+            this.cardCloseButton.visible = true;
         }
 
         this.draw = function () {
@@ -3435,8 +3436,8 @@ class Player {
                 this.hasStepped = false;
                 if (this.inJail === false) {
                     if (this.rolls === false) {
-                        let dice1 = randomIntFromRange(3, 3);
-                        let dice2 = randomIntFromRange(4, 4);
+                        let dice1 = randomIntFromRange(1, 6);
+                        let dice2 = randomIntFromRange(1, 6);
                         this.numberOfRolls++;
                         if (dice1 === dice2) {
                             this.rolls = false;
