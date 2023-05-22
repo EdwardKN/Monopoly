@@ -704,7 +704,7 @@ class TextInput {
             this.htmlElement.style.top = this.y * scale / 2 + (window.innerHeight - renderCanvas.height) / 2 - 5 * scale / 2 + "px";
             this.htmlElement.style.width = this.w * scale / 2 + "px";
             this.htmlElement.style.height = this.h * scale / 2 + "px";
-            this.htmlElement.style.fontSize = this.font + "px"
+            this.htmlElement.style.fontSize = this.font * scale / 2 + "px"
             this.htmlElement.maxLength = this.maxLength;
             this.htmlElement.style.border = 5 * scale / 2 + "px solid black "
 
