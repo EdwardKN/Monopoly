@@ -134,7 +134,7 @@ var images = {
             "./images/buttons/buythislawn", "./images/buttons/exitCard", "./images/buttons/auction", "./images/buttons/suggestatrade",
             "./images/buttons/setting", "./images/buttons/start", "./images/buttons/back", "./images/buttons/bot", "./images/buttons/music",
             "./images/buttons/no", "./images/buttons/yes", "./images/buttons/menu", "./images/buttons/fullscreen", "./images/buttons/flag",
-            "./images/buttons/okej","./images/buttons/antilising",
+            "./images/buttons/okej", "./images/buttons/antilising",
         ]
     },
     auction: {
@@ -164,10 +164,10 @@ var images = {
         ]
     },
     chanceCards: {
-        src: ["./images/community card and chance card/emptychancecard", "./images/community card and chance card/gatillstart", "./images/community card and chance card/gatillhassleholm", "./images/community card and chance card/gatillsimrishamn", "./images/community card and chance card/gatillnarmstaanlaggning", "./images/community card and chance card/gatillnarmstatagstation", "./images/community card and chance card/fa50kr", "./images/community card and chance card/getoutofjailfree", "./images/community card and chance card/gabaktresteg", "./images/community card and chance card/gatillfinkan", "./images/community card and chance card/betalahushotell", "./images/community card and chance card/gatillsodrastationen", "./images/community card and chance card/gatillmalmo", "./images/community card and chance card/fa50kravallaandraspelare", "./images/community card and chance card/fa150kr"]
+        src: ["./images/community card and chance card/emptychancecard", "./images/community card and chance card/gatillstart", "./images/community card and chance card/gatillhassleholm", "./images/community card and chance card/gatillsimrishamn", "./images/community card and chance card/gatillnarmstaanlaggning", "./images/community card and chance card/gatillnarmstatagstation", "./images/community card and chance card/fa50kr", "./images/community card and chance card/lamnafinkangratis", "./images/community card and chance card/gabaktresteg", "./images/community card and chance card/gatillfinkan", "./images/community card and chance card/betalahushotell", "./images/community card and chance card/gatillsodrastationen", "./images/community card and chance card/gatillmalmo", "./images/community card and chance card/fa50kravallaandraspelare", "./images/community card and chance card/fa150kr"]
     },
     communityCards: {
-        src: ["./images/community card and chance card/emptycommunitycard"]
+        src: ["./images/community card and chance card/emptycommunitycard", "./images/community card and chance card/gatillstartc", "./images/community card and chance card/fa200krc", "./images/community card and chance card/forlora50krc", "./images/community card and chance card/fa50krc", "./images/community card and chance card/lamnafinkangratisc", "./images/community card and chance card/gatillfinkanc", "./images/community card and chance card/fa100krc", "./images/community card and chance card/fa50kravallaandraspelarec", "./images/community card and chance card/fa100krc", "./images/community card and chance card/fa20krc", "./images/community card and chance card/fa10kravallaandraspelarec", "./images/community card and chance card/fa100krc", "./images/community card and chance card/forlora50krc", "./images/community card and chance card/forlora50krc", "./images/community card and chance card/forlora25krc", "./images/community card and chance card/betalahushotellc", "./images/community card and chance card/fa10krc", "./images/community card and chance card/fa100krc"]
     }
 };
 

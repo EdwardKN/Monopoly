@@ -3104,6 +3104,8 @@ class CurrentCard {
         this.okayButton = new Button([false, false], 40, 530, images.buttons.sprites[20], function () { self.continue() }, 200, 60, false, false, false)
         if (players[turn].bot === undefined) {
             this.okayButton.visible = true;
+        } else {
+            this.okayButton.visible = false;
         }
 
         this.draw = function () {
@@ -3433,8 +3435,8 @@ class Player {
                 this.hasStepped = false;
                 if (this.inJail === false) {
                     if (this.rolls === false) {
-                        let dice1 = randomIntFromRange(1, 6);
-                        let dice2 = randomIntFromRange(1, 6);
+                        let dice1 = randomIntFromRange(3, 3);
+                        let dice2 = randomIntFromRange(4, 4);
                         this.numberOfRolls++;
                         if (dice1 === dice2) {
                             this.rolls = false;
