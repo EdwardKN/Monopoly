@@ -3188,6 +3188,11 @@ class CurrentCard {
             if (this.img === undefined) {
                 this.img = images.communityCards.sprites[0]
             }
+        }else if(this.type == "special"){
+            this.img = images.specialCards.sprites[this.card]
+            if (this.img === undefined) {
+                this.img = images.specialCards.sprites[0]
+            }
         }
 
         this.onContinue = undefined;
@@ -3471,8 +3476,8 @@ class Player {
                         }
                     }
                     if (to === 30) {
-                        alert("Gå till finkan!")
-                        self.goToPrison()
+                        board.currentShowingCard = new CurrentCard(1,"special")
+                        board.currentShowingCard.onContinue = function(){self.goToPrison()};
                     }
                     board.showDices = false;
 
@@ -3532,8 +3537,8 @@ class Player {
                 this.hasStepped = false;
                 if (this.inJail === false) {
                     if (this.rolls === false) {
-                        let dice1 = randomIntFromRange(1, 6);
-                        let dice2 = randomIntFromRange(1, 6);
+                        let dice1 = randomIntFromRange(2, 2);
+                        let dice2 = randomIntFromRange(2, 2);
                         this.numberOfRolls++;
                         if (dice1 === dice2) {
                             this.rolls = false;
@@ -3549,8 +3554,8 @@ class Player {
                         let self = this;
                         this.animateDice(dice1, dice2, function () {
                             if (self.numberOfRolls === 3 && dice1 === dice2) {
-                                alert("Olagligt att slå dubbla tärningar tre gånger!")
-                                self.goToPrison();
+                                board.currentShowingCard = new CurrentCard(2,"special")
+                                board.currentShowingCard.onContinue = function(){self.goToPrison();}
                                 return;
                             }
                             board.animateDices = false;
