@@ -3099,7 +3099,7 @@ class CurrentCard {
         }
 
         this.onContinue = undefined;
-        this.cardCloseButton = new Button([false, false], 369, 352, images.buttons.sprites[7], function () { self.continue() }, 18, 18, false, false, false, false, false, { x: 371 + 98, y: 350 - 50, w: 512 * drawScale, h: 256 * drawScale })
+        this.cardCloseButton = new Button([false, false], 369, 352, images.exitMenu.sprites[1], function () { self.continue() }, 18, 18, false, false, false, false, false, { x: 371 + 98, y: 350 - 50, w: 512 * drawScale, h: 256 * drawScale })
         this.okayButton = new Button([false, false], 40, 530, images.buttons.sprites[20], function () { self.continue() }, 200, 60, false, false, false, false, false, { x: 371 + 98, y: 350 - 50, w: 512 * drawScale, h: 256 * drawScale })
         if (players[turn].bot === undefined) {
             this.okayButton.visible = true;

@@ -134,7 +134,7 @@ var images = {
             "./images/buttons/buythislawn", "./images/buttons/exitCard", "./images/buttons/auction", "./images/buttons/suggestatrade",
             "./images/buttons/setting", "./images/buttons/start", "./images/buttons/back", "./images/buttons/bot", "./images/buttons/music",
             "./images/buttons/no", "./images/buttons/yes", "./images/buttons/menu", "./images/buttons/fullscreen", "./images/buttons/flag",
-            "./images/buttons/okej", "./images/buttons/antilising",
+            "./images/buttons/okej", "./images/buttons/antilising"
         ]
     },
     auction: {
@@ -153,7 +153,7 @@ var images = {
         src: ["./images/menus/mainmenu", "./images/buttons/local", "./images/buttons/online", "./images/menus/lobbymenu"]
     },
     exitMenu: {
-        src: ["./images/menus/exitmenu"]
+        src: ["./images/menus/exitmenu", "./images/buttons/exitCardTrans"]
     },
     mortgageOverlay: {
         src: ["./images/Cards/mortgageoverlay"]
