@@ -32,17 +32,17 @@ function fixCanvas() {
 
     backCanvas.width = window.innerWidth;
     backCanvas.height = window.innerHeight;
-    canvas.width = 1920/2;
-    canvas.height = 1080/2;
-    if(window.innerWidth*9 > window.innerHeight*16){
-        renderCanvas.width = window.innerHeight*16/9;
+    canvas.width = 1920 / 2;
+    canvas.height = 1080 / 2;
+    if (window.innerWidth * 9 > window.innerHeight * 16) {
+        renderCanvas.width = window.innerHeight * 16 / 9;
         renderCanvas.height = window.innerHeight;
-        scale = renderCanvas.width/canvas.width
+        scale = renderCanvas.width / canvas.width
 
-    }else{
+    } else {
         renderCanvas.width = window.innerWidth;
-        renderCanvas.height = window.innerWidth*9/16;
-        scale = renderCanvas.height/canvas.height
+        renderCanvas.height = window.innerWidth * 9 / 16;
+        scale = renderCanvas.height / canvas.height
 
     }
     renderC.imageSmoothingEnabled = smoothing;
@@ -53,11 +53,11 @@ function fixCanvas() {
 renderCanvas.addEventListener("mousemove", function (e) {
     mouse = {
         x: e.offsetX / scale,
-        y: e.offsetY /scale,
-    } 
+        y: e.offsetY / scale,
+    }
 
 
-    
+
 })
 
 window.addEventListener("mousedown", function (e) {
@@ -120,10 +120,10 @@ async function loadSounds(soundObject) {
 }
 
 function drawRotatedImageFromSpriteSheet(x, y, w, h, frame, angle, mirrored, cropX, cropY, cropW, cropH, offset, drawcanvas) {
-    x = x/drawScale;
-    y = y/drawScale;
-    w = w/drawScale;
-    h = h/drawScale;
+    x = x / drawScale;
+    y = y / drawScale;
+    w = w / drawScale;
+    h = h / drawScale;
     let degree = angle * Math.PI / 180;
 
     let middlePoint = {
@@ -194,7 +194,7 @@ function drawIsometricImage(x, y, img, mirror, cropX, cropY, cropW, cropH, offse
     if (drawcanvas === undefined) {
         drawcanvas = c;
     }
-    drawRotatedImageFromSpriteSheet(to_screen_coordinate(x * drawScale, y * drawScale).x + 832 + offsetX * drawScale, to_screen_coordinate(x * drawScale, y * drawScale).y + 120 + offsetY * drawScale, cropW*scaleOfThis, cropH *scaleOfThis, img, 0, mirror, cropX, cropY, cropW, cropH, true, drawcanvas)
+    drawRotatedImageFromSpriteSheet(to_screen_coordinate(x * drawScale, y * drawScale).x + 832 + offsetX * drawScale, to_screen_coordinate(x * drawScale, y * drawScale).y + 120 + offsetY * drawScale, cropW * scaleOfThis, cropH * scaleOfThis, img, 0, mirror, cropX, cropY, cropW, cropH, true, drawcanvas)
 }
 
 
@@ -529,10 +529,10 @@ class LocalLobby {
 
                         c.fillStyle = "black"
                         if (i >= self.playerInputs.length / 2) {
-                            c.fillRect(e.colorButton.x   + 550/2 , e.colorButton.y  - 630/2 , 410/2 , 230/2 )
+                            c.fillRect(e.colorButton.x + 550 / 2, e.colorButton.y - 630 / 2, 410 / 2, 230 / 2)
                             e.colorButton.invertedHitbox = { x: e.colorButton.x * drawScale + 550, y: e.colorButton.y * drawScale - 610, w: 410, h: 210, onlySelected: true }
                         } else {
-                            c.fillRect(e.colorButton.x  + 550/2 , e.colorButton.y  - 26/2  - 294/2 , 410/2 , 230/2 )
+                            c.fillRect(e.colorButton.x + 550 / 2, e.colorButton.y - 26 / 2 - 294 / 2, 410 / 2, 230 / 2)
                             e.colorButton.invertedHitbox = { x: e.colorButton.x * drawScale + 550, y: e.colorButton.y * drawScale - 26 - 294, w: 410, h: 210, onlySelected: true }
                         }
                         e.colorButtons.forEach(function (g, h) {
@@ -594,12 +594,12 @@ class MainMenu {
         }, 195, 52, false, false, true)
 
         this.musicButton = new Button([true, false], -317 + 40 + 140, 700, images.buttons.sprites[14], function () {
-            if(self.musicButton.selected){
+            if (self.musicButton.selected) {
                 document.cookie = `musicOn=${musicVolume};Expires=Sun, 22 oct 2030 08:00:00 UTC;`;
                 musicOn = musicVolume;
                 musicVolume = 0;
                 self.volume.percentage = 0
-            }else{
+            } else {
                 document.cookie = `musicOn=${musicVolume};Expires=Sun, 22 oct 2030 08:00:00 UTC;`;
                 musicVolume = musicOn;
                 self.volume.percentage = musicVolume
@@ -628,8 +628,8 @@ class MainMenu {
             } else {
                 playSound(sounds.music, musicVolume, true)
             }
-            
-            
+
+
 
         }, 40, 40, false)
         this.finishButton.selected = finish;
@@ -644,7 +644,7 @@ class MainMenu {
             musicVolume = self.volume.value / 100;
             document.cookie = `musicVolume=${musicVolume};Expires=Sun, 22 oct 2030 08:00:00 UTC;`;
             musicPlaying.volume = musicVolume;
-            
+
         })
         this.volume.percentage = musicVolume
         this.onlineButton.disabled = false;
@@ -700,13 +700,13 @@ class TextInput {
         this.htmlElement.style.lineHeight = "200%"
 
         this.draw = function () {
-            this.htmlElement.style.left = this.x*scale/2  + (window.innerWidth - renderCanvas.width) / 2 - 5*scale/2  + "px";
-            this.htmlElement.style.top = this.y*scale/2  + (window.innerHeight - renderCanvas.height) / 2 - 5*scale/2  + "px";
-            this.htmlElement.style.width = this.w*scale/2  + "px";
-            this.htmlElement.style.height = this.h*scale/2  + "px";
-            this.htmlElement.style.fontSize = this.font  + "px"
+            this.htmlElement.style.left = this.x * scale / 2 + (window.innerWidth - renderCanvas.width) / 2 - 5 * scale / 2 + "px";
+            this.htmlElement.style.top = this.y * scale / 2 + (window.innerHeight - renderCanvas.height) / 2 - 5 * scale / 2 + "px";
+            this.htmlElement.style.width = this.w * scale / 2 + "px";
+            this.htmlElement.style.height = this.h * scale / 2 + "px";
+            this.htmlElement.style.fontSize = this.font + "px"
             this.htmlElement.maxLength = this.maxLength;
-            this.htmlElement.style.border = 5*scale/2  + "px solid black "
+            this.htmlElement.style.border = 5 * scale / 2 + "px solid black "
 
             if (this.visible) {
                 if (this.oldvalue !== this.htmlElement.value) {
@@ -826,16 +826,16 @@ function update() {
 
     menus.forEach(e => e.draw())
 
-    renderC.drawImage(canvas,0,0,renderCanvas.width,renderCanvas.height)
+    renderC.drawImage(canvas, 0, 0, renderCanvas.width, renderCanvas.height)
 
-    c.fillRect(mouse.x,mouse.y,10,10)
+    c.fillRect(mouse.x, mouse.y, 10, 10)
 }
 
 function showBackground() {
     for (let x = -4; x < 8; x++) {
         for (let y = -4; y < 8; y++) {
-            let coords = to_screen_coordinate(x,y)
-            drawRotatedImageFromSpriteSheet((window.innerWidth-832*scale)+832*scale*1.9*coords.x,(window.innerHeight-416*scale)+832*scale*1.9*coords.y,832*scale*2,416*scale*2,images.background.sprites[1],0,false,0,0,832,416,0,backC)
+            let coords = to_screen_coordinate(x, y)
+            drawRotatedImageFromSpriteSheet((window.innerWidth - 832 * scale) + 832 * scale * 1.9 * coords.x, (window.innerHeight - 416 * scale) + 832 * scale * 1.9 * coords.y, 832 * scale * 2, 416 * scale * 2, images.background.sprites[1], 0, false, 0, 0, 832, 416, 0, backC)
 
         }
     }
@@ -1152,13 +1152,13 @@ class Board {
         this.currentShowingCard = undefined;
         let self = this;
         this.textsize = 0;
-        this.musicButton = new Button([true, false], 5+49*4, 530+40, images.buttons.sprites[14], function () {
-            if(self.musicButton.selected){
+        this.musicButton = new Button([true, false], 5 + 49 * 4, 530 + 40, images.buttons.sprites[14], function () {
+            if (self.musicButton.selected) {
                 document.cookie = `musicOn=${musicVolume};Expires=Sun, 22 oct 2030 08:00:00 UTC;`;
                 musicOn = musicVolume;
                 musicVolume = 0;
                 self.volume.percentage = 0
-            }else{
+            } else {
                 document.cookie = `musicOn=${musicVolume};Expires=Sun, 22 oct 2030 08:00:00 UTC;`;
                 musicVolume = musicOn;
                 self.volume.percentage = musicVolume
@@ -1166,16 +1166,16 @@ class Board {
             }
             musicPlaying.volume = musicVolume;
         }, 40, 40, false)
-        this.volume = new Slider(920, 540+200, 180, 80, 0, 100, 1, true, 50, "%", "", function () {
+        this.volume = new Slider(920, 540 + 200, 180, 80, 0, 100, 1, true, 50, "%", "", function () {
             musicVolume = self.volume.value / 100;
             document.cookie = `musicVolume=${musicVolume};Expires=Sun, 22 oct 2030 08:00:00 UTC;`;
             musicPlaying.volume = musicVolume;
         })
         this.volume.percentage = musicVolume
-        this.imageSmoothingButton = new Button([true, false], 5, 530+40, images.buttons.sprites[21], function () {
+        this.imageSmoothingButton = new Button([true, false], 5, 530 + 40, images.buttons.sprites[21], function () {
             renderC.imageSmoothingEnabled = self.imageSmoothingButton.selected;
         }, 40, 40, false)
-        this.fullScreenButton = new Button([true, true], 5+49, 530+40, images.buttons.sprites[18], function () {
+        this.fullScreenButton = new Button([true, true], 5 + 49, 530 + 40, images.buttons.sprites[18], function () {
             if (this.selected) {
                 document.documentElement.requestFullscreen()
             } else {
@@ -1183,7 +1183,7 @@ class Board {
             }
         }, 40, 40, false)
 
-        this.goToMainMenuButton = new Button([false, false], 5+49*1.5, 520, images.buttons.sprites[15], function () {
+        this.goToMainMenuButton = new Button([false, false], 5 + 49 * 1.5, 520, images.buttons.sprites[15], function () {
             board.getToMainMenuButton.selected = false;
             board.goToMainMenuButton.visible = false;
             board.escapeConfirm.visible = false;
@@ -1191,7 +1191,7 @@ class Board {
             board.musicButton.visible = false;
             board.fullScreenButton.visible = false;
         }, 40, 40, false, false, false, false, false, { x: 722, y: 336, w: 256 * drawScale, h: 256 * drawScale });
-        this.escapeConfirm = new Button([false, false], 5+49*2.5, 520, images.buttons.sprites[16], function () {
+        this.escapeConfirm = new Button([false, false], 5 + 49 * 2.5, 520, images.buttons.sprites[16], function () {
             board.getToMainMenuButton.selected = false;
             board.goToMainMenuButton.visible = false;
             board.escapeConfirm.visible = false;
@@ -1213,7 +1213,7 @@ class Board {
 
         this.getToMainMenuButton = new Button([true, false], 84, 700, images.buttons.sprites[17], function () {
             self.volume.percentage = musicVolume
-            
+
         }, 80, 40, false, false, false, true, false, false)
 
         this.getToMainMenuButton.visible = true;
@@ -1400,9 +1400,9 @@ class Board {
         this.update = function () {
             let fontsize = (1 / this.textsize.width) * 50000 > 50 ? 50 : (1 / this.textsize.width) * 50000
             c.fillStyle = "white";
-            c.font = fontsize/2  + "px Arcade";
+            c.font = fontsize / 2 + "px Arcade";
             c.textAlign = "center";
-            c.fillText("Just nu: " + players[turn].name, canvas.width / 2, 50/2 );
+            c.fillText("Just nu: " + players[turn].name, canvas.width / 2, 50 / 2);
 
 
             this.boardPieces.forEach(g => g.update())
@@ -1448,9 +1448,9 @@ class Board {
                 }
             } else {
                 c.fillStyle = "black"
-                c.font = 80  + "px Arcade"
+                c.font = 80 + "px Arcade"
                 c.textAlign = "center"
-                c.fillText("Grattis " + players[0].name + "! Du vann!", 1000 , 600 )
+                c.fillText("Grattis " + players[0].name + "! Du vann!", 1000, 600)
             }
             players.forEach(e => e.playerBorder.drawButton())
 
@@ -1495,8 +1495,8 @@ class Board {
             this.imageSmoothingButton.draw();
             this.imageSmoothingButton.selected = renderC.imageSmoothingEnabled;
             this.fullScreenButton.draw();
-            
-            
+
+
         }
         this.randomizeDice = function () {
             this.dice1Type = randomIntFromRange(0, 3);
@@ -1509,13 +1509,13 @@ class Board {
                 this.cardCloseButton.draw();
                 c.fillStyle = "black";
                 c.textAlign = "center";
-                c.font = 20  + "px Arcade";
+                c.font = 20 + "px Arcade";
 
                 if (this.currentCard.owner !== undefined) {
                     if (this.currentCard.piece.type !== "utility" && this.currentCard.piece.type !== "station") {
-                        c.fillText("Ägare: " + this.currentCard.owner.name, 985 , 368 )
+                        c.fillText("Ägare: " + this.currentCard.owner.name, 985, 368)
                     } else {
-                        c.fillText("Ägare: " + this.currentCard.owner.name, 985 , 415 )
+                        c.fillText("Ägare: " + this.currentCard.owner.name, 985, 415)
                     }
 
                     if (players[Api.online ? Api.currentPlayer : turn].bot === undefined) this.cardCloseButton.visible = true;
@@ -1676,10 +1676,10 @@ class Board {
 }
 class Slider {
     constructor(x, y, w, h, from, to, steps, showtext, font, unit, beginningText, onChange, onrelease) {
-        this.x = x/2;
-        this.y = y/2;
-        this.w = w/2;
-        this.h = h/2;
+        this.x = x / 2;
+        this.y = y / 2;
+        this.w = w / 2;
+        this.h = h / 2;
         this.visible = false;
         this.disabled = false;
         this.min = from;
@@ -1688,7 +1688,7 @@ class Slider {
         this.value = 0;
         this.follow = false;
         this.showtext = showtext;
-        this.font = font/2;
+        this.font = font / 2;
         this.unit = unit;
         this.steps = steps;
         this.beginningText = beginningText;
@@ -1725,24 +1725,24 @@ class Slider {
                     this.value = this.from;
                 }
                 c.fillStyle = "black";
-                c.fillRect(this.x , this.y , this.w , this.h )
+                c.fillRect(this.x, this.y, this.w, this.h)
                 c.fillStyle = "white";
-                c.fillRect(this.x  + 4 , this.y  + 4 , this.w  - 8 , this.h  - 8 )
+                c.fillRect(this.x + 4, this.y + 4, this.w - 8, this.h - 8)
                 c.fillStyle = "black";
                 if (this.showtext) {
-                    c.font = this.font  + "px Arcade";
+                    c.font = this.font + "px Arcade";
                     c.textAlign = "center";
-                    c.fillText(this.beginningText + this.value + this.unit, this.x  + + this.w / 2 , this.y  + this.h / 1.5 )
+                    c.fillText(this.beginningText + this.value + this.unit, this.x + + this.w / 2, this.y + this.h / 1.5)
                 }
-                c.fillRect(this.x  + (this.percentage * (this.w-Math.min(8,this.w/12.5))) , this.y , Math.min(5,this.w/25) , this.h )
+                c.fillRect(this.x + (this.percentage * (this.w - Math.min(8, this.w / 12.5))), this.y, Math.min(5, this.w / 25), this.h)
             }
-            if (detectCollition(this.x , this.y , this.w , this.h , mouse.x, mouse.y, 1, 1)) {
+            if (detectCollition(this.x, this.y, this.w, this.h, mouse.x, mouse.y, 1, 1)) {
                 this.hover = true;
             } else {
                 this.hover = false;
             }
             if (this.follow === true) {
-                this.percentage = (mouse.x - (this.x )) / (this.w  - 4 );
+                this.percentage = (mouse.x - (this.x)) / (this.w - 4);
             }
             if (this.percentage <= 0) {
                 this.percentage = 0;
@@ -1761,7 +1761,7 @@ class Slider {
         this.release = function () {
             if (this.disabled) return;
             if (this.follow === true) {
-                this.percentage = (mouse.x - (this.x )) / (this.w  - 4 );
+                this.percentage = (mouse.x - (this.x)) / (this.w - 4);
                 this.value = Math.round((((this.to - this.from) * this.percentage) + this.from) / this.steps) * this.steps;
                 this.onrelease();
             }
@@ -1908,12 +1908,12 @@ class Trade {
             this.p1Slider.draw();
             this.p2Slider.visible = true;
             this.p2Slider.draw();
-            c.font = 50/2  + "px Arcade";
+            c.font = 50 / 2 + "px Arcade";
             c.fillStyle = "black"
             c.textAlign = "right"
-            c.fillText(this.p1.money + "kr" + "   " + this.p1.name, 880/2 , 160/2 )
+            c.fillText(this.p1.money + "kr" + "   " + this.p1.name, 880 / 2, 160 / 2)
             c.textAlign = "left"
-            c.fillText(this.p2.name + "   " + this.p2.money + "kr", 1070/2 , 160/2 )
+            c.fillText(this.p2.name + "   " + this.p2.money + "kr", 1070 / 2, 160 / 2)
             this.p1PropertyButtons.forEach(e => { e.visible = true; e.draw() });
             this.p2PropertyButtons.forEach(e => { e.visible = true; e.draw() });
 
@@ -2018,14 +2018,14 @@ class PlayerBorder {
             if (this.button.mirror === false) {
                 c.globalAlpha = this.moneyTime;
                 c.textAlign = "right"
-                c.font = (50)/2  + "px Arcade";
-                c.fillText(Math.abs(Math.floor(this.latestTrancaction)) + "kr", this.x  + 1350/2 , this.y  - 335/2   - (-this.moneyTime + 1) * 20 )
+                c.font = (50) / 2 + "px Arcade";
+                c.fillText(Math.abs(Math.floor(this.latestTrancaction)) + "kr", this.x + 1350 / 2, this.y - 335 / 2 - (-this.moneyTime + 1) * 20)
                 c.globalAlpha = 1;
             } else {
                 c.globalAlpha = this.moneyTime;
                 c.textAlign = "right"
-                c.font = (50)/2  + "px Arcade";
-                c.fillText(Math.abs(Math.floor(this.latestTrancaction)) + "kr", this.x/2  + 1030/2 , this.y   - 335/2  - (-this.moneyTime + 1) * 20 )
+                c.font = (50) / 2 + "px Arcade";
+                c.fillText(Math.abs(Math.floor(this.latestTrancaction)) + "kr", this.x / 2 + 1030 / 2, this.y - 335 / 2 - (-this.moneyTime + 1) * 20)
                 c.globalAlpha = 1;
             }
         }
@@ -2084,27 +2084,27 @@ class PlayerBorder {
             if (this.button.mirror === false) {
                 drawRotatedImageFromSpriteSheet(this.x * drawScale + 466 + 694 + 209, this.y * drawScale + 5 - 400, 48, 96, images.player.sprites[this.player.colorIndex], 0, false, 0, 0, 24, 48, false)
                 let fontsize = (1 / textsize.width) * 40000 > 50 ? 50 : (1 / textsize.width) * 40000
-                c.font = fontsize/2  + "px Arcade";
+                c.font = fontsize / 2 + "px Arcade";
                 c.fillStyle = "black"
                 c.textAlign = "left"
-                c.fillText(this.player.name, this.x  + 750/2 , this.y  - 335/2 )
+                c.fillText(this.player.name, this.x + 750 / 2, this.y - 335 / 2)
                 c.textAlign = "right"
-                c.font = (50)/2  + "px Arcade";
+                c.font = (50) / 2 + "px Arcade";
                 if (this.moneyTime <= 0) {
-                    c.fillText(this.player.money + "kr", this.x  + 1350/2 , this.y  - 335/2 )
+                    c.fillText(this.player.money + "kr", this.x + 1350 / 2, this.y - 335 / 2)
                 }
             } else {
                 drawRotatedImageFromSpriteSheet(this.x * drawScale + 723, this.y * drawScale - 396, 48, 96, images.player.sprites[this.player.colorIndex], 0, false, 0, 0, 24, 48, false)
                 let fontsize = (1 / textsize.width) * 40000 > 50 ? 50 : (1 / textsize.width) * 40000
-                c.font = fontsize/2  + "px Arcade";
+                c.font = fontsize / 2 + "px Arcade";
 
                 c.fillStyle = "black"
                 c.textAlign = "left"
-                c.fillText(this.player.name, this.x/2  + 420/2 , this.y   - 335/2 )
+                c.fillText(this.player.name, this.x / 2 + 420 / 2, this.y - 335 / 2)
                 c.textAlign = "right"
-                c.font = (50)/2  + "px Arcade";
+                c.font = (50) / 2 + "px Arcade";
                 if (this.moneyTime <= 0) {
-                    c.fillText(this.player.money + "kr", this.x/2  + 1030/2 , this.y   - 335/2 )
+                    c.fillText(this.player.money + "kr", this.x / 2 + 1030 / 2, this.y - 335 / 2)
                 }
 
             }
@@ -2183,11 +2183,11 @@ class PlayerBorder {
                     drawRotatedImageFromSpriteSheet(this.x * drawScale + 715 + mirrorAdder2, this.y * drawScale + 54 * drawScale - 400, 354 * drawScale, 27 * drawScale, images.playerOverlay.sprites[11], 0, this.button.mirror, 0, 0, 354, 27, false)
                     for (let i = 0; i < this.player.ownedPlaces.length; i++) {
                         drawRotatedImageFromSpriteSheet(this.x * drawScale + 715 + mirrorAdder2, this.y * drawScale + 67 * drawScale + 12 * drawScale * i + 27 - 400, 354 * drawScale, 15 * drawScale, images.playerOverlay.sprites[10], 0, this.button.mirror, 0, 0, 354, 15, false)
-                        c.font = 24/2  + "px Arcade";
+                        c.font = 24 / 2 + "px Arcade";
                         c.fillStyle = "black"
                         c.textAlign = "left"
                         if (this.player.ownedPlaces[i].piece.type !== "station" && this.player.ownedPlaces[i].piece.type !== "utility") {
-                            c.fillText(this.player.ownedPlaces[i].piece.name + "  " + this.player.ownedPlaces[i].piece.rent[this.player.ownedPlaces[i].level] + "kr", this.x/2  + 400/2  + mirrorAdder , this.y  + 65  + 12 * i  - 364/2 )
+                            c.fillText(this.player.ownedPlaces[i].piece.name + "  " + this.player.ownedPlaces[i].piece.rent[this.player.ownedPlaces[i].level] + "kr", this.x / 2 + 400 / 2 + mirrorAdder, this.y + 65 + 12 * i - 364 / 2)
                         } else if (this.player.ownedPlaces[i].piece.type === "station") {
                             let tmp = -1;
                             this.player.ownedPlaces.forEach(e => {
@@ -2196,7 +2196,7 @@ class PlayerBorder {
                                 }
                             })
 
-                            c.fillText(this.player.ownedPlaces[i].piece.name + "  " + 25 * Math.pow(2, tmp) + "kr", this.x/2  + 400/2  + mirrorAdder  , this.y   + 65   + 12  * i  - 364/2 )
+                            c.fillText(this.player.ownedPlaces[i].piece.name + "  " + 25 * Math.pow(2, tmp) + "kr", this.x / 2 + 400 / 2 + mirrorAdder, this.y + 65 + 12 * i - 364 / 2)
                         } else {
                             let tmp = 0;
                             let multiply = 0;
@@ -2207,7 +2207,7 @@ class PlayerBorder {
                             })
                             if (tmp === 1) { multiply = 4; }
                             if (tmp === 2) { multiply = 10 }
-                            c.fillText(this.player.ownedPlaces[i].piece.name + "  " + multiply + "*slag kr", this.x/2  + 400/2  + mirrorAdder  , this.y   + 65   + 12  * i  - 364/2 )
+                            c.fillText(this.player.ownedPlaces[i].piece.name + "  " + multiply + "*slag kr", this.x / 2 + 400 / 2 + mirrorAdder, this.y + 65 + 12 * i - 364 / 2)
                         }
                     }
                     drawRotatedImageFromSpriteSheet(this.x * drawScale + 715 + mirrorAdder2, this.y * drawScale + 80 * drawScale + 12 * drawScale * this.player.ownedPlaces.length - 400, 354 * drawScale, 13 * drawScale, images.playerOverlay.sprites[10], 0, this.button.mirror, 0, 0, 354, 13, false)
@@ -2230,11 +2230,11 @@ class PlayerBorder {
                     drawRotatedImageFromSpriteSheet(this.x * drawScale + 715 + mirrorAdder2, this.y * drawScale - 27 * drawScale - 400, 354 * drawScale, 27 * drawScale, images.playerOverlay.sprites[11], 180, !this.button.mirror, 0, 0, 354, 27, false)
                     for (let i = 0; i < this.player.ownedPlaces.length; i++) {
                         drawRotatedImageFromSpriteSheet(this.x * drawScale + 715 + mirrorAdder2, this.y * drawScale - 57 * drawScale - 12 * drawScale * i + 27 + 10 - 400, 354 * drawScale, 13 * drawScale, images.playerOverlay.sprites[10], 180, !this.button.mirror, 0, 0, 354, 13, false)
-                        c.font = 24/2  + "px Arcade";
+                        c.font = 24 / 2 + "px Arcade";
                         c.fillStyle = "black"
                         c.textAlign = "left"
                         if (this.player.ownedPlaces[i].piece.type !== "station" && this.player.ownedPlaces[i].piece.type !== "utility") {
-                            c.fillText(this.player.ownedPlaces[i].piece.name + "  " + this.player.ownedPlaces[i].piece.rent[this.player.ownedPlaces[i].level] + "kr", this.x/2  + 400/2  + mirrorAdder  , this.y   + 110   - 12  * i  - 634/2 )
+                            c.fillText(this.player.ownedPlaces[i].piece.name + "  " + this.player.ownedPlaces[i].piece.rent[this.player.ownedPlaces[i].level] + "kr", this.x / 2 + 400 / 2 + mirrorAdder, this.y + 110 - 12 * i - 634 / 2)
                         } else if (this.player.ownedPlaces[i].piece.type === "station") {
                             let tmp = -1;
                             this.player.ownedPlaces.forEach(e => {
@@ -2243,7 +2243,7 @@ class PlayerBorder {
                                 }
                             })
 
-                            c.fillText(this.player.ownedPlaces[i].piece.name + "  " + 25 * Math.pow(2, tmp) + "kr", this.x/2  + 400/2  + mirrorAdder  , this.y   + 110   - 12  * i  - 634/2 )
+                            c.fillText(this.player.ownedPlaces[i].piece.name + "  " + 25 * Math.pow(2, tmp) + "kr", this.x / 2 + 400 / 2 + mirrorAdder, this.y + 110 - 12 * i - 634 / 2)
                         } else {
                             let tmp = 0;
                             let multiply = 0;
@@ -2254,7 +2254,7 @@ class PlayerBorder {
                             })
                             if (tmp === 1) { multiply = 4; }
                             if (tmp === 2) { multiply = 10 }
-                            c.fillText(this.player.ownedPlaces[i].piece.name + "  " + multiply + "*slag kr", this.x/2  + 400/2  + mirrorAdder  , this.y   + 110   - 12  * i  - 634/2 )
+                            c.fillText(this.player.ownedPlaces[i].piece.name + "  " + multiply + "*slag kr", this.x / 2 + 400 / 2 + mirrorAdder, this.y + 110 - 12 * i - 634 / 2)
                         }
                     }
                     drawRotatedImageFromSpriteSheet(this.x * drawScale + 715, this.y * drawScale - 25 * drawScale * 1.5 - 12 * drawScale * this.player.ownedPlaces.length - 400, 354 * drawScale, 13 * drawScale, images.playerOverlay.sprites[10], 0, this.button.mirror, 0, 0, 354, 13, false)
@@ -2289,16 +2289,16 @@ class Auction {
         this.playerlist = [...players];
 
 
-        this.addMoneyButton2 = new Button([false, false], -80, 540, images.auction.sprites[1], function () {
+        this.addMoneyButton2 = new Button([false, false], -90, 540, images.auction.sprites[1], function () {
             board.auction.addMoney(2);
         }, 54, 54, false)
-        this.addMoneyButton10 = new Button([false, false], 10, 540, images.auction.sprites[2], function () {
+        this.addMoneyButton10 = new Button([false, false], 0, 540, images.auction.sprites[2], function () {
             board.auction.addMoney(10);
         }, 54, 54, false)
-        this.addMoneyButton100 = new Button([false, false], 100, 540, images.auction.sprites[3], function () {
+        this.addMoneyButton100 = new Button([false, false], 90, 540, images.auction.sprites[3], function () {
             board.auction.addMoney(100);
         }, 54, 54, false)
-        this.startAuctionButton = new Button([false, false], -85, 540, images.auction.sprites[5], function () {
+        this.startAuctionButton = new Button([false, false], -95, 540, images.auction.sprites[5], function () {
             if (Api.online) {
                 Api.auctionStart(board.auction.card);
                 return;
@@ -2315,11 +2315,11 @@ class Auction {
             drawIsometricImage(0, 0, images.card.sprites[card.piece.card], false, 0, 0, images.card.sprites[this.card.piece.card].frame.w, images.card.sprites[this.card.piece.card].frame.h, images.card.sprites[this.card.piece.card].frame.w / 3, images.card.sprites[this.card.piece.card].frame.h / 7.5, 1)
             drawIsometricImage(0, 0, images.auction.sprites[0], false, 0, 0, images.auction.sprites[0].frame.w, images.card.sprites[this.card.piece.card].frame.h, -images.card.sprites[this.card.piece.card].frame.w / 1.5, images.card.sprites[this.card.piece.card].frame.h / 7.5, 1)
             c.fillStyle = "black";
-            c.font = 80/2  + "px Arcade";
+            c.font = 80 / 2 + "px Arcade";
             c.textAlign = "center";
-            c.fillText(this.auctionMoney + "kr", 790/2 , 450/2 );
-            c.font = 80/2  + "px Arcade";
-            c.fillText(this.playerlist[this.turn].name, 790/2 , 550/2 );
+            c.fillText(this.auctionMoney + "kr", 790 / 2, 450 / 2);
+            c.font = 80 / 2 + "px Arcade";
+            c.fillText(this.playerlist[this.turn].name, 790 / 2, 550 / 2);
 
             if (this.started) {
                 if ((!Api.online && this.playerlist[this.turn].bot === undefined) || (Api.online && Api.currentPlayer == this.playerlist[this.turn].colorIndex)) {
@@ -2345,16 +2345,16 @@ class Auction {
                 }
                 c.fillStyle = "black"
                 if (this.time < 464 && this.time > 6) {
-                    c.fillRect(1022/2 , 560/2 , -this.time/2 , 58/2 )
+                    c.fillRect(1002 / 2, 560 / 2, -this.time / 2, 58 / 2)
                 }
                 if (this.time > 4) {
-                    c.fillRect(1022/2 , 562/2 , 2/2 , 54/2 )
+                    c.fillRect(1002 / 2, 562 / 2, 2 / 2, 54 / 2)
                 }
                 if (this.time > 2) {
-                    c.fillRect(1022/2 , 564/2 , 4/2 , 50/2 )
+                    c.fillRect(1002 / 2, 564 / 2, 4 / 2, 50 / 2)
                 }
                 if (this.time > 0) {
-                    c.fillRect(1022/2 , 566/2 , 6/2 , 46/2 )
+                    c.fillRect(1002 / 2, 566 / 2, 7 / 2, 46 / 2)
                 }
 
 
@@ -2453,7 +2453,7 @@ class Button {
         this.mirror = false;
         this.screencenter = false;
         this.text = text;
-        this.font = font/2;
+        this.font = font / 2;
         this.selected = false;
         this.select = select
         this.disablesound = disablesound;
@@ -2487,7 +2487,7 @@ class Button {
 
             if (this.visible && this.img !== undefined) {
                 if (!this.disabled && this.selected === false) {
-                    if (detectCollition(this.x  + 358 , this.y  - 200 , this.w , this.h , mouse.x, mouse.y, 1, 1)) {
+                    if (detectCollition(this.x + 358, this.y - 200, this.w, this.h, mouse.x, mouse.y, 1, 1)) {
                         if (this.img.frame.w > this.w) {
                             drawRotatedImageFromSpriteSheet(this.x * drawScale + 715, this.y * drawScale - 400, this.w * drawScale, this.h * drawScale, this.img, 0, this.mirror, this.w, 0, this.w, this.h)
                         } else {
@@ -2515,7 +2515,7 @@ class Button {
                             }
                         }
                     } else {
-                        if (detectCollition(this.x  + 358 , this.y  - 200 , this.w , this.h , mouse.x, mouse.y, 1, 1)) {
+                        if (detectCollition(this.x + 358, this.y - 200, this.w, this.h, mouse.x, mouse.y, 1, 1)) {
 
                             if (this.img.frame.w <= this.w * 3) {
                                 if (this.disableselectTexture) {
@@ -2543,14 +2543,14 @@ class Button {
 
                 }
                 if (this.text !== undefined) {
-                    c.font = this.font  + "px " + this.textFont;
+                    c.font = this.font + "px " + this.textFont;
                     c.fillStyle = this.textcolor
                     c.textAlign = "center"
-                    c.fillText(this.text, this.x  + 715/2  + this.w/2 , this.y  - 400/2  + this.h/2  / 2 + this.font  / 2 + this.h/2  / 2.5)
+                    c.fillText(this.text, this.x + 715 / 2 + this.w / 2, this.y - 400 / 2 + this.h / 2 / 2 + this.font / 2 + this.h / 2 / 2.5)
                 }
 
             } else if (this.visible) {
-                if (detectCollition(this.x  + 358 , this.y  - 200 , this.w , this.h , mouse.x, mouse.y, 1, 1)) {
+                if (detectCollition(this.x + 358, this.y - 200, this.w, this.h, mouse.x, mouse.y, 1, 1)) {
                     this.hover = true;
                 } else {
                     this.hover = false;
@@ -2558,18 +2558,18 @@ class Button {
             }
             if (showBorder) {
                 c.strokeStyle = "black";
-                c.strokeRect(this.x  + 358 , this.y  - 200 , this.w , this.h)
+                c.strokeRect(this.x + 358, this.y - 200, this.w, this.h)
                 if (this.invertedHitbox !== undefined) {
-                    c.strokeRect(this.invertedHitbox.x/2 , this.invertedHitbox.y/2 , this.invertedHitbox.w/2 , this.invertedHitbox.h/2 )
+                    c.strokeRect(this.invertedHitbox.x / 2, this.invertedHitbox.y / 2, this.invertedHitbox.w / 2, this.invertedHitbox.h / 2)
                 }
             }
 
         }
         this.click = function () {
             if (this.disabled || !this.visible) return;
-            if (detectCollition(this.x  + 358 , this.y  - 200 , this.w , this.h , mouse.x, mouse.y, 1, 1) ||
-                this.invertedHitbox !== undefined && this.invertedHitbox !== false && this.invertedHitbox.onlySelected === undefined && !detectCollition(this.invertedHitbox.x/2 , this.invertedHitbox.y/2 , this.invertedHitbox.w/2 , this.invertedHitbox.h/2 , mouse.x, mouse.y, 1, 1) ||
-                this.invertedHitbox !== undefined && this.invertedHitbox !== false && this.invertedHitbox.onlySelected === true && this.selected && !detectCollition(this.invertedHitbox.x/2 , this.invertedHitbox.y/2 , this.invertedHitbox.w/2 , this.invertedHitbox.h/2 , mouse.x, mouse.y, 1, 1)) {
+            if (detectCollition(this.x + 358, this.y - 200, this.w, this.h, mouse.x, mouse.y, 1, 1) ||
+                this.invertedHitbox !== undefined && this.invertedHitbox !== false && this.invertedHitbox.onlySelected === undefined && !detectCollition(this.invertedHitbox.x / 2, this.invertedHitbox.y / 2, this.invertedHitbox.w / 2, this.invertedHitbox.h / 2, mouse.x, mouse.y, 1, 1) ||
+                this.invertedHitbox !== undefined && this.invertedHitbox !== false && this.invertedHitbox.onlySelected === true && this.selected && !detectCollition(this.invertedHitbox.x / 2, this.invertedHitbox.y / 2, this.invertedHitbox.w / 2, this.invertedHitbox.h / 2, mouse.x, mouse.y, 1, 1)) {
                 if (this.select[0] === true) {
                     if (this.selected) {
                         this.selected = false;
@@ -2658,22 +2658,22 @@ class BoardPiece {
                 }
             }
 
-            let mouseSquareX = (to_grid_coordinate(mouse.x, mouse.y).x - 1200/2 ) / (64 )
-            let mouseSquareY = (to_grid_coordinate(mouse.x, mouse.y).y + 720/2 ) / (64 )
+            let mouseSquareX = (to_grid_coordinate(mouse.x, mouse.y).x - 1200 / 2) / (64)
+            let mouseSquareY = (to_grid_coordinate(mouse.x, mouse.y).y + 720 / 2) / (64)
             if (board.currentCard !== undefined || this.piece.type === "chance" || this.piece.type === "community Chest" || this.piece.type === "income tax" || this.piece.type === "tax" || this.n % 10 === 0 || board.auction !== undefined || board.trade !== undefined || players[turn].inJail === true || board.showDices || board.animateDices || players[turn].animationOffset !== 0 || board.getToMainMenuButton.selected || board.currentShowingCard !== undefined) {
                 this.offsetY = this.currentOffsetvalue;
                 this.hover = false;
-            } else if (this.x / 64  > mouseSquareX - 1  && this.x / 64  < mouseSquareX && this.side === 2 && this.n % 10 !== 0 && mouseSquareY >= 0  && mouseSquareY < 2 
-                || this.x / 64  > mouseSquareX - 2  && this.x / 64  < mouseSquareX && this.side === 2 && this.n % 10 === 0 && mouseSquareY >= 0  && mouseSquareY < 2 
+            } else if (this.x / 64 > mouseSquareX - 1 && this.x / 64 < mouseSquareX && this.side === 2 && this.n % 10 !== 0 && mouseSquareY >= 0 && mouseSquareY < 2
+                || this.x / 64 > mouseSquareX - 2 && this.x / 64 < mouseSquareX && this.side === 2 && this.n % 10 === 0 && mouseSquareY >= 0 && mouseSquareY < 2
 
-                || this.x / 64  > mouseSquareX - 1  && this.x / 64  < mouseSquareX && this.side === 0 && this.n % 10 !== 0 && mouseSquareY >= 11  && mouseSquareY < 13 
-                || this.x / 64  > mouseSquareX - 2  && this.x / 64  < mouseSquareX && this.side === 0 && this.n % 10 === 0 && mouseSquareY >= 11  && mouseSquareY < 13 
+                || this.x / 64 > mouseSquareX - 1 && this.x / 64 < mouseSquareX && this.side === 0 && this.n % 10 !== 0 && mouseSquareY >= 11 && mouseSquareY < 13
+                || this.x / 64 > mouseSquareX - 2 && this.x / 64 < mouseSquareX && this.side === 0 && this.n % 10 === 0 && mouseSquareY >= 11 && mouseSquareY < 13
 
-                || this.y / 64  > mouseSquareY - 1.5  && this.y / 64  < mouseSquareY - 0.5  && this.side === 3 && this.n % 10 !== 0 && mouseSquareX >= 11  && mouseSquareX < 13 
-                || this.y / 64  > mouseSquareY - 2  && this.y / 64  < mouseSquareY && this.side === 3 && this.n % 10 === 0 && mouseSquareX >= 11  && mouseSquareX < 13 
+                || this.y / 64 > mouseSquareY - 1.5 && this.y / 64 < mouseSquareY - 0.5 && this.side === 3 && this.n % 10 !== 0 && mouseSquareX >= 11 && mouseSquareX < 13
+                || this.y / 64 > mouseSquareY - 2 && this.y / 64 < mouseSquareY && this.side === 3 && this.n % 10 === 0 && mouseSquareX >= 11 && mouseSquareX < 13
 
-                || this.y / 64  > mouseSquareY - 1.5  && this.y / 64  < mouseSquareY - 0.5  && this.side === 1 && this.n % 10 !== 0 && mouseSquareX >= 0  && mouseSquareX < 2 
-                || this.y / 64  > mouseSquareY - 2  && this.y / 64  < mouseSquareY && this.side === 1 && this.n % 10 === 0 && mouseSquareX >= 0  && mouseSquareX < 2 
+                || this.y / 64 > mouseSquareY - 1.5 && this.y / 64 < mouseSquareY - 0.5 && this.side === 1 && this.n % 10 !== 0 && mouseSquareX >= 0 && mouseSquareX < 2
+                || this.y / 64 > mouseSquareY - 2 && this.y / 64 < mouseSquareY && this.side === 1 && this.n % 10 === 0 && mouseSquareX >= 0 && mouseSquareX < 2
             ) {
                 this.offsetY = -1;
                 this.hover = true;
@@ -2704,9 +2704,9 @@ class BoardPiece {
                 drawIsometricImage(this.x, this.y, this.img, false, 0, 0, 128, 64, this.offsetX, this.offsetY);
             }
             if (this.freeParking) {
-                c.font = 50  + "px Arcade"
+                c.font = 50 + "px Arcade"
                 c.fillStyle = "black"
-                c.fillText(this.money + "kr", 980 , 120 )
+                c.fillText(this.money + "kr", 980, 120)
             }
         }
         this.drawHouses = function () {
