@@ -224,7 +224,7 @@ function playSound(sound, volume, repeat) {
         if (repeat) {
             musicPlaying = myClonedAudio;
             musictimer = setTimeout(function () {
-                playSound(sound, volume, true)
+                playSound(sound, musicVolume, true)
             }, (end - start) * 1000)
         }
     }
