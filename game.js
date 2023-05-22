@@ -3381,7 +3381,11 @@ class Player {
             }
         }
         this.goToPrison = function () {
-            this.teleportTo(10, false, false);
+            if(this.steps >= 30 || this.steps < 10){
+                this.teleportTo(10, false, false);
+            }else{
+                this.teleportTo(-10, false, false);
+            }
             this.inJail = true;
             this.rolls = true;
         }
