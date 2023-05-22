@@ -330,24 +330,46 @@ class Bot{
     sortSellPieces() {
         let result = []
         if (board.settings.even) {
-            for (let group in groups) {
-                let owned = groups[group].filter(n => board.boardPieces[n].owner === this.player)
-                
+            for (let group in groups) {                
                 // Only Get The Highest House Count
                 let maxLevel = 0
                 let maxed = []
-                for (n of owned) {
+                for (let n of groups[group]) {
                     let bP = board.boardPieces[n]
+
+                    if (bP.owner !== this.player) { continue }
+
                     if (bP.level > maxLevel) {
                         maxLevel = bP.level
                         maxed = [bP]
-                    } else if (bP.level === minLevel) {
+                    } else if (bP.level === maxLevel) {
                         maxed.push(bP)
                     }
                 }
                 maxed.forEach(bP => result.push(bP))
             }
-        } else { result = this.player.ownedPlaces }
+        } else {
+            for (let group in groups) {
+                let noHouse = []
+                let hasHouse = []
+                for (let n of groups[group]) {
+                    let bP = board.boardPieces[n]
+
+                    if (bP.owner !== this.player) { continue }
+                    if (bP.level > 0) { hasHouse.push(bP) }
+                    else { noHouse.push(bP) }
+                }
+                if (noHouse.length === 0) {
+                    hasHouse.forEach(bP => result.push(bP))
+                } else if (hasHouse.length === 0) {
+                    noHouse.forEach(bP => result.push(bP))
+                } else {
+                    hasHouse.forEach(bP => result.push(bP))
+                }
+            }
+            result = this.player.ownedPlaces
+            
+        }
         return result
             .filter(bP => !bP.mortgaged)
             .sort((a, b) => this.calculateLossOfPiece(a, 7, null) - this.calculateLossOfPiece(b, 7, null))
