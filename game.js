@@ -228,7 +228,6 @@ function playSound(sound, volume, repeat) {
             }, (end - start) * 1000)
         }
     }
-
 };
 function startGame(playerlist, settings) {
     board = new Board();
@@ -249,6 +248,79 @@ function startGame(playerlist, settings) {
     players.forEach(e => e.playerBorder.init())
     Bot.boardInfo = players.reduce((dict, player, i) => { dict[i] = player.ownedPlaces; return dict }, {})
 }
+
+function saveGame(){
+    let gameToSave = {players:[],settings:board.settings,turn:turn};
+
+    players.forEach(player => {
+        let tmpPlayer = {};
+        tmpPlayer.bot = player.bot == undefined ? false : true
+        tmpPlayer.colorIndex = player.colorIndex;
+        tmpPlayer.hasStepped = player.hasStepped;
+        tmpPlayer.inDebtTo = player.inDebtTo === undefined ? undefined : player.inDebtTo.name === undefined;
+        tmpPlayer.inJail = player.inJail;
+        tmpPlayer.jailcardAmount = player.jailcardAmount;
+        tmpPlayer.lastMoneyInDebt = player.lastMoneyInDebt;
+        tmpPlayer.money = player.money;
+        tmpPlayer.name = player.name;
+        tmpPlayer.negative = player.negative;
+        tmpPlayer.numberOfRolls = player.numberOfRolls;
+        tmpPlayer.rolls = player.rolls;
+        tmpPlayer.steps = player.steps;
+        tmpPlayer.timeInJail = player.timeInJail;
+        tmpPlayer.ownedPlaces = player.ownedPlaces.map(e => e = e.n)
+        gameToSave.players.push(tmpPlayer);
+    })
+    localStorage.setItem("game",JSON.stringify(gameToSave))
+}
+
+function loadGame(){
+    let gameToLoad = JSON.parse(localStorage.getItem("game"))    
+    board = new Board();
+
+    board.settings = gameToLoad.settings;
+    for (i = 0; i < gameToLoad.players.length; i++) {
+        players.push(new Player(images.player.sprites[gameToLoad.players[i].colorIndex], gameToLoad.players[i].colorIndex, gameToLoad.players[i].name, gameToLoad.players[i].bot))
+        players[i].hasStepped = gameToLoad.players[i].hasStepped
+        players[i].inJail = gameToLoad.players[i].inJail
+        players[i].jailcardAmount = gameToLoad.players[i].jailcardAmount
+        players[i].lastMoneyInDebt = gameToLoad.players[i].lastMoneyInDebt
+        players[i].money = gameToLoad.players[i].money
+        players[i].negative = gameToLoad.players[i].negative
+        players[i].numberOfRolls = gameToLoad.players[i].numberOfRolls
+        players[i].rolls = gameToLoad.players[i].rolls
+        players[i].steps = gameToLoad.players[i].steps
+        players[i].timeInJail = gameToLoad.players[i].timeInJail
+        gameToLoad.players[i].ownedPlaces.forEach(e => {
+            players[i].ownedPlaces.push(board.boardPieces[e])
+            board.boardPieces[e].owner = players[i]
+        })
+        console.log(players[i].ownedPlaces)
+    }
+    for (i = 0; i < gameToLoad.players.length; i++) {
+        if(gameToLoad.players[i].inDebtTo !== undefined){
+            players[i].inDebtTo = players.filter(e => e.name == gameToLoad.players[i].inDebtTo)[0]
+        }
+    }
+    
+    turn = gameToLoad.turn
+
+    board.textsize = measureText({ font: "Arcade", text: "Just nu: " + gameToLoad.players[turn].name });
+
+    players.forEach(e => e.playerBorder.init())
+
+    menus[0].current = false;
+    menus[0].current = false;
+    menus[0].localButton.visible = false;
+    menus[0].onlineButton.visible = false;
+    menus[0].musicButton.visible = false;
+    menus[0].fullScreenButton.visible = false;
+    menus[0].volume.visible = false;
+    menus[0].imageSmoothingButton.visible = false;
+    menus[0].finishButton.visible = false;
+}
+
+
 
 class LocalLobby {
     constructor() {
@@ -583,13 +655,23 @@ class MainMenu {
             self.onlineButton.visible = false;
             self.musicButton.visible = false;
             self.fullScreenButton.visible = false;
+            self.volume.visible = false;
+            self.imageSmoothingButton.visible = false;
+            self.finishButton.visible = false;
         }, 195, 52, false, false, true)
+        this.loadButton = new Button([false, false], -322, 460, images.buttons.sprites[22], function () {
+            loadGame()
+        }, 195, 52, false, false, true)
+
         this.onlineButton = new Button([false, false], -322, 540, images.mainMenu.sprites[2], function () {
             self.current = false;
             self.localButton.visible = false;
             self.onlineButton.visible = false;
             self.musicButton.visible = false;
             self.fullScreenButton.visible = false;
+            self.volume.visible = false;
+            self.imageSmoothingButton.visible = false;
+            self.finishButton.visible = false;
             showOnlineLobby();
         }, 195, 52, false, false, true)
 
@@ -655,6 +737,7 @@ class MainMenu {
                 this.musicButton.selected = musicVolume === 0 ? true : false;
                 this.localButton.visible = true;
                 this.onlineButton.visible = true;
+                this.loadButton.visible = true;
                 this.musicButton.visible = true;
                 this.imageSmoothingButton.visible = true;
                 this.finishButton.visible = true;
@@ -663,6 +746,7 @@ class MainMenu {
                 this.imageSmoothingButton.selected = renderC.imageSmoothingEnabled;
                 this.localButton.draw();
                 this.onlineButton.draw();
+                this.loadButton.draw();
                 this.musicButton.draw();
                 this.imageSmoothingButton.draw();
                 this.finishButton.draw();
@@ -1192,6 +1276,7 @@ class Board {
             board.fullScreenButton.visible = false;
         }, 40, 40, false, false, false, false, false, { x: 722, y: 336, w: 256 * drawScale, h: 256 * drawScale });
         this.escapeConfirm = new Button([false, false], 5 + 49 * 2.5, 520, images.buttons.sprites[16], function () {
+            saveGame()
             board.getToMainMenuButton.selected = false;
             board.goToMainMenuButton.visible = false;
             board.escapeConfirm.visible = false;
@@ -1509,13 +1594,13 @@ class Board {
                 this.cardCloseButton.draw();
                 c.fillStyle = "black";
                 c.textAlign = "center";
-                c.font = 20 + "px Arcade";
+                c.font = 20/2 + "px Arcade";
 
                 if (this.currentCard.owner !== undefined) {
                     if (this.currentCard.piece.type !== "utility" && this.currentCard.piece.type !== "station") {
-                        c.fillText("Ägare: " + this.currentCard.owner.name, 985, 368)
+                        c.fillText("Ägare: " + this.currentCard.owner.name, 985/2, 368/2)
                     } else {
-                        c.fillText("Ägare: " + this.currentCard.owner.name, 985, 415)
+                        c.fillText("Ägare: " + this.currentCard.owner.name, 985/2, 415/2)
                     }
 
                     if (players[Api.online ? Api.currentPlayer : turn].bot === undefined) this.cardCloseButton.visible = true;
