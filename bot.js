@@ -575,3 +575,33 @@ function testBuyProperty(player) {
         bP.level = lowest + (Math.random() > 0.5 ? 1 : 0)
     }
 }
+
+`
+- ( rentStation + allSTATION - 1    *  (före rent - nya rent)
+
+rentStation = 25 * Math.pow(2, ownedStations(this.player).length - 1)
+allStation = ownedStations(this.player).length - 1
+föreRent = 25 * Math.pow(2, ownedStations(this.player).length - 1)
+nyaRent = 25 * Math.pow(2, ownedStations(this.player).length - 1) * Math.pow(2, -1)
+
+- (
+    25 * Math.pow(2, ownedStations(this.player).length - 1) + 
+    (ownedStations(this.player).length - 1) * (
+        25 * Math.pow(2, ownedStations(this.player).length - 1) -
+        25 * Math.pow(2, ownedStations(this.player).length - 1) * Math.pow(2, -1)
+    )
+)
+
+- (
+    25 * Math.pow(2, ownedStations(this.player).length - 1) + 
+    (ownedStations(this.player).length - 1) * (
+        25 * Math.pow(2, ownedStations(this.player).length - 1) * (1 - 1 / 2)
+    )
+)
+
+25 * Math.pow(2, ownedStations(this.player).length - 1) * (
+        (ownedStations(this.player).length) / 2)
+25 * (2^a-2) * a
+
+
+        `
