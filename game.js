@@ -734,6 +734,8 @@ class MainMenu {
         this.draw = function () {
             if (this.current) {
                 drawRotatedImageFromSpriteSheet(0, 0, 981 * drawScale, 552 * drawScale, images.mainMenu.sprites[0], 0, 0, 0, 0, 981, 552)
+
+                this.loadButton.disabled = !localStorage.game;
                 this.musicButton.selected = musicVolume === 0 ? true : false;
                 this.localButton.visible = true;
                 this.onlineButton.visible = true;
