@@ -376,24 +376,25 @@ class Bot{
         if (bP.level > 0) { return bP.piece.rent[bP.level] - bP.piece.rent[bP.level - 1] }
         
         // If group > Not Group all places half income
-        let loss = 0
         if (bP.piece.group) {
             let owned = ownedGroup(this.player, bP.piece.group)
 
             if (!hasGroup(this.player, bP.piece.group)) { return getPieceRent(bP, 7, null) }
 
+            let loss = 0
             for (let boardPiece of owned) {
                 if (boardPiece === bP) {
                     loss += 2 * boardPiece.piece.rent
                 } else { loss += boardPiece.piece.rent }
             }
+            return loss
         } else if (bP.piece.type === 'station') {
             return 25 * Math.pow(2, ownedStations(this.player).length - 1)
 
         } else if (bP.piece.type === 'utility') {
             return steps * Math.pow(4, ownedUtility(this.player))
         }
-        return loss
+        return new Error("How Did We Get Here?")
     }
 
     async bidOnAuction() {
