@@ -295,7 +295,6 @@ function loadGame(){
             players[i].ownedPlaces.push(board.boardPieces[e])
             board.boardPieces[e].owner = players[i]
         })
-        console.log(players[i].ownedPlaces)
     }
     for (i = 0; i < gameToLoad.players.length; i++) {
         if(gameToLoad.players[i].inDebtTo !== undefined){
@@ -307,7 +306,13 @@ function loadGame(){
 
     board.textsize = measureText({ font: "Arcade", text: "Just nu: " + gameToLoad.players[turn].name });
 
-    players.forEach(e => e.playerBorder.init())
+    players.forEach(e => {
+        e.playerBorder.init();
+        if(e.inJail === true){
+            board.prisonExtra.playerStep(true,e)
+        }
+    })
+    
 
     menus[0].current = false;
     menus[0].current = false;
