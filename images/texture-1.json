@@ -1,24 +1,24 @@
 {
   "frames": [
     {
-      "filename": "community card and chance card/gatillstartc.png",
+      "filename": "Cards/lightbluecard3.png",
       "frame": {
         "x": 1,
         "y": 1,
-        "w": 512,
-        "h": 256
+        "w": 256,
+        "h": 324
       },
       "rotated": false,
       "trimmed": false,
       "spriteSourceSize": {
         "x": 0,
         "y": 0,
-        "w": 512,
-        "h": 256
+        "w": 256,
+        "h": 324
       },
       "sourceSize": {
-        "w": 512,
-        "h": 256
+        "w": 256,
+        "h": 324
       },
       "pivot": {
         "x": 0.5,
@@ -26,24 +26,24 @@
       }
     },
     {
-      "filename": "community card and chance card/lamnafinkangratis.png",
+      "filename": "Cards/mortgageoverlay.png",
       "frame": {
-        "x": 515,
+        "x": 259,
         "y": 1,
-        "w": 512,
-        "h": 256
+        "w": 256,
+        "h": 324
       },
       "rotated": false,
       "trimmed": false,
       "spriteSourceSize": {
         "x": 0,
         "y": 0,
-        "w": 512,
-        "h": 256
+        "w": 256,
+        "h": 324
       },
       "sourceSize": {
-        "w": 512,
-        "h": 256
+        "w": 256,
+        "h": 324
       },
       "pivot": {
         "x": 0.5,
@@ -51,24 +51,349 @@
       }
     },
     {
-      "filename": "community card and chance card/lamnafinkangratisc.png",
+      "filename": "Cards/northstation.png",
       "frame": {
-        "x": 1029,
+        "x": 517,
         "y": 1,
-        "w": 512,
-        "h": 256
+        "w": 256,
+        "h": 324
       },
       "rotated": false,
       "trimmed": false,
       "spriteSourceSize": {
         "x": 0,
         "y": 0,
-        "w": 512,
-        "h": 256
+        "w": 256,
+        "h": 324
       },
       "sourceSize": {
-        "w": 512,
-        "h": 256
+        "w": 256,
+        "h": 324
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "Cards/orangecard1.png",
+      "frame": {
+        "x": 775,
+        "y": 1,
+        "w": 256,
+        "h": 324
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 256,
+        "h": 324
+      },
+      "sourceSize": {
+        "w": 256,
+        "h": 324
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "Cards/orangecard2.png",
+      "frame": {
+        "x": 1033,
+        "y": 1,
+        "w": 256,
+        "h": 324
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 256,
+        "h": 324
+      },
+      "sourceSize": {
+        "w": 256,
+        "h": 324
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "Cards/orangecard3.png",
+      "frame": {
+        "x": 1291,
+        "y": 1,
+        "w": 256,
+        "h": 324
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 256,
+        "h": 324
+      },
+      "sourceSize": {
+        "w": 256,
+        "h": 324
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "Cards/pinkcard1.png",
+      "frame": {
+        "x": 1549,
+        "y": 1,
+        "w": 256,
+        "h": 324
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 256,
+        "h": 324
+      },
+      "sourceSize": {
+        "w": 256,
+        "h": 324
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "Cards/pinkcard2.png",
+      "frame": {
+        "x": 1,
+        "y": 327,
+        "w": 256,
+        "h": 324
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 256,
+        "h": 324
+      },
+      "sourceSize": {
+        "w": 256,
+        "h": 324
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "Cards/pinkcard3.png",
+      "frame": {
+        "x": 259,
+        "y": 327,
+        "w": 256,
+        "h": 324
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 256,
+        "h": 324
+      },
+      "sourceSize": {
+        "w": 256,
+        "h": 324
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "Cards/redcard1.png",
+      "frame": {
+        "x": 517,
+        "y": 327,
+        "w": 256,
+        "h": 324
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 256,
+        "h": 324
+      },
+      "sourceSize": {
+        "w": 256,
+        "h": 324
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "Cards/redcard2.png",
+      "frame": {
+        "x": 775,
+        "y": 327,
+        "w": 256,
+        "h": 324
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 256,
+        "h": 324
+      },
+      "sourceSize": {
+        "w": 256,
+        "h": 324
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "Cards/redcard3.png",
+      "frame": {
+        "x": 1033,
+        "y": 327,
+        "w": 256,
+        "h": 324
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 256,
+        "h": 324
+      },
+      "sourceSize": {
+        "w": 256,
+        "h": 324
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "Cards/southstation.png",
+      "frame": {
+        "x": 1291,
+        "y": 327,
+        "w": 256,
+        "h": 324
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 256,
+        "h": 324
+      },
+      "sourceSize": {
+        "w": 256,
+        "h": 324
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "Cards/waterworkscard.png",
+      "frame": {
+        "x": 1549,
+        "y": 327,
+        "w": 256,
+        "h": 324
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 256,
+        "h": 324
+      },
+      "sourceSize": {
+        "w": 256,
+        "h": 324
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "Cards/yellowcard1.png",
+      "frame": {
+        "x": 1,
+        "y": 653,
+        "w": 256,
+        "h": 324
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 256,
+        "h": 324
+      },
+      "sourceSize": {
+        "w": 256,
+        "h": 324
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "Cards/yellowcard2.png",
+      "frame": {
+        "x": 259,
+        "y": 653,
+        "w": 256,
+        "h": 324
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 256,
+        "h": 324
+      },
+      "sourceSize": {
+        "w": 256,
+        "h": 324
       },
       "pivot": {
         "x": 0.5,
@@ -78,8 +403,8 @@
     {
       "filename": "Cards/yellowcard3.png",
       "frame": {
-        "x": 1543,
-        "y": 1,
+        "x": 517,
+        "y": 653,
         "w": 256,
         "h": 324
       },
@@ -94,31 +419,6 @@
       "sourceSize": {
         "w": 256,
         "h": 324
-      },
-      "pivot": {
-        "x": 0.5,
-        "y": 0.5
-      }
-    },
-    {
-      "filename": "static/insideboard.png",
-      "frame": {
-        "x": 1,
-        "y": 259,
-        "w": 572,
-        "h": 286
-      },
-      "rotated": false,
-      "trimmed": false,
-      "spriteSourceSize": {
-        "x": 0,
-        "y": 0,
-        "w": 572,
-        "h": 286
-      },
-      "sourceSize": {
-        "w": 572,
-        "h": 286
       },
       "pivot": {
         "x": 0.5,
@@ -128,8 +428,8 @@
     {
       "filename": "menus/auctionmenubackground.png",
       "frame": {
-        "x": 575,
-        "y": 259,
+        "x": 775,
+        "y": 653,
         "w": 267,
         "h": 324
       },
@@ -153,8 +453,8 @@
     {
       "filename": "dices/dices.png",
       "frame": {
-        "x": 844,
-        "y": 259,
+        "x": 1044,
+        "y": 653,
         "w": 256,
         "h": 384
       },
@@ -178,8 +478,8 @@
     {
       "filename": "static/realbackground.png",
       "frame": {
-        "x": 1102,
-        "y": 327,
+        "x": 1,
+        "y": 979,
         "w": 832,
         "h": 416
       },
@@ -203,8 +503,8 @@
     {
       "filename": "menus/tradingmenu.png",
       "frame": {
-        "x": 1,
-        "y": 645,
+        "x": 835,
+        "y": 1039,
         "w": 910,
         "h": 512
       },
@@ -228,8 +528,8 @@
     {
       "filename": "menus/lobbymenu.png",
       "frame": {
-        "x": 913,
-        "y": 745,
+        "x": 1,
+        "y": 1553,
         "w": 981,
         "h": 552
       },
@@ -253,8 +553,8 @@
     {
       "filename": "menus/mainmenu.png",
       "frame": {
-        "x": 1,
-        "y": 1299,
+        "x": 984,
+        "y": 1553,
         "w": 981,
         "h": 552
       },
@@ -282,8 +582,8 @@
     "image": "texture-1.png",
     "format": "RGBA8888",
     "size": {
-      "w": 1935,
-      "h": 1852
+      "w": 1966,
+      "h": 2106
     },
     "scale": 1
   }
