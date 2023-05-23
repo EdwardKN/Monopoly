@@ -239,6 +239,7 @@ function startGame(playerlist, settings) {
     board = new Board();
     playtime = 0;
 
+
     board.settings = settings;
     let tmpArray = [];
     for (i = 0; i < playerlist.length; i++) {
@@ -252,7 +253,7 @@ function startGame(playerlist, settings) {
     }
     turn = randomIntFromRange(0, playerlist.length - 1)
     board.textsize = measureText({ font: "Arcade", text: "Just nu: " + players[turn].name });
-    players.forEach(e => e.playerBorder.init())
+    players.forEach(e => { e.playerBorder.init(); board.boardPieces[0].currentPlayer.push(e) })
     Bot.boardInfo = players.reduce((dict, player, i) => { dict[i] = player.ownedPlaces; return dict }, {})
 }
 
@@ -345,7 +346,7 @@ function loadGame(theGameToLoad) {
             board.boardPieces[e.steps].playerStep(true, e)
         }
     })
-    board.boardPieces[0].currentPlayer = []
+
 
 
 
@@ -3713,7 +3714,6 @@ class Player {
 
         }
 
-        board.boardPieces[0].currentPlayer.push(this);
     }
 }
 
