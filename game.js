@@ -681,6 +681,7 @@ class LoadingMenu {
             menus[0].volume.percentage = musicVolume
             self.backButton.visible = false;
             self.startButton.visible = false;
+            self.deleteSave.visible = false;
             self.buttons.forEach(e => e.visible = false)
         }, 325, 60, false, false, false, false, false, false)
 
@@ -689,6 +690,7 @@ class LoadingMenu {
                 if (e.selected === true) {
                     self.games = JSON.parse(localStorage.getItem("games")).reverse()
                     menus[2].current = false;
+                    self.deleteSave.visible = false;
                     self.backButton.visible = false;
                     self.startButton.visible = false;
                     self.buttons.forEach(e => e.visible = false)
@@ -696,6 +698,24 @@ class LoadingMenu {
                 }
             })
         }, 97 * 2, 80)
+        this.deleteSave = new Button([false, false], 40, 650 + 20, images.buttons.sprites[2], function () {
+            self.buttons.forEach(function (e, i) {
+                if (e.selected === true) {
+                    self.games = JSON.parse(localStorage.getItem("games")).reverse()
+
+                    if (self.games.length == 1) {
+                        localStorage.removeItem("games")
+                        self.backButton.onClick();
+                    } else {
+                        self.games = self.games.reverse().splice(i, 1).reverse()
+                        localStorage.setItem("games", JSON.stringify(self.games))
+                        self.init();
+                    }
+
+
+                }
+            })
+        }, 40, 40)
 
 
         this.buttons = [];
@@ -710,15 +730,21 @@ class LoadingMenu {
 
 
                 drawRotatedImageFromSpriteSheet(0, 0, 981 * drawScale, 552 * drawScale, images.mainMenu.sprites[3], 0, 0, 0, 0, 981, 552)
+                this.deleteSave.disabled = true;
+
                 self.buttons.forEach(function (e, i) {
                     if (e.selected) {
                         tmp = true;
                         self.screenshot.src = self.games[i].screenshot
-                        c.drawImage(self.screenshot, 0, 80 * scale, canvas.width / 2, canvas.height / 2)
+                        c.drawImage(self.screenshot, 0, canvas.height / 4, canvas.width / 2, canvas.height / 2)
                         c.lineWidth = scale
-                        c.strokeRect(0, 80 * scale, canvas.width / 2, canvas.height / 2)
+                        c.strokeRect(0, canvas.height / 4, canvas.width / 2, canvas.height / 2)
+                        self.deleteSave.disabled = false;
                     }
                 })
+                this.deleteSave.visible = true;
+                this.deleteSave.draw();
+
                 this.startButton.disabled = !tmp;
                 this.backButton.visible = true;
                 this.backButton.draw();
