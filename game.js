@@ -257,7 +257,7 @@ function startGame(playerlist, settings) {
 }
 
 function saveGame() {
-    let gameToSave = { players: [], settings: board.settings, turn: turn, currentDay: new Date().today(), currentTime: new Date().timeNow(), playtime:playtime,screenshot:canvas.toDataURL()};
+    let gameToSave = { players: [], settings: board.settings, turn: turn, currentDay: new Date().today(), currentTime: new Date().timeNow(), playtime: playtime, screenshot: canvas.toDataURL() };
     let savedGames = JSON.parse(localStorage.getItem("games"))
 
     if (savedGames == undefined || savedGames == null) {
@@ -699,7 +699,7 @@ class LoadingMenu {
 
 
         this.buttons = [];
-        if(localStorage.getItem("games") != null){
+        if (localStorage.getItem("games") != null) {
             this.games = JSON.parse(localStorage.getItem("games")).reverse();
         }
         this.screenshot = new Image()
@@ -707,16 +707,16 @@ class LoadingMenu {
         this.draw = function () {
             if (this.current) {
                 let tmp = false;
-                
+
 
                 drawRotatedImageFromSpriteSheet(0, 0, 981 * drawScale, 552 * drawScale, images.mainMenu.sprites[3], 0, 0, 0, 0, 981, 552)
                 self.buttons.forEach(function (e, i) {
                     if (e.selected) {
                         tmp = true;
                         self.screenshot.src = self.games[i].screenshot
-                        c.drawImage(self.screenshot,0,80*scale,canvas.width/2,canvas.height/2)
+                        c.drawImage(self.screenshot, 0, 80 * scale, canvas.width / 2, canvas.height / 2)
                         c.lineWidth = scale
-                        c.strokeRect(0,80*scale,canvas.width/2,canvas.height/2)
+                        c.strokeRect(0, 80 * scale, canvas.width / 2, canvas.height / 2)
                     }
                 })
                 this.startButton.disabled = !tmp;
@@ -732,7 +732,7 @@ class LoadingMenu {
         }
 
         this.init = function () {
-            if(localStorage.getItem("games") != null){
+            if (localStorage.getItem("games") != null) {
                 this.games = JSON.parse(localStorage.getItem("games")).reverse()
                 this.buttons = [];
                 this.games.forEach(function (e, i) {
@@ -1410,8 +1410,8 @@ class Board {
                 intervals.forEach(e => clearInterval(e));
                 timeouts = [];
                 board = undefined;
-            }, 10);
-            
+            }, 100);
+
         }, 40, 40, false, false, false, false, false,);
 
         this.getToMainMenuButton = new Button([true, false], 84, 700, images.buttons.sprites[17], function () {
@@ -1614,7 +1614,7 @@ class Board {
             if (this.win === false) {
 
                 this.showDice()
-                if(this.saving){
+                if (this.saving) {
                     this.rollDiceButton.visible = false;
                     this.nextPlayerButton.visible = false;
                 }
@@ -3754,28 +3754,28 @@ Date.prototype.timeNow = function () {
 }
 
 // gammal funktion från sudoku
-function timeToText(value){
+function timeToText(value) {
     returnValue = ""
-    if(Math.floor(value/6000) > 9){
-        returnValue += Math.floor(value/6000) + ":" 
-    }else if(Math.floor(value/6000) > 0){
-        returnValue += "0"+Math.floor(value/6000) + ":" 
-    }else{
-        returnValue += "00:" 
+    if (Math.floor(value / 6000) > 9) {
+        returnValue += Math.floor(value / 6000) + ":"
+    } else if (Math.floor(value / 6000) > 0) {
+        returnValue += "0" + Math.floor(value / 6000) + ":"
+    } else {
+        returnValue += "00:"
     }
-    if(Math.floor(value/100)%60 > 9){
-        returnValue += Math.floor(value/100)%60 + "." 
-    }else if(Math.floor(value/100)%60 > 0){
-        returnValue += "0"+Math.floor(value/100)%60 + "." 
-    }else{
-        returnValue += "00." 
+    if (Math.floor(value / 100) % 60 > 9) {
+        returnValue += Math.floor(value / 100) % 60 + "."
+    } else if (Math.floor(value / 100) % 60 > 0) {
+        returnValue += "0" + Math.floor(value / 100) % 60 + "."
+    } else {
+        returnValue += "00."
     }
-    if(Math.floor(value)%100 > 9){
-        returnValue += Math.floor(value%100)
-    }else if(Math.floor(value)%100 > 0){
-        returnValue += "0"+Math.floor(value%100)
-    }else{
-        returnValue += "00" 
+    if (Math.floor(value) % 100 > 9) {
+        returnValue += Math.floor(value % 100)
+    } else if (Math.floor(value) % 100 > 0) {
+        returnValue += "0" + Math.floor(value % 100)
+    } else {
+        returnValue += "00"
     }
     return returnValue;
 }
