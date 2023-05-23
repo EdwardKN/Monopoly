@@ -287,6 +287,7 @@ function saveGame() {
         tmpPlayer.steps = player.steps;
         tmpPlayer.timeInJail = player.timeInJail;
         tmpPlayer.ownedPlaces = player.ownedPlaces.map(e => e = e.n)
+        tmpPlayer.ownedPlacesmortgaged = player.ownedPlaces.map(e => e = e.mortgaged)
         gameToSave.players.push(tmpPlayer);
     })
     let tmp = false;
@@ -323,8 +324,9 @@ function loadGame(theGameToLoad) {
         players[i].rolls = gameToLoad.players[i].rolls
         players[i].steps = gameToLoad.players[i].steps
         players[i].timeInJail = gameToLoad.players[i].timeInJail
-        gameToLoad.players[i].ownedPlaces.forEach(e => {
+        gameToLoad.players[i].ownedPlaces.forEach(function(e,g) {
             players[i].ownedPlaces.push(board.boardPieces[e])
+            board.boardPieces[e].mortgaged = gameToLoad.players[i].ownedPlacesmortgaged[g];
             board.boardPieces[e].owner = players[i]
         })
     }
@@ -791,6 +793,7 @@ class MainMenu {
             self.volume.visible = false;
             self.imageSmoothingButton.visible = false;
             self.finishButton.visible = false;
+            self.loadButton.visible = false;
         }, 195, 52, false, false, true)
         this.loadButton = new Button([false, false], -322, 460, images.buttons.sprites[22], function () {
             self.current = false;
@@ -803,6 +806,7 @@ class MainMenu {
             self.volume.visible = false;
             self.imageSmoothingButton.visible = false;
             self.finishButton.visible = false;
+            self.loadButton.visible = false;
         }, 195, 52, false, false, true)
 
         this.onlineButton = new Button([false, false], -322, 540, images.mainMenu.sprites[2], function () {
@@ -814,6 +818,7 @@ class MainMenu {
             self.volume.visible = false;
             self.imageSmoothingButton.visible = false;
             self.finishButton.visible = false;
+            self.loadButton.visible = false;
             showOnlineLobby();
         }, 195, 52, false, false, true)
 
