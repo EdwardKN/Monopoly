@@ -23,6 +23,12 @@ var musicOn = musicVolume === 0 ? 1 : 0;
 var timeouts = [];
 var intervals = [];
 
+var playtime = 0;
+
+setInterval(() => {
+    playtime++;
+}, 10);
+
 window.onload = fixCanvas;
 
 window.addEventListener("resize", fixCanvas)
@@ -231,6 +237,7 @@ function playSound(sound, volume, repeat) {
 };
 function startGame(playerlist, settings) {
     board = new Board();
+    playtime = 0;
 
     board.settings = settings;
     let tmpArray = [];
@@ -250,7 +257,7 @@ function startGame(playerlist, settings) {
 }
 
 function saveGame() {
-    let gameToSave = { players: [], settings: board.settings, turn: turn, currentDay: new Date().today(), currentTime: new Date().timeNow() };
+    let gameToSave = { players: [], settings: board.settings, turn: turn, currentDay: new Date().today(), currentTime: new Date().timeNow(), playtime:playtime};
     let savedGames = JSON.parse(localStorage.getItem("games"))
 
     if (savedGames == undefined || savedGames == null) {
@@ -721,7 +728,7 @@ class LoadingMenu {
             games.forEach(function (e, i) {
                 if (i < 10) {
                     self.buttons.push(new Button([true, false], 100, 220 + 50 * i, images.buttons.sprites[10], function () {
-                    }, 500, 40, false, false, false, false, false, { x: 100 * 2 + 720, y: 40 + 50 * 2 * i, w: 500 * 2, h: 40 * 2, onlySelected: true }, games[i].currentDay + "  " + games[i].currentTime, 42, "black"))
+                    }, 500, 40, false, false, false, false, false, { x: 100 * 2 + 720, y: 40 + 50 * 2 * i, w: 500 * 2, h: 40 * 2, onlySelected: true }, games[i].currentDay + "  " + games[i].currentTime + "   Speltid:" + timeToText((games[i].playtime)), 42, "black"))
                 }
             })
         }
@@ -3726,6 +3733,33 @@ Date.prototype.today = function () {
 }
 Date.prototype.timeNow = function () {
     return ((this.getHours() < 10) ? "0" : "") + this.getHours() + ":" + ((this.getMinutes() < 10) ? "0" : "") + this.getMinutes() + ":" + ((this.getSeconds() < 10) ? "0" : "") + this.getSeconds();
+}
+
+// gammal funktion från sudoku
+function timeToText(value){
+    returnValue = ""
+    if(Math.floor(value/6000) > 9){
+        returnValue += Math.floor(value/6000) + ":" 
+    }else if(Math.floor(value/6000) > 0){
+        returnValue += "0"+Math.floor(value/6000) + ":" 
+    }else{
+        returnValue += "00:" 
+    }
+    if(Math.floor(value/100)%60 > 9){
+        returnValue += Math.floor(value/100)%60 + "." 
+    }else if(Math.floor(value/100)%60 > 0){
+        returnValue += "0"+Math.floor(value/100)%60 + "." 
+    }else{
+        returnValue += "00." 
+    }
+    if(Math.floor(value)%100 > 9){
+        returnValue += Math.floor(value%100)
+    }else if(Math.floor(value)%100 > 0){
+        returnValue += "0"+Math.floor(value%100)
+    }else{
+        returnValue += "00" 
+    }
+    return returnValue;
 }
 
 init();
