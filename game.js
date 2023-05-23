@@ -257,7 +257,7 @@ function startGame(playerlist, settings) {
 }
 
 function saveGame() {
-    let gameToSave = { players: [], settings: board.settings, turn: turn, currentDay: new Date().today(), currentTime: new Date().timeNow(), playtime:playtime};
+    let gameToSave = { players: [], settings: board.settings, turn: turn, currentDay: new Date().today(), currentTime: new Date().timeNow(), playtime:playtime,screenshot:canvas.toDataURL()};
     let savedGames = JSON.parse(localStorage.getItem("games"))
 
     if (savedGames == undefined || savedGames == null) {
@@ -675,7 +675,7 @@ class LoadingMenu {
         this.current = false;
         let self = this;
 
-        this.backButton = new Button([false, false], -337, 220, images.buttons.sprites[12], function () {
+        this.backButton = new Button([false, false], -280, 220, images.buttons.sprites[12], function () {
             self.current = false;
             menus[0].current = true;
             menus[0].volume.percentage = musicVolume
@@ -684,33 +684,40 @@ class LoadingMenu {
             self.buttons.forEach(e => e.visible = false)
         }, 325, 60, false, false, false, false, false, false)
 
-        this.startButton = new Button([false, false], -300, 650, images.buttons.sprites[11], function () {
+        this.startButton = new Button([false, false], -213, 650, images.buttons.sprites[11], function () {
             self.buttons.forEach(function (e, i) {
                 if (e.selected === true) {
-                    let games = JSON.parse(localStorage.getItem("games")).reverse()
+                    self.games = JSON.parse(localStorage.getItem("games")).reverse()
                     menus[2].current = false;
                     self.backButton.visible = false;
                     self.startButton.visible = false;
                     self.buttons.forEach(e => e.visible = false)
-                    loadGame(games.length - i - 1)
+                    loadGame(self.games.length - i - 1)
                 }
             })
         }, 97 * 2, 80)
 
 
         this.buttons = [];
+        this.games = JSON.parse(localStorage.getItem("games")).reverse();
+        this.screenshot = new Image()
 
         this.draw = function () {
             if (this.current) {
                 let tmp = false;
+                
+
+                drawRotatedImageFromSpriteSheet(0, 0, 981 * drawScale, 552 * drawScale, images.mainMenu.sprites[3], 0, 0, 0, 0, 981, 552)
                 self.buttons.forEach(function (e, i) {
                     if (e.selected) {
                         tmp = true;
+                        self.screenshot.src = self.games[i].screenshot
+                        c.drawImage(self.screenshot,0,80*scale,canvas.width/2,canvas.height/2)
+                        c.lineWidth = scale
+                        c.strokeRect(0,80*scale,canvas.width/2,canvas.height/2)
                     }
                 })
                 this.startButton.disabled = !tmp;
-
-                drawRotatedImageFromSpriteSheet(0, 0, 981 * drawScale, 552 * drawScale, images.mainMenu.sprites[3], 0, 0, 0, 0, 981, 552)
                 this.backButton.visible = true;
                 this.backButton.draw();
                 this.buttons.forEach(e => {
@@ -723,12 +730,12 @@ class LoadingMenu {
         }
 
         this.init = function () {
-            let games = JSON.parse(localStorage.getItem("games")).reverse()
+            this.games = JSON.parse(localStorage.getItem("games")).reverse()
             this.buttons = [];
-            games.forEach(function (e, i) {
+            this.games.forEach(function (e, i) {
                 if (i < 10) {
-                    self.buttons.push(new Button([true, false], 100, 220 + 50 * i, images.buttons.sprites[10], function () {
-                    }, 500, 40, false, false, false, false, false, { x: 100 * 2 + 720, y: 40 + 50 * 2 * i, w: 500 * 2, h: 40 * 2, onlySelected: true }, games[i].currentDay + "  " + games[i].currentTime + "   Speltid:" + timeToText((games[i].playtime)), 42, "black"))
+                    self.buttons.push(new Button([true, false], 140, 220 + 50 * i, images.buttons.sprites[23], function () {
+                    }, 450, 40, false, false, false, false, false, { x: 100 * 2 + 720, y: 40 + 50 * 2 * i, w: 500 * 2, h: 40 * 2, onlySelected: true }, self.games[i].currentDay + " " + self.games[i].currentTime + "  Speltid:" + timeToText((self.games[i].playtime)), 38, "black"))
                 }
             })
         }
@@ -1014,8 +1021,6 @@ function update() {
     menus.forEach(e => e.draw())
 
     renderC.drawImage(canvas, 0, 0, renderCanvas.width, renderCanvas.height)
-
-    c.fillRect(mouse.x, mouse.y, 10, 10)
 }
 
 function showBackground() {
@@ -1340,6 +1345,7 @@ class Board {
         this.currentShowingCard = undefined;
         let self = this;
         this.textsize = 0;
+        this.saving = false;
         this.musicButton = new Button([true, false], 5 + 49 * 4, 530 + 40, images.buttons.sprites[14], function () {
             if (self.musicButton.selected) {
                 document.cookie = `musicOn=${musicVolume};Expires=Sun, 22 oct 2030 08:00:00 UTC;`;
@@ -1380,7 +1386,7 @@ class Board {
             board.fullScreenButton.visible = false;
         }, 40, 40, false, false, false, false, false, { x: 722, y: 336, w: 256 * drawScale, h: 256 * drawScale });
         this.escapeConfirm = new Button([false, false], 5 + 49 * 2.5, 520, images.buttons.sprites[16], function () {
-            saveGame()
+            self.saving = true;
             board.getToMainMenuButton.selected = false;
             board.goToMainMenuButton.visible = false;
             board.escapeConfirm.visible = false;
@@ -1389,15 +1395,19 @@ class Board {
             board.musicButton.visible = false;
             board.volume.visible = false;
             board.imageSmoothingButton.visible = false;
-            players.forEach(e => buttons.splice(buttons.indexOf(e.playerBorder.button), 1))
-            players = [];
-            menus[0].current = true;
-            menus[0].volume.percentage = musicVolume
-            board = undefined;
-            if (Api.online) Api.disconnect();
-            timeouts.forEach(e => clearTimeout(e));
-            intervals.forEach(e => clearInterval(e));
-            timeouts = [];
+            setTimeout(() => {
+                saveGame()
+                players.forEach(e => buttons.splice(buttons.indexOf(e.playerBorder.button), 1))
+                players = [];
+                menus[0].current = true;
+                menus[0].volume.percentage = musicVolume
+                if (Api.online) Api.disconnect();
+                timeouts.forEach(e => clearTimeout(e));
+                intervals.forEach(e => clearInterval(e));
+                timeouts = [];
+                board = undefined;
+            }, 10);
+            
         }, 40, 40, false, false, false, false, false,);
 
         this.getToMainMenuButton = new Button([true, false], 84, 700, images.buttons.sprites[17], function () {
@@ -1600,6 +1610,10 @@ class Board {
             if (this.win === false) {
 
                 this.showDice()
+                if(this.saving){
+                    this.rollDiceButton.visible = false;
+                    this.nextPlayerButton.visible = false;
+                }
                 this.rollDiceButton.draw();
                 this.nextPlayerButton.draw();
                 this.boardPieces.forEach(g => g.drawHouses())
