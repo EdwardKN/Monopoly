@@ -341,8 +341,11 @@ function loadGame(theGameToLoad) {
         e.playerBorder.init();
         if (e.inJail === true) {
             board.prisonExtra.playerStep(true, e)
+        } else {
+            board.boardPieces[e.steps].playerStep(true, e)
         }
     })
+    board.boardPieces[0].currentPlayer = []
 
 
 
