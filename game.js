@@ -258,7 +258,7 @@ function startGame(playerlist, settings) {
 }
 
 function saveGame() {
-    let gameToSave = { players: [], settings: board.settings, turn: turn, currentDay: new Date().today(), currentTime: new Date().timeNow(), playtime: playtime, screenshot: canvas.toDataURL() };
+    let gameToSave = { players: [], settings: board.settings, turn: turn, freeParkingMoney:board.boardPieces[20].money,currentDay: new Date().today(), currentTime: new Date().timeNow(), playtime: playtime, screenshot: canvas.toDataURL() };
     let savedGames = JSON.parse(localStorage.getItem("games"))
 
     if (savedGames == undefined || savedGames == null) {
@@ -288,6 +288,7 @@ function saveGame() {
         tmpPlayer.timeInJail = player.timeInJail;
         tmpPlayer.ownedPlaces = player.ownedPlaces.map(e => e = e.n)
         tmpPlayer.ownedPlacesmortgaged = player.ownedPlaces.map(e => e = e.mortgaged)
+        tmpPlayer.ownedPlaceslevel = player.ownedPlaces.map(e => e = e.level)
         gameToSave.players.push(tmpPlayer);
     })
     let tmp = false;
@@ -327,6 +328,7 @@ function loadGame(theGameToLoad) {
         gameToLoad.players[i].ownedPlaces.forEach(function(e,g) {
             players[i].ownedPlaces.push(board.boardPieces[e])
             board.boardPieces[e].mortgaged = gameToLoad.players[i].ownedPlacesmortgaged[g];
+            board.boardPieces[e].level = gameToLoad.players[i].ownedPlaceslevel[g];
             board.boardPieces[e].owner = players[i]
         })
     }
@@ -348,6 +350,7 @@ function loadGame(theGameToLoad) {
             board.boardPieces[e.steps].playerStep(true, e)
         }
     })
+    board.boardPieces[20].money = gameToLoad.freeParkingMoney;
 
 
 
