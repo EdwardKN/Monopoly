@@ -249,8 +249,18 @@ function startGame(playerlist, settings) {
     Bot.boardInfo = players.reduce((dict, player, i) => { dict[i] = player.ownedPlaces; return dict }, {})
 }
 
-function saveGame(){
-    let gameToSave = {players:[],settings:board.settings,turn:turn};
+function saveGame() {
+    let gameToSave = { players: [], settings: board.settings, turn: turn, currentDay: new Date().today(), currentTime: new Date().timeNow() };
+    let savedGames = JSON.parse(localStorage.getItem("games"))
+
+    if (savedGames == undefined || savedGames == null) {
+        savedGames = [];
+    }
+    if (board.id === undefined) {
+        gameToSave.id = savedGames.length === 0 ? 0 : savedGames[savedGames.length - 1].id + 1
+    } else {
+        gameToSave.id = board.id;
+    }
 
     players.forEach(player => {
         let tmpPlayer = {};
@@ -271,12 +281,26 @@ function saveGame(){
         tmpPlayer.ownedPlaces = player.ownedPlaces.map(e => e = e.n)
         gameToSave.players.push(tmpPlayer);
     })
-    localStorage.setItem("game",JSON.stringify(gameToSave))
+    let tmp = false;
+    savedGames.forEach(function (e, i) {
+        if (e.id == gameToSave.id) {
+            tmp = true;
+            savedGames[i] = gameToSave;
+        }
+    })
+    if (tmp === false) {
+        savedGames.push(gameToSave);
+    }
+
+    localStorage.setItem("games", JSON.stringify(savedGames))
 }
 
-function loadGame(){
-    let gameToLoad = JSON.parse(localStorage.getItem("game"))    
+
+function loadGame(theGameToLoad) {
+    let gameToLoad = JSON.parse(localStorage.getItem("games"))[theGameToLoad]
+
     board = new Board();
+    board.id = gameToLoad.id;
 
     board.settings = gameToLoad.settings;
     for (i = 0; i < gameToLoad.players.length; i++) {
@@ -297,32 +321,24 @@ function loadGame(){
         })
     }
     for (i = 0; i < gameToLoad.players.length; i++) {
-        if(gameToLoad.players[i].inDebtTo !== undefined){
+        if (gameToLoad.players[i].inDebtTo !== undefined) {
             players[i].inDebtTo = players.filter(e => e.name == gameToLoad.players[i].inDebtTo)[0]
         }
     }
-    
+
     turn = gameToLoad.turn
 
     board.textsize = measureText({ font: "Arcade", text: "Just nu: " + gameToLoad.players[turn].name });
 
     players.forEach(e => {
         e.playerBorder.init();
-        if(e.inJail === true){
-            board.prisonExtra.playerStep(true,e)
+        if (e.inJail === true) {
+            board.prisonExtra.playerStep(true, e)
         }
     })
-    
 
-    menus[0].current = false;
-    menus[0].current = false;
-    menus[0].localButton.visible = false;
-    menus[0].onlineButton.visible = false;
-    menus[0].musicButton.visible = false;
-    menus[0].fullScreenButton.visible = false;
-    menus[0].volume.visible = false;
-    menus[0].imageSmoothingButton.visible = false;
-    menus[0].finishButton.visible = false;
+
+
 }
 
 
@@ -647,6 +663,64 @@ class LocalLobby {
         }
     }
 }
+class LoadingMenu {
+    constructor() {
+        this.current = false;
+        let self = this;
+
+        this.backButton = new Button([false, false], -337, 220, images.buttons.sprites[12], function () {
+            self.current = false;
+            menus[0].current = true;
+            menus[0].volume.percentage = musicVolume
+            self.backButton.visible = false;
+            self.startButton.visible = false;
+            self.buttons.forEach(e => e.visible = false)
+        }, 325, 60, false, false, false, false, false, false)
+
+        this.startButton = new Button([false, false], -300, 650, images.buttons.sprites[11], function () {
+            self.buttons.forEach(function (e, i) {
+                if (e.selected === true) {
+                    let games = JSON.parse(localStorage.getItem("games")).reverse()
+                    menus[2].current = false;
+                    self.backButton.visible = false;
+                    self.startButton.visible = false;
+                    self.buttons.forEach(e => e.visible = false)
+                    loadGame(games.length - i - 1)
+                }
+            })
+        }, 97 * 2, 80)
+
+
+        this.buttons = [];
+
+        this.draw = function () {
+            if (this.current) {
+                drawRotatedImageFromSpriteSheet(0, 0, 981 * drawScale, 552 * drawScale, images.mainMenu.sprites[3], 0, 0, 0, 0, 981, 552)
+                this.backButton.visible = true;
+                this.backButton.draw();
+                this.buttons.forEach(e => {
+                    e.visible = true;
+                    e.draw();
+                })
+                this.startButton.visible = true;
+                this.startButton.draw();
+            }
+        }
+
+        this.init = function () {
+            let games = JSON.parse(localStorage.getItem("games")).reverse()
+
+            games.forEach(function (e, i) {
+                if (i < 10) {
+                    self.buttons.push(new Button([true, false], 100, 220 + 50 * i, images.buttons.sprites[10], function () {
+                        self.buttons.forEach(g => g.selected = false)
+                        self.buttons[i].selected = true;
+                    }, 500, 40, false, false, false, false, false, false, games[i].currentDay + "  " + games[i].currentTime, 42, "black"))
+                }
+            })
+        }
+    }
+}
 
 class MainMenu {
     constructor() {
@@ -665,7 +739,16 @@ class MainMenu {
             self.finishButton.visible = false;
         }, 195, 52, false, false, true)
         this.loadButton = new Button([false, false], -322, 460, images.buttons.sprites[22], function () {
-            loadGame()
+            self.current = false;
+            menus[2].current = true;
+            menus[2].init();
+            self.localButton.visible = false;
+            self.onlineButton.visible = false;
+            self.musicButton.visible = false;
+            self.fullScreenButton.visible = false;
+            self.volume.visible = false;
+            self.imageSmoothingButton.visible = false;
+            self.finishButton.visible = false;
         }, 195, 52, false, false, true)
 
         this.onlineButton = new Button([false, false], -322, 540, images.mainMenu.sprites[2], function () {
@@ -740,7 +823,6 @@ class MainMenu {
             if (this.current) {
                 drawRotatedImageFromSpriteSheet(0, 0, 981 * drawScale, 552 * drawScale, images.mainMenu.sprites[0], 0, 0, 0, 0, 981, 552)
 
-                this.loadButton.disabled = !localStorage.game;
                 this.musicButton.selected = musicVolume === 0 ? true : false;
                 this.localButton.visible = true;
                 this.onlineButton.visible = true;
@@ -835,12 +917,13 @@ async function init() {
     if (fastLoad === false) {
         menus.push(new MainMenu())
         menus.push(new LocalLobby())
+        menus.push(new LoadingMenu())
         update();
 
     } else {
         menus.push(new MainMenu())
         menus.push(new LocalLobby())
-
+        menus.push(new LoadingMenu())
 
         menus[0].localButton.visible = false;
         menus[0].onlineButton.visible = false;
@@ -1225,7 +1308,8 @@ async function showOnlineLobby() {
 }
 
 class Board {
-    constructor() {
+    constructor(id) {
+        id = undefined;
         this.boardSettings = {
             freeParking: false
         }
@@ -1601,13 +1685,13 @@ class Board {
                 this.cardCloseButton.draw();
                 c.fillStyle = "black";
                 c.textAlign = "center";
-                c.font = 20/2 + "px Arcade";
+                c.font = 20 / 2 + "px Arcade";
 
                 if (this.currentCard.owner !== undefined) {
                     if (this.currentCard.piece.type !== "utility" && this.currentCard.piece.type !== "station") {
-                        c.fillText("Ägare: " + this.currentCard.owner.name, 985/2, 368/2)
+                        c.fillText("Ägare: " + this.currentCard.owner.name, 985 / 2, 368 / 2)
                     } else {
-                        c.fillText("Ägare: " + this.currentCard.owner.name, 985/2, 415/2)
+                        c.fillText("Ägare: " + this.currentCard.owner.name, 985 / 2, 415 / 2)
                     }
 
                     if (players[Api.online ? Api.currentPlayer : turn].bot === undefined) this.cardCloseButton.visible = true;
@@ -3188,7 +3272,7 @@ class CurrentCard {
             if (this.img === undefined) {
                 this.img = images.communityCards.sprites[0]
             }
-        }else if(this.type == "special"){
+        } else if (this.type == "special") {
             this.img = images.specialCards.sprites[this.card]
             if (this.img === undefined) {
                 this.img = images.specialCards.sprites[0]
@@ -3391,9 +3475,9 @@ class Player {
             }
         }
         this.goToPrison = function () {
-            if(this.steps >= 30 || this.steps < 10){
+            if (this.steps >= 30 || this.steps < 10) {
                 this.teleportTo(10, false, false);
-            }else{
+            } else {
                 this.teleportTo(-10, false, false);
             }
             this.inJail = true;
@@ -3476,8 +3560,8 @@ class Player {
                         }
                     }
                     if (to === 30) {
-                        board.currentShowingCard = new CurrentCard(1,"special")
-                        board.currentShowingCard.onContinue = function(){self.goToPrison()};
+                        board.currentShowingCard = new CurrentCard(1, "special")
+                        board.currentShowingCard.onContinue = function () { self.goToPrison() };
                     }
                     board.showDices = false;
 
@@ -3554,8 +3638,8 @@ class Player {
                         let self = this;
                         this.animateDice(dice1, dice2, function () {
                             if (self.numberOfRolls === 3 && dice1 === dice2) {
-                                board.currentShowingCard = new CurrentCard(2,"special")
-                                board.currentShowingCard.onContinue = function(){self.goToPrison();}
+                                board.currentShowingCard = new CurrentCard(2, "special")
+                                board.currentShowingCard.onContinue = function () { self.goToPrison(); }
                                 return;
                             }
                             board.animateDices = false;
@@ -3630,5 +3714,12 @@ const measureText = (() => {
         } : undefined;
     }
 })();
+
+Date.prototype.today = function () {
+    return ((this.getDate() < 10) ? "0" : "") + this.getDate() + "/" + (((this.getMonth() + 1) < 10) ? "0" : "") + (this.getMonth() + 1) + "/" + this.getFullYear();
+}
+Date.prototype.timeNow = function () {
+    return ((this.getHours() < 10) ? "0" : "") + this.getHours() + ":" + ((this.getMinutes() < 10) ? "0" : "") + this.getMinutes() + ":" + ((this.getSeconds() < 10) ? "0" : "") + this.getSeconds();
+}
 
 init();
