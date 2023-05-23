@@ -699,7 +699,9 @@ class LoadingMenu {
 
 
         this.buttons = [];
-        this.games = JSON.parse(localStorage.getItem("games")).reverse();
+        if(localStorage.getItem("games") != null){
+            this.games = JSON.parse(localStorage.getItem("games")).reverse();
+        }
         this.screenshot = new Image()
 
         this.draw = function () {
@@ -730,14 +732,16 @@ class LoadingMenu {
         }
 
         this.init = function () {
-            this.games = JSON.parse(localStorage.getItem("games")).reverse()
-            this.buttons = [];
-            this.games.forEach(function (e, i) {
-                if (i < 10) {
-                    self.buttons.push(new Button([true, false], 140, 220 + 50 * i, images.buttons.sprites[23], function () {
-                    }, 450, 40, false, false, false, false, false, { x: 100 * 2 + 720, y: 40 + 50 * 2 * i, w: 500 * 2, h: 40 * 2, onlySelected: true }, self.games[i].currentDay + " " + self.games[i].currentTime + "  Speltid:" + timeToText((self.games[i].playtime)), 38, "black"))
-                }
-            })
+            if(localStorage.getItem("games") != null){
+                this.games = JSON.parse(localStorage.getItem("games")).reverse()
+                this.buttons = [];
+                this.games.forEach(function (e, i) {
+                    if (i < 10) {
+                        self.buttons.push(new Button([true, false], 140, 220 + 50 * i, images.buttons.sprites[23], function () {
+                        }, 450, 40, false, false, false, false, false, { x: 100 * 2 + 720, y: 40 + 50 * 2 * i, w: 500 * 2, h: 40 * 2, onlySelected: true }, self.games[i].currentDay + " " + self.games[i].currentTime + "  Speltid:" + timeToText((self.games[i].playtime)), 38, "black"))
+                    }
+                })
+            }
         }
     }
 }
@@ -842,7 +846,7 @@ class MainMenu {
         this.draw = function () {
             if (this.current) {
                 drawRotatedImageFromSpriteSheet(0, 0, 981 * drawScale, 552 * drawScale, images.mainMenu.sprites[0], 0, 0, 0, 0, 981, 552)
-
+                this.loadButton.disabled = localStorage.getItem("games") == null
                 this.musicButton.selected = musicVolume === 0 ? true : false;
                 this.localButton.visible = true;
                 this.onlineButton.visible = true;
