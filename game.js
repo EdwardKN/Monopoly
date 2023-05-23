@@ -695,6 +695,14 @@ class LoadingMenu {
 
         this.draw = function () {
             if (this.current) {
+                let tmp = false;
+                self.buttons.forEach(function (e, i) {
+                    if (e.selected) {
+                        tmp = true;
+                    }
+                })
+                this.startButton.disabled = !tmp;
+
                 drawRotatedImageFromSpriteSheet(0, 0, 981 * drawScale, 552 * drawScale, images.mainMenu.sprites[3], 0, 0, 0, 0, 981, 552)
                 this.backButton.visible = true;
                 this.backButton.draw();
@@ -709,13 +717,11 @@ class LoadingMenu {
 
         this.init = function () {
             let games = JSON.parse(localStorage.getItem("games")).reverse()
-
+            this.buttons = [];
             games.forEach(function (e, i) {
                 if (i < 10) {
                     self.buttons.push(new Button([true, false], 100, 220 + 50 * i, images.buttons.sprites[10], function () {
-                        self.buttons.forEach(g => g.selected = false)
-                        self.buttons[i].selected = true;
-                    }, 500, 40, false, false, false, false, false, false, games[i].currentDay + "  " + games[i].currentTime, 42, "black"))
+                    }, 500, 40, false, false, false, false, false, { x: 100 * 2 + 720, y: 40 + 50 * 2 * i, w: 500 * 2, h: 40 * 2, onlySelected: true }, games[i].currentDay + "  " + games[i].currentTime, 42, "black"))
                 }
             })
         }
