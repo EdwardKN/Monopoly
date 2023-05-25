@@ -2016,7 +2016,7 @@ class Slider {
         this.release = function () {
             if (this.disabled) return;
             if (this.follow === true) {
-                this.percentage = (mouse.x - (this.x)) / (this.w - 4);
+                this.percentage = Math.max(Math.min((mouse.x - (this.x)) / (this.w - 4), 1), 0);
                 this.value = Math.round((((this.to - this.from) * this.percentage) + this.from) / this.steps) * this.steps;
                 this.onrelease();
             }
