@@ -1741,7 +1741,7 @@ class Board {
         this.confirmMenu = function () {
             this.getToMainMenuButton.visible = false;
             drawRotatedImageFromSpriteSheet(704, 336, 512, 512, images.exitMenu.sprites[0], 0, false, 0, 0, 256, 256)
-            this.musicButton.selected = musixcVolume === 0 ? true : false;
+            this.musicButton.selected = musicVolume === 0 ? true : false;
 
             this.goToMainMenuButton.visible = true;
             this.goToMainMenuButton.draw();
