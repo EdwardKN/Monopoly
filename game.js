@@ -2966,9 +2966,9 @@ class BoardPiece {
                 drawIsometricImage(this.x, this.y, this.img, false, 0, 0, 128, 64, this.offsetX, this.offsetY);
             }
             if (this.freeParking) {
-                c.font = 50 + "px Arcade"
+                c.font = 50 / 2 + "px Arcade"
                 c.fillStyle = "black"
-                c.fillText(this.money + "kr", 980, 120)
+                c.fillText(this.money + "kr", 980 / 2, 120 / 2)
             }
         }
         this.drawHouses = function () {
