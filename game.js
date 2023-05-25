@@ -1788,13 +1788,13 @@ class Board {
                         this.mortgageButton.draw();
                         this.mortgageButton.visible = true;
                         if (this.currentCard.piece.type === "utility" || this.currentCard.piece.type === "station") {
-                            this.sellButton.x = 150;
-                            this.mortgageButton.x = 60;
+                            this.sellButton.x = 140;
+                            this.mortgageButton.x = 50;
                             this.upgradeButton.visible = false;
                             this.downgradeButton.visible = false;
                         } else {
-                            this.sellButton.x = 200;
-                            this.mortgageButton.x = 150;
+                            this.sellButton.x = 190;
+                            this.mortgageButton.x = 140;
                             this.upgradeButton.draw()
                             this.upgradeButton.visible = true;
                             this.downgradeButton.draw();
