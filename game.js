@@ -1997,7 +1997,7 @@ class Slider {
                 this.hover = false;
             }
             if (this.follow === true) {
-                this.percentage = (mouse.x - (this.x)) / (this.w - 4);
+                this.percentage = Math.max(Math.min((mouse.x - (this.x)) / (this.w - 4), 1), 0);
             }
             if (this.percentage <= 0) {
                 this.percentage = 0;
