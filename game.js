@@ -1551,7 +1551,7 @@ class Board {
             board.downgradeButton.visible = false;
             board.getToMainMenuButton.visible = true;
         }, 18, 18, false, false, false, false, false, { x: 722, y: 236, w: 256 * drawScale, h: 324 * drawScale })
-        this.sellButton = new Button([false, false], 130, 580, images.buttons.sprites[2], function () {
+        this.sellButton = new Button([false, false], 100, 570, images.buttons.sprites[2], function () {
             if (board.currentCard.mortgaged === false) {
                 players[turn].money += board.currentCard.piece.price / 2
                 players[turn].checkDebt(board.boardPieces[20]);
@@ -1567,7 +1567,7 @@ class Board {
             board.downgradeButton.visible = false;
             board.getToMainMenuButton.visible = true;
         }, 40, 40, false, false, false, true);
-        this.mortgageButton = new Button([false, false], 80, 580, images.buttons.sprites[3], function () {
+        this.mortgageButton = new Button([false, false], 50, 570, images.buttons.sprites[3], function () {
             if (board.currentCard.mortgaged === true) {
                 if (Api.online) {
                     Api.tilePurchased(board.currentCard, (board.currentCard.piece.price / 2) * 1.1);
@@ -1592,7 +1592,7 @@ class Board {
                 players[turn].checkDebt(board.boardPieces[20]);
             }
         }, 40, 40);
-        this.upgradeButton = new Button([false, false], 75, 580, images.buttons.sprites[4], function () {
+        this.upgradeButton = new Button([false, false], 65, 570, images.buttons.sprites[4], function () {
             if (Api.online) {
                 Api.propertyChangedLevel(board.currentCard, board.currentCard.level + 1, true);
                 return;
@@ -1605,7 +1605,7 @@ class Board {
             }
             players[turn].playerBorder.startMoneyAnimation(-board.currentCard.piece.housePrice)
         }, 40, 40);
-        this.downgradeButton = new Button([false, false], 25, 580, images.buttons.sprites[5], function () {
+        this.downgradeButton = new Button([false, false], 15, 570, images.buttons.sprites[5], function () {
             if (Api.online) {
                 Api.propertyChangedLevel(board.currentCard, board.currentCard.level - 1, false);
                 return;
@@ -1615,7 +1615,7 @@ class Board {
             players[turn].playerBorder.startMoneyAnimation(board.currentCard.piece.housePrice / 2)
             players[turn].checkDebt(board.boardPieces[20]);
         }, 40, 40);
-        this.buyButton = new Button([false, false], 25, 580, images.buttons.sprites[6], function () {
+        this.buyButton = new Button([false, false], 15, 570, images.buttons.sprites[6], function () {
             if (Api.online) {
                 Api.tilePurchased(board.currentCard);
                 return;
@@ -1634,7 +1634,7 @@ class Board {
             board.auctionButton.visible = false;
         }, 97, 40);
 
-        this.auctionButton = new Button([false, false], 25 + 117, 580, images.buttons.sprites[8], function () {
+        this.auctionButton = new Button([false, false], 15 + 117, 570, images.buttons.sprites[8], function () {
             if (Api.online) {
                 Api.auctionShow(board.currentCard);
                 return;
