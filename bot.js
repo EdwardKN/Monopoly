@@ -72,9 +72,7 @@ class Bot{
 
     async update() {
         if (Bot.thinking) { return }
-        
         if (board.trade && board.trade.p2 === this.player) { await this.handleTrade('receive') }
-        // Bid And Start Auction
         if (board.auction && board.auction.playerlist[board.auction.turn] === this.player) {
             this.bidOnAuction()
             return
@@ -82,6 +80,7 @@ class Bot{
         // Check If Bots Turn And No Animations Are Playing
         if (this.player !== players[turn] || players.some(p => p.animationOffset !== 0) ||
             board.showDices || board.animateDices) { return }
+
         // Random Delay
         Bot.thinking = true
         await this.sleep(randomIntFromRange(speeds.botMin, speeds.botMax))
@@ -89,10 +88,7 @@ class Bot{
 
         // Before Roll Dice
         if (!await this.handleBankrupt()) {
-            this.player.ownedPlaces.forEach(bP => bP.owner = undefined)
-            this.player.ownedPlaces = []
-            players.splice(players.indexOf(this.player), 1)
-            turn = turn % players.length
+            removePlayer(this.player)
             return
         }
 
@@ -122,22 +118,22 @@ class Bot{
             board.currentShowingCard.continue()
         }
 
-
         while (this.player.animationOffset !== 0) { await new Promise(requestAnimationFrame) } 
         let bP = board.boardPieces[this.player.steps]
 
         await this.sleep(randomIntFromRange(speeds.botMin, speeds.botMax))
+
+
+
         // Bankrupt after move?
         if (!await this.handleBankrupt()) {
             Bot.thinking = false
-            this.player.ownedPlaces.forEach(bP => bP.owner = undefined)
-            this.player.ownedPlaces = []
-            players.splice(players.indexOf(this.player), 1)
-            turn = turn % players.length
+            removePlayer(this.player)
             return
         }
 
-        if (!bP.owner && Object.keys(boardWeights).includes(`${bP.n}`) &&
+        // Buy 
+        if (Object.keys(boardWeights).includes(`${bP.n}`) && !bP.owner &&
             this.player.laps >= board.settings.roundsBeforePurchase) {
             // Buy or Auction
             let moneyLeft = this.player.money - bP.piece.price
@@ -160,7 +156,10 @@ class Bot{
                 board.auction.started = true;
                 board.auction.duration = 10 * speeds.auctionSpeed;
                 board.auction.startTime = performance.now();
-                board.auction.timer = setInterval(() => { board.auction.time = 472 * (1 - (performance.now() - board.auction.startTime) / board.auction.duration) },10);
+                board.auction.timer = setInterval(() => {
+                    board.auction.time = 472 * 
+                    (1 - (performance.now() - board.auction.startTime) / board.auction.duration)
+                }, 10)
             }
         } else if (bP.owner && bP.owner !== this.player) { this.player.checkDebt(bP.owner) }        
 
@@ -436,14 +435,15 @@ class Bot{
     // Handle trade requests
     async handleTrade(type) {
         if (type === 'start') {
-            /*
-            What does the bot want?
-            Is there a trade that satisfies that?
-            */
-            // What does the bot want
-            let wants = []
-            // Filter groups, stations, utility
-
+            let wants = this.sortSellPieces().reverse()
+            for (let i = 0; i < wants.length; i++) {
+                for (let player of players) {
+                    if (player === this.player) { continue }
+                    if (player.ownedPlaces.includes(wans[i])) {
+                        
+                    }
+                }
+            }
 
         } else if (type === 'receive') {
             // Before Trade 
@@ -576,32 +576,9 @@ function testBuyProperty(player) {
     }
 }
 
-`
-- ( rentStation + allSTATION - 1    *  (före rent - nya rent)
-
-rentStation = 25 * Math.pow(2, ownedStations(this.player).length - 1)
-allStation = ownedStations(this.player).length - 1
-föreRent = 25 * Math.pow(2, ownedStations(this.player).length - 1)
-nyaRent = 25 * Math.pow(2, ownedStations(this.player).length - 1) * Math.pow(2, -1)
-
-- (
-    25 * Math.pow(2, ownedStations(this.player).length - 1) + 
-    (ownedStations(this.player).length - 1) * (
-        25 * Math.pow(2, ownedStations(this.player).length - 1) -
-        25 * Math.pow(2, ownedStations(this.player).length - 1) * Math.pow(2, -1)
-    )
-)
-
-- (
-    25 * Math.pow(2, ownedStations(this.player).length - 1) + 
-    (ownedStations(this.player).length - 1) * (
-        25 * Math.pow(2, ownedStations(this.player).length - 1) * (1 - 1 / 2)
-    )
-)
-
-25 * Math.pow(2, ownedStations(this.player).length - 1) * (
-        (ownedStations(this.player).length) / 2)
-25 * (2^a-2) * a
-
-
-        `
+function removePlayer(player) {
+    player.ownedPlaces.forEach(bP => bP.owner = undefined)
+    player.ownedPlaces = []
+    players.splice(players.indexOf(player), 1)
+    turn = turn % players.length
+}
