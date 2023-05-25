@@ -366,16 +366,16 @@ class LocalLobby {
         this.playerInputs = [];
         this.amountBots = 0;
         this.settingsButtons = [];
-        this.settingsButtons.push(new Button([true, false], 100, 220, images.buttons.sprites[10], function () { }, 500, 40, false, false, false, false, false, false, "Ge alla skattepengar till fri parkering", 42, "black"))
-        this.settingsButtons.push(new Button([true, false], 100, 220 + this.settingsButtons.length * 42, images.buttons.sprites[10], function () { }, 500, 40, false, false, false, false, false, false, "Ge alla bankpengar till fri parkering", 42, "black"))
-        this.settingsButtons.push(new Button([true, false], 100, 220 + this.settingsButtons.length * 42, images.buttons.sprites[10], function () { }, 500, 40, false, false, false, false, false, false, "Dubbel hyra på komplett färggrupp", 42, "black"))
-        this.settingsButtons.push(new Button([true, false], 100, 220 + this.settingsButtons.length * 42, images.buttons.sprites[10], function () { }, 500, 40, false, false, false, false, false, false, "Auktioner", 42, "black"))
-        this.settingsButtons.push(new Button([true, false], 100, 220 + this.settingsButtons.length * 42, images.buttons.sprites[10], function () { }, 500, 40, false, false, false, false, false, false, "Få/förlora pengar i fängelset", 42, "black"))
-        this.settingsButtons.push(new Button([true, false], 100, 220 + this.settingsButtons.length * 42, images.buttons.sprites[10], function () { }, 500, 40, false, false, false, false, false, false, "Möjlighet att inteckna", 42, "black"))
-        this.settingsButtons.push(new Button([true, false], 100, 220 + this.settingsButtons.length * 42, images.buttons.sprites[10], function () { }, 500, 40, false, false, false, false, false, false, "Möjlighet att sälja", 42, "black"))
-        this.settingsButtons.push(new Button([true, false], 100, 220 + this.settingsButtons.length * 42, images.buttons.sprites[10], function () { }, 500, 40, false, false, false, false, false, false, "Jämn utbyggnad", 42, "black"))
-        this.settingsButtons.push(new Slider(456 * drawScale, 40 + this.settingsButtons.length * 42 * drawScale, 502 * drawScale, 40 * drawScale, 0, 3000, 100, true, 50, "kr", "Startkapital: "))
-        this.settingsButtons.push(new Slider(456 * drawScale, 40 + this.settingsButtons.length * 42 * drawScale, 502 * drawScale, 40 * drawScale, 0, 5, 1, true, 50, "", "Antal varv innan köp: "))
+        this.settingsButtons.push(new Button([true, false], 80, 220, images.buttons.sprites[10], function () { }, 500, 40, false, false, false, false, false, false, "Ge alla skattepengar till fri parkering", 42, "black"))
+        this.settingsButtons.push(new Button([true, false], 80, 220 + this.settingsButtons.length * 42, images.buttons.sprites[10], function () { }, 500, 40, false, false, false, false, false, false, "Ge alla bankpengar till fri parkering", 42, "black"))
+        this.settingsButtons.push(new Button([true, false], 80, 220 + this.settingsButtons.length * 42, images.buttons.sprites[10], function () { }, 500, 40, false, false, false, false, false, false, "Dubbel hyra på komplett färggrupp", 42, "black"))
+        this.settingsButtons.push(new Button([true, false], 80, 220 + this.settingsButtons.length * 42, images.buttons.sprites[10], function () { }, 500, 40, false, false, false, false, false, false, "Auktioner", 42, "black"))
+        this.settingsButtons.push(new Button([true, false], 80, 220 + this.settingsButtons.length * 42, images.buttons.sprites[10], function () { }, 500, 40, false, false, false, false, false, false, "Få/förlora pengar i fängelset", 42, "black"))
+        this.settingsButtons.push(new Button([true, false], 80, 220 + this.settingsButtons.length * 42, images.buttons.sprites[10], function () { }, 500, 40, false, false, false, false, false, false, "Möjlighet att inteckna", 42, "black"))
+        this.settingsButtons.push(new Button([true, false], 80, 220 + this.settingsButtons.length * 42, images.buttons.sprites[10], function () { }, 500, 40, false, false, false, false, false, false, "Möjlighet att sälja", 42, "black"))
+        this.settingsButtons.push(new Button([true, false], 80, 220 + this.settingsButtons.length * 42, images.buttons.sprites[10], function () { }, 500, 40, false, false, false, false, false, false, "Jämn utbyggnad", 42, "black"))
+        this.settingsButtons.push(new Slider(436 * drawScale, 40 + this.settingsButtons.length * 42 * drawScale, 502 * drawScale, 40 * drawScale, 0, 3000, 100, true, 50, "kr", "Startkapital: "))
+        this.settingsButtons.push(new Slider(436 * drawScale, 40 + this.settingsButtons.length * 42 * drawScale, 502 * drawScale, 40 * drawScale, 0, 5, 1, true, 50, "", "Antal varv innan köp: "))
         this.settingsButtons[2].selected = true
         this.settingsButtons[3].selected = true
         this.settingsButtons[4].selected = true
