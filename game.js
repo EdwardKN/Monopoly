@@ -3039,9 +3039,13 @@ class BoardPiece {
 
             if (!onlyStep && !this.mortgaged && player.laps >= board.settings.roundsBeforePurchase) {
                 if (this.piece.price < 0) {
-                    player.money += this.piece.price;
-                    board.boardPieces[20].money -= this.piece.price;
-                    player.playerBorder.startMoneyAnimation(this.piece.price)
+                    board.currentShowingCard = new CurrentCard(4,"special")
+                    let self = this;
+                    board.currentShowingCard.onContinue = function(){
+                        player.money += self.piece.price;
+                        board.boardPieces[20].money -= self.piece.price;
+                        player.playerBorder.startMoneyAnimation(self.piece.price)
+                    }
                 } else if (this.piece.price > 0 && this.owner === undefined) {
                     if (player.bot === undefined) {
                         board.currentCard = this;
@@ -3117,15 +3121,19 @@ class BoardPiece {
                         this.doCommunityChest(random, player);
                     }
                 } else if (this.piece.type === "income tax") {
-                    if (player.money > 2000) {
-                        player.money -= 200;
-                        board.boardPieces[20].money += 200;
-                        player.playerBorder.startMoneyAnimation(-200)
-                    } else {
-                        player.playerBorder.startMoneyAnimation(-Math.round(player.money * 0.1))
-                        player.money = Math.round(player.money * 0.9);
-                        board.boardPieces[20].money += (Math.round(player.money * 0.1));
+                    board.currentShowingCard = new CurrentCard(3,"special")
+                    board.currentShowingCard.onContinue = function(){
+                        if (player.money > 2000) {
+                            player.money -= 200;
+                            board.boardPieces[20].money += 200;
+                            player.playerBorder.startMoneyAnimation(-200)
+                        } else {
+                            player.playerBorder.startMoneyAnimation(-Math.round(player.money * 0.1))
+                            player.money = Math.round(player.money * 0.9);
+                            board.boardPieces[20].money += (Math.round(player.money * 0.1));
+                        }
                     }
+                    
                 } else if (this.freeParking && this.money !== 0) {
                     player.money += this.money;
                     player.playerBorder.startMoneyAnimation(this.money)
