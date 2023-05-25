@@ -1775,9 +1775,9 @@ class Board {
 
                 if (this.currentCard.owner !== undefined) {
                     if (this.currentCard.piece.type !== "utility" && this.currentCard.piece.type !== "station") {
-                        c.fillText("Ägare: " + this.currentCard.owner.name, 975 / 2, 358 / 2)
+                        c.fillText("Ägare: " + this.currentCard.owner.name, 965 / 2, 348 / 2)
                     } else {
-                        c.fillText("Ägare: " + this.currentCard.owner.name, 975 / 2, 405 / 2)
+                        c.fillText("Ägare: " + this.currentCard.owner.name, 965 / 2, 395 / 2)
                     }
 
                     if (players[Api.online ? Api.currentPlayer : turn].bot === undefined) this.cardCloseButton.visible = true;
