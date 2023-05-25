@@ -2054,11 +2054,14 @@ class Trade {
         };
 
         let self = this;
-        this.closeButton = new Button([false, false], 364 + 128 + 71, 290 - 65, images.buttons.sprites[7], function () { if (Api.online) { Api.tradeConcluded(self.p2.colorIndex, false); } self.closeButton.visible = false; board.trade = undefined; board.getToMainMenuButton.visible = true; players.forEach(e => { e.playerBorder.button.disabled = false }) }, 18, 18, false,
+        this.closeButton = new Button([false, false], 364 + 128 + 63, 290 - 65, images.buttons.sprites[7], function () { if (Api.online) { Api.tradeConcluded(self.p2.colorIndex, false); } self.closeButton.visible = false; board.trade = undefined; board.getToMainMenuButton.visible = true; players.forEach(e => { e.playerBorder.button.disabled = false }) }, 18, 18, false,
             false, false, false, false, { x: 66, y: 70, w: 1025 + 512 + 280, h: 1020 })
         this.closeButton.visible = true;
 
-        this.p1Slider = new Slider(300 - 142, 200, 742, 60, 0, this.p1.money, 10, true, 30, "kr", "")
+        this.p1Slider = new Slider(300 - 142, 200, 742, 60, 0, this.p1.money, 10, true, 30, "kr", "", function () {
+            self.p1ConfirmButton.selected = false;
+            self.p2ConfirmButton.selected = false;
+        })
         this.p1ConfirmButton = new Button([true, false], -70 - 64 - 35, 660, images.trade.sprites[1], function () {
             if (Api.online && self.p1.colorIndex == Api.currentPlayer) {
                 if (self.p2ConfirmButton.selected) {
@@ -2080,7 +2083,10 @@ class Trade {
         }
 
         this.p2ConfirmButton = new Button([true, false], 180 + 64 + 35, 660, images.trade.sprites[1], function () { }, 150, 50)
-        this.p2Slider = new Slider(1050, 200, 742, 60, 0, this.p2.money, 10, true, 30, "kr", "")
+        this.p2Slider = new Slider(1050, 200, 742, 60, 0, this.p2.money, 10, true, 30, "kr", "", function () {
+            self.p1ConfirmButton.selected = false;
+            self.p2ConfirmButton.selected = false;
+        })
         if (this.p2.bot !== undefined) {
             this.p2ConfirmButton.disabled = true;
             this.p2Slider.disabled = true;
@@ -2119,6 +2125,8 @@ class Trade {
                     }
                     Api.tradeContentUpdated(self.p2.colorIndex, self.contents.p1);
                 }
+                self.p1ConfirmButton.selected = false;
+                self.p2ConfirmButton.selected = false;
             }, 186, 21, false, false, false, false, false, false, text, fontSize, textColor, "ArcadeBold"))
 
             if (self.p1.bot !== undefined) {
@@ -2155,7 +2163,8 @@ class Trade {
             if (e.level !== 0) {
                 but.disabled = true;
             }
-
+            self.p1ConfirmButton.selected = false;
+            self.p2ConfirmButton.selected = false;
             but.card = e.piece.card;
             self.p2PropertyButtons.push(but);
         });
