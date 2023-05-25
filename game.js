@@ -710,14 +710,21 @@ class LoadingMenu {
         this.deleteSave = new Button([false, false], 40, 650 + 20, images.buttons.sprites[2], function () {
             self.buttons.forEach(function (e, i) {
                 if (e.selected === true) {
-                    self.games = JSON.parse(localStorage.getItem("games")).reverse()
+                    console.log(i)
+                    self.buttons.forEach(e => e.selected = false)
+
+                    self.games = JSON.parse(localStorage.getItem("games"))
 
                     if (self.games.length == 1) {
                         localStorage.removeItem("games")
+                        self.buttons.forEach(e => e.visible = false)
                         self.backButton.onClick();
                     } else {
-                        self.games = self.games.reverse().splice(i, 1).reverse()
+                        console.log(self.games)
+                        self.games.splice(self.games.length-1-i, 1)
+
                         localStorage.setItem("games", JSON.stringify(self.games))
+                        self.buttons.forEach(e => e.visible = false)
                         self.init();
                     }
 
