@@ -744,7 +744,6 @@ class LoadingMenu {
                 self.buttons.forEach(function (e, i) {
                     if (e.selected) {
                         tmp = true;
-                        self.screenshot.src = self.games[i].screenshot
                         c.drawImage(self.screenshot, 0, canvas.height / 4, canvas.width / 2, canvas.height / 2)
                         c.lineWidth = scale
                         c.strokeRect(0, canvas.height / 4, canvas.width / 2, canvas.height / 2)
@@ -773,6 +772,10 @@ class LoadingMenu {
                 this.games.forEach(function (e, i) {
                     if (i < 10) {
                         self.buttons.push(new Button([true, false], 140, 220 + 50 * i, images.buttons.sprites[23], function () {
+                            downscale(self.games[i].screenshot, canvas.width / 2, canvas.height / 2, { imageType: "png" }).
+                                then(function (dataURL) {
+                                    self.screenshot.src = dataURL;
+                                })
                         }, 450, 40, false, false, false, false, false, { x: 100 * 2 + 720, y: 40 + 50 * 2 * i, w: 500 * 2, h: 40 * 2, onlySelected: true }, self.games[i].currentDay + " " + self.games[i].currentTime + "  Speltid:" + timeToText((self.games[i].playtime)), 38, "black"))
                     }
                 })
