@@ -840,7 +840,9 @@ class MainMenu {
                 self.volume.percentage = musicVolume
                 musicOn = 0;
             }
-            musicPlaying.volume = musicVolume;
+            if (musicPlaying) {
+                musicPlaying.volume = musicVolume;
+            }
 
         }, 40, 40, false)
         this.imageSmoothingButton = new Button([true, false], -317 + 40 + 140 + 40, 700, images.buttons.sprites[21], function () {
@@ -878,8 +880,9 @@ class MainMenu {
         this.volume = new Slider(240 - 80, 1000, 280, 80, 0, 100, 1, true, 50, "%", "", function () {
             musicVolume = self.volume.value / 100;
             document.cookie = `musicVolume=${musicVolume};Expires=Sun, 22 oct 2030 08:00:00 UTC;`;
-            musicPlaying.volume = musicVolume;
-
+            if (musicPlaying) {
+                musicPlaying.volume = musicVolume;
+            }
         })
         this.volume.percentage = musicVolume
         this.onlineButton.disabled = false;
@@ -1403,12 +1406,16 @@ class Board {
                 self.volume.percentage = musicVolume
                 musicOn = 0;
             }
-            musicPlaying.volume = musicVolume;
+            if (musicPlaying) {
+                musicPlaying.volume = musicVolume;
+            }
         }, 40, 40, false)
         this.volume = new Slider(920, 540 + 200, 180, 80, 0, 100, 1, true, 50, "%", "", function () {
             musicVolume = self.volume.value / 100;
             document.cookie = `musicVolume=${musicVolume};Expires=Sun, 22 oct 2030 08:00:00 UTC;`;
-            musicPlaying.volume = musicVolume;
+            if (musicPlaying) {
+                musicPlaying.volume = musicVolume;
+            }
         })
         this.volume.percentage = musicVolume
         this.imageSmoothingButton = new Button([true, false], 5, 530 + 40, images.buttons.sprites[21], function () {
