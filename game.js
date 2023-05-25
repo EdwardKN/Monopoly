@@ -1543,7 +1543,7 @@ class Board {
         }
 
         this.currentCard = undefined;
-        this.cardCloseButton = new Button([false, false], 241, 318, images.buttons.sprites[7], function () {
+        this.cardCloseButton = new Button([false, false], 233, 308, images.buttons.sprites[7], function () {
             board.currentCard = undefined;
             board.sellButton.visible = false;
             board.mortgageButton.visible = false;
@@ -1766,7 +1766,7 @@ class Board {
         }
         this.showCard = function () {
             if (this.currentCard !== undefined) {
-                drawRotatedImageFromSpriteSheet(722, 236, images.card.sprites[this.currentCard.piece.card].frame.w * drawScale, images.card.sprites[this.currentCard.piece.card].frame.h * drawScale, images.card.sprites[this.currentCard.piece.card], 0, false, 0, 0, images.card.sprites[this.currentCard.piece.card].frame.w, images.card.sprites[this.currentCard.piece.card].frame.h)
+                drawRotatedImageFromSpriteSheet(canvas.width - images.card.sprites[this.currentCard.piece.card].frame.w, canvas.height - images.card.sprites[this.currentCard.piece.card].frame.h, images.card.sprites[this.currentCard.piece.card].frame.w * drawScale, images.card.sprites[this.currentCard.piece.card].frame.h * drawScale, images.card.sprites[this.currentCard.piece.card], 0, false, 0, 0, images.card.sprites[this.currentCard.piece.card].frame.w, images.card.sprites[this.currentCard.piece.card].frame.h)
 
                 this.cardCloseButton.draw();
                 c.fillStyle = "black";
