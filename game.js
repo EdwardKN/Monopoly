@@ -1440,7 +1440,7 @@ class Board {
             board.getToMainMenuButton.selected = false;
             board.goToMainMenuButton.visible = false;
             board.escapeConfirm.visible = false;
-            board.getToMainMenuButton.visible = true;
+            board.getToMainMenuButton.visible = true; board.goToMainMenuButton.visible = false;
             board.musicButton.visible = false;
             board.fullScreenButton.visible = false;
         }, 40, 40, false, false, false, false, false, { x: 722, y: 336, w: 256 * drawScale, h: 256 * drawScale });
@@ -1549,7 +1549,7 @@ class Board {
             board.mortgageButton.visible = false;
             board.upgradeButton.visible = false;
             board.downgradeButton.visible = false;
-            board.getToMainMenuButton.visible = true;
+            board.getToMainMenuButton.visible = true; board.goToMainMenuButton.visible = false;;
         }, 18, 18, false, false, false, false, false, { x: 722, y: 236, w: 256 * drawScale, h: 324 * drawScale })
         this.sellButton = new Button([false, false], 100, 570, images.buttons.sprites[2], function () {
             if (board.currentCard.mortgaged === false) {
@@ -1565,7 +1565,7 @@ class Board {
             board.mortgageButton.visible = false;
             board.upgradeButton.visible = false;
             board.downgradeButton.visible = false;
-            board.getToMainMenuButton.visible = true;
+            board.getToMainMenuButton.visible = true; board.goToMainMenuButton.visible = false;;
         }, 40, 40, false, false, false, true);
         this.mortgageButton = new Button([false, false], 50, 570, images.buttons.sprites[3], function () {
             if (board.currentCard.mortgaged === true) {
@@ -1629,7 +1629,7 @@ class Board {
             players[turn].ownedPlaces.push(board.currentCard);
             board.currentCard = undefined;
             board.sellButton.visible = false;
-            board.getToMainMenuButton.visible = true;
+            board.getToMainMenuButton.visible = true; board.goToMainMenuButton.visible = false;;
             board.buyButton.visible = false;
             board.auctionButton.visible = false;
         }, 97, 40);
@@ -1642,7 +1642,7 @@ class Board {
             board.auction = new Auction(board.currentCard)
             board.currentCard = undefined;
             board.sellButton.visible = false;
-            board.getToMainMenuButton.visible = true;
+            board.getToMainMenuButton.visible = true; board.goToMainMenuButton.visible = false;;
             board.buyButton.visible = false;
             board.auctionButton.visible = false;
         }, 97, 40);
@@ -2057,7 +2057,7 @@ class Trade {
         };
 
         let self = this;
-        this.closeButton = new Button([false, false], 364 + 128 + 63, 290 - 65, images.buttons.sprites[7], function () { if (Api.online) { Api.tradeConcluded(self.p2.colorIndex, false); } self.closeButton.visible = false; board.trade = undefined; board.getToMainMenuButton.visible = true; players.forEach(e => { e.playerBorder.button.disabled = false }) }, 18, 18, false,
+        this.closeButton = new Button([false, false], 364 + 128 + 63, 290 - 65, images.buttons.sprites[7], function () { if (Api.online) { Api.tradeConcluded(self.p2.colorIndex, false); } self.closeButton.visible = false; board.trade = undefined; board.getToMainMenuButton.visible = true; board.goToMainMenuButton.visible = false;; players.forEach(e => { e.playerBorder.button.disabled = false }) }, 18, 18, false,
             false, false, false, false, { x: 66, y: 70, w: 1025 + 512 + 280, h: 1020 })
         this.closeButton.visible = true;
 
@@ -2230,7 +2230,7 @@ class Trade {
                 this.p2PropertyButtons.forEach(e => { e.visible = false });
                 players.forEach(e => { e.playerBorder.button.selected = false; e.playerBorder.button.disabled = false })
                 board.trade = undefined;
-                board.getToMainMenuButton.visible = true;
+                board.getToMainMenuButton.visible = true; board.goToMainMenuButton.visible = false;;
             }
         }
     }
@@ -2662,7 +2662,7 @@ class Auction {
                                 buttons.splice(buttons.indexOf(this.startAuctionButton), 1)
                                 board.currentCard = undefined;
                                 board.sellButton.visible = false;
-                                board.getToMainMenuButton.visible = true;
+                                board.getToMainMenuButton.visible = true; board.goToMainMenuButton.visible = false;;
                                 board.buyButton.visible = false;
                                 board.auction = undefined;
                             }
@@ -2854,7 +2854,6 @@ class Button {
                         this.selected = true;
                     }
                 }
-
                 this.onClick();
 
                 this.hover = false;
@@ -3639,8 +3638,9 @@ class Player {
             to = to % 40
             board.showDices = true;
             self.timer = setInterval(function () {
+                board.goToMainMenuButton.visible = false;
                 if (self.animationOffset <= 0 && direction === 1 || self.animationOffset >= 0 && direction === -1) {
-                    board.getToMainMenuButton.visible = true;
+                    board.getToMainMenuButton.visible = true; board.goToMainMenuButton.visible = false;;
                     clearInterval(self.timer);
 
                     board.boardPieces.forEach(function (b, i2) {
@@ -3746,7 +3746,6 @@ class Player {
                             board.animateDices = false;
                             self.teleportTo((self.steps + dice1 + dice2) % 40);
                             board.nextPlayerButton.visible = true;
-                            board.goToMainMenuButton.visible = true;
                         })
                     }
                 }
