@@ -1741,7 +1741,7 @@ class Board {
         this.confirmMenu = function () {
             this.getToMainMenuButton.visible = false;
             drawRotatedImageFromSpriteSheet(704, 336, 512, 512, images.exitMenu.sprites[0], 0, false, 0, 0, 256, 256)
-            this.musicButton.selected = musicVolume === 0 ? true : false;
+            this.musicButton.selected = musixcVolume === 0 ? true : false;
 
             this.goToMainMenuButton.visible = true;
             this.goToMainMenuButton.draw();
@@ -2042,6 +2042,9 @@ class Trade {
     constructor(p1, p2) {
         this.p1 = p1;
         this.p2 = p2;
+        let textsize1 = measureText({ font: "Arcade", text: this.p1.name + "   " + this.p2.money })
+        let textsize2 = measureText({ font: "Arcade", text: this.p2.name + "   " + this.p2.money })
+
         timeouts.push(setTimeout(() => {
             players.forEach(e => { e.playerBorder.button.selected = false; e.playerBorder.button.disabled = true })
         }, 1));
@@ -2179,11 +2182,14 @@ class Trade {
             this.p1Slider.draw();
             this.p2Slider.visible = true;
             this.p2Slider.draw();
-            c.font = 50 / 2 + "px Arcade";
             c.fillStyle = "black"
             c.textAlign = "right"
-            c.fillText(this.p1.money + "kr" + "   " + this.p1.name, 880 / 2, 160 / 2)
+            let fontsize1 = (1 / textsize1.width) * 40000 > 25 ? 25 : (1 / textsize1.width) * 40000
+            c.font = fontsize1 + "px Arcade";
+            c.fillText(this.p1.money + "kr" + "   " + this.p1.name, 870 / 2, 160 / 2)
             c.textAlign = "left"
+            let fontsize2 = (1 / textsize2.width) * 40000 > 25 ? 25 : (1 / textsize2.width) * 40000
+            c.font = fontsize2 + "px Arcade";
             c.fillText(this.p2.name + "   " + this.p2.money + "kr", 1070 / 2, 160 / 2)
             this.p1PropertyButtons.forEach(e => { e.visible = true; e.draw() });
             this.p2PropertyButtons.forEach(e => { e.visible = true; e.draw() });
