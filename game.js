@@ -942,6 +942,11 @@ class TextInput {
         this.htmlElement.style.fontFamily = "Arcade"
         this.htmlElement.style.lineHeight = "200%"
 
+        this.htmlElement.addEventListener("mousemove", e => {
+            mouse.x = 10000;
+            mouse.y = 10000;
+        })
+
         this.draw = function () {
             this.htmlElement.style.left = this.x * scale / 2 + (window.innerWidth - renderCanvas.width) / 2 - 5 * scale / 2 + "px";
             this.htmlElement.style.top = this.y * scale / 2 + (window.innerHeight - renderCanvas.height) / 2 - 5 * scale / 2 + "px";
