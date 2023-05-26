@@ -1228,11 +1228,13 @@ class Board{
             board.getToMainMenuButton.visible = true;
         },18,18,false,false,false,false,false,{x:722,y:236,w:256*drawScale,h:324*drawScale})
         this.sellButton = new Button(false,130,580,images.buttons.sprites[2],function(sendToServer = true, card){
-            if((board.currentCard || card).mortgaged === false){
-                if (Api.online && sendToServer && board.currentCard != undefined) {
-                    Api.tileSold(board.currentCard);
+            card = card || board.currentCard;
+            if(card.mortgaged === false){
+                if (Api.online && sendToServer && card != undefined) {
+                    Api.tileSold(card);
                     return;
                 }
+
                 players[turn].money += card.piece.price/2;
                 players[turn].checkDebt(board.boardPieces[20]);
                 players[turn].playerBorder.startMoneyAnimation(card.piece.price/2);
@@ -1426,15 +1428,17 @@ class Board{
                 c.textAlign = "center";
                 c.font =20*scale+"px Arcade";
                 
+                var isOwnPlayersTurn = Api.online ? players[turn].colorIndex == Api.currentPlayer : false;
+                
                 if(this.currentCard.owner !== undefined){
                     if(this.currentCard.piece.type !== "utility" && this.currentCard.piece.type !== "station"){
                         c.fillText("Ägare: " + this.currentCard.owner.name,985*scale,368*scale)
                     }else{
                         c.fillText("Ägare: " + this.currentCard.owner.name,985*scale,415*scale)
                     }
-
+                    
                     if (players[Api.online ? Api.currentPlayer : turn].bot === undefined) this.cardCloseButton.visible = true;
-                    if(this.currentCard.owner === players[Api.online ? Api.currentPlayer : turn] && players[Api.online ? Api.currentPlayer : turn].bot === undefined){
+                    if(isOwnPlayersTurn && this.currentCard.owner === players[Api.online ? Api.currentPlayer : turn] && players[Api.online ? Api.currentPlayer : turn].bot === undefined){
                         this.sellButton.draw();
                         this.sellButton.visible = true;
                         this.mortgageButton.draw();
@@ -1488,8 +1492,6 @@ class Board{
                         
                     }
                     this.cardCloseButton.visible = true;
-
-
                 }else{
                     this.cardCloseButton.visible = true;
 
