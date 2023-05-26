@@ -721,7 +721,7 @@ class LoadingMenu {
                         self.backButton.onClick();
                     } else {
                         console.log(self.games)
-                        self.games.splice(self.games.length-1-i, 1)
+                        self.games.splice(self.games.length - 1 - i, 1)
 
                         localStorage.setItem("games", JSON.stringify(self.games))
                         self.buttons.forEach(e => e.visible = false)
@@ -1447,9 +1447,12 @@ class Board {
             board.getToMainMenuButton.selected = false;
             board.goToMainMenuButton.visible = false;
             board.escapeConfirm.visible = false;
-            board.getToMainMenuButton.visible = true; board.goToMainMenuButton.visible = false;
+            board.goToMainMenuButton.visible = false;
             board.musicButton.visible = false;
             board.fullScreenButton.visible = false;
+            setTimeout(() => {
+                board.getToMainMenuButton.visible = true;
+            }, 100);
         }, 40, 40, false, false, false, false, false, { x: 722, y: 336, w: 256 * drawScale, h: 256 * drawScale });
         this.escapeConfirm = new Button([false, false], 5 + 49 * 2.5, 520, images.buttons.sprites[16], function () {
             self.saving = true;
@@ -1478,7 +1481,6 @@ class Board {
 
         this.getToMainMenuButton = new Button([true, false], 84, 700, images.buttons.sprites[17], function () {
             self.volume.percentage = musicVolume
-
         }, 80, 40, false, false, false, true, false, false)
 
         this.getToMainMenuButton.visible = true;
@@ -2165,7 +2167,10 @@ class Trade {
                     fontSize = 18;
                 }
             }
-            let but = (new Button([true, false], -30 + tmp + 200, 240 + 22 * Math.floor(i / 2) + 110, images.trade.sprites[2], function () { }, 186, 21, false, false, false, false, false, false, text, fontSize, textColor, "ArcadeBold"))
+            let but = (new Button([true, false], -30 + tmp + 200, 240 + 22 * Math.floor(i / 2) + 110, images.trade.sprites[2], function () {
+                self.p1ConfirmButton.selected = false;
+                self.p2ConfirmButton.selected = false;
+            }, 186, 21, false, false, false, false, false, false, text, fontSize, textColor, "ArcadeBold"))
 
             if (self.p2.bot !== undefined || (Api.online && self.p2.colorIndex != Api.currentPlayer)) {
                 but.disabled = true;
@@ -2173,8 +2178,7 @@ class Trade {
             if (e.level !== 0) {
                 but.disabled = true;
             }
-            self.p1ConfirmButton.selected = false;
-            self.p2ConfirmButton.selected = false;
+
             but.card = e.piece.card;
             self.p2PropertyButtons.push(but);
         });
@@ -3046,9 +3050,9 @@ class BoardPiece {
 
             if (!onlyStep && !this.mortgaged && player.laps >= board.settings.roundsBeforePurchase) {
                 if (this.piece.price < 0) {
-                    board.currentShowingCard = new CurrentCard(4,"special")
+                    board.currentShowingCard = new CurrentCard(4, "special")
                     let self = this;
-                    board.currentShowingCard.onContinue = function(){
+                    board.currentShowingCard.onContinue = function () {
                         player.money += self.piece.price;
                         board.boardPieces[20].money -= self.piece.price;
                         player.playerBorder.startMoneyAnimation(self.piece.price)
@@ -3128,8 +3132,8 @@ class BoardPiece {
                         this.doCommunityChest(random, player);
                     }
                 } else if (this.piece.type === "income tax") {
-                    board.currentShowingCard = new CurrentCard(3,"special")
-                    board.currentShowingCard.onContinue = function(){
+                    board.currentShowingCard = new CurrentCard(3, "special")
+                    board.currentShowingCard.onContinue = function () {
                         if (player.money > 2000) {
                             player.money -= 200;
                             board.boardPieces[20].money += 200;
@@ -3140,7 +3144,7 @@ class BoardPiece {
                             board.boardPieces[20].money += (Math.round(player.money * 0.1));
                         }
                     }
-                    
+
                 } else if (this.freeParking && this.money !== 0) {
                     player.money += this.money;
                     player.playerBorder.startMoneyAnimation(this.money)
