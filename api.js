@@ -147,8 +147,6 @@ class Api {
     }
 
     /**
-     * This works, but only if the user gets redirected to the given url and accepts the self-signed certificate, this may add more complexity than what it's worth...
-     * Also, how do I get it to work without exposing passwords and private keys and such stuff on github.
      * @param {String|URL} url The address to the LAN-server (No prefix prepended)
      */
     static async openWebsocketConnection(url, username) {
@@ -175,7 +173,6 @@ class Api {
     static #messageHandler(message) {
         var event = JSON.parse(message.data);
 
-        console.log(event.event_type);
         console.log(event);
 
         document.body.dispatchEvent(new CustomEvent(event.event_type, { detail: event.data }));

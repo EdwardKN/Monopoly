@@ -792,6 +792,7 @@ async function showOnlineLobby() {
             data.players.forEach((player) => {
                 players.push(new Player(images.player.sprites[player.colorIndex], player.colorIndex, player.name, false));
             });
+
             // Got no idea where the extra players come from, as they should be cleared aboved. But here's an extra check to remove them
             board.boardPieces[0].currentPlayer = board.boardPieces[0].currentPlayer.filter(x => players.indexOf(x) != -1);
 
@@ -871,6 +872,7 @@ async function showOnlineLobby() {
         document.body.addEventListener("move_event", (evt) => players[evt.detail.player].teleportTo(evt.detail.steps, evt.detail.step != 10, false));
 
         document.body.addEventListener("new_turn_event", (evt) => {
+            board.nextPlayerButton.click();
             turn = evt.detail.id;
             if (Api.currentPlayer == turn) {
                 board.rollDiceButton.visible = true;
@@ -1056,7 +1058,7 @@ async function showOnlineLobby() {
             player.getOutOfJail(undefined, false);
         });
 
-        document.body.addEventListener("tile_sold_event", (evt) => board.sellButton.onClick(board.boardPieces.find(x => x.piece.card == evt.detail.tile), false));
+        document.body.addEventListener("tile_sold_event", (evt) => board.sellButton.onClick(false, board.boardPieces.find(x => x.piece.card == evt.detail.tile)));
 
         document.body.addEventListener("reject", (evt) => {
             switch(evt.detail.reason) {
@@ -1226,7 +1228,7 @@ class Board{
             board.getToMainMenuButton.visible = true;
         },18,18,false,false,false,false,false,{x:722,y:236,w:256*drawScale,h:324*drawScale})
         this.sellButton = new Button(false,130,580,images.buttons.sprites[2],function(sendToServer = true, card){
-            if(board.currentCard.mortgaged === false){
+            if((board.currentCard || card).mortgaged === false){
                 if (Api.online && sendToServer && board.currentCard != undefined) {
                     Api.tileSold(board.currentCard);
                     return;
