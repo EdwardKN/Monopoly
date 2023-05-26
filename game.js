@@ -1567,6 +1567,8 @@ class Board {
                 players[turn].money += board.currentCard.piece.price / 2
                 players[turn].checkDebt(board.boardPieces[20]);
                 players[turn].playerBorder.startMoneyAnimation(board.currentCard.piece.price / 2);
+            }else{
+                oard.currentCard.mortgaged = false;
             }
             players[turn].ownedPlaces.splice(players[turn].ownedPlaces.indexOf(board.currentCard), 1);
             board.currentCard.owner = undefined;
@@ -1884,7 +1886,7 @@ class Board {
                 this.nextPlayerButton.visible = false;
                 this.rollDiceButton.visible = false;
                 if (this.currentCard.mortgaged === true) {
-                    drawRotatedImageFromSpriteSheet(722, 236, images.mortgageOverlay.sprites[0].frame.w * drawScale, images.mortgageOverlay.sprites[0].frame.h * drawScale, images.mortgageOverlay.sprites[0], 0, false, 0, 0, images.mortgageOverlay.sprites[0].frame.w, images.mortgageOverlay.sprites[0].frame.h)
+                    drawRotatedImageFromSpriteSheet(702, 216, images.mortgageOverlay.sprites[0].frame.w * drawScale, images.mortgageOverlay.sprites[0].frame.h * drawScale, images.mortgageOverlay.sprites[0], 0, false, 0, 0, images.mortgageOverlay.sprites[0].frame.w, images.mortgageOverlay.sprites[0].frame.h)
                 }
             } else {
                 this.cardCloseButton.visible = false;
