@@ -31,6 +31,8 @@ setInterval(() => {
 
 window.onload = fixCanvas;
 
+window.onbeforeunload = saveGame;
+
 window.addEventListener("resize", fixCanvas)
 
 function fixCanvas() {
