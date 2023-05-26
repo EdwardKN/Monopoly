@@ -2,19 +2,31 @@
   "meta": {
     "version": "0.6.7"
   },
-  "savePath": "",
-  "images": [],
+  "savePath": "C:\\Users\\Johan Hallin\\Monopoly\\Monopoly\\images",
+  "images": [
+    {
+      "name": "flag.png",
+      "path": "C:/Users/Johan Hallin/Monopoly/Monopoly/images/buttons/flag.png",
+      "folder": ""
+    },
+    {
+      "name": "okej.png",
+      "path": "C:/Users/Johan Hallin/Monopoly/Monopoly/images/buttons/okej.png",
+      "folder": ""
+    }
+  ],
   "folders": [
-    "D:/monopol/images/Cards",
-    "D:/monopol/images/buildings",
-    "D:/monopol/images/buttons",
-    "D:/monopol/images/corners",
-    "D:/monopol/images/dices",
-    "D:/monopol/images/menus",
-    "D:/monopol/images/plates",
-    "D:/monopol/images/playercolorbuttons",
-    "D:/monopol/images/players",
-    "D:/monopol/images/static"
+    "C:/Users/Johan Hallin/Monopoly/Monopoly/images/Cards",
+    "C:/Users/Johan Hallin/Monopoly/Monopoly/images/buildings",
+    "C:/Users/Johan Hallin/Monopoly/Monopoly/images/buttons",
+    "C:/Users/Johan Hallin/Monopoly/Monopoly/images/community card and chance card",
+    "C:/Users/Johan Hallin/Monopoly/Monopoly/images/corners",
+    "C:/Users/Johan Hallin/Monopoly/Monopoly/images/dices",
+    "C:/Users/Johan Hallin/Monopoly/Monopoly/images/menus",
+    "C:/Users/Johan Hallin/Monopoly/Monopoly/images/plates",
+    "C:/Users/Johan Hallin/Monopoly/Monopoly/images/playercolorbuttons",
+    "C:/Users/Johan Hallin/Monopoly/Monopoly/images/players",
+    "C:/Users/Johan Hallin/Monopoly/Monopoly/images/static"
   ],
   "packOptions": {
     "textureName": "texture",
@@ -28,7 +40,7 @@
     "filter": "none",
     "exporter": "JSON (array)",
     "fileName": "pack-result",
-    "savePath": "",
+    "savePath": "C:\\Users\\Johan Hallin\\Monopoly\\Monopoly\\images",
     "width": 2048,
     "height": 4096,
     "fixedSize": false,

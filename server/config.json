@@ -1,5 +1,5 @@
 {
-    "PORT": 55045,
+    "PORT": 55042,
     "ALLOWED_DOMAINS": [ "edwardkn.github.io", "localhost" ],
     "LOGGING_LEVEL": "STANDARD",
     "GAME_SETTINGS": {
@@ -9,6 +9,7 @@
         "auctions": true,
         "prisonmoney": true,
         "mortgage": true,
+        "sellable": true,
         "even": true,
         "startmoney": 2000,
         "roundsBeforePurchase": 0
