@@ -1526,9 +1526,6 @@
       }
     },
     {
-<<<<<<< HEAD
-      "filename": "plates/green.png",
-=======
       "filename": "menus/auctionloadingbar.png",
       "frame": {
         "x": 3719,
@@ -1579,8 +1576,7 @@
       }
     },
     {
-      "filename": "plates/incometax.png",
->>>>>>> origin/game
+      "filename": "plates/green.png",
       "frame": {
         "x": 1,
         "y": 162,
@@ -1705,36 +1701,7 @@
       }
     },
     {
-<<<<<<< HEAD
-      "filename": "corners/Go.png",
-      "frame": {
-        "x": 3869,
-        "y": 143,
-        "w": 128,
-        "h": 64
-      },
-      "rotated": false,
-      "trimmed": false,
-      "spriteSourceSize": {
-        "x": 0,
-        "y": 0,
-        "w": 128,
-        "h": 64
-      },
-      "sourceSize": {
-        "w": 128,
-        "h": 64
-      },
-      "pivot": {
-        "x": 0.5,
-        "y": 0.5
-      }
-    },
-    {
       "filename": "plates/pink.png",
-=======
-      "filename": "plates/red.png",
->>>>>>> origin/game
       "frame": {
         "x": 1931,
         "y": 170,
@@ -1761,8 +1728,8 @@
     {
       "filename": "plates/red.png",
       "frame": {
-        "x": 387,
-        "y": 166,
+        "x": 2317,
+        "y": 180,
         "w": 384,
         "h": 48
       },
@@ -1786,13 +1753,8 @@
     {
       "filename": "plates/supertax.png",
       "frame": {
-<<<<<<< HEAD
-        "x": 773,
-        "y": 172,
-=======
-        "x": 2317,
-        "y": 180,
->>>>>>> origin/game
+        "x": 2703,
+        "y": 185,
         "w": 384,
         "h": 48
       },
@@ -1816,65 +1778,6 @@
     {
       "filename": "plates/train.png",
       "frame": {
-<<<<<<< HEAD
-        "x": 1159,
-        "y": 172,
-        "w": 384,
-        "h": 48
-      },
-      "rotated": false,
-      "trimmed": false,
-      "spriteSourceSize": {
-        "x": 0,
-        "y": 0,
-        "w": 384,
-        "h": 48
-      },
-      "sourceSize": {
-        "w": 384,
-        "h": 48
-      },
-      "pivot": {
-        "x": 0.5,
-        "y": 0.5
-      }
-    },
-    {
-      "filename": "plates/trainmortgaged.png",
-      "frame": {
-        "x": 1545,
-        "y": 172,
-=======
-        "x": 2703,
-        "y": 185,
->>>>>>> origin/game
-        "w": 384,
-        "h": 48
-      },
-      "rotated": false,
-      "trimmed": false,
-      "spriteSourceSize": {
-        "x": 0,
-        "y": 0,
-        "w": 384,
-        "h": 48
-      },
-      "sourceSize": {
-        "w": 384,
-        "h": 48
-      },
-      "pivot": {
-        "x": 0.5,
-        "y": 0.5
-      }
-    },
-    {
-      "filename": "plates/water.png",
-      "frame": {
-<<<<<<< HEAD
-        "x": 1931,
-        "y": 172,
-=======
         "x": 3089,
         "y": 193,
         "w": 384,
@@ -1898,7 +1801,7 @@
       }
     },
     {
-      "filename": "plates/yellow.png",
+      "filename": "plates/trainmortgaged.png",
       "frame": {
         "x": 3475,
         "y": 205,
@@ -1923,11 +1826,10 @@
       }
     },
     {
-      "filename": "players/blueowned.png",
+      "filename": "plates/water.png",
       "frame": {
         "x": 1,
         "y": 212,
->>>>>>> origin/game
         "w": 384,
         "h": 48
       },
@@ -2074,159 +1976,6 @@
       }
     },
     {
-<<<<<<< HEAD
-      "filename": "players/orangeowned.png",
-      "frame": {
-        "x": 387,
-        "y": 216,
-        "w": 384,
-        "h": 48
-      },
-      "rotated": false,
-      "trimmed": false,
-      "spriteSourceSize": {
-        "x": 0,
-        "y": 0,
-        "w": 384,
-        "h": 48
-      },
-      "sourceSize": {
-        "w": 384,
-        "h": 48
-      },
-      "pivot": {
-        "x": 0.5,
-        "y": 0.5
-      }
-    },
-    {
-      "filename": "players/ownedslot.png",
-      "frame": {
-        "x": 773,
-        "y": 222,
-        "w": 384,
-        "h": 48
-      },
-      "rotated": false,
-      "trimmed": false,
-      "spriteSourceSize": {
-        "x": 0,
-        "y": 0,
-        "w": 384,
-        "h": 48
-      },
-      "sourceSize": {
-        "w": 384,
-        "h": 48
-      },
-      "pivot": {
-        "x": 0.5,
-        "y": 0.5
-      }
-    },
-    {
-      "filename": "players/pinkowned.png",
-      "frame": {
-        "x": 1159,
-        "y": 222,
-        "w": 384,
-        "h": 48
-      },
-      "rotated": false,
-      "trimmed": false,
-      "spriteSourceSize": {
-        "x": 0,
-        "y": 0,
-        "w": 384,
-        "h": 48
-      },
-      "sourceSize": {
-        "w": 384,
-        "h": 48
-      },
-      "pivot": {
-        "x": 0.5,
-        "y": 0.5
-      }
-    },
-    {
-      "filename": "players/purpleowned.png",
-      "frame": {
-        "x": 1545,
-        "y": 222,
-        "w": 384,
-        "h": 48
-      },
-      "rotated": false,
-      "trimmed": false,
-      "spriteSourceSize": {
-        "x": 0,
-        "y": 0,
-        "w": 384,
-        "h": 48
-      },
-      "sourceSize": {
-        "w": 384,
-        "h": 48
-      },
-      "pivot": {
-        "x": 0.5,
-        "y": 0.5
-      }
-    },
-    {
-      "filename": "players/redowned.png",
-      "frame": {
-        "x": 1931,
-        "y": 222,
-        "w": 384,
-        "h": 48
-      },
-      "rotated": false,
-      "trimmed": false,
-      "spriteSourceSize": {
-        "x": 0,
-        "y": 0,
-        "w": 384,
-        "h": 48
-      },
-      "sourceSize": {
-        "w": 384,
-        "h": 48
-      },
-      "pivot": {
-        "x": 0.5,
-        "y": 0.5
-      }
-    },
-    {
-      "filename": "players/yellowowned.png",
-      "frame": {
-        "x": 2317,
-        "y": 222,
-        "w": 384,
-        "h": 48
-      },
-      "rotated": false,
-      "trimmed": false,
-      "spriteSourceSize": {
-        "x": 0,
-        "y": 0,
-        "w": 384,
-        "h": 48
-      },
-      "sourceSize": {
-        "w": 384,
-        "h": 48
-      },
-      "pivot": {
-        "x": 0.5,
-        "y": 0.5
-      }
-    },
-    {
-=======
->>>>>>> origin/game
       "filename": "corners/gotoprison.png",
       "frame": {
         "x": 3861,
@@ -2252,15 +2001,7 @@
       }
     },
     {
-<<<<<<< HEAD
-      "filename": "buttons/accept.png",
-      "frame": {
-        "x": 2703,
-        "y": 230,
-        "w": 600,
-        "h": 50
-=======
-      "filename": "players/purpleowned.png",
+      "filename": "players/orangeowned.png",
       "frame": {
         "x": 2317,
         "y": 230,
@@ -2285,7 +2026,7 @@
       }
     },
     {
-      "filename": "players/redowned.png",
+      "filename": "players/ownedslot.png",
       "frame": {
         "x": 2703,
         "y": 235,
@@ -2310,7 +2051,7 @@
       }
     },
     {
-      "filename": "players/yellowowned.png",
+      "filename": "players/pinkowned.png",
       "frame": {
         "x": 3089,
         "y": 243,
@@ -2335,24 +2076,49 @@
       }
     },
     {
-      "filename": "buttons/accept.png",
+      "filename": "players/purpleowned.png",
+      "frame": {
+        "x": 3475,
+        "y": 255,
+        "w": 384,
+        "h": 48
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 384,
+        "h": 48
+      },
+      "sourceSize": {
+        "w": 384,
+        "h": 48
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "players/redowned.png",
       "frame": {
         "x": 1,
         "y": 262,
-        "w": 600,
-        "h": 50
+        "w": 384,
+        "h": 48
       },
       "rotated": false,
       "trimmed": false,
       "spriteSourceSize": {
         "x": 0,
         "y": 0,
-        "w": 600,
-        "h": 50
+        "w": 384,
+        "h": 48
       },
       "sourceSize": {
-        "w": 600,
-        "h": 50
+        "w": 384,
+        "h": 48
       },
       "pivot": {
         "x": 0.5,
@@ -2360,25 +2126,24 @@
       }
     },
     {
-      "filename": "buttons/load.png",
+      "filename": "players/yellowowned.png",
       "frame": {
-        "x": 603,
+        "x": 387,
         "y": 262,
-        "w": 585,
-        "h": 52
->>>>>>> origin/game
+        "w": 384,
+        "h": 48
       },
       "rotated": false,
       "trimmed": false,
       "spriteSourceSize": {
         "x": 0,
         "y": 0,
-        "w": 600,
-        "h": 50
+        "w": 384,
+        "h": 48
       },
       "sourceSize": {
-        "w": 600,
-        "h": 50
+        "w": 384,
+        "h": 48
       },
       "pivot": {
         "x": 0.5,
@@ -2386,24 +2151,24 @@
       }
     },
     {
-      "filename": "corners/parking.png",
+      "filename": "buttons/accept.png",
       "frame": {
-        "x": 3305,
-        "y": 230,
-        "w": 128,
-        "h": 64
+        "x": 773,
+        "y": 262,
+        "w": 600,
+        "h": 50
       },
       "rotated": false,
       "trimmed": false,
       "spriteSourceSize": {
         "x": 0,
         "y": 0,
-        "w": 128,
-        "h": 64
+        "w": 600,
+        "h": 50
       },
       "sourceSize": {
-        "w": 128,
-        "h": 64
+        "w": 600,
+        "h": 50
       },
       "pivot": {
         "x": 0.5,
@@ -2413,13 +2178,8 @@
     {
       "filename": "buttons/local.png",
       "frame": {
-<<<<<<< HEAD
-        "x": 3435,
-        "y": 243,
-=======
-        "x": 1190,
+        "x": 1375,
         "y": 262,
->>>>>>> origin/game
         "w": 390,
         "h": 52
       },
@@ -2434,49 +2194,6 @@
       "sourceSize": {
         "w": 390,
         "h": 52
-      },
-      "pivot": {
-        "x": 0.5,
-        "y": 0.5
-      }
-    },
-    {
-<<<<<<< HEAD
-      "filename": "buttons/load.png",
-      "frame": {
-        "x": 1,
-        "y": 266,
-        "w": 585,
-        "h": 52
-=======
-      "filename": "corners/parking.png",
-      "frame": {
-        "x": 3475,
-        "y": 255,
-        "w": 128,
-        "h": 64
->>>>>>> origin/game
-      },
-      "rotated": false,
-      "trimmed": false,
-      "spriteSourceSize": {
-        "x": 0,
-        "y": 0,
-<<<<<<< HEAD
-        "w": 585,
-        "h": 52
-      },
-      "sourceSize": {
-        "w": 585,
-        "h": 52
-=======
-        "w": 128,
-        "h": 64
-      },
-      "sourceSize": {
-        "w": 128,
-        "h": 64
->>>>>>> origin/game
       },
       "pivot": {
         "x": 0.5,
@@ -2486,13 +2203,8 @@
     {
       "filename": "buttons/online.png",
       "frame": {
-<<<<<<< HEAD
-        "x": 588,
-        "y": 272,
-=======
-        "x": 1582,
+        "x": 1767,
         "y": 270,
->>>>>>> origin/game
         "w": 390,
         "h": 52
       },
@@ -2514,29 +2226,24 @@
       }
     },
     {
-      "filename": "buttons/playerborder.png",
+      "filename": "corners/parking.png",
       "frame": {
-<<<<<<< HEAD
-        "x": 980,
-        "y": 272,
-=======
-        "x": 1974,
-        "y": 280,
->>>>>>> origin/game
-        "w": 708,
-        "h": 54
+        "x": 2159,
+        "y": 270,
+        "w": 128,
+        "h": 64
       },
       "rotated": false,
       "trimmed": false,
       "spriteSourceSize": {
         "x": 0,
         "y": 0,
-        "w": 708,
-        "h": 54
+        "w": 128,
+        "h": 64
       },
       "sourceSize": {
-        "w": 708,
-        "h": 54
+        "w": 128,
+        "h": 64
       },
       "pivot": {
         "x": 0.5,
@@ -2544,79 +2251,24 @@
       }
     },
     {
-      "filename": "buttons/okej.png",
+      "filename": "buttons/load.png",
       "frame": {
-        "x": 3605,
-        "y": 275,
-        "w": 400,
-        "h": 60
+        "x": 2289,
+        "y": 285,
+        "w": 585,
+        "h": 52
       },
       "rotated": false,
       "trimmed": false,
       "spriteSourceSize": {
         "x": 0,
         "y": 0,
-        "w": 400,
-        "h": 60
+        "w": 585,
+        "h": 52
       },
       "sourceSize": {
-        "w": 400,
-        "h": 60
-      },
-      "pivot": {
-        "x": 0.5,
-        "y": 0.5
-      }
-    },
-    {
-      "filename": "buttons/back.png",
-      "frame": {
-<<<<<<< HEAD
-        "x": 1690,
-        "y": 272,
-=======
-        "x": 2684,
-        "y": 293,
->>>>>>> origin/game
-        "w": 650,
-        "h": 60
-      },
-      "rotated": false,
-      "trimmed": false,
-      "spriteSourceSize": {
-        "x": 0,
-        "y": 0,
-        "w": 650,
-        "h": 60
-      },
-      "sourceSize": {
-        "w": 650,
-        "h": 60
-      },
-      "pivot": {
-        "x": 0.5,
-        "y": 0.5
-      }
-    },
-    {
-      "filename": "menus/auctionloadingbar.png",
-      "frame": {
-        "x": 2342,
-        "y": 272,
-        "w": 240,
-        "h": 60
-      },
-      "rotated": false,
-      "trimmed": false,
-      "spriteSourceSize": {
-        "x": 0,
-        "y": 0,
-        "w": 240,
-        "h": 60
-      },
-      "sourceSize": {
-        "w": 240,
-        "h": 60
+        "w": 585,
+        "h": 52
       },
       "pivot": {
         "x": 0.5,
@@ -2626,13 +2278,8 @@
     {
       "filename": "buttons/nextplayer.png",
       "frame": {
-<<<<<<< HEAD
-        "x": 2584,
-        "y": 282,
-=======
-        "x": 1,
-        "y": 314,
->>>>>>> origin/game
+        "x": 2876,
+        "y": 293,
         "w": 492,
         "h": 60
       },
@@ -2654,11 +2301,60 @@
       }
     },
     {
-<<<<<<< HEAD
+      "filename": "buttons/playerborder.png",
+      "frame": {
+        "x": 3370,
+        "y": 305,
+        "w": 708,
+        "h": 54
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 708,
+        "h": 54
+      },
+      "sourceSize": {
+        "w": 708,
+        "h": 54
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "buttons/back.png",
+      "frame": {
+        "x": 1,
+        "y": 312,
+        "w": 650,
+        "h": 60
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 650,
+        "h": 60
+      },
+      "sourceSize": {
+        "w": 650,
+        "h": 60
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
       "filename": "buttons/okej.png",
       "frame": {
-        "x": 3078,
-        "y": 297,
+        "x": 653,
+        "y": 314,
         "w": 400,
         "h": 60
       },
@@ -2682,14 +2378,8 @@
     {
       "filename": "buttons/rolldice.png",
       "frame": {
-        "x": 3480,
-        "y": 297,
-=======
-      "filename": "buttons/rolldice.png",
-      "frame": {
-        "x": 495,
+        "x": 1055,
         "y": 316,
->>>>>>> origin/game
         "w": 492,
         "h": 60
       },
@@ -2713,58 +2403,22 @@
     {
       "filename": "corners/prison.png",
       "frame": {
-<<<<<<< HEAD
-        "x": 1,
-        "y": 320,
-=======
-        "x": 989,
-        "y": 316,
->>>>>>> origin/game
-        "w": 512,
-        "h": 64
-      },
-      "rotated": false,
-      "trimmed": false,
-      "spriteSourceSize": {
-        "x": 0,
-        "y": 0,
-        "w": 512,
-        "h": 64
-      },
-      "sourceSize": {
-        "w": 512,
-        "h": 64
-      },
-      "pivot": {
-        "x": 0.5,
-        "y": 0.5
-      }
-    },
-    {
-<<<<<<< HEAD
-      "filename": "buttons/start.png",
-      "frame": {
-        "x": 515,
-        "y": 328,
-=======
-      "filename": "menus/prisonmenu.png",
-      "frame": {
-        "x": 1503,
+        "x": 1549,
         "y": 324,
-        "w": 300,
-        "h": 90
+        "w": 512,
+        "h": 64
       },
       "rotated": false,
       "trimmed": false,
       "spriteSourceSize": {
         "x": 0,
         "y": 0,
-        "w": 300,
-        "h": 90
+        "w": 512,
+        "h": 64
       },
       "sourceSize": {
-        "w": 300,
-        "h": 90
+        "w": 512,
+        "h": 64
       },
       "pivot": {
         "x": 0.5,
@@ -2774,9 +2428,8 @@
     {
       "filename": "buttons/start.png",
       "frame": {
-        "x": 1805,
-        "y": 336,
->>>>>>> origin/game
+        "x": 2063,
+        "y": 339,
         "w": 776,
         "h": 80
       },
@@ -2798,42 +2451,24 @@
       }
     },
     {
-<<<<<<< HEAD
       "filename": "menus/prisonmenu.png",
       "frame": {
-        "x": 1293,
-        "y": 328,
+        "x": 2841,
+        "y": 355,
         "w": 300,
         "h": 90
-=======
-      "filename": "menus/exitmenu.png",
-      "frame": {
-        "x": 3336,
-        "y": 321,
-        "w": 256,
-        "h": 256
->>>>>>> origin/game
       },
       "rotated": false,
       "trimmed": false,
       "spriteSourceSize": {
         "x": 0,
         "y": 0,
-<<<<<<< HEAD
         "w": 300,
         "h": 90
       },
       "sourceSize": {
         "w": 300,
         "h": 90
-=======
-        "w": 256,
-        "h": 256
-      },
-      "sourceSize": {
-        "w": 256,
-        "h": 256
->>>>>>> origin/game
       },
       "pivot": {
         "x": 0.5,
@@ -2843,13 +2478,8 @@
     {
       "filename": "community card and chance card/betalahushotell.png",
       "frame": {
-<<<<<<< HEAD
-        "x": 1595,
-        "y": 334,
-=======
-        "x": 2583,
-        "y": 355,
->>>>>>> origin/game
+        "x": 3143,
+        "y": 361,
         "w": 512,
         "h": 256
       },
@@ -2871,11 +2501,10 @@
       }
     },
     {
-<<<<<<< HEAD
       "filename": "menus/exitmenu.png",
       "frame": {
-        "x": 2109,
-        "y": 334,
+        "x": 3657,
+        "y": 361,
         "w": 256,
         "h": 256
       },
@@ -2897,16 +2526,10 @@
       }
     },
     {
-      "filename": "community card and chance card/betalahushotellc.png",
-      "frame": {
-        "x": 2367,
-        "y": 344,
-=======
       "filename": "community card and chance card/betalahushotellc.png",
       "frame": {
         "x": 1,
-        "y": 378,
->>>>>>> origin/game
+        "y": 374,
         "w": 512,
         "h": 256
       },
@@ -2930,13 +2553,8 @@
     {
       "filename": "community card and chance card/emptychancecard.png",
       "frame": {
-<<<<<<< HEAD
-        "x": 2881,
-        "y": 359,
-=======
         "x": 515,
-        "y": 382,
->>>>>>> origin/game
+        "y": 376,
         "w": 512,
         "h": 256
       },
@@ -2951,87 +2569,6 @@
       "sourceSize": {
         "w": 512,
         "h": 256
-      },
-      "pivot": {
-        "x": 0.5,
-        "y": 0.5
-      }
-    },
-    {
-<<<<<<< HEAD
-      "filename": "community card and chance card/emptycommunitycard.png",
-      "frame": {
-        "x": 3395,
-        "y": 359,
-        "w": 512,
-        "h": 256
-      },
-      "rotated": false,
-      "trimmed": false,
-      "spriteSourceSize": {
-        "x": 0,
-        "y": 0,
-        "w": 512,
-        "h": 256
-      },
-      "sourceSize": {
-        "w": 512,
-        "h": 256
-      },
-      "pivot": {
-        "x": 0.5,
-        "y": 0.5
-      }
-    },
-    {
-      "filename": "community card and chance card/fa100krc.png",
-      "frame": {
-        "x": 1,
-        "y": 386,
-        "w": 512,
-        "h": 256
-      },
-      "rotated": false,
-      "trimmed": false,
-      "spriteSourceSize": {
-        "x": 0,
-        "y": 0,
-        "w": 512,
-        "h": 256
-      },
-      "sourceSize": {
-        "w": 512,
-        "h": 256
-      },
-      "pivot": {
-        "x": 0.5,
-        "y": 0.5
-      }
-    },
-    {
-      "filename": "community card and chance card/fa10kravallaandraspelarec.png",
-      "frame": {
-        "x": 515,
-        "y": 410,
-=======
-      "filename": "Cards/bluecard1.png",
-      "frame": {
-        "x": 3594,
-        "y": 337,
-        "w": 256,
-        "h": 324
-      },
-      "rotated": false,
-      "trimmed": false,
-      "spriteSourceSize": {
-        "x": 0,
-        "y": 0,
-        "w": 256,
-        "h": 324
-      },
-      "sourceSize": {
-        "w": 256,
-        "h": 324
       },
       "pivot": {
         "x": 0.5,
@@ -3042,8 +2579,7 @@
       "filename": "community card and chance card/emptycommunitycard.png",
       "frame": {
         "x": 1029,
-        "y": 416,
->>>>>>> origin/game
+        "y": 378,
         "w": 512,
         "h": 256
       },
@@ -3058,8 +2594,6 @@
       "sourceSize": {
         "w": 512,
         "h": 256
-<<<<<<< HEAD
-=======
       },
       "pivot": {
         "x": 0.5,
@@ -3070,7 +2604,7 @@
       "filename": "community card and chance card/fa100krc.png",
       "frame": {
         "x": 1543,
-        "y": 418,
+        "y": 390,
         "w": 512,
         "h": 256
       },
@@ -3095,7 +2629,7 @@
       "filename": "community card and chance card/fa10kravallaandraspelarec.png",
       "frame": {
         "x": 2057,
-        "y": 418,
+        "y": 421,
         "w": 512,
         "h": 256
       },
@@ -3110,7 +2644,6 @@
       "sourceSize": {
         "w": 512,
         "h": 256
->>>>>>> origin/game
       },
       "pivot": {
         "x": 0.5,
@@ -3120,13 +2653,8 @@
     {
       "filename": "community card and chance card/fa10krc.png",
       "frame": {
-<<<<<<< HEAD
-        "x": 1029,
-        "y": 420,
-=======
         "x": 2571,
-        "y": 613,
->>>>>>> origin/game
+        "y": 447,
         "w": 512,
         "h": 256
       },
@@ -3150,13 +2678,8 @@
     {
       "filename": "community card and chance card/fa150kr.png",
       "frame": {
-<<<<<<< HEAD
-        "x": 1543,
-        "y": 592,
-=======
-        "x": 1,
-        "y": 636,
->>>>>>> origin/game
+        "x": 3085,
+        "y": 619,
         "w": 512,
         "h": 256
       },
@@ -3180,13 +2703,8 @@
     {
       "filename": "community card and chance card/fa200krc.png",
       "frame": {
-<<<<<<< HEAD
-        "x": 2057,
-        "y": 602,
-=======
-        "x": 515,
-        "y": 640,
->>>>>>> origin/game
+        "x": 1,
+        "y": 632,
         "w": 512,
         "h": 256
       },
@@ -3201,31 +2719,6 @@
       "sourceSize": {
         "w": 512,
         "h": 256
-      },
-      "pivot": {
-        "x": 0.5,
-        "y": 0.5
-      }
-    },
-    {
-      "filename": "Cards/bluecard2.png",
-      "frame": {
-        "x": 3097,
-        "y": 579,
-        "w": 256,
-        "h": 324
-      },
-      "rotated": false,
-      "trimmed": false,
-      "spriteSourceSize": {
-        "x": 0,
-        "y": 0,
-        "w": 256,
-        "h": 324
-      },
-      "sourceSize": {
-        "w": 256,
-        "h": 324
       },
       "pivot": {
         "x": 0.5,
@@ -3235,13 +2728,8 @@
     {
       "filename": "community card and chance card/fa20krc.png",
       "frame": {
-<<<<<<< HEAD
-        "x": 2571,
-        "y": 617,
-=======
-        "x": 3355,
-        "y": 663,
->>>>>>> origin/game
+        "x": 515,
+        "y": 634,
         "w": 512,
         "h": 256
       },
@@ -3265,13 +2753,8 @@
     {
       "filename": "community card and chance card/fa50kr.png",
       "frame": {
-<<<<<<< HEAD
-        "x": 3085,
-        "y": 617,
-=======
         "x": 1029,
-        "y": 674,
->>>>>>> origin/game
+        "y": 636,
         "w": 512,
         "h": 256
       },
@@ -3295,13 +2778,8 @@
     {
       "filename": "community card and chance card/fa50kravallaandraspelare.png",
       "frame": {
-<<<<<<< HEAD
-        "x": 1,
-        "y": 644,
-=======
         "x": 1543,
-        "y": 676,
->>>>>>> origin/game
+        "y": 648,
         "w": 512,
         "h": 256
       },
@@ -3325,43 +2803,8 @@
     {
       "filename": "community card and chance card/fa50kravallaandraspelarec.png",
       "frame": {
-<<<<<<< HEAD
-        "x": 515,
-        "y": 668,
-=======
         "x": 2057,
-        "y": 676,
->>>>>>> origin/game
-        "w": 512,
-        "h": 256
-      },
-      "rotated": false,
-      "trimmed": false,
-      "spriteSourceSize": {
-        "x": 0,
-        "y": 0,
-        "w": 512,
-        "h": 256
-      },
-      "sourceSize": {
-        "w": 512,
-        "h": 256
-      },
-      "pivot": {
-        "x": 0.5,
-        "y": 0.5
-      }
-    },
-    {
-      "filename": "community card and chance card/fa50krc.png",
-      "frame": {
-<<<<<<< HEAD
-        "x": 1029,
-        "y": 678,
-=======
-        "x": 2571,
-        "y": 871,
->>>>>>> origin/game
+        "y": 679,
         "w": 512,
         "h": 256
       },
@@ -3386,7 +2829,7 @@
       "filename": "Cards/bluecard1.png",
       "frame": {
         "x": 3599,
-        "y": 617,
+        "y": 619,
         "w": 256,
         "h": 324
       },
@@ -3408,15 +2851,35 @@
       }
     },
     {
+      "filename": "community card and chance card/fa50krc.png",
+      "frame": {
+        "x": 2571,
+        "y": 705,
+        "w": 512,
+        "h": 256
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 512,
+        "h": 256
+      },
+      "sourceSize": {
+        "w": 512,
+        "h": 256
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
       "filename": "community card and chance card/forlora25krc.png",
       "frame": {
-<<<<<<< HEAD
-        "x": 1543,
-        "y": 850,
-=======
-        "x": 1,
-        "y": 894,
->>>>>>> origin/game
+        "x": 3085,
+        "y": 877,
         "w": 512,
         "h": 256
       },
@@ -3440,13 +2903,8 @@
     {
       "filename": "community card and chance card/forlora50krc.png",
       "frame": {
-<<<<<<< HEAD
-        "x": 2057,
-        "y": 860,
-=======
-        "x": 515,
-        "y": 898,
->>>>>>> origin/game
+        "x": 1,
+        "y": 890,
         "w": 512,
         "h": 256
       },
@@ -3470,13 +2928,8 @@
     {
       "filename": "community card and chance card/gabaktresteg.png",
       "frame": {
-<<<<<<< HEAD
-        "x": 2571,
-        "y": 875,
-=======
-        "x": 3085,
-        "y": 921,
->>>>>>> origin/game
+        "x": 515,
+        "y": 892,
         "w": 512,
         "h": 256
       },
@@ -3500,13 +2953,8 @@
     {
       "filename": "community card and chance card/gatillfinkan.png",
       "frame": {
-<<<<<<< HEAD
-        "x": 3085,
-        "y": 875,
-=======
         "x": 1029,
-        "y": 932,
->>>>>>> origin/game
+        "y": 894,
         "w": 512,
         "h": 256
       },
@@ -3530,13 +2978,8 @@
     {
       "filename": "community card and chance card/gatillfinkanS.png",
       "frame": {
-<<<<<<< HEAD
-        "x": 1,
-        "y": 902,
-=======
         "x": 1543,
-        "y": 934,
->>>>>>> origin/game
+        "y": 906,
         "w": 512,
         "h": 256
       },
@@ -3560,13 +3003,8 @@
     {
       "filename": "community card and chance card/gatillfinkanc.png",
       "frame": {
-<<<<<<< HEAD
-        "x": 515,
-        "y": 926,
-=======
         "x": 2057,
-        "y": 934,
->>>>>>> origin/game
+        "y": 937,
         "w": 512,
         "h": 256
       },
@@ -3581,31 +3019,6 @@
       "sourceSize": {
         "w": 512,
         "h": 256
-      },
-      "pivot": {
-        "x": 0.5,
-        "y": 0.5
-      }
-    },
-    {
-      "filename": "Cards/browncard1.png",
-      "frame": {
-        "x": 3599,
-        "y": 921,
-        "w": 256,
-        "h": 324
-      },
-      "rotated": false,
-      "trimmed": false,
-      "spriteSourceSize": {
-        "x": 0,
-        "y": 0,
-        "w": 256,
-        "h": 324
-      },
-      "sourceSize": {
-        "w": 256,
-        "h": 324
       },
       "pivot": {
         "x": 0.5,
@@ -3615,13 +3028,8 @@
     {
       "filename": "community card and chance card/gatillhassleholm.png",
       "frame": {
-<<<<<<< HEAD
-        "x": 1029,
-        "y": 936,
-=======
         "x": 2571,
-        "y": 1129,
->>>>>>> origin/game
+        "y": 963,
         "w": 512,
         "h": 256
       },
@@ -3646,7 +3054,7 @@
       "filename": "Cards/bluecard2.png",
       "frame": {
         "x": 3599,
-        "y": 943,
+        "y": 945,
         "w": 256,
         "h": 324
       },
@@ -3670,13 +3078,8 @@
     {
       "filename": "community card and chance card/gatillmalmo.png",
       "frame": {
-<<<<<<< HEAD
-        "x": 1543,
-        "y": 1108,
-=======
-        "x": 1,
-        "y": 1152,
->>>>>>> origin/game
+        "x": 3085,
+        "y": 1135,
         "w": 512,
         "h": 256
       },
@@ -3700,13 +3103,8 @@
     {
       "filename": "community card and chance card/gatillnarmstaanlaggning.png",
       "frame": {
-<<<<<<< HEAD
-        "x": 2057,
-        "y": 1118,
-=======
-        "x": 515,
-        "y": 1156,
->>>>>>> origin/game
+        "x": 1,
+        "y": 1148,
         "w": 512,
         "h": 256
       },
@@ -3730,13 +3128,8 @@
     {
       "filename": "community card and chance card/gatillnarmstatagstation.png",
       "frame": {
-<<<<<<< HEAD
-        "x": 2571,
-        "y": 1133,
-=======
-        "x": 3085,
-        "y": 1179,
->>>>>>> origin/game
+        "x": 515,
+        "y": 1150,
         "w": 512,
         "h": 256
       },
@@ -3760,13 +3153,8 @@
     {
       "filename": "community card and chance card/gatillsimrishamn.png",
       "frame": {
-<<<<<<< HEAD
-        "x": 3085,
-        "y": 1133,
-=======
         "x": 1029,
-        "y": 1190,
->>>>>>> origin/game
+        "y": 1152,
         "w": 512,
         "h": 256
       },
@@ -3790,13 +3178,8 @@
     {
       "filename": "community card and chance card/gatillsodrastationen.png",
       "frame": {
-<<<<<<< HEAD
-        "x": 1,
-        "y": 1160,
-=======
         "x": 1543,
-        "y": 1192,
->>>>>>> origin/game
+        "y": 1164,
         "w": 512,
         "h": 256
       },
@@ -3820,13 +3203,8 @@
     {
       "filename": "community card and chance card/gatillstart.png",
       "frame": {
-<<<<<<< HEAD
-        "x": 515,
-        "y": 1184,
-=======
         "x": 2057,
-        "y": 1192,
->>>>>>> origin/game
+        "y": 1195,
         "w": 512,
         "h": 256
       },
@@ -3841,31 +3219,6 @@
       "sourceSize": {
         "w": 512,
         "h": 256
-      },
-      "pivot": {
-        "x": 0.5,
-        "y": 0.5
-      }
-    },
-    {
-      "filename": "Cards/browncard2.png",
-      "frame": {
-        "x": 3599,
-        "y": 1247,
-        "w": 256,
-        "h": 324
-      },
-      "rotated": false,
-      "trimmed": false,
-      "spriteSourceSize": {
-        "x": 0,
-        "y": 0,
-        "w": 256,
-        "h": 324
-      },
-      "sourceSize": {
-        "w": 256,
-        "h": 324
       },
       "pivot": {
         "x": 0.5,
@@ -3875,13 +3228,8 @@
     {
       "filename": "community card and chance card/gatillstartc.png",
       "frame": {
-<<<<<<< HEAD
-        "x": 1029,
-        "y": 1194,
-=======
         "x": 2571,
-        "y": 1387,
->>>>>>> origin/game
+        "y": 1221,
         "w": 512,
         "h": 256
       },
@@ -3906,7 +3254,7 @@
       "filename": "Cards/browncard1.png",
       "frame": {
         "x": 3599,
-        "y": 1269,
+        "y": 1271,
         "w": 256,
         "h": 324
       },
@@ -3930,13 +3278,8 @@
     {
       "filename": "community card and chance card/illegaldices.png",
       "frame": {
-<<<<<<< HEAD
-        "x": 1543,
-        "y": 1366,
-=======
-        "x": 1,
-        "y": 1410,
->>>>>>> origin/game
+        "x": 3085,
+        "y": 1393,
         "w": 512,
         "h": 256
       },
@@ -3960,12 +3303,8 @@
     {
       "filename": "community card and chance card/lamnafinkangratis.png",
       "frame": {
-<<<<<<< HEAD
-        "x": 2057,
-        "y": 1376,
-=======
-        "x": 515,
-        "y": 1414,
+        "x": 1,
+        "y": 1406,
         "w": 512,
         "h": 256
       },
@@ -3989,8 +3328,8 @@
     {
       "filename": "community card and chance card/lamnafinkangratisc.png",
       "frame": {
-        "x": 3085,
-        "y": 1437,
+        "x": 515,
+        "y": 1408,
         "w": 512,
         "h": 256
       },
@@ -4015,8 +3354,7 @@
       "filename": "community card and chance card/payincometax.png",
       "frame": {
         "x": 1029,
-        "y": 1448,
->>>>>>> origin/game
+        "y": 1410,
         "w": 512,
         "h": 256
       },
@@ -4038,17 +3376,10 @@
       }
     },
     {
-<<<<<<< HEAD
-      "filename": "community card and chance card/lamnafinkangratisc.png",
-      "frame": {
-        "x": 2571,
-        "y": 1391,
-=======
       "filename": "community card and chance card/payrichtax.png",
       "frame": {
         "x": 1543,
-        "y": 1450,
->>>>>>> origin/game
+        "y": 1422,
         "w": 512,
         "h": 256
       },
@@ -4072,13 +3403,8 @@
     {
       "filename": "community card and chance card/specialempty.png",
       "frame": {
-<<<<<<< HEAD
-        "x": 3085,
-        "y": 1391,
-=======
         "x": 2057,
-        "y": 1450,
->>>>>>> origin/game
+        "y": 1453,
         "w": 512,
         "h": 256
       },
@@ -4100,10 +3426,35 @@
       }
     },
     {
+      "filename": "Cards/browncard2.png",
+      "frame": {
+        "x": 2571,
+        "y": 1479,
+        "w": 256,
+        "h": 324
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 256,
+        "h": 324
+      },
+      "sourceSize": {
+        "w": 256,
+        "h": 324
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
       "filename": "Cards/centralstation.png",
       "frame": {
         "x": 3599,
-        "y": 1573,
+        "y": 1597,
         "w": 256,
         "h": 324
       },
@@ -4127,94 +3478,33 @@
     {
       "filename": "static/insideboard.png",
       "frame": {
+        "x": 2829,
+        "y": 1651,
+        "w": 572,
+        "h": 286
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 572,
+        "h": 286
+      },
+      "sourceSize": {
+        "w": 572,
+        "h": 286
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "Cards/eaststation.png",
+      "frame": {
         "x": 1,
-<<<<<<< HEAD
-        "y": 1442,
-=======
-        "y": 1672,
->>>>>>> origin/game
-        "w": 572,
-        "h": 286
-      },
-      "rotated": false,
-      "trimmed": false,
-      "spriteSourceSize": {
-        "x": 0,
-        "y": 0,
-        "w": 572,
-        "h": 286
-      },
-      "sourceSize": {
-        "w": 572,
-        "h": 286
-      },
-      "pivot": {
-        "x": 0.5,
-        "y": 0.5
-      }
-    },
-    {
-<<<<<<< HEAD
-      "filename": "Cards/browncard2.png",
-      "frame": {
-        "x": 575,
-        "y": 1442,
-        "w": 256,
-        "h": 324
-      },
-      "rotated": false,
-      "trimmed": false,
-      "spriteSourceSize": {
-        "x": 0,
-        "y": 0,
-        "w": 256,
-        "h": 324
-      },
-      "sourceSize": {
-        "w": 256,
-        "h": 324
-      },
-      "pivot": {
-        "x": 0.5,
-        "y": 0.5
-      }
-    },
-    {
-      "filename": "Cards/centralstation.png",
-      "frame": {
-        "x": 833,
-        "y": 1452,
-        "w": 256,
-        "h": 324
-      },
-      "rotated": false,
-      "trimmed": false,
-      "spriteSourceSize": {
-        "x": 0,
-        "y": 0,
-        "w": 256,
-        "h": 324
-      },
-      "sourceSize": {
-        "w": 256,
-        "h": 324
-      },
-      "pivot": {
-        "x": 0.5,
-        "y": 0.5
-      }
-    },
-    {
-      "filename": "Cards/eaststation.png",
-      "frame": {
-        "x": 1091,
-        "y": 1452,
-=======
-      "filename": "Cards/eaststation.png",
-      "frame": {
-        "x": 2571,
-        "y": 1645,
->>>>>>> origin/game
+        "y": 1664,
         "w": 256,
         "h": 324
       },
@@ -4238,13 +3528,8 @@
     {
       "filename": "Cards/electricitycard.png",
       "frame": {
-<<<<<<< HEAD
-        "x": 3599,
-        "y": 1595,
-=======
-        "x": 575,
-        "y": 1672,
->>>>>>> origin/game
+        "x": 259,
+        "y": 1666,
         "w": 256,
         "h": 324
       },
@@ -4268,13 +3553,8 @@
     {
       "filename": "Cards/emptytraincardtemplate.png",
       "frame": {
-<<<<<<< HEAD
-        "x": 1349,
-        "y": 1624,
-=======
-        "x": 2829,
-        "y": 1695,
->>>>>>> origin/game
+        "x": 517,
+        "y": 1666,
         "w": 256,
         "h": 324
       },
@@ -4298,13 +3578,8 @@
     {
       "filename": "Cards/greencard1.png",
       "frame": {
-<<<<<<< HEAD
-        "x": 1607,
-        "y": 1624,
-=======
-        "x": 3087,
-        "y": 1695,
->>>>>>> origin/game
+        "x": 775,
+        "y": 1668,
         "w": 256,
         "h": 324
       },
@@ -4328,13 +3603,8 @@
     {
       "filename": "Cards/greencard2.png",
       "frame": {
-<<<<<<< HEAD
-        "x": 1865,
-        "y": 1634,
-=======
-        "x": 833,
-        "y": 1706,
->>>>>>> origin/game
+        "x": 1033,
+        "y": 1668,
         "w": 256,
         "h": 324
       },
@@ -4358,13 +3628,8 @@
     {
       "filename": "Cards/greencard3.png",
       "frame": {
-<<<<<<< HEAD
-        "x": 2123,
-        "y": 1634,
-=======
-        "x": 1091,
-        "y": 1706,
->>>>>>> origin/game
+        "x": 1291,
+        "y": 1680,
         "w": 256,
         "h": 324
       },
@@ -4388,13 +3653,8 @@
     {
       "filename": "Cards/lightbluecard1.png",
       "frame": {
-<<<<<<< HEAD
-        "x": 2381,
-        "y": 1649,
-=======
-        "x": 1349,
-        "y": 1708,
->>>>>>> origin/game
+        "x": 1549,
+        "y": 1680,
         "w": 256,
         "h": 324
       },
@@ -4418,13 +3678,8 @@
     {
       "filename": "Cards/lightbluecard2.png",
       "frame": {
-<<<<<<< HEAD
-        "x": 2639,
-        "y": 1649,
-=======
-        "x": 1607,
-        "y": 1708,
->>>>>>> origin/game
+        "x": 1807,
+        "y": 1711,
         "w": 256,
         "h": 324
       },
@@ -4448,13 +3703,8 @@
     {
       "filename": "Cards/lightbluecard3.png",
       "frame": {
-<<<<<<< HEAD
-        "x": 2897,
-        "y": 1649,
-=======
-        "x": 1865,
-        "y": 1708,
->>>>>>> origin/game
+        "x": 2065,
+        "y": 1711,
         "w": 256,
         "h": 324
       },
@@ -4478,13 +3728,8 @@
     {
       "filename": "Cards/mortgageoverlay.png",
       "frame": {
-<<<<<<< HEAD
-        "x": 3155,
-        "y": 1649,
-=======
-        "x": 2123,
-        "y": 1708,
->>>>>>> origin/game
+        "x": 2323,
+        "y": 1805,
         "w": 256,
         "h": 324
       },
@@ -4508,13 +3753,8 @@
     {
       "filename": "Cards/northstation.png",
       "frame": {
-<<<<<<< HEAD
-        "x": 1,
-        "y": 1730,
-=======
-        "x": 3345,
-        "y": 1899,
->>>>>>> origin/game
+        "x": 3403,
+        "y": 1923,
         "w": 256,
         "h": 324
       },
@@ -4538,13 +3778,8 @@
     {
       "filename": "Cards/orangecard1.png",
       "frame": {
-<<<<<<< HEAD
-        "x": 259,
-        "y": 1730,
-=======
-        "x": 3603,
-        "y": 1899,
->>>>>>> origin/game
+        "x": 3661,
+        "y": 1923,
         "w": 256,
         "h": 324
       },
@@ -4568,13 +3803,8 @@
     {
       "filename": "Cards/orangecard2.png",
       "frame": {
-<<<<<<< HEAD
-        "x": 517,
-        "y": 1768,
-=======
-        "x": 1,
-        "y": 1960,
->>>>>>> origin/game
+        "x": 2581,
+        "y": 1939,
         "w": 256,
         "h": 324
       },
@@ -4598,13 +3828,8 @@
     {
       "filename": "Cards/orangecard3.png",
       "frame": {
-<<<<<<< HEAD
-        "x": 775,
-        "y": 1778,
-=======
-        "x": 259,
-        "y": 1960,
->>>>>>> origin/game
+        "x": 2839,
+        "y": 1939,
         "w": 256,
         "h": 324
       },
@@ -4628,13 +3853,8 @@
     {
       "filename": "Cards/pinkcard1.png",
       "frame": {
-<<<<<<< HEAD
-        "x": 1033,
-        "y": 1778,
-=======
-        "x": 2381,
-        "y": 1971,
->>>>>>> origin/game
+        "x": 3097,
+        "y": 1939,
         "w": 256,
         "h": 324
       },
@@ -4658,13 +3878,8 @@
     {
       "filename": "Cards/pinkcard2.png",
       "frame": {
-<<<<<<< HEAD
-        "x": 3413,
-        "y": 1921,
-=======
-        "x": 517,
-        "y": 1998,
->>>>>>> origin/game
+        "x": 1,
+        "y": 1990,
         "w": 256,
         "h": 324
       },
@@ -4688,13 +3903,8 @@
     {
       "filename": "Cards/pinkcard3.png",
       "frame": {
-<<<<<<< HEAD
-        "x": 3671,
-        "y": 1921,
-=======
-        "x": 2639,
-        "y": 2021,
->>>>>>> origin/game
+        "x": 259,
+        "y": 1992,
         "w": 256,
         "h": 324
       },
@@ -4718,13 +3928,8 @@
     {
       "filename": "Cards/redcard1.png",
       "frame": {
-<<<<<<< HEAD
-        "x": 1291,
-        "y": 1950,
-=======
-        "x": 2897,
-        "y": 2021,
->>>>>>> origin/game
+        "x": 517,
+        "y": 1992,
         "w": 256,
         "h": 324
       },
@@ -4748,13 +3953,8 @@
     {
       "filename": "Cards/redcard2.png",
       "frame": {
-<<<<<<< HEAD
-        "x": 1549,
-        "y": 1950,
-=======
         "x": 775,
-        "y": 2032,
->>>>>>> origin/game
+        "y": 1994,
         "w": 256,
         "h": 324
       },
@@ -4778,13 +3978,8 @@
     {
       "filename": "Cards/redcard3.png",
       "frame": {
-<<<<<<< HEAD
-        "x": 1807,
-        "y": 1960,
-=======
         "x": 1033,
-        "y": 2032,
->>>>>>> origin/game
+        "y": 1994,
         "w": 256,
         "h": 324
       },
@@ -4808,13 +4003,8 @@
     {
       "filename": "Cards/southstation.png",
       "frame": {
-<<<<<<< HEAD
-        "x": 2065,
-        "y": 1960,
-=======
         "x": 1291,
-        "y": 2034,
->>>>>>> origin/game
+        "y": 2006,
         "w": 256,
         "h": 324
       },
@@ -4838,13 +4028,8 @@
     {
       "filename": "Cards/waterworkscard.png",
       "frame": {
-<<<<<<< HEAD
-        "x": 2323,
-        "y": 1975,
-=======
         "x": 1549,
-        "y": 2034,
->>>>>>> origin/game
+        "y": 2006,
         "w": 256,
         "h": 324
       },
@@ -4868,13 +4053,8 @@
     {
       "filename": "Cards/yellowcard1.png",
       "frame": {
-<<<<<<< HEAD
-        "x": 2581,
-        "y": 1975,
-=======
         "x": 1807,
-        "y": 2034,
->>>>>>> origin/game
+        "y": 2037,
         "w": 256,
         "h": 324
       },
@@ -4898,13 +4078,8 @@
     {
       "filename": "Cards/yellowcard2.png",
       "frame": {
-<<<<<<< HEAD
-        "x": 2839,
-        "y": 1975,
-=======
         "x": 2065,
-        "y": 2034,
->>>>>>> origin/game
+        "y": 2037,
         "w": 256,
         "h": 324
       },
@@ -4928,13 +4103,8 @@
     {
       "filename": "Cards/yellowcard3.png",
       "frame": {
-<<<<<<< HEAD
-        "x": 3097,
-        "y": 1975,
-=======
-        "x": 3155,
-        "y": 2225,
->>>>>>> origin/game
+        "x": 2323,
+        "y": 2131,
         "w": 256,
         "h": 324
       },
@@ -4958,13 +4128,8 @@
     {
       "filename": "menus/auctionmenubackground.png",
       "frame": {
-<<<<<<< HEAD
-        "x": 1,
-        "y": 2056,
-=======
-        "x": 3413,
-        "y": 2225,
->>>>>>> origin/game
+        "x": 3355,
+        "y": 2249,
         "w": 267,
         "h": 324
       },
@@ -4988,13 +4153,8 @@
     {
       "filename": "dices/dices.png",
       "frame": {
-<<<<<<< HEAD
-        "x": 270,
-        "y": 2094,
-=======
-        "x": 3682,
-        "y": 2225,
->>>>>>> origin/game
+        "x": 3624,
+        "y": 2249,
         "w": 256,
         "h": 384
       },
@@ -5018,13 +4178,8 @@
     {
       "filename": "static/realbackground.png",
       "frame": {
-<<<<<<< HEAD
-        "x": 528,
-        "y": 2276,
-=======
         "x": 1,
-        "y": 2358,
->>>>>>> origin/game
+        "y": 2320,
         "w": 832,
         "h": 416
       },
@@ -5048,13 +4203,8 @@
     {
       "filename": "menus/tradingmenu.png",
       "frame": {
-<<<<<<< HEAD
-        "x": 1362,
-        "y": 2286,
-=======
         "x": 835,
-        "y": 2360,
->>>>>>> origin/game
+        "y": 2332,
         "w": 910,
         "h": 512
       },
@@ -5078,13 +4228,8 @@
     {
       "filename": "menus/lobbymenu.png",
       "frame": {
-<<<<<<< HEAD
-        "x": 2274,
-        "y": 2301,
-=======
         "x": 1747,
-        "y": 2360,
->>>>>>> origin/game
+        "y": 2457,
         "w": 981,
         "h": 552
       },
@@ -5108,13 +4253,8 @@
     {
       "filename": "menus/mainmenu.png",
       "frame": {
-<<<<<<< HEAD
-        "x": 1,
-        "y": 2694,
-=======
         "x": 2730,
-        "y": 2611,
->>>>>>> origin/game
+        "y": 2635,
         "w": 981,
         "h": 552
       },
@@ -5134,7 +4274,6 @@
         "x": 0.5,
         "y": 0.5
       }
-<<<<<<< HEAD
     },
     {
       "filename": "flag.png",
@@ -5164,8 +4303,8 @@
     {
       "filename": "okej.png",
       "frame": {
-        "x": 3078,
-        "y": 297,
+        "x": 653,
+        "y": 314,
         "w": 400,
         "h": 60
       },
@@ -5185,8 +4324,6 @@
         "x": 0.5,
         "y": 0.5
       }
-=======
->>>>>>> origin/game
     }
   ],
   "meta": {
@@ -5195,13 +4332,8 @@
     "image": "texture.png",
     "format": "RGBA8888",
     "size": {
-<<<<<<< HEAD
-      "w": 4072,
-      "h": 3247
-=======
       "w": 4090,
-      "h": 3164
->>>>>>> origin/game
+      "h": 3188
     },
     "scale": 1
   }
