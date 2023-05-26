@@ -2977,6 +2977,12 @@ class BoardPiece {
             if (this.n % 10 !== 0) {
                 if (this.mortgaged === false) {
                     drawIsometricImage(this.x, this.y, this.img, false, 96 * this.imgSide, 0, 96, 48, this.offsetX, this.offsetY);
+                } else if (this.piece.type === "station") {
+                    drawIsometricImage(this.x, this.y, images.part.sprites[18], false, 96 * this.imgSide, 0, 96, 48, this.offsetX, this.offsetY);
+                } else if (this.piece.name === "Elverket") {
+                    drawIsometricImage(this.x, this.y, images.part.sprites[19], false, 96 * this.imgSide, 0, 96, 48, this.offsetX, this.offsetY);
+                } else if (this.piece.name === "Vattenledningsverket") {
+                    drawIsometricImage(this.x, this.y, images.part.sprites[20], false, 96 * this.imgSide, 0, 96, 48, this.offsetX, this.offsetY);
                 } else {
                     drawIsometricImage(this.x, this.y, images.part.sprites[17], false, 96 * this.imgSide, 0, 96, 48, this.offsetX, this.offsetY);
                 }
