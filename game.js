@@ -2636,7 +2636,7 @@ class Auction {
                     this.time = 472
                 }
                 c.fillStyle = "black"
-                if (this.time < 464 && this.time > 6) {
+                if (this.time < 472 && this.time > 6) {
                     c.fillRect(1002 / 2, 560 / 2, -this.time / 2, 58 / 2)
                 }
                 if (this.time > 4) {
@@ -2724,7 +2724,7 @@ class Auction {
 
             this.auctionMoney += money;
             this.turn = (this.turn + 1) % this.playerlist.length;
-
+            
             this.time = 472;
             this.startTime = performance.now();
         }
