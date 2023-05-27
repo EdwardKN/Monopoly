@@ -1568,7 +1568,7 @@ class Board {
                 players[turn].checkDebt(board.boardPieces[20]);
                 players[turn].playerBorder.startMoneyAnimation(board.currentCard.piece.price / 2);
             }else{
-                oard.currentCard.mortgaged = false;
+                board.currentCard.mortgaged = false;
             }
             players[turn].ownedPlaces.splice(players[turn].ownedPlaces.indexOf(board.currentCard), 1);
             board.currentCard.owner = undefined;
