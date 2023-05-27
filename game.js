@@ -1447,6 +1447,7 @@ class Board {
 
         this.goToMainMenuButton = new Button([false, false], 5 + 49 * 1.5, 520, images.buttons.sprites[15], function () {
             board.getToMainMenuButton.selected = false;
+            board.imageSmoothingButton.visible = false;
             board.goToMainMenuButton.visible = false;
             board.escapeConfirm.visible = false;
             board.goToMainMenuButton.visible = false;
@@ -1459,6 +1460,7 @@ class Board {
         this.escapeConfirm = new Button([false, false], 5 + 49 * 2.5, 520, images.buttons.sprites[16], function () {
             self.saving = true;
             board.getToMainMenuButton.selected = false;
+            board.imageSmoothingButton.visible = false;
             board.goToMainMenuButton.visible = false;
             board.escapeConfirm.visible = false;
             board.getToMainMenuButton.visible = false;
