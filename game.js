@@ -1445,6 +1445,7 @@ class Board {
 
         this.goToMainMenuButton = new Button([false, false], 5 + 49 * 1.5, 520, images.buttons.sprites[15], function () {
             board.getToMainMenuButton.selected = false;
+            board.imageSmoothingButton.visible = false;
             board.goToMainMenuButton.visible = false;
             board.escapeConfirm.visible = false;
             board.goToMainMenuButton.visible = false;
@@ -1457,6 +1458,7 @@ class Board {
         this.escapeConfirm = new Button([false, false], 5 + 49 * 2.5, 520, images.buttons.sprites[16], function () {
             self.saving = true;
             board.getToMainMenuButton.selected = false;
+            board.imageSmoothingButton.visible = false;
             board.goToMainMenuButton.visible = false;
             board.escapeConfirm.visible = false;
             board.getToMainMenuButton.visible = false;
@@ -1566,7 +1568,7 @@ class Board {
                 players[turn].checkDebt(board.boardPieces[20]);
                 players[turn].playerBorder.startMoneyAnimation(board.currentCard.piece.price / 2);
             }else{
-                oard.currentCard.mortgaged = false;
+                board.currentCard.mortgaged = false;
             }
             players[turn].ownedPlaces.splice(players[turn].ownedPlaces.indexOf(board.currentCard), 1);
             board.currentCard.owner = undefined;
@@ -2634,7 +2636,7 @@ class Auction {
                     this.time = 472
                 }
                 c.fillStyle = "black"
-                if (this.time < 464 && this.time > 6) {
+                if (this.time < 472 && this.time > 6) {
                     c.fillRect(1002 / 2, 560 / 2, -this.time / 2, 58 / 2)
                 }
                 if (this.time > 4) {
@@ -2722,7 +2724,7 @@ class Auction {
 
             this.auctionMoney += money;
             this.turn = (this.turn + 1) % this.playerlist.length;
-
+            
             this.time = 472;
             this.startTime = performance.now();
         }
@@ -2949,7 +2951,7 @@ class BoardPiece {
 
             let mouseSquareX = (to_grid_coordinate(mouse.x, mouse.y).x - 1200 / 2) / (64)
             let mouseSquareY = (to_grid_coordinate(mouse.x, mouse.y).y + 720 / 2) / (64)
-            if (board.currentCard !== undefined || this.piece.type === "chance" || this.piece.type === "community Chest" || this.piece.type === "income tax" || this.piece.type === "tax" || this.n % 10 === 0 || board.auction !== undefined || board.trade !== undefined || players[turn].inJail === true || board.showDices || board.animateDices || players[turn].animationOffset !== 0 || board.getToMainMenuButton.selected || board.currentShowingCard !== undefined) {
+            if (board.currentCard !== undefined || this.piece.type === "chance" || this.piece.type === "community Chest" || this.piece.type === "income tax" || this.piece.type === "tax" || this.n % 10 === 0 || board.auction !== undefined || board.trade !== undefined || players[turn].inJail === true || board.showDices || board.animateDices || players[turn].animationOffset !== 0 || board.getToMainMenuButton.selected || board.currentShowingCard !== undefined || players.map(e => e.playerBorder.button.selected).includes(true)) {
                 this.offsetY = this.currentOffsetvalue;
                 this.hover = false;
             } else if (this.x / 64 > mouseSquareX - 1 && this.x / 64 < mouseSquareX && this.side === 2 && this.n % 10 !== 0 && mouseSquareY >= 0 && mouseSquareY < 2
