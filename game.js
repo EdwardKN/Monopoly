@@ -1261,7 +1261,7 @@ async function showOnlineLobby() {
                 board.auction.auctionMoney = data.money;
                 board.auction.turn = board.auction.playerlist.findIndex(x => x.colorIndex == data.nextPlayer);
             }
-            board.auction.time = 472;
+            board.auction.time = 432;
 
 
             if (data.player == Api.currentPlayer) {
@@ -2598,7 +2598,7 @@ class Auction {
         this.card = card;
         this.turn = turn;
         this.auctionMoney = Math.round(card.piece.price * board.settings.auctionstartprice);
-        this.time = 472;
+        this.time = 432;
         this.started = false;
         this.timer = undefined;
         this.playerlist = [...players];
@@ -2617,7 +2617,7 @@ class Auction {
         this.addMoneyButton100 = new Button([false, false], 60, 550, images.auction.sprites[3], function () {
             board.auction.addMoney(100);
         }, 54, 54, false)
-        this.startAuctionButton = new Button([false, false], -110, 550, images.auction.sprites[5], function () {
+        this.startAuctionButton = new Button([false, false], -105, 550, images.auction.sprites[5], function () {
             if (Api.online) {
                 Api.auctionStart(board.auction.card);
                 return;
@@ -2626,9 +2626,9 @@ class Auction {
             board.auction.duration = 10 * speeds.auctionSpeed;
             board.auction.startTime = performance.now();
             board.auction.timer = intervals.push(setInterval(function () {
-                board.auction.time = 472 * (1 - (performance.now() - board.auction.startTime) / board.auction.duration);
+                board.auction.time = 432 * (1 - (performance.now() - board.auction.startTime) / board.auction.duration);
             }, 10));
-        }, 240, 40, false)
+        }, 220, 40, false)
 
         this.draw = function () {
             drawRotatedImageFromSpriteSheet(canvas.width, canvas.height - images.card.sprites[card.piece.card].frame.h, images.card.sprites[card.piece.card].frame.w * 2 - 22, images.card.sprites[card.piece.card].frame.h * 2, images.card.sprites[card.piece.card], 0, false, 0, 0, images.card.sprites[card.piece.card].frame.w, images.card.sprites[card.piece.card].frame.h, false)
@@ -2659,21 +2659,21 @@ class Auction {
                     this.addMoneyButton100.visible = false;
                 }
                 drawRotatedImageFromSpriteSheet(canvas.width - 256 + 22 - images.auction.sprites[4].frame.w, 600, images.auction.sprites[4].frame.w * 2, images.auction.sprites[4].frame.h, images.auction.sprites[4], 0, false, 0, images.auction.sprites[4].frame.h / 2, images.auction.sprites[4].frame.w, images.auction.sprites[4].frame.h / 2)
-                if (this.time > 472) {
-                    this.time = 472
+                if (this.time > 432) {
+                    this.time = 432
                 }
                 c.fillStyle = "black"
-                if (this.time < 472 && this.time > 6) {
-                    c.fillRect(canvas.width - 256 + 15 - images.auction.sprites[4].frame.w, 600 / 2, -this.time / 2, 58 / 2)
+                if (this.time < 432 && this.time > 6) {
+                    c.fillRect(canvas.width/2 - 128 + images.auction.sprites[4].frame.w/2 + 11 -4 , 600 / 2, -this.time / 2, 58 / 2)
                 }
                 if (this.time > 4) {
-                    c.fillRect(canvas.width - 256 + 15 - images.auction.sprites[4].frame.w, 602 / 2, 2 / 2, 54 / 2)
+                    c.fillRect(canvas.width/2 - 128 + images.auction.sprites[4].frame.w/2 + 11 -4 , 602 / 2, 2 / 2, 54 / 2)
                 }
                 if (this.time > 2) {
-                    c.fillRect(canvas.width - 256 + 15 - images.auction.sprites[4].frame.w, 604 / 2, 4 / 2, 50 / 2)
+                    c.fillRect(canvas.width/2 - 128 + images.auction.sprites[4].frame.w/2 + 11 -4 , 604 / 2, 4 / 2, 50 / 2)
                 }
                 if (this.time > 0) {
-                    c.fillRect(canvas.width - 256 + 15 - images.auction.sprites[4].frame.w, 606 / 2, 7 / 2, 46 / 2)
+                    c.fillRect(canvas.width/2 - 128 + images.auction.sprites[4].frame.w/2 + 11 -4 , 606 / 2, 7 / 2, 46 / 2)
                 }
 
 
@@ -2682,7 +2682,7 @@ class Auction {
 
                     this.playerlist.splice(this.playerlist.indexOf(this.playerlist[this.turn]), 1)
                     this.turn = (this.turn) % this.playerlist.length;
-                    this.time = 472;
+                    this.time = 432;
                     this.startTime = performance.now();
                     if (this.playerlist.length === 1) {
                         for (let i = 0; i < players.length; i++) {
@@ -2752,7 +2752,7 @@ class Auction {
             this.auctionMoney += money;
             this.turn = (this.turn + 1) % this.playerlist.length;
 
-            this.time = 472;
+            this.time = 432;
             this.startTime = performance.now();
         }
     }
