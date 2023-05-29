@@ -465,13 +465,14 @@ class LocalLobby {
         this.ableToStart = true;
 
         this.useableColors = [0, 1, 2, 3, 4, 5, 6, 7]
-
+        
         this.addmorePlayers = function () {
             let id = self.playerInputs.length
             let tmp = {
                 id: id,
                 colorId: undefined,
                 y: (self.playerInputs.length * 110 - 100),
+                nameIndex:randomIntFromRange(0,namn.length-1),
                 textInput: new TextInput(40, 300, 560, 80, true, 50, 10),
                 botButton: new Button([true, false], -50 + 42, self.playerInputs.length * 55 - 32, images.buttons.sprites[13], function () {
                     self.playerInputs[id].textInput.htmlElement.value = ""
@@ -489,6 +490,7 @@ class LocalLobby {
                         self.playerInputs[id].textInput.oldvalue = "";
                         self.playerInputs[id].textInput.htmlElement.disabled = false;
                     }
+                    self.playerInputs[id].nameIndex = randomIntFromRange(0,namn.length-1)
                 }, 40, 40, false, false),
                 colorButton: new Button([true, false], -50, self.playerInputs.length * 55 - 32, images.colorButtons.sprites[8], function () {
                     if (self.playerInputs[id].colorButton.selected) {
@@ -580,7 +582,6 @@ class LocalLobby {
                 this.ableToStart = true;
 
                 this.playerInputs.forEach(e => { e.textInput.visible = true; e.botButton.visible = true; e.colorButton.visible = true })
-                let lastBotId = 0;
 
                 let playersReady = [];
                 let botsReady = [];
@@ -592,9 +593,7 @@ class LocalLobby {
                         e.botButton.disabled = false;
                     }
                     if (e.botButton.selected) {
-                        lastBotId++;
-
-                        e.textInput.htmlElement.value = "Bot " + lastBotId;
+                        e.textInput.htmlElement.value = namn[e.nameIndex];
                         e.textInput.htmlElement.disabled = true;
                         e.colorButton.disabled = true;
                         e.textInput.disabled = true;
@@ -642,6 +641,11 @@ class LocalLobby {
                     self.playerInputs.forEach(function (g, h) {
                         if (e.textInput.value === g.textInput.value && i !== h && g.textInput.value !== "") {
                             self.ableToStart = false;
+                            if(e.botButton.selected){
+                                if(namn[e.nameIndex] == g.textInput.value){
+                                    e.nameIndex = randomIntFromRange(0,namn.length-1)
+                                }
+                            }
                         }
                     })
                     if (e.colorButton.selected) {
@@ -997,6 +1001,8 @@ async function init() {
     await preRender(images);
     loadSounds(sounds);
 
+    await loadNames()
+
 
     if (location.search != "") {
         await showOnlineLobby();
@@ -1074,6 +1080,7 @@ function update() {
     if (board !== undefined && players.length > 0) {
         board.update();
     }
+
 
     let tmp = false;
 
@@ -2980,7 +2987,7 @@ class BoardPiece {
 
             let mouseSquareX = (to_grid_coordinate(mouse.x, mouse.y).x - 1200 / 2) / (64)
             let mouseSquareY = (to_grid_coordinate(mouse.x, mouse.y).y + 720 / 2) / (64)
-            if (board.currentCard !== undefined || this.piece.type === "chance" || this.piece.type === "community Chest" || this.piece.type === "income tax" || this.piece.type === "tax" || this.n % 10 === 0 || board.auction !== undefined || board.trade !== undefined || players[turn].inJail === true || board.showDices || board.animateDices || players[turn].animationOffset !== 0 || board.getToMainMenuButton.selected || board.currentShowingCard !== undefined || players.map(e => e.playerBorder.button.selected).includes(true)) {
+            if (board.currentCard !== undefined || this.piece.type === "chance" || this.piece.type === "community chest" || this.piece.type === "income tax" || this.piece.type === "tax" || this.n % 10 === 0 || board.auction !== undefined || board.trade !== undefined || players[turn].inJail === true || board.showDices || board.animateDices || players[turn].animationOffset !== 0 || board.getToMainMenuButton.selected || board.currentShowingCard !== undefined || players.map(e => e.playerBorder.button.selected).includes(true)) {
                 this.offsetY = this.currentOffsetvalue;
                 this.hover = false;
             } else if (this.x / 64 > mouseSquareX - 1 && this.x / 64 < mouseSquareX && this.side === 2 && this.n % 10 !== 0 && mouseSquareY >= 0 && mouseSquareY < 2
@@ -3907,3 +3914,122 @@ function timeToText(value) {
 }
 
 init();
+
+//Sortering och inläggning av namn
+/*
+
+function parseCSV(str) {
+    const arr = [];
+    let quote = false;  // 'true' means we're inside a quoted field
+
+    // Iterate over each character, keep track of current row and column (of the returned array)
+    for (let row = 0, col = 0, c = 0; c < str.length; c++) {
+        let cc = str[c], nc = str[c+1];        // Current character, next character
+        arr[row] = arr[row] || [];             // Create a new row if necessary
+        arr[row][col] = arr[row][col] || '';   // Create a new column (start with empty string) if necessary
+
+        // If the current character is a quotation mark, and we're inside a
+        // quoted field, and the next character is also a quotation mark,
+        // add a quotation mark to the current column and skip the next character
+        if (cc == '"' && quote && nc == '"') { arr[row][col] += cc; ++c; continue; }
+
+        // If it's just one quotation mark, begin/end quoted field
+        if (cc == '"') { quote = !quote; continue; }
+
+        // If it's a comma and we're not in a quoted field, move on to the next column
+        if (cc == ',' && !quote) { ++col; continue; }
+
+        // If it's a newline (CRLF) and we're not in a quoted field, skip the next character
+        // and move on to the next row and move to column 0 of that new row
+        if (cc == '\r' && nc == '\n' && !quote) { ++row; col = 0; ++c; continue; }
+
+        // If it's a newline (LF or CR) and we're not in a quoted field,
+        // move on to the next row and move to column 0 of that new row
+        if (cc == '\n' && !quote) { ++row; col = 0; continue; }
+        if (cc == '\r' && !quote) { ++row; col = 0; continue; }
+
+        // Otherwise, append the current character to the current column
+        arr[row][col] += cc;
+    }
+    return arr;
+}
+
+function readTextFile(file, callback) {
+    var rawFile = new XMLHttpRequest();
+    rawFile.overrideMimeType("application/json");
+    rawFile.open("GET", file, true);
+    rawFile.onreadystatechange = function() {
+        if (rawFile.readyState === 4 && rawFile.status == "200") {
+            callback(rawFile.responseText);
+        }
+    }
+    rawFile.send(null);
+}
+
+function download(filename, text) {
+    var element = document.createElement('a');
+    element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+    element.setAttribute('download', filename);
+  
+    element.style.display = 'none';
+    document.body.appendChild(element);
+  
+    element.click();
+  
+    document.body.removeChild(element);
+  }
+
+  const upperCaseFirstLetter = string =>
+ `${string.slice(0, 1).toUpperCase()}${string.slice(1)}`;
+*/
+//const lowerCaseAllWordsExceptFirstLetters = string =>
+// string.replaceAll(/\S*/g, word =>
+ // `${word.slice(0, 1)}${word.slice(1).toLowerCase()}`
+ //);
+
+ /*
+  let women;
+  let men;
+
+  String.prototype.replaceAtIndex = function(_index, _newValue) {
+    return this.substr(0, _index) + _newValue + this.substr(_index + _newValue.length)
+}
+
+readTextFile("namn-med-minst-tva-barare-31-december-2022_20230228 - Tilltalsnamn kvinnor.csv", function(text){
+    let tmp = parseCSV(text);
+    let tmp2 = tmp.filter(e => e[0] != "")
+    let tmp3 = tmp2.filter(e => e[1].length > 3)
+    let tmp4 = tmp3.map(e => upperCaseFirstLetter(lowerCaseAllWordsExceptFirstLetters(e[0])))
+    let tmp5 = tmp4.map(e => {
+        if(e.includes("-")){
+            let index = e.indexOf("-")
+            let toReplace = e.charAt(index+1).toUpperCase()
+            return e.replaceAtIndex(index+1,toReplace)
+        }else{
+            return e
+        }
+    })
+    women = tmp5
+});
+readTextFile("namn-med-minst-tva-barare-31-december-2022_20230228 - Tilltalsnamn män.csv", function(text){
+    let tmp = parseCSV(text);
+    let tmp2 = tmp.filter(e => e[0] != "")
+    let tmp3 = tmp2.filter(e => e[1].length > 3)
+    let tmp4 = tmp3.map(e => upperCaseFirstLetter(lowerCaseAllWordsExceptFirstLetters(e[0])))
+    let tmp5 = tmp4.map(e => {
+        if(e.includes("-")){
+            let index = e.indexOf("-")
+            let toReplace = e.charAt(index+1).toUpperCase()
+            return e.replaceAtIndex(index+1,toReplace)
+        }else{
+            return e
+        }
+    })
+    men = tmp5
+    
+    
+    //download("namn",JSON.stringify(men.concat(women)))
+});
+
+
+*/

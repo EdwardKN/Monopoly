@@ -12,6 +12,8 @@ const fastSpeed = false;
 
 const disableAlert = false;
 
+var namn
+
 if (disableAlert) {
     window.alert = function () { }
 }
@@ -74,8 +76,21 @@ async function loadSpriteSheet() {
     spritesheetImage.src = "./images/texture.png";
 }
 
+async function loadNames() {
+    var response = await fetch("./namn.json")
+    namn = await response.json();
+}
 
-
+const groups = {
+    'brown': [1, 3],
+    'light blue': [6, 8, 9],
+    'pink': [11, 13, 14],
+    'orange': [16, 18, 19],
+    'red': [21, 23, 24],
+    'yellow': [26, 27, 29],
+    'green': [31, 32, 34],
+    'blue': [37, 39],
+}
 
 var images = {
     spritesheet: {
@@ -234,7 +249,7 @@ const pieces = [
     },
     {
         name: "Allmänning",
-        type: "community Chest",
+        type: "community chest",
         img: 15
     },
     {
@@ -296,7 +311,7 @@ const pieces = [
         color: "#81d4fa"
     },
     {
-        name: "§ängelse",
+        name: "fängelse",
         img: 1
     },
     {
@@ -357,7 +372,7 @@ const pieces = [
     },
     {
         name: "Allmänning",
-        type: "community Chest",
+        type: "community chest",
         img: 15
     },
     {
@@ -491,7 +506,7 @@ const pieces = [
     },
     {
         name: "Allmänning",
-        type: "community Chest",
+        type: "community chest",
         img: 15
     },
     {
