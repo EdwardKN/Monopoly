@@ -1075,6 +1075,7 @@ function update() {
         board.update();
     }
 
+
     let tmp = false;
 
     buttons.forEach(e => {
@@ -2980,7 +2981,7 @@ class BoardPiece {
 
             let mouseSquareX = (to_grid_coordinate(mouse.x, mouse.y).x - 1200 / 2) / (64)
             let mouseSquareY = (to_grid_coordinate(mouse.x, mouse.y).y + 720 / 2) / (64)
-            if (board.currentCard !== undefined || this.piece.type === "chance" || this.piece.type === "community Chest" || this.piece.type === "income tax" || this.piece.type === "tax" || this.n % 10 === 0 || board.auction !== undefined || board.trade !== undefined || players[turn].inJail === true || board.showDices || board.animateDices || players[turn].animationOffset !== 0 || board.getToMainMenuButton.selected || board.currentShowingCard !== undefined || players.map(e => e.playerBorder.button.selected).includes(true)) {
+            if (board.currentCard !== undefined || this.piece.type === "chance" || this.piece.type === "community chest" || this.piece.type === "income tax" || this.piece.type === "tax" || this.n % 10 === 0 || board.auction !== undefined || board.trade !== undefined || players[turn].inJail === true || board.showDices || board.animateDices || players[turn].animationOffset !== 0 || board.getToMainMenuButton.selected || board.currentShowingCard !== undefined || players.map(e => e.playerBorder.button.selected).includes(true)) {
                 this.offsetY = this.currentOffsetvalue;
                 this.hover = false;
             } else if (this.x / 64 > mouseSquareX - 1 && this.x / 64 < mouseSquareX && this.side === 2 && this.n % 10 !== 0 && mouseSquareY >= 0 && mouseSquareY < 2
