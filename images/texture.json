@@ -2431,7 +2431,7 @@
         "x": 2063,
         "y": 339,
         "w": 776,
-        "h": 80
+        "h": 60
       },
       "rotated": false,
       "trimmed": false,
@@ -2439,11 +2439,11 @@
         "x": 0,
         "y": 0,
         "w": 776,
-        "h": 80
+        "h": 60
       },
       "sourceSize": {
         "w": 776,
-        "h": 80
+        "h": 60
       },
       "pivot": {
         "x": 0.5,
@@ -2629,7 +2629,7 @@
       "filename": "community card and chance card/fa10kravallaandraspelarec.png",
       "frame": {
         "x": 2057,
-        "y": 421,
+        "y": 401,
         "w": 512,
         "h": 256
       },
@@ -2804,7 +2804,7 @@
       "filename": "community card and chance card/fa50kravallaandraspelarec.png",
       "frame": {
         "x": 2057,
-        "y": 679,
+        "y": 659,
         "w": 512,
         "h": 256
       },
@@ -3004,7 +3004,7 @@
       "filename": "community card and chance card/gatillfinkanc.png",
       "frame": {
         "x": 2057,
-        "y": 937,
+        "y": 917,
         "w": 512,
         "h": 256
       },
@@ -3204,7 +3204,7 @@
       "filename": "community card and chance card/gatillstart.png",
       "frame": {
         "x": 2057,
-        "y": 1195,
+        "y": 1175,
         "w": 512,
         "h": 256
       },
@@ -3404,7 +3404,7 @@
       "filename": "community card and chance card/specialempty.png",
       "frame": {
         "x": 2057,
-        "y": 1453,
+        "y": 1433,
         "w": 512,
         "h": 256
       },
@@ -3679,7 +3679,7 @@
       "filename": "Cards/lightbluecard2.png",
       "frame": {
         "x": 1807,
-        "y": 1711,
+        "y": 1691,
         "w": 256,
         "h": 324
       },
@@ -3704,7 +3704,7 @@
       "filename": "Cards/lightbluecard3.png",
       "frame": {
         "x": 2065,
-        "y": 1711,
+        "y": 1691,
         "w": 256,
         "h": 324
       },
@@ -4054,7 +4054,7 @@
       "filename": "Cards/yellowcard1.png",
       "frame": {
         "x": 1807,
-        "y": 2037,
+        "y": 2017,
         "w": 256,
         "h": 324
       },
@@ -4079,7 +4079,7 @@
       "filename": "Cards/yellowcard2.png",
       "frame": {
         "x": 2065,
-        "y": 2037,
+        "y": 2017,
         "w": 256,
         "h": 324
       },

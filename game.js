@@ -407,7 +407,7 @@ class LocalLobby {
                 e.colorButtons.forEach(g => g.visible = false)
             })
         }, 325, 60, false, false, false, false, false, false)
-        this.startButton = new Button([false, false], 250, 660, images.buttons.sprites[11], function () {
+        this.startButton = new Button([false, false], 250, 670, images.buttons.sprites[11], function () {
             let playerlist = []
 
             self.readyPlayers.forEach(e => {
@@ -458,7 +458,7 @@ class LocalLobby {
                 e.textInput.oldvalue = ""
             })
             self.useableColors = [0, 1, 2, 3, 4, 5, 6, 7]
-        }, 97 * 2, 80, false, false, false, false, false, false)
+        }, 97 * 2, 60, false, false, false, false, false, false)
         this.disableAll = false;
         this.ableToStart = true;
 
@@ -714,7 +714,7 @@ class LoadingMenu {
                     loadGame(self.games.length - i - 1)
                 }
             })
-        }, 97 * 2, 80)
+        }, 97 * 2, 60)
         this.deleteSave = new Button([false, false], 40, 650 + 20, images.buttons.sprites[2], function () {
             self.buttons.forEach(function (e, i) {
                 if (e.selected === true) {
