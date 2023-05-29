@@ -263,11 +263,13 @@ function saveGame() {
     let gameToSave = { players: [], settings: board.settings, turn: turn, freeParkingMoney: board.boardPieces[20].money, currentDay: new Date().today(), currentTime: new Date().timeNow(), playtime: playtime, screenshot: canvas.toDataURL() };
     let savedGames = JSON.parse(localStorage.getItem("games"))
 
-    if (savedGames.length >= 10) {
-        savedGames.pop();
-    }
+    
     if (savedGames == undefined || savedGames == null) {
         savedGames = [];
+    }else{
+        if (savedGames.length >= 10) {
+            savedGames.pop();
+        }
     }
     if (board.id === undefined) {
         gameToSave.id = savedGames.length === 0 ? 0 : savedGames[savedGames.length - 1].id + 1
