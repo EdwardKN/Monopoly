@@ -1662,7 +1662,7 @@ class Board {
             board.auction = new Auction(board.currentCard)
             board.currentCard = undefined;
             board.sellButton.visible = false;
-            board.getToMainMenuButton.visible = true; board.goToMainMenuButton.visible = false;;
+            board.getToMainMenuButton.visible = false; board.goToMainMenuButton.visible = false;
             board.buyButton.visible = false;
             board.auctionButton.visible = false;
         }, 97, 40);
@@ -2608,16 +2608,16 @@ class Auction {
         })
 
 
-        this.addMoneyButton2 = new Button([false, false], -100, 600, images.auction.sprites[1], function () {
+        this.addMoneyButton2 = new Button([false, false], -100, 550, images.auction.sprites[1], function () {
             board.auction.addMoney(2);
         }, 54, 54, false)
-        this.addMoneyButton10 = new Button([false, false], -20, 600, images.auction.sprites[2], function () {
+        this.addMoneyButton10 = new Button([false, false], -20, 550, images.auction.sprites[2], function () {
             board.auction.addMoney(10);
         }, 54, 54, false)
-        this.addMoneyButton100 = new Button([false, false], 60, 600, images.auction.sprites[3], function () {
+        this.addMoneyButton100 = new Button([false, false], 60, 550, images.auction.sprites[3], function () {
             board.auction.addMoney(100);
         }, 54, 54, false)
-        this.startAuctionButton = new Button([false, false], -110, 600, images.auction.sprites[5], function () {
+        this.startAuctionButton = new Button([false, false], -110, 550, images.auction.sprites[5], function () {
             if (Api.online) {
                 Api.auctionStart(board.auction.card);
                 return;
@@ -2631,15 +2631,15 @@ class Auction {
         }, 240, 40, false)
 
         this.draw = function () {
-            drawRotatedImageFromSpriteSheet(canvas.width, 300, images.card.sprites[card.piece.card].frame.w * 2 - 22, images.card.sprites[card.piece.card].frame.h * 2, images.card.sprites[card.piece.card], 0, false, 0, 0, images.card.sprites[card.piece.card].frame.w, images.card.sprites[card.piece.card].frame.h, false)
+            drawRotatedImageFromSpriteSheet(canvas.width, canvas.height - images.card.sprites[card.piece.card].frame.h, images.card.sprites[card.piece.card].frame.w * 2 - 22, images.card.sprites[card.piece.card].frame.h * 2, images.card.sprites[card.piece.card], 0, false, 0, 0, images.card.sprites[card.piece.card].frame.w, images.card.sprites[card.piece.card].frame.h, false)
 
-            drawRotatedImageFromSpriteSheet(canvas.width - images.auction.sprites[0].frame.w * 2 + 22, 300, images.auction.sprites[0].frame.w * 2, images.auction.sprites[0].frame.h * 2, images.auction.sprites[0], 0, false, 0, 0, images.auction.sprites[0].frame.w, images.auction.sprites[0].frame.h, false)
+            drawRotatedImageFromSpriteSheet(canvas.width - images.auction.sprites[0].frame.w * 2 + 22, canvas.height - images.card.sprites[card.piece.card].frame.h, images.auction.sprites[0].frame.w * 2, images.auction.sprites[0].frame.h * 2, images.auction.sprites[0], 0, false, 0, 0, images.auction.sprites[0].frame.w, images.auction.sprites[0].frame.h, false)
             c.fillStyle = "black";
             c.font = 80 / 2 + "px Arcade";
             c.textAlign = "center";
-            c.fillText(this.auctionMoney + "kr", canvas.width / 2 - 128 + 11, 480 / 2);
+            c.fillText(this.auctionMoney + "kr", canvas.width / 2 - 128 + 11, 450 / 2);
             c.font = (1 / this.playerlist[this.turn].textsize.width) * 22000 > 50 ? 50 : (1 / this.playerlist[this.turn].textsize.width) * 22000 + "px Arcade";
-            c.fillText(this.playerlist[this.turn].name, canvas.width / 2 - 128 + 11, 600 / 2);
+            c.fillText(this.playerlist[this.turn].name, canvas.width / 2 - 128 + 11, 570 / 2);
 
             if (this.started) {
                 if ((!Api.online && this.playerlist[this.turn].bot === undefined) || (Api.online && Api.currentPlayer == this.playerlist[this.turn].colorIndex)) {
@@ -2658,22 +2658,22 @@ class Auction {
                     this.addMoneyButton10.visible = false;
                     this.addMoneyButton100.visible = false;
                 }
-                drawRotatedImageFromSpriteSheet(canvas.width - 256 + 22 - images.auction.sprites[4].frame.w, 650, images.auction.sprites[4].frame.w * 2, images.auction.sprites[4].frame.h, images.auction.sprites[4], 0, false, 0, images.auction.sprites[4].frame.h / 2, images.auction.sprites[4].frame.w, images.auction.sprites[4].frame.h / 2)
+                drawRotatedImageFromSpriteSheet(canvas.width - 256 + 22 - images.auction.sprites[4].frame.w, 600, images.auction.sprites[4].frame.w * 2, images.auction.sprites[4].frame.h, images.auction.sprites[4], 0, false, 0, images.auction.sprites[4].frame.h / 2, images.auction.sprites[4].frame.w, images.auction.sprites[4].frame.h / 2)
                 if (this.time > 472) {
                     this.time = 472
                 }
                 c.fillStyle = "black"
                 if (this.time < 472 && this.time > 6) {
-                    c.fillRect(canvas.width - 256 + 15 - images.auction.sprites[4].frame.w, 650 / 2, -this.time / 2, 58 / 2)
+                    c.fillRect(canvas.width - 256 + 15 - images.auction.sprites[4].frame.w, 600 / 2, -this.time / 2, 58 / 2)
                 }
                 if (this.time > 4) {
-                    c.fillRect(canvas.width - 256 + 15 - images.auction.sprites[4].frame.w, 652 / 2, 2 / 2, 54 / 2)
+                    c.fillRect(canvas.width - 256 + 15 - images.auction.sprites[4].frame.w, 602 / 2, 2 / 2, 54 / 2)
                 }
                 if (this.time > 2) {
-                    c.fillRect(canvas.width - 256 + 15 - images.auction.sprites[4].frame.w, 654 / 2, 4 / 2, 50 / 2)
+                    c.fillRect(canvas.width - 256 + 15 - images.auction.sprites[4].frame.w, 604 / 2, 4 / 2, 50 / 2)
                 }
                 if (this.time > 0) {
-                    c.fillRect(canvas.width - 256 + 15 - images.auction.sprites[4].frame.w, 656 / 2, 7 / 2, 46 / 2)
+                    c.fillRect(canvas.width - 256 + 15 - images.auction.sprites[4].frame.w, 606 / 2, 7 / 2, 46 / 2)
                 }
 
 
