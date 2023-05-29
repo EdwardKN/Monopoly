@@ -263,6 +263,9 @@ function saveGame() {
     let gameToSave = { players: [], settings: board.settings, turn: turn, freeParkingMoney: board.boardPieces[20].money, currentDay: new Date().today(), currentTime: new Date().timeNow(), playtime: playtime, screenshot: canvas.toDataURL() };
     let savedGames = JSON.parse(localStorage.getItem("games"))
 
+    if (savedGames.length >= 10) {
+        savedGames.pop();
+    }
     if (savedGames == undefined || savedGames == null) {
         savedGames = [];
     }
@@ -368,16 +371,17 @@ class LocalLobby {
         this.playerInputs = [];
         this.amountBots = 0;
         this.settingsButtons = [];
-        this.settingsButtons.push(new Button([true, false], 80, 220, images.buttons.sprites[10], function () { }, 500, 40, false, false, false, false, false, false, "Ge alla skattepengar till fri parkering", 42, "black"))
-        this.settingsButtons.push(new Button([true, false], 80, 220 + this.settingsButtons.length * 42, images.buttons.sprites[10], function () { }, 500, 40, false, false, false, false, false, false, "Ge alla bankpengar till fri parkering", 42, "black"))
-        this.settingsButtons.push(new Button([true, false], 80, 220 + this.settingsButtons.length * 42, images.buttons.sprites[10], function () { }, 500, 40, false, false, false, false, false, false, "Dubbel hyra på komplett färggrupp", 42, "black"))
-        this.settingsButtons.push(new Button([true, false], 80, 220 + this.settingsButtons.length * 42, images.buttons.sprites[10], function () { }, 500, 40, false, false, false, false, false, false, "Auktioner", 42, "black"))
-        this.settingsButtons.push(new Button([true, false], 80, 220 + this.settingsButtons.length * 42, images.buttons.sprites[10], function () { }, 500, 40, false, false, false, false, false, false, "Få/förlora pengar i fängelset", 42, "black"))
-        this.settingsButtons.push(new Button([true, false], 80, 220 + this.settingsButtons.length * 42, images.buttons.sprites[10], function () { }, 500, 40, false, false, false, false, false, false, "Möjlighet att inteckna", 42, "black"))
-        this.settingsButtons.push(new Button([true, false], 80, 220 + this.settingsButtons.length * 42, images.buttons.sprites[10], function () { }, 500, 40, false, false, false, false, false, false, "Möjlighet att sälja", 42, "black"))
-        this.settingsButtons.push(new Button([true, false], 80, 220 + this.settingsButtons.length * 42, images.buttons.sprites[10], function () { }, 500, 40, false, false, false, false, false, false, "Jämn utbyggnad", 42, "black"))
-        this.settingsButtons.push(new Slider(436 * drawScale, 40 + this.settingsButtons.length * 42 * drawScale, 502 * drawScale, 40 * drawScale, 0, 3000, 100, true, 50, "kr", "Startkapital: "))
-        this.settingsButtons.push(new Slider(436 * drawScale, 40 + this.settingsButtons.length * 42 * drawScale, 502 * drawScale, 40 * drawScale, 0, 5, 1, true, 50, "", "Antal varv innan köp: "))
+        this.settingsButtons.push(new Button([true, false], 80, 205, images.buttons.sprites[10], function () { }, 500, 40, false, false, false, false, false, false, "Ge alla skattepengar till fri parkering", 42, "black"))
+        this.settingsButtons.push(new Button([true, false], 80, 205 + this.settingsButtons.length * 42, images.buttons.sprites[10], function () { }, 500, 40, false, false, false, false, false, false, "Ge alla bankpengar till fri parkering", 42, "black"))
+        this.settingsButtons.push(new Button([true, false], 80, 205 + this.settingsButtons.length * 42, images.buttons.sprites[10], function () { }, 500, 40, false, false, false, false, false, false, "Dubbel hyra på komplett färggrupp", 42, "black"))
+        this.settingsButtons.push(new Button([true, false], 80, 205 + this.settingsButtons.length * 42, images.buttons.sprites[10], function () { }, 500, 40, false, false, false, false, false, false, "Auktioner", 42, "black"))
+        this.settingsButtons.push(new Button([true, false], 80, 205 + this.settingsButtons.length * 42, images.buttons.sprites[10], function () { }, 500, 40, false, false, false, false, false, false, "Få/förlora pengar i fängelset", 42, "black"))
+        this.settingsButtons.push(new Button([true, false], 80, 205 + this.settingsButtons.length * 42, images.buttons.sprites[10], function () { }, 500, 40, false, false, false, false, false, false, "Möjlighet att inteckna", 42, "black"))
+        this.settingsButtons.push(new Button([true, false], 80, 205 + this.settingsButtons.length * 42, images.buttons.sprites[10], function () { }, 500, 40, false, false, false, false, false, false, "Möjlighet att sälja", 42, "black"))
+        this.settingsButtons.push(new Button([true, false], 80, 205 + this.settingsButtons.length * 42, images.buttons.sprites[10], function () { }, 500, 40, false, false, false, false, false, false, "Jämn utbyggnad", 42, "black"))
+        this.settingsButtons.push(new Slider(436 * drawScale, 5 + this.settingsButtons.length * 42 * drawScale, 502 * drawScale, 40 * drawScale, 0, 3000, 100, true, 50, "kr", "Startkapital: "))
+        this.settingsButtons.push(new Slider(436 * drawScale, 5 + this.settingsButtons.length * 42 * drawScale, 502 * drawScale, 40 * drawScale, 0, 5, 1, true, 50, "", "Antal varv innan köp: "))
+        this.settingsButtons.push(new Slider(436 * drawScale, 5 + this.settingsButtons.length * 42 * drawScale, 502 * drawScale, 40 * drawScale, 0, 100, 10, true, 35, "%", "Startbud på auktioner(% av gatupris): "))
         this.settingsButtons[2].selected = true
         this.settingsButtons[3].selected = true
         this.settingsButtons[4].selected = true
@@ -385,6 +389,7 @@ class LocalLobby {
         this.settingsButtons[6].selected = true
         this.settingsButtons[7].selected = true
         this.settingsButtons[8].percentage = 0.45
+        this.settingsButtons[10].percentage = 0.5
         this.readyPlayers = [];
         this.settingsButtons[1].disabled = true;
 
@@ -402,7 +407,7 @@ class LocalLobby {
                 e.colorButtons.forEach(g => g.visible = false)
             })
         }, 325, 60, false, false, false, false, false, false)
-        this.startButton = new Button([false, false], 250, 650, images.buttons.sprites[11], function () {
+        this.startButton = new Button([false, false], 250, 660, images.buttons.sprites[11], function () {
             let playerlist = []
 
             self.readyPlayers.forEach(e => {
@@ -430,6 +435,7 @@ class LocalLobby {
                 even: self.settingsButtons[7].selected,
                 startmoney: self.settingsButtons[8].value,
                 roundsBeforePurchase: self.settingsButtons[9].value,
+                auctionstartprice: self.settingsButtons[10].percentage,
             }
             startGame(playerlist, settings)
             self.current = false;
@@ -1047,6 +1053,7 @@ async function init() {
             even: true,
             startmoney: 1400,
             roundsBeforePurchase: 0,
+            auctionstartprice: 0.5,
         }
         startGame(playerlist, settings)
         update();
@@ -1567,7 +1574,7 @@ class Board {
                 players[turn].money += board.currentCard.piece.price / 2
                 players[turn].checkDebt(board.boardPieces[20]);
                 players[turn].playerBorder.startMoneyAnimation(board.currentCard.piece.price / 2);
-            }else{
+            } else {
                 board.currentCard.mortgaged = false;
             }
             players[turn].ownedPlaces.splice(players[turn].ownedPlaces.indexOf(board.currentCard), 1);
@@ -1858,6 +1865,21 @@ class Board {
                         if (board.settings.auctions) {
                             this.auctionButton.disabled = false;
                             this.cardCloseButton.visible = false;
+                            if (players[turn].money - this.currentCard.piece.price * this.settings.auctionstartprice >= 0) {
+                                this.auctionButton.disabled = false;
+                            } else {
+                                let tmp = [];
+                                players.forEach(e => {
+                                    if (e.money - this.currentCard.piece.price * this.settings.auctionstartprice >= 0) {
+                                        tmp.push(e)
+                                    }
+                                })
+                                if (players.length < 2 || tmp.length < 2) {
+                                    this.auctionButton.disabled = true;
+                                    this.cardCloseButton.visible = true;
+                                    this.cardCloseButton.draw();
+                                }
+                            }
                         } else {
                             this.auctionButton.disabled = true;
                             this.cardCloseButton.visible = true;
@@ -1876,6 +1898,7 @@ class Board {
                         } else {
                             this.buyButton.disabled = true;
                         }
+
 
                     } else {
                         this.buyButton.visible = false;
@@ -2574,23 +2597,27 @@ class Auction {
     constructor(card) {
         this.card = card;
         this.turn = turn;
-        this.auctionMoney = 0;
+        this.auctionMoney = Math.round(card.piece.price * board.settings.auctionstartprice);
         this.time = 472;
         this.started = false;
         this.timer = undefined;
         this.playerlist = [...players];
 
+        this.playerlist.forEach(e => {
+            e.textsize = measureText({ font: "Arcade", text: e.name })
+        })
 
-        this.addMoneyButton2 = new Button([false, false], -90, 540, images.auction.sprites[1], function () {
+
+        this.addMoneyButton2 = new Button([false, false], -100, 600, images.auction.sprites[1], function () {
             board.auction.addMoney(2);
         }, 54, 54, false)
-        this.addMoneyButton10 = new Button([false, false], 0, 540, images.auction.sprites[2], function () {
+        this.addMoneyButton10 = new Button([false, false], -20, 600, images.auction.sprites[2], function () {
             board.auction.addMoney(10);
         }, 54, 54, false)
-        this.addMoneyButton100 = new Button([false, false], 90, 540, images.auction.sprites[3], function () {
+        this.addMoneyButton100 = new Button([false, false], 60, 600, images.auction.sprites[3], function () {
             board.auction.addMoney(100);
         }, 54, 54, false)
-        this.startAuctionButton = new Button([false, false], -95, 540, images.auction.sprites[5], function () {
+        this.startAuctionButton = new Button([false, false], -110, 600, images.auction.sprites[5], function () {
             if (Api.online) {
                 Api.auctionStart(board.auction.card);
                 return;
@@ -2604,14 +2631,15 @@ class Auction {
         }, 240, 40, false)
 
         this.draw = function () {
-            drawIsometricImage(0, 0, images.card.sprites[card.piece.card], false, 0, 0, images.card.sprites[this.card.piece.card].frame.w, images.card.sprites[this.card.piece.card].frame.h, images.card.sprites[this.card.piece.card].frame.w / 3, images.card.sprites[this.card.piece.card].frame.h / 7.5, 1)
-            drawIsometricImage(0, 0, images.auction.sprites[0], false, 0, 0, images.auction.sprites[0].frame.w, images.card.sprites[this.card.piece.card].frame.h, -images.card.sprites[this.card.piece.card].frame.w / 1.5, images.card.sprites[this.card.piece.card].frame.h / 7.5, 1)
+            drawRotatedImageFromSpriteSheet(canvas.width, 300, images.card.sprites[card.piece.card].frame.w * 2 - 22, images.card.sprites[card.piece.card].frame.h * 2, images.card.sprites[card.piece.card], 0, false, 0, 0, images.card.sprites[card.piece.card].frame.w, images.card.sprites[card.piece.card].frame.h, false)
+
+            drawRotatedImageFromSpriteSheet(canvas.width - images.auction.sprites[0].frame.w * 2 + 22, 300, images.auction.sprites[0].frame.w * 2, images.auction.sprites[0].frame.h * 2, images.auction.sprites[0], 0, false, 0, 0, images.auction.sprites[0].frame.w, images.auction.sprites[0].frame.h, false)
             c.fillStyle = "black";
             c.font = 80 / 2 + "px Arcade";
             c.textAlign = "center";
-            c.fillText(this.auctionMoney + "kr", 790 / 2, 450 / 2);
-            c.font = 80 / 2 + "px Arcade";
-            c.fillText(this.playerlist[this.turn].name, 790 / 2, 550 / 2);
+            c.fillText(this.auctionMoney + "kr", canvas.width / 2 - 128 + 11, 480 / 2);
+            c.font = (1 / this.playerlist[this.turn].textsize.width) * 22000 > 50 ? 50 : (1 / this.playerlist[this.turn].textsize.width) * 22000 + "px Arcade";
+            c.fillText(this.playerlist[this.turn].name, canvas.width / 2 - 128 + 11, 600 / 2);
 
             if (this.started) {
                 if ((!Api.online && this.playerlist[this.turn].bot === undefined) || (Api.online && Api.currentPlayer == this.playerlist[this.turn].colorIndex)) {
@@ -2630,23 +2658,22 @@ class Auction {
                     this.addMoneyButton10.visible = false;
                     this.addMoneyButton100.visible = false;
                 }
-
-                drawIsometricImage(0, 0, images.auction.sprites[4], false, 0, 30, 240, 30, -150, 220, 1)
+                drawRotatedImageFromSpriteSheet(canvas.width - 256 + 22 - images.auction.sprites[4].frame.w, 650, images.auction.sprites[4].frame.w * 2, images.auction.sprites[4].frame.h, images.auction.sprites[4], 0, false, 0, images.auction.sprites[4].frame.h / 2, images.auction.sprites[4].frame.w, images.auction.sprites[4].frame.h / 2)
                 if (this.time > 472) {
                     this.time = 472
                 }
                 c.fillStyle = "black"
                 if (this.time < 472 && this.time > 6) {
-                    c.fillRect(1002 / 2, 560 / 2, -this.time / 2, 58 / 2)
+                    c.fillRect(canvas.width - 256 + 15 - images.auction.sprites[4].frame.w, 650 / 2, -this.time / 2, 58 / 2)
                 }
                 if (this.time > 4) {
-                    c.fillRect(1002 / 2, 562 / 2, 2 / 2, 54 / 2)
+                    c.fillRect(canvas.width - 256 + 15 - images.auction.sprites[4].frame.w, 652 / 2, 2 / 2, 54 / 2)
                 }
                 if (this.time > 2) {
-                    c.fillRect(1002 / 2, 564 / 2, 4 / 2, 50 / 2)
+                    c.fillRect(canvas.width - 256 + 15 - images.auction.sprites[4].frame.w, 654 / 2, 4 / 2, 50 / 2)
                 }
                 if (this.time > 0) {
-                    c.fillRect(1002 / 2, 566 / 2, 7 / 2, 46 / 2)
+                    c.fillRect(canvas.width - 256 + 15 - images.auction.sprites[4].frame.w, 656 / 2, 7 / 2, 46 / 2)
                 }
 
 
@@ -2662,7 +2689,7 @@ class Auction {
                             if (this.playerlist[0].colorIndex == players[i].colorIndex) {
                                 intervals.forEach(e => clearInterval(e));
                                 clearInterval(this.timer)
-                                if (this.auctionMoney !== 0) {
+                                if (this.auctionMoney !== 0 && players[i].money - this.auctionMoney >= 0) {
                                     players[i].money -= this.auctionMoney;
                                     if (board.settings.allFreeparking) {
                                         board.boardPieces[20].money += this.auctionMoney;
@@ -2724,7 +2751,7 @@ class Auction {
 
             this.auctionMoney += money;
             this.turn = (this.turn + 1) % this.playerlist.length;
-            
+
             this.time = 472;
             this.startTime = performance.now();
         }

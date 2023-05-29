@@ -4130,7 +4130,7 @@
       "frame": {
         "x": 3355,
         "y": 2249,
-        "w": 267,
+        "w": 256,
         "h": 324
       },
       "rotated": false,
@@ -4138,11 +4138,11 @@
       "spriteSourceSize": {
         "x": 0,
         "y": 0,
-        "w": 267,
+        "w": 256,
         "h": 324
       },
       "sourceSize": {
-        "w": 267,
+        "w": 256,
         "h": 324
       },
       "pivot": {
@@ -4153,7 +4153,7 @@
     {
       "filename": "dices/dices.png",
       "frame": {
-        "x": 3624,
+        "x": 3613,
         "y": 2249,
         "w": 256,
         "h": 384
@@ -4269,56 +4269,6 @@
       "sourceSize": {
         "w": 981,
         "h": 552
-      },
-      "pivot": {
-        "x": 0.5,
-        "y": 0.5
-      }
-    },
-    {
-      "filename": "flag.png",
-      "frame": {
-        "x": 831,
-        "y": 24,
-        "w": 160,
-        "h": 40
-      },
-      "rotated": false,
-      "trimmed": false,
-      "spriteSourceSize": {
-        "x": 0,
-        "y": 0,
-        "w": 160,
-        "h": 40
-      },
-      "sourceSize": {
-        "w": 160,
-        "h": 40
-      },
-      "pivot": {
-        "x": 0.5,
-        "y": 0.5
-      }
-    },
-    {
-      "filename": "okej.png",
-      "frame": {
-        "x": 653,
-        "y": 314,
-        "w": 400,
-        "h": 60
-      },
-      "rotated": false,
-      "trimmed": false,
-      "spriteSourceSize": {
-        "x": 0,
-        "y": 0,
-        "w": 400,
-        "h": 60
-      },
-      "sourceSize": {
-        "w": 400,
-        "h": 60
       },
       "pivot": {
         "x": 0.5,
