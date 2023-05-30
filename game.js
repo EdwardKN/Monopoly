@@ -287,7 +287,7 @@ function saveGame() {
         tmpPlayer.jailcardAmount = player.jailcardAmount;
         tmpPlayer.lastMoneyInDebt = player.lastMoneyInDebt;
         tmpPlayer.money = player.money;
-        tmpPlayer.name = player.name;
+        tmpPlayer.name = player.realName;
         tmpPlayer.negative = player.negative;
         tmpPlayer.numberOfRolls = player.numberOfRolls;
         tmpPlayer.rolls = player.rolls;
@@ -2991,7 +2991,7 @@ class BoardPiece {
 
             let mouseSquareX = (to_grid_coordinate(mouse.x, mouse.y).x - 1200 / 2) / (64)
             let mouseSquareY = (to_grid_coordinate(mouse.x, mouse.y).y + 720 / 2) / (64)
-            if (board.currentCard !== undefined || this.piece.type === "chance" || this.piece.type === "community Chest" || this.piece.type === "income tax" || this.piece.type === "tax" || this.n % 10 === 0 || board.auction !== undefined || board.trade !== undefined || players[turn].inJail === true || board.showDices || board.animateDices || players[turn].animationOffset !== 0 || board.getToMainMenuButton.selected || board.currentShowingCard !== undefined || players.map(e => e.playerBorder.button.selected).includes(true)) {
+            if (board.currentCard !== undefined || this.piece.type === "chance" || this.piece.type === "community chest" || this.piece.type === "income tax" || this.piece.type === "tax" || this.n % 10 === 0 || board.auction !== undefined || board.trade !== undefined || players[turn].inJail === true || board.showDices || board.animateDices || players[turn].animationOffset !== 0 || board.getToMainMenuButton.selected || board.currentShowingCard !== undefined || players.map(e => e.playerBorder.button.selected).includes(true)) {
                 this.offsetY = this.currentOffsetvalue;
                 this.hover = false;
             } else if (this.x / 64 > mouseSquareX - 1 && this.x / 64 < mouseSquareX && this.side === 2 && this.n % 10 !== 0 && mouseSquareY >= 0 && mouseSquareY < 2
@@ -3544,7 +3544,7 @@ class Player {
                     board.win = true;
                 }
                 board.boardPieces[this.steps].currentPlayer.splice(board.boardPieces[this.steps].currentPlayer.indexOf(this), 1)
-                players.splice(players.indexOf(this), 1)
+                players.splice(i, 1)
 
             } else if (this.money < 0) {
                 this.negative = true;
@@ -3773,8 +3773,8 @@ class Player {
             playSound(sounds.dice, 1)
             var myFunction = function () {
                 board.randomizeDice();
-                board.dice1 = randomIntFromRange(1, 6)
-                board.dice2 = randomIntFromRange(1, 6)
+                board.dice1 = randomIntFromRange(1,6)
+                board.dice2 = randomIntFromRange(1,6)
                 counter *= speeds.diceSpeed.factor
                 if (counter > speeds.diceSpeed.threshold) {
                     board.dice1 = dice1;
@@ -3793,10 +3793,10 @@ class Player {
         this.rollDice = function () {
             if (this.negative === false) {
                 this.hasStepped = false;
-                if (this.inJail === false) {
-                    if (this.rolls === false) {
-                        let dice1 = randomIntFromRange(1, 6);
-                        let dice2 = randomIntFromRange(1, 6);
+                if(this.inJail === false){
+                    if(this.rolls === false){
+                        let dice1 = randomIntFromRange(1,6);
+                        let dice2 = randomIntFromRange(1,6);
                         this.numberOfRolls++;
                         if (dice1 === dice2) {
                             this.rolls = false;
