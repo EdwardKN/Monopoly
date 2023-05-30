@@ -308,6 +308,9 @@ function saveGame() {
     if (tmp === false) {
         savedGames.push(gameToSave);
     }
+    if (gameToSave.players.length === 1) {
+        savedGames.splice(savedGames.indexOf(gameToSave), 1)
+    }
 
     localStorage.setItem("games", JSON.stringify(savedGames))
 }
@@ -1421,7 +1424,6 @@ class Board {
         this.prisonExtra = new BoardPiece(-1, [])
         this.showDices = false;
         this.animateDices = false;
-        this.win = false;
         this.auction = undefined;
         this.trade = undefined;
         this.currentShowingCard = undefined;
@@ -1699,7 +1701,7 @@ class Board {
             this.boardPieces.forEach(g => g.update())
 
 
-            if (this.win === false) {
+            if (players.length > 1) {
 
                 this.showDice()
                 if (this.saving) {
@@ -1743,9 +1745,9 @@ class Board {
                 }
             } else {
                 c.fillStyle = "black"
-                c.font = 80 + "px Arcade"
+                c.font = 80 / 2 + "px Arcade"
                 c.textAlign = "center"
-                c.fillText("Grattis " + players[0].name + "! Du vann!", 1000, 600)
+                c.fillText("Grattis " + players[0].name + "! Du vann!", canvas.width / 2, canvas.height / 2 + 10)
             }
             players.forEach(e => e.playerBorder.drawButton())
 
@@ -3542,9 +3544,7 @@ class Player {
                     board.textsize = measureText({ font: "Arcade", text: "Just nu: " + players[turn].name });
 
                 }
-                if (players.length - 1 === 1) {
-                    board.win = true;
-                }
+
                 board.boardPieces[this.steps].currentPlayer.splice(board.boardPieces[this.steps].currentPlayer.indexOf(this), 1)
                 board.boardPieces.forEach(e => {
                     if (e.owner === this) {
