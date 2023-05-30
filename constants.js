@@ -6,11 +6,13 @@ var players = [];
 
 const drawScale = 2;
 
-const fastLoad = true;
+const fastLoad = false;
 
 const fastSpeed = false;
 
 const disableAlert = false;
+
+var namn
 
 if (disableAlert) {
     window.alert = function () { }
@@ -74,17 +76,12 @@ async function loadSpriteSheet() {
     spritesheetImage.src = "./images/texture.png";
 }
 
-
-const groups = {
-    'brown': [1, 3],
-    'light blue': [6, 8, 9],
-    'pink': [11, 13, 14],
-    'orange': [16, 18, 19],
-    'red': [21, 23, 24],
-    'yellow': [26, 27, 29],
-    'green': [31, 32, 34],
-    'blue': [37, 39],
+async function loadNames() {
+    var response = await fetch("./namn.json")
+    namn = await response.json();
 }
+
+
 
 var images = {
     spritesheet: {
