@@ -1816,6 +1816,9 @@ class Board {
                     if (players[Api.online ? Api.currentPlayer : turn].bot === undefined) this.cardCloseButton.visible = true;
                     if (this.currentCard.owner === players[Api.online ? Api.currentPlayer : turn] && players[Api.online ? Api.currentPlayer : turn].bot === undefined) {
                         this.sellButton.disabled = !this.settings.sellable
+                        if (this.currentCard.level > 0) {
+                            this.sellButton.disabled = true;
+                        }
                         this.sellButton.draw();
                         this.sellButton.visible = true;
                         this.mortgageButton.draw();
