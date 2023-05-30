@@ -739,6 +739,11 @@ class LoadingMenu {
                         self.buttons.forEach(e => e.visible = false)
                         self.init();
                     }
+                    if (i === self.buttons.length - 1) {
+                        self.buttons[i].selected = true;
+                    } else {
+                        self.buttons[i - 1].selected = true;
+                    }
 
 
                 }
