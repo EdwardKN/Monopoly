@@ -203,7 +203,7 @@ class Bot{
                     }
                 }
             }
-            if (bought) { i++ } // May want to continue upgrading the same group
+            if (bought) { i-- } // May want to continue upgrading the same group
         }
 
         /* Unmortgage */
