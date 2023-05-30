@@ -3539,12 +3539,17 @@ class Player {
                     board.textsize = measureText({ font: "Arcade", text: "Just nu: " + players[turn].name });
 
                 }
-
                 if (players.length - 1 === 1) {
                     board.win = true;
                 }
                 board.boardPieces[this.steps].currentPlayer.splice(board.boardPieces[this.steps].currentPlayer.indexOf(this), 1)
-                players.splice(i, 1)
+                board.boardPieces.forEach(e => {
+                    if (e.owner === this) {
+                        e.owner = undefined;
+                        e.mortgaged = false;
+                    }
+                })
+                players.splice(players.indexOf(this), 1)
 
             } else if (this.money < 0) {
                 this.negative = true;
