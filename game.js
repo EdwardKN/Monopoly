@@ -263,10 +263,10 @@ function saveGame() {
     let gameToSave = { players: [], settings: board.settings, turn: turn, freeParkingMoney: board.boardPieces[20].money, currentDay: new Date().today(), currentTime: new Date().timeNow(), playtime: playtime, screenshot: canvas.toDataURL() };
     let savedGames = JSON.parse(localStorage.getItem("games"))
 
-    
+
     if (savedGames == undefined || savedGames == null) {
         savedGames = [];
-    }else{
+    } else {
         if (savedGames.length >= 10) {
             savedGames.pop();
         }
@@ -465,14 +465,14 @@ class LocalLobby {
         this.ableToStart = true;
 
         this.useableColors = [0, 1, 2, 3, 4, 5, 6, 7]
-        
+
         this.addmorePlayers = function () {
             let id = self.playerInputs.length
             let tmp = {
                 id: id,
                 colorId: undefined,
                 y: (self.playerInputs.length * 110 - 100),
-                nameIndex:randomIntFromRange(0,namn.length-1),
+                nameIndex: randomIntFromRange(0, namn.length - 1),
                 textInput: new TextInput(40, 300, 560, 80, true, 50, 10),
                 botButton: new Button([true, false], -50 + 42, self.playerInputs.length * 55 - 32, images.buttons.sprites[13], function () {
                     self.playerInputs[id].textInput.htmlElement.value = ""
@@ -490,7 +490,7 @@ class LocalLobby {
                         self.playerInputs[id].textInput.oldvalue = "";
                         self.playerInputs[id].textInput.htmlElement.disabled = false;
                     }
-                    self.playerInputs[id].nameIndex = randomIntFromRange(0,namn.length-1)
+                    self.playerInputs[id].nameIndex = randomIntFromRange(0, namn.length - 1)
                 }, 40, 40, false, false),
                 colorButton: new Button([true, false], -50, self.playerInputs.length * 55 - 32, images.colorButtons.sprites[8], function () {
                     if (self.playerInputs[id].colorButton.selected) {
@@ -641,9 +641,9 @@ class LocalLobby {
                     self.playerInputs.forEach(function (g, h) {
                         if (e.textInput.value === g.textInput.value && i !== h && g.textInput.value !== "") {
                             self.ableToStart = false;
-                            if(e.botButton.selected){
-                                if(namn[e.nameIndex] == g.textInput.value){
-                                    e.nameIndex = randomIntFromRange(0,namn.length-1)
+                            if (e.botButton.selected) {
+                                if (namn[e.nameIndex] == g.textInput.value) {
+                                    e.nameIndex = randomIntFromRange(0, namn.length - 1)
                                 }
                             }
                         }
@@ -2672,16 +2672,16 @@ class Auction {
                 }
                 c.fillStyle = "black"
                 if (this.time < 432 && this.time > 6) {
-                    c.fillRect(canvas.width/2 - 128 + images.auction.sprites[4].frame.w/2 + 11 -4 , 600 / 2, -this.time / 2, 58 / 2)
+                    c.fillRect(canvas.width / 2 - 128 + images.auction.sprites[4].frame.w / 2 + 11 - 4, 600 / 2, -this.time / 2, 58 / 2)
                 }
                 if (this.time > 4) {
-                    c.fillRect(canvas.width/2 - 128 + images.auction.sprites[4].frame.w/2 + 11 -4 , 602 / 2, 2 / 2, 54 / 2)
+                    c.fillRect(canvas.width / 2 - 128 + images.auction.sprites[4].frame.w / 2 + 11 - 4, 602 / 2, 2 / 2, 54 / 2)
                 }
                 if (this.time > 2) {
-                    c.fillRect(canvas.width/2 - 128 + images.auction.sprites[4].frame.w/2 + 11 -4 , 604 / 2, 4 / 2, 50 / 2)
+                    c.fillRect(canvas.width / 2 - 128 + images.auction.sprites[4].frame.w / 2 + 11 - 4, 604 / 2, 4 / 2, 50 / 2)
                 }
                 if (this.time > 0) {
-                    c.fillRect(canvas.width/2 - 128 + images.auction.sprites[4].frame.w/2 + 11 -4 , 606 / 2, 7 / 2, 46 / 2)
+                    c.fillRect(canvas.width / 2 - 128 + images.auction.sprites[4].frame.w / 2 + 11 - 4, 606 / 2, 7 / 2, 46 / 2)
                 }
 
 
@@ -3475,6 +3475,7 @@ class CurrentCard {
 class Player {
 
     constructor(img, index, name, bot) {
+        this.realName = name
         this.name = name;
         this.img = img;
         this.x = 0;
@@ -3515,6 +3516,9 @@ class Player {
             this.checkMoney();
             if (this.bot !== undefined) {
                 this.bot.update();
+                this.name = this.realName + "(Bot)"
+            } else {
+                this.name = this.realName
             }
         }
 
@@ -3969,12 +3973,12 @@ function download(filename, text) {
     var element = document.createElement('a');
     element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
     element.setAttribute('download', filename);
-  
+
     element.style.display = 'none';
     document.body.appendChild(element);
-  
+
     element.click();
-  
+
     document.body.removeChild(element);
   }
 
@@ -3986,48 +3990,48 @@ function download(filename, text) {
  // `${word.slice(0, 1)}${word.slice(1).toLowerCase()}`
  //);
 
- /*
-  let women;
-  let men;
+/*
+ let women;
+ let men;
 
-  String.prototype.replaceAtIndex = function(_index, _newValue) {
-    return this.substr(0, _index) + _newValue + this.substr(_index + _newValue.length)
+ String.prototype.replaceAtIndex = function(_index, _newValue) {
+   return this.substr(0, _index) + _newValue + this.substr(_index + _newValue.length)
 }
 
 readTextFile("namn-med-minst-tva-barare-31-december-2022_20230228 - Tilltalsnamn kvinnor.csv", function(text){
-    let tmp = parseCSV(text);
-    let tmp2 = tmp.filter(e => e[0] != "")
-    let tmp3 = tmp2.filter(e => e[1].length > 3)
-    let tmp4 = tmp3.map(e => upperCaseFirstLetter(lowerCaseAllWordsExceptFirstLetters(e[0])))
-    let tmp5 = tmp4.map(e => {
-        if(e.includes("-")){
-            let index = e.indexOf("-")
-            let toReplace = e.charAt(index+1).toUpperCase()
-            return e.replaceAtIndex(index+1,toReplace)
-        }else{
-            return e
-        }
-    })
-    women = tmp5
+   let tmp = parseCSV(text);
+   let tmp2 = tmp.filter(e => e[0] != "")
+   let tmp3 = tmp2.filter(e => e[1].length > 3)
+   let tmp4 = tmp3.map(e => upperCaseFirstLetter(lowerCaseAllWordsExceptFirstLetters(e[0])))
+   let tmp5 = tmp4.map(e => {
+       if(e.includes("-")){
+           let index = e.indexOf("-")
+           let toReplace = e.charAt(index+1).toUpperCase()
+           return e.replaceAtIndex(index+1,toReplace)
+       }else{
+           return e
+       }
+   })
+   women = tmp5
 });
 readTextFile("namn-med-minst-tva-barare-31-december-2022_20230228 - Tilltalsnamn män.csv", function(text){
-    let tmp = parseCSV(text);
-    let tmp2 = tmp.filter(e => e[0] != "")
-    let tmp3 = tmp2.filter(e => e[1].length > 3)
-    let tmp4 = tmp3.map(e => upperCaseFirstLetter(lowerCaseAllWordsExceptFirstLetters(e[0])))
-    let tmp5 = tmp4.map(e => {
-        if(e.includes("-")){
-            let index = e.indexOf("-")
-            let toReplace = e.charAt(index+1).toUpperCase()
-            return e.replaceAtIndex(index+1,toReplace)
-        }else{
-            return e
-        }
-    })
-    men = tmp5
-    
-    
-    //download("namn",JSON.stringify(men.concat(women)))
+   let tmp = parseCSV(text);
+   let tmp2 = tmp.filter(e => e[0] != "")
+   let tmp3 = tmp2.filter(e => e[1].length > 3)
+   let tmp4 = tmp3.map(e => upperCaseFirstLetter(lowerCaseAllWordsExceptFirstLetters(e[0])))
+   let tmp5 = tmp4.map(e => {
+       if(e.includes("-")){
+           let index = e.indexOf("-")
+           let toReplace = e.charAt(index+1).toUpperCase()
+           return e.replaceAtIndex(index+1,toReplace)
+       }else{
+           return e
+       }
+   })
+   men = tmp5
+   
+   
+   //download("namn",JSON.stringify(men.concat(women)))
 });
 
 
