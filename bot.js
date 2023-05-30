@@ -328,8 +328,8 @@ class Bot{
 
             if (left.length === 0) { return false }
 
-            if (left[i].level > 0) {
-                this.sellHouse(left[i])
+            if (left[0].level > 0) {
+                this.sellHouse(left[0])
             } else {
                 if (board.settings.mortgage) { this.mortgagePiece(left[0]) }
                 else { this.sellPiece(left[0]) }
