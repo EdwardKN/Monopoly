@@ -296,6 +296,7 @@ function saveGame() {
         tmpPlayer.ownedPlaces = player.ownedPlaces.map(e => e = e.n)
         tmpPlayer.ownedPlacesmortgaged = player.ownedPlaces.map(e => e = e.mortgaged)
         tmpPlayer.ownedPlaceslevel = player.ownedPlaces.map(e => e = e.level)
+        tmpPlayer.laps = player.laps
         gameToSave.players.push(tmpPlayer);
     })
     let tmp = false;
@@ -307,6 +308,9 @@ function saveGame() {
     })
     if (tmp === false) {
         savedGames.push(gameToSave);
+    }
+    if (gameToSave.players.length === 1) {
+        savedGames.splice(savedGames.indexOf(gameToSave), 1)
     }
 
     localStorage.setItem("games", JSON.stringify(savedGames))
@@ -331,6 +335,7 @@ function loadGame(theGameToLoad) {
         players[i].numberOfRolls = gameToLoad.players[i].numberOfRolls
         players[i].rolls = gameToLoad.players[i].rolls
         players[i].steps = gameToLoad.players[i].steps
+        players[i].laps = gameToLoad.players[i].laps
         players[i].timeInJail = gameToLoad.players[i].timeInJail
         gameToLoad.players[i].ownedPlaces.forEach(function (e, g) {
             players[i].ownedPlaces.push(board.boardPieces[e])
@@ -1421,7 +1426,6 @@ class Board {
         this.prisonExtra = new BoardPiece(-1, [])
         this.showDices = false;
         this.animateDices = false;
-        this.win = false;
         this.auction = undefined;
         this.trade = undefined;
         this.currentShowingCard = undefined;
@@ -1497,6 +1501,10 @@ class Board {
                 intervals.forEach(e => clearInterval(e));
                 timeouts = [];
                 board = undefined;
+                buttons = [];
+                menus = [];
+
+                init();
             }, 100);
 
         }, 40, 40, false, false, false, false, false,);
@@ -1699,7 +1707,7 @@ class Board {
             this.boardPieces.forEach(g => g.update())
 
 
-            if (this.win === false) {
+            if (players.length > 1) {
 
                 this.showDice()
                 if (this.saving) {
@@ -1743,9 +1751,9 @@ class Board {
                 }
             } else {
                 c.fillStyle = "black"
-                c.font = 80 + "px Arcade"
+                c.font = 80 / 2 + "px Arcade"
                 c.textAlign = "center"
-                c.fillText("Grattis " + players[0].name + "! Du vann!", 1000, 600)
+                c.fillText("Grattis " + players[0].name + "! Du vann!", canvas.width / 2, canvas.height / 2 + 10)
             }
             players.forEach(e => e.playerBorder.drawButton())
 
@@ -1816,6 +1824,9 @@ class Board {
                     if (players[Api.online ? Api.currentPlayer : turn].bot === undefined) this.cardCloseButton.visible = true;
                     if (this.currentCard.owner === players[Api.online ? Api.currentPlayer : turn] && players[Api.online ? Api.currentPlayer : turn].bot === undefined) {
                         this.sellButton.disabled = !this.settings.sellable
+                        if (this.currentCard.level > 0) {
+                            this.sellButton.disabled = true;
+                        }
                         this.sellButton.draw();
                         this.sellButton.visible = true;
                         this.mortgageButton.draw();
@@ -3539,9 +3550,7 @@ class Player {
                     board.textsize = measureText({ font: "Arcade", text: "Just nu: " + players[turn].name });
 
                 }
-                if (players.length - 1 === 1) {
-                    board.win = true;
-                }
+
                 board.boardPieces[this.steps].currentPlayer.splice(board.boardPieces[this.steps].currentPlayer.indexOf(this), 1)
                 board.boardPieces.forEach(e => {
                     if (e.owner === this) {
