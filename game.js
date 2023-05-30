@@ -3174,7 +3174,7 @@ class BoardPiece {
                     } else {
                         this.doChanceCard(random, player);
                     }
-                } else if (this.piece.type === "community Chest") {
+                } else if (this.piece.type === "community chest") {
                     let random = randomIntFromRange(1, 17);
                     if (Api.online) {
                         if (players[turn].colorIndex == Api.currentPlayer) Api.randomEvent("COMMUNITY_CHEST", random);
@@ -3539,12 +3539,17 @@ class Player {
                     board.textsize = measureText({ font: "Arcade", text: "Just nu: " + players[turn].name });
 
                 }
-
                 if (players.length - 1 === 1) {
                     board.win = true;
                 }
                 board.boardPieces[this.steps].currentPlayer.splice(board.boardPieces[this.steps].currentPlayer.indexOf(this), 1)
-                players.splice(i, 1)
+                board.boardPieces.forEach(e => {
+                    if (e.owner === this) {
+                        e.owner = undefined;
+                        e.mortgaged = false;
+                    }
+                })
+                players.splice(players.indexOf(this), 1)
 
             } else if (this.money < 0) {
                 this.negative = true;
@@ -3773,8 +3778,8 @@ class Player {
             playSound(sounds.dice, 1)
             var myFunction = function () {
                 board.randomizeDice();
-                board.dice1 = randomIntFromRange(1,6)
-                board.dice2 = randomIntFromRange(1,6)
+                board.dice1 = randomIntFromRange(1, 6)
+                board.dice2 = randomIntFromRange(1, 6)
                 counter *= speeds.diceSpeed.factor
                 if (counter > speeds.diceSpeed.threshold) {
                     board.dice1 = dice1;
@@ -3793,10 +3798,10 @@ class Player {
         this.rollDice = function () {
             if (this.negative === false) {
                 this.hasStepped = false;
-                if(this.inJail === false){
-                    if(this.rolls === false){
-                        let dice1 = randomIntFromRange(1,6);
-                        let dice2 = randomIntFromRange(1,6);
+                if (this.inJail === false) {
+                    if (this.rolls === false) {
+                        let dice1 = randomIntFromRange(1, 6);
+                        let dice2 = randomIntFromRange(1, 6);
                         this.numberOfRolls++;
                         if (dice1 === dice2) {
                             this.rolls = false;
