@@ -296,6 +296,7 @@ function saveGame() {
         tmpPlayer.ownedPlaces = player.ownedPlaces.map(e => e = e.n)
         tmpPlayer.ownedPlacesmortgaged = player.ownedPlaces.map(e => e = e.mortgaged)
         tmpPlayer.ownedPlaceslevel = player.ownedPlaces.map(e => e = e.level)
+        tmpPlayer.laps = player.laps
         gameToSave.players.push(tmpPlayer);
     })
     let tmp = false;
@@ -334,6 +335,7 @@ function loadGame(theGameToLoad) {
         players[i].numberOfRolls = gameToLoad.players[i].numberOfRolls
         players[i].rolls = gameToLoad.players[i].rolls
         players[i].steps = gameToLoad.players[i].steps
+        players[i].laps = gameToLoad.players[i].laps
         players[i].timeInJail = gameToLoad.players[i].timeInJail
         gameToLoad.players[i].ownedPlaces.forEach(function (e, g) {
             players[i].ownedPlaces.push(board.boardPieces[e])
@@ -1499,6 +1501,10 @@ class Board {
                 intervals.forEach(e => clearInterval(e));
                 timeouts = [];
                 board = undefined;
+                buttons = [];
+                menus = [];
+
+                init();
             }, 100);
 
         }, 40, 40, false, false, false, false, false,);
