@@ -287,7 +287,7 @@ function saveGame() {
         tmpPlayer.jailcardAmount = player.jailcardAmount;
         tmpPlayer.lastMoneyInDebt = player.lastMoneyInDebt;
         tmpPlayer.money = player.money;
-        tmpPlayer.name = player.name;
+        tmpPlayer.name = player.realName;
         tmpPlayer.negative = player.negative;
         tmpPlayer.numberOfRolls = player.numberOfRolls;
         tmpPlayer.rolls = player.rolls;
