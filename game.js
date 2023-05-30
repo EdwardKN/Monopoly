@@ -3773,8 +3773,8 @@ class Player {
             playSound(sounds.dice, 1)
             var myFunction = function () {
                 board.randomizeDice();
-                board.dice1 = randomIntFromRange(1, 6)
-                board.dice2 = randomIntFromRange(1, 6)
+                board.dice1 = randomIntFromRange(1,6)
+                board.dice2 = randomIntFromRange(1,6)
                 counter *= speeds.diceSpeed.factor
                 if (counter > speeds.diceSpeed.threshold) {
                     board.dice1 = dice1;

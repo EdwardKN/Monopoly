@@ -1,3 +1,14 @@
+const groups = {
+    'brown': [1, 3],
+    'light blue': [6, 8, 9],
+    'pink': [11, 13, 14],
+    'orange': [16, 18, 19],
+    'red': [21, 23, 24],
+    'yellow': [26, 27, 29],
+    'green': [31, 32, 34],
+    'blue': [37, 39],
+}
+
 const specialWeights = {
     group: {
         'brown': 3,
