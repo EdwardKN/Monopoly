@@ -12,6 +12,8 @@ const fastSpeed = false;
 
 const disableAlert = false;
 
+var namn
+
 if (disableAlert) {
     window.alert = function () { }
 }
@@ -74,6 +76,10 @@ async function loadSpriteSheet() {
     spritesheetImage.src = "./images/texture.png";
 }
 
+async function loadNames() {
+    var response = await fetch("./namn.json")
+    namn = await response.json();
+}
 
 
 

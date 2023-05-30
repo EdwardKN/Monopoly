@@ -4251,10 +4251,35 @@
       }
     },
     {
-      "filename": "menus/mainmenu.png",
+      "filename": "menus/mainmenu tom.png",
       "frame": {
         "x": 2730,
         "y": 2635,
+        "w": 981,
+        "h": 552
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 981,
+        "h": 552
+      },
+      "sourceSize": {
+        "w": 981,
+        "h": 552
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "menus/mainmenu.png",
+      "frame": {
+        "x": 1,
+        "y": 2846,
         "w": 981,
         "h": 552
       },
@@ -4283,7 +4308,7 @@
     "format": "RGBA8888",
     "size": {
       "w": 4079,
-      "h": 3188
+      "h": 3399
     },
     "scale": 1
   }
