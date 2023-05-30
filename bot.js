@@ -86,8 +86,10 @@ class Bot{
         
         if (board.trade && board.trade.p2 === this.player) { await this.handleTrade('receive') }
         // Bid And Start Auction
-        if (board.auction && board.auction.playerlist[board.auction.turn] === this.player) {
-            this.bidOnAuction()
+        if (board.auction) {
+            if(board.auction.playerlist[board.auction.turn] === this.player){
+                this.bidOnAuction()
+            }
             return
         }
         // Check If Bots Turn And No Animations Are Playing
@@ -102,8 +104,6 @@ class Bot{
         if (!await this.handleBankrupt()) {
             this.player.ownedPlaces.forEach(bP => bP.owner = undefined)
             this.player.ownedPlaces = []
-            players.splice(players.indexOf(this.player), 1)
-            turn = turn % players.length
             return
         }
 
@@ -120,11 +120,12 @@ class Bot{
                 this.player.getOutOfJail()
                 this.player.teleportTo(this.player.steps + result)
             }
+        }else{
+            this.player.rollDice()
         }
 
         // Roll Dice | Random awaits For Temporary Alerts Fix
         Bot.thinking = true
-        this.player.rollDice()
         while (board.animateDices || this.player.animationOffset !== 0) { await new Promise(requestAnimationFrame) }
         await this.sleep(250)
 
@@ -143,8 +144,6 @@ class Bot{
             Bot.thinking = false
             this.player.ownedPlaces.forEach(bP => bP.owner = undefined)
             this.player.ownedPlaces = []
-            players.splice(players.indexOf(this.player), 1)
-            turn = turn % players.length
             return
         }
 
@@ -248,7 +247,7 @@ class Bot{
     }
 
     mortgagePiece(boardPiece) {
-        this.player += boardPiece.piece.price / 2
+        this.player.money += boardPiece.piece.price / 2
         boardPiece.mortgaged = true
     }
 
@@ -328,8 +327,8 @@ class Bot{
 
             if (left.length === 0) { return false }
 
-            if (left[i].level > 0) {
-                this.sellHouse(left[i])
+            if (left[0].level > 0) {
+                this.sellHouse(left[0])
             } else {
                 if (board.settings.mortgage) { this.mortgagePiece(left[0]) }
                 else { this.sellPiece(left[0]) }
