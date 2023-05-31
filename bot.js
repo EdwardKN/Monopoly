@@ -81,74 +81,57 @@ class Bot{
         this.randomness = 0.1
     }
 
+
     async update() {
         if (Bot.thinking) { return }
-        
-        if (board.trade && board.trade.p2 === this.player) { await this.handleTrade('receive') }
-        // Bid And Start Auction
+        if (board.trade && board.trade.p2 === this.player) { this.handleTrade('receive'); return }
         if (board.auction) {
-            if(board.auction.playerlist[board.auction.turn] === this.player){
-                this.bidOnAuction()
-            }
+            if (board.auction.playerlist[board.auction.turn] === this.player) { this.bidOnAuction() }
             return
         }
-        // Check If Bots Turn And No Animations Are Playing
-        if (this.player !== players[turn] || players.some(p => p.animationOffset !== 0) ||
-            board.showDices || board.animateDices) { return }
-        // Random Delay
-        Bot.thinking = true
-        await this.sleep(randomIntFromRange(speeds.botMin, speeds.botMax))
-        Bot.thinking = false
+        if (this.player !== players[turn] || board.showDices || board.animateDices ||
+            this.player.animationOffset !== 0) { return }
 
         // Before Roll Dice
         if (!await this.handleBankrupt()) {
             this.player.ownedPlaces.forEach(bP => bP.owner = undefined)
             this.player.ownedPlaces = []
+            Bot.thinking = false
             return
         }
 
         if (this.player.inJail) {
             let result = await this.handleJail()
             
-            if (result === false) {
-                turn = (turn + 1) % players.length
-                board.showDices = false // Should not return here
-                board.animateDices = false
-                return
-            } else {
+            if (result !== false) {
                 this.player.rolls = false
                 this.player.getOutOfJail()
                 this.player.teleportTo(this.player.steps + result)
+            } else {
+                board.animateDices = false
+                board.showDices = false
             }
-        }else{
-            this.player.rollDice()
-        }
+        } else { this.player.rollDice() }
 
-        // Roll Dice | Random awaits For Temporary Alerts Fix
-        Bot.thinking = true
-        while (board.animateDices || this.player.animationOffset !== 0) { await new Promise(requestAnimationFrame) }
-        await this.sleep(250)
+        while (this.player.animationOffset !== 0) { await new Promise(requestAnimationFrame) } 
 
         if (board.currentShowingCard) {
-            await this.sleep(randomIntFromRange(speeds.botMin + 1000, speeds.botMax + 1000))
             board.currentShowingCard.continue()
         }
-
 
         while (this.player.animationOffset !== 0) { await new Promise(requestAnimationFrame) } 
         let bP = board.boardPieces[this.player.steps]
 
-        await this.sleep(randomIntFromRange(speeds.botMin, speeds.botMax))
         // Bankrupt after move?
         if (!await this.handleBankrupt()) {
-            Bot.thinking = false
             this.player.ownedPlaces.forEach(bP => bP.owner = undefined)
             this.player.ownedPlaces = []
+            Bot.thinking = false
             return
         }
 
-        if (!bP.owner && Object.keys(boardWeights).includes(`${bP.n}`) &&
-            this.player.laps >= board.settings.roundsBeforePurchase) {
+        if (this.player.laps >= board.settings.roundsBeforePurchase &&
+            Object.keys(boardWeights).includes(`${bP.n}`) && !bP.owner) {
             // Buy or Auction
             let moneyLeft = this.player.money - bP.piece.price
             let func = bP.piece.group || bP.piece.type
@@ -157,27 +140,11 @@ class Bot{
             players.some(player => window[func](player, bP.piece.group).length >= 0.5))) {
                 this.buyPiece(bP)
             } else if (board.settings.auctions) {
-                // Create auction
-                board.auction = new Auction(bP)
-                board.currentCard = undefined
-                board.buyButton.visible = false
-                board.auctionButton.visible = false
-                // Wait normal delay
-                Bot.thinking = true
-                await this.sleep(2000)
-                Bot.thinking = false
-                // Start auction
-                board.auction.started = true;
-                board.auction.duration = 10 * speeds.auctionSpeed;
-                board.auction.startTime = performance.now();
-                board.auction.timer = setInterval(() => { board.auction.time = 472 * (1 - (performance.now() - board.auction.startTime) / board.auction.duration) },10);
+                this.createAuction(bP)
+                await this.sleep(1000)
+                this.startAuction()
             }
         } else if (bP.owner && bP.owner !== this.player) { this.player.checkDebt(bP.owner) }        
-
-
-        /* Start Trade */
-
-
 
         /* Buy house */
         // Group: Blue --> Brown
@@ -277,6 +244,22 @@ class Bot{
         boardPiece.owner = undefined
         this.player.ownedPlaces.splice(this.player.ownedPlaces.indexOf(boardPiece), 1)
         if (this.player.ownedPlaces.length === 0 && this.player.money < 0) { this.player.checkDept() }
+    }
+
+    createAuction(boardPiece) {
+        board.auction = new Auction(boardPiece)
+        board.currentCard = undefined
+        board.buyButton.visible = false
+        board.auctionButton.visible = false
+    }
+
+    startAuction() {
+        board.auction.started = true
+        board.auction.duration = 10 * speeds.auctionSpeed
+        board.auction.startTime = performance.now()
+        board.auction.timer = setInterval(() => {
+            board.auction.time = 472 * (1 - (performance.now() - board.auction.startTime) / board.auction.duration)
+        }, 10)
     }
 
     getAverageLoss(ahead) {
@@ -421,7 +404,6 @@ class Bot{
             } else if (bP.piece.type === 'utility') {
                 maxValueToSpend *= specialWeights.utility[ownedUtility(this.player).length]
             } else {
-                console.log(bP, bP.piece.group)
                 if (players.some(player => ownedGroup(player, bP.piece.group).length / groups[bP.piece.group].length >= 0.5)) {
                     maxValueToSpend *= specialWeights.group[bP.piece.group]
                 } else { maxValueToSpend *= boardWeights[bP.n] }
