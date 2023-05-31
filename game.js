@@ -1897,12 +1897,7 @@ class Board {
                             if (players[turn].money - this.currentCard.piece.price * this.settings.auctionstartprice >= 0) {
                                 this.auctionButton.disabled = false;
                             } else {
-                                let tmp = [];
-                                players.forEach(e => {
-                                    if (e.money - this.currentCard.piece.price * this.settings.auctionstartprice >= 0) {
-                                        tmp.push(e)
-                                    }
-                                })
+                                let tmp = players.filter(e => e.money - this.currentCard.piece.price * this.settings.auctionstartprice >= 0);
                                 if (players.length < 2 || tmp.length < 2) {
                                     this.auctionButton.disabled = true;
                                     this.cardCloseButton.visible = true;
