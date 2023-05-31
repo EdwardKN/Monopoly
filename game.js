@@ -2132,7 +2132,6 @@ class Trade {
         }, 150, 50)
         if (this.p1.bot !== undefined) {
             this.p1ConfirmButton.disabled = true;
-            this.p1Slider.disabled = true;
         }
         this.p1ConfirmButton.visible = true;
 
@@ -2148,7 +2147,6 @@ class Trade {
         })
         if (this.p2.bot !== undefined) {
             this.p2ConfirmButton.disabled = true;
-            this.p2Slider.disabled = true;
         }
         this.p2ConfirmButton.visible = true;
 
@@ -2188,9 +2186,6 @@ class Trade {
                 self.p2ConfirmButton.selected = false;
             }, 186, 21, false, false, false, false, false, false, text, fontSize, textColor, "ArcadeBold"))
 
-            if (self.p1.bot !== undefined) {
-                but.disabled = true;
-            }
             if (e.level !== 0) {
                 but.disabled = true;
             }
@@ -2219,7 +2214,7 @@ class Trade {
                 self.p2ConfirmButton.selected = false;
             }, 186, 21, false, false, false, false, false, false, text, fontSize, textColor, "ArcadeBold"))
 
-            if (self.p2.bot !== undefined || (Api.online && self.p2.colorIndex != Api.currentPlayer)) {
+            if ((Api.online && self.p2.colorIndex != Api.currentPlayer)) {
                 but.disabled = true;
             }
             if (e.level !== 0) {
