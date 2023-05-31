@@ -747,7 +747,12 @@ class LoadingMenu {
                     if (i === self.buttons.length - 1) {
                         self.buttons[i].selected = true;
                     } else {
-                        self.buttons[i - 1].selected = true;
+                        if (i - 1 === -1) {
+                            self.buttons[i].selected = true;
+                        } else {
+                            self.buttons[i - 1].selected = true;
+                        }
+
                     }
 
 
