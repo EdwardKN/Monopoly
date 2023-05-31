@@ -68,7 +68,7 @@ even: true Bygga hus jämnt
 mortgage: true
 */
 
-class Bot{
+class Bot {
     /**
     * @param {object} boardInfo Every Players Owned Pieces With The Index As The Key
     * @param {boolean} thinking If Any Bot Is Currently Playing A Move
@@ -137,14 +137,14 @@ class Bot{
             let func = bP.piece.group || bP.piece.type
 
             if (moneyLeft > 2 * this.getAverageLoss(12) || (moneyLeft > this.getAverageLoss(12) &&
-            players.some(player => window[func](player, bP.piece.group).length >= 0.5))) {
+                players.some(player => window[func](player, bP.piece.group).length >= 0.5))) {
                 this.buyPiece(bP)
             } else if (board.settings.auctions) {
                 this.createAuction(bP)
                 await this.sleep(1000)
                 this.startAuction()
             }
-        } else if (bP.owner && bP.owner !== this.player) { this.player.checkDebt(bP.owner) }        
+        } else if (bP.owner && bP.owner !== this.player) { this.player.checkDebt(bP.owner) }
 
         /* Buy house */
         // Group: Blue --> Brown
@@ -156,7 +156,7 @@ class Bot{
 
             if (hasGroup(this.player, group)) {
                 let nums = groups[group]
-                let levels = nums.map(n => board.boardPieces[n].level )
+                let levels = nums.map(n => board.boardPieces[n].level)
                 let minLevel = Math.min(...levels)
                 let minN = nums.filter(n => board.boardPieces[n].level == minLevel).reverse()
 
@@ -190,7 +190,7 @@ class Bot{
         // Rest of the mortgaged pieces
         mortgaged.concat(
             this.player.ownedPlaces.filter(bP => bP.mortgaged && !mortgaged.includes(bP))
-            .sort((a, b) => b.n - a.n))
+                .sort((a, b) => b.n - a.n))
 
         for (let bP of mortgaged) {
             if (this.player.money - 1.1 * bP.piece.price / 2 > this.getAverageLoss(40)) {
@@ -215,32 +215,37 @@ class Bot{
 
     mortgagePiece(boardPiece) {
         this.player.money += boardPiece.piece.price / 2
+        this.player.playerBorder.startMoneyAnimation(boardPiece.piece.price / 2)
         boardPiece.mortgaged = true
     }
 
     unmortgagePiece(boardPiece) {
         this.player.money -= 1.1 * boardPiece.piece.price / 2
+        this.player.playerBorder.startMoneyAnimation(- 1.1 * boardPiece.piece.price / 2)
         boardPiece.mortgaged = false
     }
 
     buyHouse(boardPiece) {
         this.player.money -= boardPiece.piece.housePrice
+        this.player.playerBorder.startMoneyAnimation(-boardPiece.piece.housePrice)
         boardPiece.level++
     }
 
     sellHouse(boardPiece) {
-        this.player.money += boardPiece.piece.houseCost / 2
+        this.player.money += boardPiece.piece.housePrice / 2
+        this.player.playerBorder.startMoneyAnimation(boardPiece.piece.housePrice / 2)
         boardPiece.level--
     }
 
     buyPiece(boardPiece) {
         this.player.money -= boardPiece.piece.price
+        this.player.playerBorder.startMoneyAnimation(-boardPiece.piece.price)
         boardPiece.owner = this.player
         this.player.ownedPlaces.push(boardPiece)
     }
 
     sellPiece(boardPiece) {
-        if (!boardPiece.mortgaged) { this.player.money += boardPiece.piece.price / 2; this.player.playerBorder.startMoneyAnimation(boardPiece.piece.price / 2)}
+        if (!boardPiece.mortgaged) { this.player.money += boardPiece.piece.price / 2; this.player.playerBorder.startMoneyAnimation(boardPiece.piece.price / 2) }
         boardPiece.owner = undefined
         this.player.ownedPlaces.splice(this.player.ownedPlaces.indexOf(boardPiece), 1)
         if (this.player.ownedPlaces.length === 0 && this.player.money < 0) { this.player.checkDept() }
@@ -290,6 +295,7 @@ class Bot{
     async handleJail() {
         if (this.player.money > 5000 * 10) { // Less Than 1 / 10 Of Money Is Needed To Get Out Of Jail
             this.player.money -= 50
+            this.player.playerBorder.startMoneyAnimation(-50)
             return 0
         } else {
             let dice1 = randomIntFromRange(1, 6)
@@ -323,7 +329,7 @@ class Bot{
     sortSellPieces() {
         let result = []
         if (board.settings.even) {
-            for (let group in groups) {                
+            for (let group in groups) {
                 // Only Get The Highest House Count
                 let maxLevel = 0
                 let maxed = []
@@ -367,7 +373,7 @@ class Bot{
 
     calculateLossOfPiece(bP) {
         if (bP.level > 0) { return bP.piece.rent[bP.level] - bP.piece.rent[bP.level - 1] }
-        
+
         // If group > Not Group all places half income
         if (bP.piece.group) {
             let owned = ownedGroup(this.player, bP.piece.group)
@@ -410,7 +416,7 @@ class Bot{
             }
 
             maxValueToSpend *= 1 - this.randomness + Math.random() * this.randomness * 2
-            
+
             if (this.player.money - cost > this.getAverageLoss(12) && maxValueToSpend >= cost) {
                 Bot.thinking = true
                 await new Promise(resolve => {
@@ -439,10 +445,10 @@ class Bot{
 
         } else if (type === 'receive') {
             // Before Trade 
-            let otherPlayer = board.trade.p1 
+            let otherPlayer = board.trade.p1
             let before1 = 0
             let before2 = 0
-            
+
             otherPlayer.ownedPlaces.forEach(bP => before1 += getPieceRent(bP, 7, this.player))
             this.player.ownedPlaces.forEach(bP => before2 += getPieceRent(bP, 7, otherPlayer))
 
@@ -548,7 +554,7 @@ function testAuction(group, station, utility) {
         players[turn].ownedPlaces.push(bP)
         nums.splice(r, 1)
     }
-    
+
     let n = nums[randomIntFromRange(0, nums.length - 1)]
     let bP = board.boardPieces[n]
     board.auction = new Auction(bP)

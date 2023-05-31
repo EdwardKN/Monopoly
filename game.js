@@ -747,7 +747,12 @@ class LoadingMenu {
                     if (i === self.buttons.length - 1) {
                         self.buttons[i].selected = true;
                     } else {
-                        self.buttons[i - 1].selected = true;
+                        if (i - 1 === -1) {
+                            self.buttons[i].selected = true;
+                        } else {
+                            self.buttons[i - 1].selected = true;
+                        }
+
                     }
 
 
@@ -1889,21 +1894,12 @@ class Board {
                         if (board.settings.auctions) {
                             this.auctionButton.disabled = false;
                             this.cardCloseButton.visible = false;
-                            if (players[turn].money - this.currentCard.piece.price * this.settings.auctionstartprice >= 0) {
-                                this.auctionButton.disabled = false;
-                            } else {
-                                let tmp = [];
-                                players.forEach(e => {
-                                    if (e.money - this.currentCard.piece.price * this.settings.auctionstartprice >= 0) {
-                                        tmp.push(e)
-                                    }
-                                })
-                                if (players.length < 2 || tmp.length < 2) {
-                                    this.auctionButton.disabled = true;
-                                    this.cardCloseButton.visible = true;
-                                    this.cardCloseButton.draw();
-                                }
+                            if (players.filter(e => e.money - this.currentCard.piece.price * this.settings.auctionstartprice >= 0).length < 2) {
+                                this.auctionButton.disabled = true;
+                                this.cardCloseButton.visible = true;
+                                this.cardCloseButton.draw();
                             }
+
                         } else {
                             this.auctionButton.disabled = true;
                             this.cardCloseButton.visible = true;
@@ -2136,7 +2132,6 @@ class Trade {
         }, 150, 50)
         if (this.p1.bot !== undefined) {
             this.p1ConfirmButton.disabled = true;
-            this.p1Slider.disabled = true;
         }
         this.p1ConfirmButton.visible = true;
 
@@ -2152,7 +2147,6 @@ class Trade {
         })
         if (this.p2.bot !== undefined) {
             this.p2ConfirmButton.disabled = true;
-            this.p2Slider.disabled = true;
         }
         this.p2ConfirmButton.visible = true;
 
@@ -2192,9 +2186,6 @@ class Trade {
                 self.p2ConfirmButton.selected = false;
             }, 186, 21, false, false, false, false, false, false, text, fontSize, textColor, "ArcadeBold"))
 
-            if (self.p1.bot !== undefined) {
-                but.disabled = true;
-            }
             if (e.level !== 0) {
                 but.disabled = true;
             }
@@ -2223,7 +2214,7 @@ class Trade {
                 self.p2ConfirmButton.selected = false;
             }, 186, 21, false, false, false, false, false, false, text, fontSize, textColor, "ArcadeBold"))
 
-            if (self.p2.bot !== undefined || (Api.online && self.p2.colorIndex != Api.currentPlayer)) {
+            if ((Api.online && self.p2.colorIndex != Api.currentPlayer)) {
                 but.disabled = true;
             }
             if (e.level !== 0) {
