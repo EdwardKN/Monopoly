@@ -1894,16 +1894,12 @@ class Board {
                         if (board.settings.auctions) {
                             this.auctionButton.disabled = false;
                             this.cardCloseButton.visible = false;
-                            if (players[turn].money - this.currentCard.piece.price * this.settings.auctionstartprice >= 0) {
-                                this.auctionButton.disabled = false;
-                            } else {
-                                let tmp = players.filter(e => e.money - this.currentCard.piece.price * this.settings.auctionstartprice >= 0);
-                                if (players.length < 2 || tmp.length < 2) {
-                                    this.auctionButton.disabled = true;
-                                    this.cardCloseButton.visible = true;
-                                    this.cardCloseButton.draw();
-                                }
+                            if (players.filter(e => e.money - this.currentCard.piece.price * this.settings.auctionstartprice >= 0).length < 2) {
+                                this.auctionButton.disabled = true;
+                                this.cardCloseButton.visible = true;
+                                this.cardCloseButton.draw();
                             }
+
                         } else {
                             this.auctionButton.disabled = true;
                             this.cardCloseButton.visible = true;

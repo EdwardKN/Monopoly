@@ -156,7 +156,7 @@ class Bot {
             if (moneyLeft > 2 * this.getAverageLoss(12) || (moneyLeft > this.getAverageLoss(12) &&
                 players.some(player => window[func](player, bP.piece.group).length >= 0.5))) {
                 this.buyPiece(bP)
-            } else if (board.settings.auctions) {
+            } else if (board.settings.auctions && players.filter(e => e.money >= bP.piece.price * board.settings.auctionstartprice).length >= 2) {
                 // Create auction
                 board.auction = new Auction(bP)
                 board.currentCard = undefined
