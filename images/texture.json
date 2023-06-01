@@ -4299,6 +4299,56 @@
         "x": 0.5,
         "y": 0.5
       }
+    },
+    {
+      "filename": "flag.png",
+      "frame": {
+        "x": 831,
+        "y": 24,
+        "w": 160,
+        "h": 40
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 160,
+        "h": 40
+      },
+      "sourceSize": {
+        "w": 160,
+        "h": 40
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "okej.png",
+      "frame": {
+        "x": 653,
+        "y": 314,
+        "w": 400,
+        "h": 60
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 400,
+        "h": 60
+      },
+      "sourceSize": {
+        "w": 400,
+        "h": 60
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
     }
   ],
   "meta": {
