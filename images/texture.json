@@ -730,7 +730,7 @@
       "frame": {
         "x": 1887,
         "y": 36,
-        "w": 480,
+        "w": 440,
         "h": 40
       },
       "rotated": false,
@@ -738,11 +738,11 @@
       "spriteSourceSize": {
         "x": 0,
         "y": 0,
-        "w": 480,
+        "w": 440,
         "h": 40
       },
       "sourceSize": {
-        "w": 480,
+        "w": 440,
         "h": 40
       },
       "pivot": {
@@ -753,7 +753,7 @@
     {
       "filename": "playercolorbuttons/playercolorbutton.png",
       "frame": {
-        "x": 2369,
+        "x": 2329,
         "y": 36,
         "w": 160,
         "h": 40
@@ -778,7 +778,7 @@
     {
       "filename": "playercolorbuttons/playercolorbutton2.png",
       "frame": {
-        "x": 2531,
+        "x": 2491,
         "y": 36,
         "w": 160,
         "h": 40
@@ -803,7 +803,7 @@
     {
       "filename": "playercolorbuttons/playercolorbutton3.png",
       "frame": {
-        "x": 2693,
+        "x": 2653,
         "y": 36,
         "w": 160,
         "h": 40
@@ -828,7 +828,7 @@
     {
       "filename": "playercolorbuttons/playercolorbutton4.png",
       "frame": {
-        "x": 2855,
+        "x": 2815,
         "y": 38,
         "w": 160,
         "h": 40
@@ -853,7 +853,7 @@
     {
       "filename": "playercolorbuttons/playercolorbutton5.png",
       "frame": {
-        "x": 3017,
+        "x": 2977,
         "y": 38,
         "w": 160,
         "h": 40
@@ -878,7 +878,7 @@
     {
       "filename": "playercolorbuttons/playercolorbutton6.png",
       "frame": {
-        "x": 3179,
+        "x": 3139,
         "y": 38,
         "w": 160,
         "h": 40
@@ -903,7 +903,7 @@
     {
       "filename": "playercolorbuttons/playercolorbutton7.png",
       "frame": {
-        "x": 3341,
+        "x": 3301,
         "y": 38,
         "w": 160,
         "h": 40
@@ -928,7 +928,7 @@
     {
       "filename": "playercolorbuttons/playercolorbutton8.png",
       "frame": {
-        "x": 3503,
+        "x": 3463,
         "y": 43,
         "w": 160,
         "h": 40
@@ -953,7 +953,7 @@
     {
       "filename": "playercolorbuttons/unselected.png",
       "frame": {
-        "x": 3665,
+        "x": 3625,
         "y": 43,
         "w": 160,
         "h": 40
@@ -978,7 +978,7 @@
     {
       "filename": "players/player.png",
       "frame": {
-        "x": 3827,
+        "x": 3787,
         "y": 43,
         "w": 24,
         "h": 48
@@ -1003,7 +1003,7 @@
     {
       "filename": "players/player2.png",
       "frame": {
-        "x": 3853,
+        "x": 3813,
         "y": 43,
         "w": 24,
         "h": 48
@@ -1028,7 +1028,7 @@
     {
       "filename": "players/player3.png",
       "frame": {
-        "x": 3879,
+        "x": 3839,
         "y": 43,
         "w": 24,
         "h": 48
@@ -1053,7 +1053,7 @@
     {
       "filename": "players/player4.png",
       "frame": {
-        "x": 3905,
+        "x": 3865,
         "y": 43,
         "w": 24,
         "h": 48
@@ -1078,7 +1078,7 @@
     {
       "filename": "players/player5.png",
       "frame": {
-        "x": 3931,
+        "x": 3891,
         "y": 43,
         "w": 24,
         "h": 48
@@ -1103,7 +1103,7 @@
     {
       "filename": "players/player6.png",
       "frame": {
-        "x": 3957,
+        "x": 3917,
         "y": 43,
         "w": 24,
         "h": 48
@@ -1128,7 +1128,7 @@
     {
       "filename": "players/player7.png",
       "frame": {
-        "x": 3983,
+        "x": 3943,
         "y": 43,
         "w": 24,
         "h": 48
@@ -1153,7 +1153,7 @@
     {
       "filename": "players/player8.png",
       "frame": {
-        "x": 4009,
+        "x": 3969,
         "y": 43,
         "w": 24,
         "h": 48
@@ -1530,7 +1530,7 @@
       "frame": {
         "x": 3719,
         "y": 143,
-        "w": 240,
+        "w": 220,
         "h": 60
       },
       "rotated": false,
@@ -1538,11 +1538,11 @@
       "spriteSourceSize": {
         "x": 0,
         "y": 0,
-        "w": 240,
+        "w": 220,
         "h": 60
       },
       "sourceSize": {
-        "w": 240,
+        "w": 220,
         "h": 60
       },
       "pivot": {
@@ -1553,7 +1553,7 @@
     {
       "filename": "corners/Go.png",
       "frame": {
-        "x": 3961,
+        "x": 3941,
         "y": 143,
         "w": 128,
         "h": 64
@@ -2431,7 +2431,7 @@
         "x": 2063,
         "y": 339,
         "w": 776,
-        "h": 80
+        "h": 60
       },
       "rotated": false,
       "trimmed": false,
@@ -2439,11 +2439,11 @@
         "x": 0,
         "y": 0,
         "w": 776,
-        "h": 80
+        "h": 60
       },
       "sourceSize": {
         "w": 776,
-        "h": 80
+        "h": 60
       },
       "pivot": {
         "x": 0.5,
@@ -2629,7 +2629,7 @@
       "filename": "community card and chance card/fa10kravallaandraspelarec.png",
       "frame": {
         "x": 2057,
-        "y": 421,
+        "y": 401,
         "w": 512,
         "h": 256
       },
@@ -2804,7 +2804,7 @@
       "filename": "community card and chance card/fa50kravallaandraspelarec.png",
       "frame": {
         "x": 2057,
-        "y": 679,
+        "y": 659,
         "w": 512,
         "h": 256
       },
@@ -3004,7 +3004,7 @@
       "filename": "community card and chance card/gatillfinkanc.png",
       "frame": {
         "x": 2057,
-        "y": 937,
+        "y": 917,
         "w": 512,
         "h": 256
       },
@@ -3204,7 +3204,7 @@
       "filename": "community card and chance card/gatillstart.png",
       "frame": {
         "x": 2057,
-        "y": 1195,
+        "y": 1175,
         "w": 512,
         "h": 256
       },
@@ -3404,7 +3404,7 @@
       "filename": "community card and chance card/specialempty.png",
       "frame": {
         "x": 2057,
-        "y": 1453,
+        "y": 1433,
         "w": 512,
         "h": 256
       },
@@ -3679,7 +3679,7 @@
       "filename": "Cards/lightbluecard2.png",
       "frame": {
         "x": 1807,
-        "y": 1711,
+        "y": 1691,
         "w": 256,
         "h": 324
       },
@@ -3704,7 +3704,7 @@
       "filename": "Cards/lightbluecard3.png",
       "frame": {
         "x": 2065,
-        "y": 1711,
+        "y": 1691,
         "w": 256,
         "h": 324
       },
@@ -4054,7 +4054,7 @@
       "filename": "Cards/yellowcard1.png",
       "frame": {
         "x": 1807,
-        "y": 2037,
+        "y": 2017,
         "w": 256,
         "h": 324
       },
@@ -4079,7 +4079,7 @@
       "filename": "Cards/yellowcard2.png",
       "frame": {
         "x": 2065,
-        "y": 2037,
+        "y": 2017,
         "w": 256,
         "h": 324
       },
@@ -4130,7 +4130,7 @@
       "frame": {
         "x": 3355,
         "y": 2249,
-        "w": 267,
+        "w": 256,
         "h": 324
       },
       "rotated": false,
@@ -4138,11 +4138,11 @@
       "spriteSourceSize": {
         "x": 0,
         "y": 0,
-        "w": 267,
+        "w": 256,
         "h": 324
       },
       "sourceSize": {
-        "w": 267,
+        "w": 256,
         "h": 324
       },
       "pivot": {
@@ -4153,7 +4153,7 @@
     {
       "filename": "dices/dices.png",
       "frame": {
-        "x": 3624,
+        "x": 3613,
         "y": 2249,
         "w": 256,
         "h": 384
@@ -4251,7 +4251,7 @@
       }
     },
     {
-      "filename": "menus/mainmenu.png",
+      "filename": "menus/mainmenu tom.png",
       "frame": {
         "x": 2730,
         "y": 2635,
@@ -4276,49 +4276,24 @@
       }
     },
     {
-      "filename": "flag.png",
+      "filename": "menus/mainmenu.png",
       "frame": {
-        "x": 831,
-        "y": 24,
-        "w": 160,
-        "h": 40
+        "x": 1,
+        "y": 2846,
+        "w": 981,
+        "h": 552
       },
       "rotated": false,
       "trimmed": false,
       "spriteSourceSize": {
         "x": 0,
         "y": 0,
-        "w": 160,
-        "h": 40
+        "w": 981,
+        "h": 552
       },
       "sourceSize": {
-        "w": 160,
-        "h": 40
-      },
-      "pivot": {
-        "x": 0.5,
-        "y": 0.5
-      }
-    },
-    {
-      "filename": "okej.png",
-      "frame": {
-        "x": 653,
-        "y": 314,
-        "w": 400,
-        "h": 60
-      },
-      "rotated": false,
-      "trimmed": false,
-      "spriteSourceSize": {
-        "x": 0,
-        "y": 0,
-        "w": 400,
-        "h": 60
-      },
-      "sourceSize": {
-        "w": 400,
-        "h": 60
+        "w": 981,
+        "h": 552
       },
       "pivot": {
         "x": 0.5,
@@ -4332,8 +4307,8 @@
     "image": "texture.png",
     "format": "RGBA8888",
     "size": {
-      "w": 4090,
-      "h": 3188
+      "w": 4079,
+      "h": 3399
     },
     "scale": 1
   }

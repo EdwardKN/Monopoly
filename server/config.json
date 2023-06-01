@@ -12,6 +12,7 @@
         "sellable": true,
         "even": true,
         "startmoney": 1500,
-        "roundsBeforePurchase": 0
+        "roundsBeforePurchase": 0,
+        "auctionstartprice":0.5
     }
 }

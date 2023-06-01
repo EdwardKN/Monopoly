@@ -12,6 +12,8 @@ const fastSpeed = false;
 
 const disableAlert = false;
 
+var namn
+
 if (disableAlert) {
     window.alert = function () { }
 }
@@ -74,6 +76,10 @@ async function loadSpriteSheet() {
     spritesheetImage.src = "./images/texture.png";
 }
 
+async function loadNames() {
+    var response = await fetch("./namn.json")
+    namn = await response.json();
+}
 
 
 
@@ -89,7 +95,7 @@ var images = {
             "./images/plates/chance", "./images/plates/chance2", "./images/plates/chance3",
             "./images/plates/train", "./images/plates/water", "./images/plates/electric",
             "./images/plates/supertax", "./images/plates/chest", "./images/plates/incometax",
-            "./images/plates/mortgaged"
+            "./images/plates/mortgaged", "./images/plates/trainmortgaged", "./images/plates/electricmortgaged", "./images/plates/watermortgaged"
         ]
     },
     card: {
@@ -170,7 +176,7 @@ var images = {
         src: ["./images/community card and chance card/emptycommunitycard", "./images/community card and chance card/gatillstartc", "./images/community card and chance card/fa200krc", "./images/community card and chance card/forlora50krc", "./images/community card and chance card/fa50krc", "./images/community card and chance card/lamnafinkangratisc", "./images/community card and chance card/gatillfinkanc", "./images/community card and chance card/fa50kravallaandraspelarec", "./images/community card and chance card/fa100krc", "./images/community card and chance card/fa20krc", "./images/community card and chance card/fa10kravallaandraspelarec", "./images/community card and chance card/fa100krc", "./images/community card and chance card/forlora50krc", "./images/community card and chance card/forlora50krc", "./images/community card and chance card/forlora25krc", "./images/community card and chance card/betalahushotellc", "./images/community card and chance card/fa10krc", "./images/community card and chance card/fa100krc"]
     },
     specialCards: {
-        src: ["./images/community card and chance card/specialempty", "./images/community card and chance card/gatillfinkanS", "./images/community card and chance card/illegaldices","./images/community card and chance card/payincometax","./images/community card and chance card/payrichtax"]
+        src: ["./images/community card and chance card/specialempty", "./images/community card and chance card/gatillfinkanS", "./images/community card and chance card/illegaldices", "./images/community card and chance card/payincometax", "./images/community card and chance card/payrichtax"]
     }
 };
 
@@ -234,7 +240,7 @@ const pieces = [
     },
     {
         name: "Allmänning",
-        type: "community Chest",
+        type: "community chest",
         img: 15
     },
     {
@@ -296,7 +302,7 @@ const pieces = [
         color: "#81d4fa"
     },
     {
-        name: "§ängelse",
+        name: "fängelse",
         img: 1
     },
     {
@@ -357,7 +363,7 @@ const pieces = [
     },
     {
         name: "Allmänning",
-        type: "community Chest",
+        type: "community chest",
         img: 15
     },
     {
@@ -491,7 +497,7 @@ const pieces = [
     },
     {
         name: "Allmänning",
-        type: "community Chest",
+        type: "community chest",
         img: 15
     },
     {
