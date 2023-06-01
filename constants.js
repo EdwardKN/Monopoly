@@ -156,7 +156,7 @@ var images = {
         src: ["./images/buttons/plus", "./images/buttons/minus"]
     },
     mainMenu: {
-        src: ["./images/menus/mainmenu", "./images/buttons/local", "./images/buttons/online", "./images/menus/lobbymenu"]
+        src: ["./images/menus/mainmenu", "./images/buttons/local", "./images/buttons/online", "./images/menus/lobbymenu", "./images/buttons/credits", "./images/menus/creditsmenu",]
     },
     exitMenu: {
         src: ["./images/menus/exitmenu", "./images/buttons/exitCardTrans"]

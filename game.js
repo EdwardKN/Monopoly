@@ -566,7 +566,7 @@ class LocalLobby {
 
         this.draw = function () {
             if (this.current) {
-                drawRotatedImageFromSpriteSheet(0, 0, 981 * drawScale, 552 * drawScale, images.mainMenu.sprites[3], 0, 0, 0, 0, 981, 552)
+                drawRotatedImageFromSpriteSheet(0, 0, 960 * drawScale, 540 * drawScale, images.mainMenu.sprites[3], 0, 0, 0, 0, 960, 540)
                 this.readyPlayers = [];
 
                 if (this.settingsButtons[0].selected === true) {
@@ -707,6 +707,28 @@ class LocalLobby {
         }
     }
 }
+class CreditsMenu {
+    constructor() {
+        this.current = false;
+        let self = this;
+
+        this.backButton = new Button([false, false], -280, 220, images.buttons.sprites[12], function () {
+            self.current = false;
+            menus[0].current = true;
+            menus[0].volume.percentage = musicVolume
+            self.backButton.visible = false;
+        }, 325, 60, false, false, false, false, false, false)
+
+        this.draw = function(){
+            if(this.current){
+                drawRotatedImageFromSpriteSheet(0, 0, 960 * drawScale, 540 * drawScale, images.mainMenu.sprites[5], 0, 0, 0, 0, 960, 540)
+                this.backButton.visible = true;
+                this.backButton.draw();
+            }
+        }
+    }
+
+}
 class LoadingMenu {
     constructor() {
         this.current = false;
@@ -781,7 +803,7 @@ class LoadingMenu {
                 let tmp = false;
 
 
-                drawRotatedImageFromSpriteSheet(0, 0, 981 * drawScale, 552 * drawScale, images.mainMenu.sprites[3], 0, 0, 0, 0, 981, 552)
+                drawRotatedImageFromSpriteSheet(0, 0, 960 * drawScale, 540 * drawScale, images.mainMenu.sprites[3], 0, 0, 0, 0, 960, 540)
                 this.deleteSave.disabled = true;
 
                 self.buttons.forEach(function (e, i) {
@@ -845,6 +867,7 @@ class MainMenu {
             self.imageSmoothingButton.visible = false;
             self.finishButton.visible = false;
             self.loadButton.visible = false;
+            self.creditsButton.visible = false;
         }, 195, 52, false, false, true)
         this.loadButton = new Button([false, false], -322, 460, images.buttons.sprites[22], function () {
             self.current = false;
@@ -858,6 +881,20 @@ class MainMenu {
             self.imageSmoothingButton.visible = false;
             self.finishButton.visible = false;
             self.loadButton.visible = false;
+            self.creditsButton.visible = false;
+        }, 195, 52, false, false, true)
+        this.creditsButton = new Button([false, false], -322, 620, images.mainMenu.sprites[4], function () {
+            self.current = false;
+            menus[3].current = true;
+            self.localButton.visible = false;
+            self.onlineButton.visible = false;
+            self.musicButton.visible = false;
+            self.fullScreenButton.visible = false;
+            self.volume.visible = false;
+            self.imageSmoothingButton.visible = false;
+            self.finishButton.visible = false;
+            self.loadButton.visible = false;
+            self.creditsButton.visible = false;
         }, 195, 52, false, false, true)
 
         this.onlineButton = new Button([false, false], -322, 540, images.mainMenu.sprites[2], function () {
@@ -870,6 +907,7 @@ class MainMenu {
             self.imageSmoothingButton.visible = false;
             self.finishButton.visible = false;
             self.loadButton.visible = false;
+            self.creditsButton.visible = false;
             showOnlineLobby();
         }, 195, 52, false, false, true)
 
@@ -934,12 +972,13 @@ class MainMenu {
 
         this.draw = function () {
             if (this.current) {
-                drawRotatedImageFromSpriteSheet(0, 0, 981 * drawScale, 552 * drawScale, images.mainMenu.sprites[0], 0, 0, 0, 0, 981, 552)
+                drawRotatedImageFromSpriteSheet(0, 0, 960 * drawScale, 540 * drawScale, images.mainMenu.sprites[0], 0, 0, 0, 0, 960, 540)
                 this.loadButton.disabled = localStorage.getItem("games") == null
                 this.musicButton.selected = musicVolume === 0 ? true : false;
                 this.localButton.visible = true;
                 this.onlineButton.visible = true;
                 this.loadButton.visible = true;
+                this.creditsButton.visible = true;
                 this.musicButton.visible = true;
                 this.imageSmoothingButton.visible = true;
                 this.finishButton.visible = true;
@@ -949,6 +988,7 @@ class MainMenu {
                 this.localButton.draw();
                 this.onlineButton.draw();
                 this.loadButton.draw();
+                this.creditsButton.draw();
                 this.musicButton.draw();
                 this.imageSmoothingButton.draw();
                 this.finishButton.draw();
@@ -1040,12 +1080,14 @@ async function init() {
         menus.push(new MainMenu())
         menus.push(new LocalLobby())
         menus.push(new LoadingMenu())
+        menus.push(new CreditsMenu())
         update();
 
     } else {
         menus.push(new MainMenu())
         menus.push(new LocalLobby())
         menus.push(new LoadingMenu())
+        menus.push(new CreditsMenu())
 
         menus[0].localButton.visible = false;
         menus[0].onlineButton.visible = false;
