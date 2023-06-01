@@ -287,7 +287,7 @@ function saveGame() {
         tmpPlayer.jailcardAmount = player.jailcardAmount;
         tmpPlayer.lastMoneyInDebt = player.lastMoneyInDebt;
         tmpPlayer.money = player.money;
-        tmpPlayer.name = player.realName;
+        tmpPlayer.name = player.name;
         tmpPlayer.negative = player.negative;
         tmpPlayer.numberOfRolls = player.numberOfRolls;
         tmpPlayer.rolls = player.rolls;
@@ -408,11 +408,20 @@ class LocalLobby {
             self.startButton.visible = false;
             self.playerInputs.forEach(e => {
                 e.textInput.htmlElement.style.display = "none"
+                e.textInput.value = "";
+                e.textInput.htmlElement.value = "";
+                e.textInput.colorId = undefined;
                 e.textInput.visible = false;
                 e.botButton.visible = false;
+                e.colorButtons.forEach(g => g.selected = false)
+                e.colorButton.img = images.colorButtons.sprites[8];
                 e.colorButton.visible = false;
                 e.colorButtons.forEach(g => g.visible = false)
+                e.botButton.selected = false;
+                e.textInput.htmlElement.disabled = false;
+                e.textInput.oldvalue = ""
             })
+            self.settingsButtons.forEach(e => e.visible = false)
         }, 325, 60, false, false, false, false, false, false)
         this.startButton = new Button([false, false], 250, 670, images.buttons.sprites[11], function () {
             let playerlist = []
@@ -478,7 +487,7 @@ class LocalLobby {
                 colorId: undefined,
                 y: (self.playerInputs.length * 110 - 100),
                 nameIndex: randomIntFromRange(0, namn.length - 1),
-                textInput: new TextInput(40, 300, 560, 80, true, 50, 10),
+                textInput: new TextInput(40, 300, 560, 80, true, 50, 10, "Spelare " + (id + 1)),
                 botButton: new Button([true, false], -50 + 42, self.playerInputs.length * 55 - 32, images.buttons.sprites[13], function () {
                     self.playerInputs[id].textInput.htmlElement.value = ""
                     if (self.playerInputs[id].botButton.selected) {
@@ -598,7 +607,7 @@ class LocalLobby {
                         e.botButton.disabled = false;
                     }
                     if (e.botButton.selected) {
-                        e.textInput.htmlElement.value = namn[e.nameIndex];
+                        e.textInput.htmlElement.value = namn[e.nameIndex] + "(Bot)";
                         e.textInput.htmlElement.disabled = true;
                         e.colorButton.disabled = true;
                         e.textInput.disabled = true;
@@ -952,7 +961,7 @@ class MainMenu {
 }
 
 class TextInput {
-    constructor(x, y, w, h, showtext, font, maxLength) {
+    constructor(x, y, w, h, showtext, font, maxLength,placeHolder) {
         this.x = x;
         this.y = y;
         this.w = w;
@@ -964,6 +973,7 @@ class TextInput {
         this.follow = false;
         this.value = ""
         this.maxLength = maxLength;
+        this.placeHolder = placeHolder;
         this.htmlElement = document.createElement("input");
         document.body.appendChild(this.htmlElement)
         this.oldvalue = this.htmlElement.value;
@@ -975,6 +985,7 @@ class TextInput {
         this.htmlElement.style.display = "none"
         this.htmlElement.style.fontFamily = "Arcade"
         this.htmlElement.style.lineHeight = "200%"
+        this.htmlElement.placeholder = this.placeHolder != undefined ? this.placeHolder : ""
 
         this.htmlElement.addEventListener("mousemove", e => {
             mouse.x = 10000;
@@ -3482,7 +3493,6 @@ class CurrentCard {
 class Player {
 
     constructor(img, index, name, bot) {
-        this.realName = name
         this.name = name;
         this.img = img;
         this.x = 0;
@@ -3523,9 +3533,6 @@ class Player {
             this.checkMoney();
             if (this.bot !== undefined) {
                 this.bot.update();
-                this.name = this.realName + "(Bot)"
-            } else {
-                this.name = this.realName
             }
         }
 
