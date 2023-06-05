@@ -163,7 +163,7 @@ class Bot {
                 // Boardpiece: Expensive --> Cheap
                 for (let n of minN) {
                     let bP = board.boardPieces[n]
-                    if (this.player.money - bP.piece.housePrice > this.getAverageLoss(40)) {
+                    if (bP.level < 5 && this.player.money - bP.piece.housePrice > this.getAverageLoss(40)) {
                         this.buyHouse(bP)
                         bought = true
                     }
