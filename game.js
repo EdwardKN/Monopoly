@@ -719,8 +719,8 @@ class CreditsMenu {
             self.backButton.visible = false;
         }, 325, 60, false, false, false, false, false, false)
 
-        this.draw = function(){
-            if(this.current){
+        this.draw = function () {
+            if (this.current) {
                 drawRotatedImageFromSpriteSheet(0, 0, 960 * drawScale, 540 * drawScale, images.mainMenu.sprites[5], 0, 0, 0, 0, 960, 540)
                 this.backButton.visible = true;
                 this.backButton.draw();
@@ -1001,7 +1001,7 @@ class MainMenu {
 }
 
 class TextInput {
-    constructor(x, y, w, h, showtext, font, maxLength,placeHolder) {
+    constructor(x, y, w, h, showtext, font, maxLength, placeHolder) {
         this.x = x;
         this.y = y;
         this.w = w;
@@ -2757,7 +2757,7 @@ class Auction {
                             if (this.playerlist[0].colorIndex == players[i].colorIndex) {
                                 intervals.forEach(e => clearInterval(e));
                                 clearInterval(this.timer)
-                                if (this.auctionMoney !== 0 && players[i].money - this.auctionMoney >= 0) {
+                                if (this.auctionMoney !== Math.round(card.piece.price * board.settings.auctionstartprice) && players[i].money - this.auctionMoney >= Math.round(card.piece.price * board.settings.auctionstartprice)) {
                                     players[i].money -= this.auctionMoney;
                                     if (board.settings.allFreeparking) {
                                         board.boardPieces[20].money += this.auctionMoney;
