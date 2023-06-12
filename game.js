@@ -2666,23 +2666,22 @@ class Auction {
         this.card = card;
         this.turn = turn;
         this.auctionMoney = Math.round(card.piece.price * board.settings.auctionstartprice);
-        this.time = 432;
         this.started = false;
-        this.timer = undefined;
         this.playerlist = [...players];
+        let self = this;
 
         this.playerlist.forEach(e => {
             e.textsize = measureText({ font: "Arcade", text: e.name })
         })
 
 
-        this.addMoneyButton2 = new Button([false, false], -100, 550, images.auction.sprites[1], function () {
+        this.addMoneyButton2 = new Button([false, false], -100, 490, images.auction.sprites[1], function () {
             board.auction.addMoney(2);
         }, 54, 54, false)
-        this.addMoneyButton10 = new Button([false, false], -20, 550, images.auction.sprites[2], function () {
+        this.addMoneyButton10 = new Button([false, false], -20, 490, images.auction.sprites[2], function () {
             board.auction.addMoney(10);
         }, 54, 54, false)
-        this.addMoneyButton100 = new Button([false, false], 60, 550, images.auction.sprites[3], function () {
+        this.addMoneyButton100 = new Button([false, false], 60, 490, images.auction.sprites[3], function () {
             board.auction.addMoney(100);
         }, 54, 54, false)
         this.startAuctionButton = new Button([false, false], -105, 550, images.auction.sprites[5], function () {
@@ -2691,11 +2690,10 @@ class Auction {
                 return;
             }
             board.auction.started = true;
-            board.auction.duration = 10 * speeds.auctionSpeed;
-            board.auction.startTime = performance.now();
-            board.auction.timer = intervals.push(setInterval(function () {
-                board.auction.time = 432 * (1 - (performance.now() - board.auction.startTime) / board.auction.duration);
-            }, 10));
+        }, 220, 40, false)
+
+        this.exitAuctionButton = new Button([false, false], -105, 550, images.auction.sprites[4], function () {
+            self.exitAuction()
         }, 220, 40, false)
 
         this.draw = function () {
@@ -2705,9 +2703,9 @@ class Auction {
             c.fillStyle = "black";
             c.font = 80 / 2 + "px Arcade";
             c.textAlign = "center";
-            c.fillText(this.auctionMoney + "kr", canvas.width / 2 - 128 + 11, 450 / 2);
+            c.fillText(this.auctionMoney + "kr", canvas.width / 2 - 128 + 11, 430 / 2);
             c.font = (1 / this.playerlist[this.turn].textsize.width) * 22000 > 50 ? 50 : (1 / this.playerlist[this.turn].textsize.width) * 22000 + "px Arcade";
-            c.fillText(this.playerlist[this.turn].name, canvas.width / 2 - 128 + 11, 570 / 2);
+            c.fillText(this.playerlist[this.turn].name, canvas.width / 2 - 128 + 11, 550 / 2);
 
             if (this.started) {
                 if ((!Api.online && this.playerlist[this.turn].bot === undefined) || (Api.online && Api.currentPlayer == this.playerlist[this.turn].colorIndex)) {
@@ -2716,69 +2714,18 @@ class Auction {
                     this.addMoneyButton2.visible = true;
                     this.addMoneyButton10.visible = true;
                     this.addMoneyButton100.visible = true;
+                    this.exitAuctionButton.visible = true;
 
                     this.addMoneyButton2.draw();
                     this.addMoneyButton10.draw();
                     this.addMoneyButton100.draw();
+                    this.exitAuctionButton.draw();
                 } else {
                     this.startAuctionButton.visible = false;
                     this.addMoneyButton2.visible = false;
                     this.addMoneyButton10.visible = false;
                     this.addMoneyButton100.visible = false;
-                }
-                drawRotatedImageFromSpriteSheet(canvas.width - 256 + 22 - images.auction.sprites[4].frame.w, 600, images.auction.sprites[4].frame.w * 2, images.auction.sprites[4].frame.h, images.auction.sprites[4], 0, false, 0, images.auction.sprites[4].frame.h / 2, images.auction.sprites[4].frame.w, images.auction.sprites[4].frame.h / 2)
-                if (this.time > 432) {
-                    this.time = 432
-                }
-                c.fillStyle = "black"
-                if (this.time < 432 && this.time > 6) {
-                    c.fillRect(canvas.width / 2 - 128 + images.auction.sprites[4].frame.w / 2 + 11 - 4, 600 / 2, -this.time / 2, 58 / 2)
-                }
-                if (this.time > 4) {
-                    c.fillRect(canvas.width / 2 - 128 + images.auction.sprites[4].frame.w / 2 + 11 - 4, 602 / 2, 2 / 2, 54 / 2)
-                }
-                if (this.time > 2) {
-                    c.fillRect(canvas.width / 2 - 128 + images.auction.sprites[4].frame.w / 2 + 11 - 4, 604 / 2, 4 / 2, 50 / 2)
-                }
-                if (this.time > 0) {
-                    c.fillRect(canvas.width / 2 - 128 + images.auction.sprites[4].frame.w / 2 + 11 - 4, 606 / 2, 7 / 2, 46 / 2)
-                }
-
-
-                if (this.time < -6) {
-                    if (Api.online && this.playerlist[this.turn].colorIndex == Api.currentPlayer) Api.auctionBid(this.card, -1, true);
-
-                    this.playerlist.splice(this.playerlist.indexOf(this.playerlist[this.turn]), 1)
-                    this.turn = (this.turn) % this.playerlist.length;
-                    this.time = 432;
-                    this.startTime = performance.now();
-                    if (this.playerlist.length === 1) {
-                        for (let i = 0; i < players.length; i++) {
-                            if (this.playerlist[0].colorIndex == players[i].colorIndex) {
-                                intervals.forEach(e => clearInterval(e));
-                                clearInterval(this.timer)
-                                if (this.auctionMoney !== Math.round(card.piece.price * board.settings.auctionstartprice) && players[i].money - this.auctionMoney >= Math.round(card.piece.price * board.settings.auctionstartprice)) {
-                                    players[i].money -= this.auctionMoney;
-                                    if (board.settings.allFreeparking) {
-                                        board.boardPieces[20].money += this.auctionMoney;
-                                    }
-                                    players[i].playerBorder.startMoneyAnimation(-this.auctionMoney)
-                                    board.auction.card.owner = players[i];
-                                    players[i].ownedPlaces.push(this.card);
-                                }
-                                buttons.splice(buttons.indexOf(this.addMoneyButton2), 1)
-                                buttons.splice(buttons.indexOf(this.addMoneyButton10), 1)
-                                buttons.splice(buttons.indexOf(this.addMoneyButton100), 1)
-                                buttons.splice(buttons.indexOf(this.startAuctionButton), 1)
-                                board.currentCard = undefined;
-                                board.sellButton.visible = false;
-                                board.getToMainMenuButton.visible = true; board.goToMainMenuButton.visible = false;;
-                                board.buyButton.visible = false;
-                                board.auction = undefined;
-                            }
-                        }
-
-                    }
+                    this.exitAuctionButton.visible = false;
                 }
             } else {
                 if (Api.online) {
@@ -2795,6 +2742,38 @@ class Auction {
 
             }
         }
+        this.exitAuction = function(){
+            if (Api.online && this.playerlist[this.turn].colorIndex == Api.currentPlayer) Api.auctionBid(this.card, -1, true);
+
+                    this.playerlist.splice(this.playerlist.indexOf(this.playerlist[this.turn]), 1)
+                    this.turn = (this.turn) % this.playerlist.length;
+                    if (this.playerlist.length === 1) {
+                        for (let i = 0; i < players.length; i++) {
+                            if (this.playerlist[0].colorIndex == players[i].colorIndex) {
+                                if (this.auctionMoney !== Math.round(card.piece.price * board.settings.auctionstartprice) && players[i].money - this.auctionMoney >= Math.round(card.piece.price * board.settings.auctionstartprice)) {
+                                    players[i].money -= this.auctionMoney;
+                                    if (board.settings.allFreeparking) {
+                                        board.boardPieces[20].money += this.auctionMoney;
+                                    }
+                                    players[i].playerBorder.startMoneyAnimation(-this.auctionMoney)
+                                    board.auction.card.owner = players[i];
+                                    players[i].ownedPlaces.push(this.card);
+                                }
+                                buttons.splice(buttons.indexOf(this.addMoneyButton2), 1)
+                                buttons.splice(buttons.indexOf(this.addMoneyButton10), 1)
+                                buttons.splice(buttons.indexOf(this.addMoneyButton100), 1)
+                                buttons.splice(buttons.indexOf(this.startAuctionButton), 1)
+                                buttons.splice(buttons.indexOf(this.exitAuctionButton), 1)
+                                board.currentCard = undefined;
+                                board.sellButton.visible = false;
+                                board.getToMainMenuButton.visible = true; board.goToMainMenuButton.visible = false;;
+                                board.buyButton.visible = false;
+                                board.auction = undefined;
+                            }
+                        }
+
+                    }
+        }
 
         this.update = function () {
             if (Api.online) {
@@ -2807,7 +2786,7 @@ class Auction {
                 this.addMoneyButton100.disabled = this.playerlist[this.turn].money < this.auctionMoney + 100;
             }
 
-            if (this.addMoneyButton2.disabled) this.time = -10;
+            if (this.addMoneyButton2.disabled) this.exitAuction()
             this.draw();
         }
 
@@ -2820,7 +2799,6 @@ class Auction {
             this.auctionMoney += money;
             this.turn = (this.turn + 1) % this.playerlist.length;
 
-            this.time = 432;
             this.startTime = performance.now();
         }
     }

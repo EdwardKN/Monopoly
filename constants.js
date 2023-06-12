@@ -144,7 +144,7 @@ var images = {
         ]
     },
     auction: {
-        src: ["./images/menus/auctionmenubackground", "./images/buttons/auction+2", "./images/buttons/auction+10", "./images/buttons/auction+100", "./images/menus/auctionloadingbar", "./images/buttons/startauction"]
+        src: ["./images/menus/auctionmenubackground", "./images/buttons/auction+2", "./images/buttons/auction+10", "./images/buttons/auction+100", "./images/buttons/exitauction", "./images/buttons/startauction"]
     },
     trade: {
         src: ["./images/menus/tradingmenu", "./images/buttons/accept", "./images/buttons/tradingcityname"]
