@@ -2668,6 +2668,7 @@ class Auction {
         this.auctionMoney = Math.round(card.piece.price * board.settings.auctionstartprice);
         this.started = false;
         this.playerlist = [...players];
+        this.lastHasAdded = false;
         let self = this;
 
         this.playerlist.forEach(e => {
@@ -2692,7 +2693,10 @@ class Auction {
             board.auction.started = true;
         }, 220, 40, false)
 
-        this.exitAuctionButton = new Button([false, false], -105, 550, images.auction.sprites[4], function () {
+        this.exitAuctionButton = new Button([false, false], -105, 550, images.auction.sprites[4], function () {            
+            if(self.playerlist.length === 1){
+                self.lastHasAdded = true;
+            }
             self.exitAuction()
         }, 220, 40, false)
 
@@ -2744,10 +2748,11 @@ class Auction {
         }
         this.exitAuction = function(){
             if (Api.online && this.playerlist[this.turn].colorIndex == Api.currentPlayer) Api.auctionBid(this.card, -1, true);
-
-                    this.playerlist.splice(this.playerlist.indexOf(this.playerlist[this.turn]), 1)
-                    this.turn = (this.turn) % this.playerlist.length;
-                    if (this.playerlist.length === 1) {
+                    if(this.playerlist.length > 1){
+                        this.playerlist.splice(this.playerlist.indexOf(this.playerlist[this.turn]), 1)
+                        this.turn = (this.turn) % this.playerlist.length;
+                    }
+                    if (this.playerlist.length === 1 && this.lastHasAdded) {
                         for (let i = 0; i < players.length; i++) {
                             if (this.playerlist[0].colorIndex == players[i].colorIndex) {
                                 if (this.auctionMoney !== Math.round(card.piece.price * board.settings.auctionstartprice) && players[i].money - this.auctionMoney >= Math.round(card.piece.price * board.settings.auctionstartprice)) {
@@ -2799,7 +2804,11 @@ class Auction {
             this.auctionMoney += money;
             this.turn = (this.turn + 1) % this.playerlist.length;
 
-            this.startTime = performance.now();
+            if(this.playerlist.length === 1){
+                this.lastHasAdded = true;
+                this.exitAuction();
+            }
+
         }
     }
 }
