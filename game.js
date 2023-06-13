@@ -2761,8 +2761,8 @@ class Auction {
             board.auction.started = true;
         }, 220, 40, false)
 
-        this.exitAuctionButton = new Button([false, false], -105, 550, images.auction.sprites[4], function () {            
-            if(self.playerlist.length === 1){
+        this.exitAuctionButton = new Button([false, false], -105, 550, images.auction.sprites[4], function () {
+            if (self.playerlist.length <= 2) {
                 self.lastHasAdded = true;
             }
             self.exitAuction()
@@ -2814,38 +2814,38 @@ class Auction {
 
             }
         }
-        this.exitAuction = function(){
+        this.exitAuction = function () {
             if (Api.online && this.playerlist[this.turn].colorIndex == Api.currentPlayer) Api.auctionBid(this.card, -1, true);
-                    if(this.playerlist.length > 1){
-                        this.playerlist.splice(this.playerlist.indexOf(this.playerlist[this.turn]), 1)
-                        this.turn = (this.turn) % this.playerlist.length;
-                    }
-                    if (this.playerlist.length === 1 && this.lastHasAdded) {
-                        for (let i = 0; i < players.length; i++) {
-                            if (this.playerlist[0].colorIndex == players[i].colorIndex) {
-                                if (this.auctionMoney !== Math.round(card.piece.price * board.settings.auctionstartprice) && players[i].money - this.auctionMoney >= Math.round(card.piece.price * board.settings.auctionstartprice)) {
-                                    players[i].money -= this.auctionMoney;
-                                    if (board.settings.allFreeparking) {
-                                        board.boardPieces[20].money += this.auctionMoney;
-                                    }
-                                    players[i].playerBorder.startMoneyAnimation(-this.auctionMoney)
-                                    board.auction.card.owner = players[i];
-                                    players[i].ownedPlaces.push(this.card);
-                                }
-                                buttons.splice(buttons.indexOf(this.addMoneyButton2), 1)
-                                buttons.splice(buttons.indexOf(this.addMoneyButton10), 1)
-                                buttons.splice(buttons.indexOf(this.addMoneyButton100), 1)
-                                buttons.splice(buttons.indexOf(this.startAuctionButton), 1)
-                                buttons.splice(buttons.indexOf(this.exitAuctionButton), 1)
-                                board.currentCard = undefined;
-                                board.sellButton.visible = false;
-                                board.getToMainMenuButton.visible = true; board.goToMainMenuButton.visible = false;;
-                                board.buyButton.visible = false;
-                                board.auction = undefined;
+            if (this.playerlist.length > 1) {
+                this.playerlist.splice(this.playerlist.indexOf(this.playerlist[this.turn]), 1)
+                this.turn = (this.turn) % this.playerlist.length;
+            }
+            if (this.playerlist.length === 1 && this.lastHasAdded) {
+                for (let i = 0; i < players.length; i++) {
+                    if (this.playerlist[0].colorIndex == players[i].colorIndex) {
+                        if (this.auctionMoney !== Math.round(card.piece.price * board.settings.auctionstartprice) && players[i].money - this.auctionMoney >= Math.round(card.piece.price * board.settings.auctionstartprice)) {
+                            players[i].money -= this.auctionMoney;
+                            if (board.settings.allFreeparking) {
+                                board.boardPieces[20].money += this.auctionMoney;
                             }
+                            players[i].playerBorder.startMoneyAnimation(-this.auctionMoney)
+                            board.auction.card.owner = players[i];
+                            players[i].ownedPlaces.push(this.card);
                         }
-
+                        buttons.splice(buttons.indexOf(this.addMoneyButton2), 1)
+                        buttons.splice(buttons.indexOf(this.addMoneyButton10), 1)
+                        buttons.splice(buttons.indexOf(this.addMoneyButton100), 1)
+                        buttons.splice(buttons.indexOf(this.startAuctionButton), 1)
+                        buttons.splice(buttons.indexOf(this.exitAuctionButton), 1)
+                        board.currentCard = undefined;
+                        board.sellButton.visible = false;
+                        board.getToMainMenuButton.visible = true; board.goToMainMenuButton.visible = false;;
+                        board.buyButton.visible = false;
+                        board.auction = undefined;
                     }
+                }
+
+            }
         }
 
         this.update = function () {
@@ -2872,7 +2872,7 @@ class Auction {
             this.auctionMoney += money;
             this.turn = (this.turn + 1) % this.playerlist.length;
 
-            if(this.playerlist.length === 1){
+            if (this.playerlist.length === 1) {
                 this.lastHasAdded = true;
                 this.exitAuction();
             }
