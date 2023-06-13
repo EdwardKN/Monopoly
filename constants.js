@@ -21,9 +21,13 @@ if (disableAlert) {
 
 var f = new FontFace('Arcade', 'url(./fonts/SFPixelate.ttf)');
 var fb = new FontFace('ArcadeBold', 'url(./fonts/SFPixelate-Bold.ttf)');
+var fbc = new FontFace('Handwritten', 'url(./fonts/A-little-sunshine.ttf)');
+var fbcd = new FontFace('Signature', 'url(./fonts/Holligate-Signature-Demo.ttf)');
 
 f.load().then(function (font) { document.fonts.add(font); });
 fb.load().then(function (font) { document.fonts.add(font); });
+fbc.load().then(function (font) { document.fonts.add(font); });
+fbcd.load().then(function (font) { document.fonts.add(font); });
 
 var buttons = [];
 
@@ -177,6 +181,9 @@ var images = {
     },
     specialCards: {
         src: ["./images/community card and chance card/specialempty", "./images/community card and chance card/gatillfinkanS", "./images/community card and chance card/illegaldices", "./images/community card and chance card/payincometax", "./images/community card and chance card/payrichtax"]
+    },
+    bankCheck: {
+        src:["./images/community card and chance card/bankcheck"]
     }
 };
 
