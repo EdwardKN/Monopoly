@@ -27,6 +27,7 @@ var playtime = 0;
 
 setInterval(() => {
     playtime++;
+    players.forEach(e => {if(e.dead === false){e.playTime++}})
 }, 10);
 
 window.onload = fixCanvas;
@@ -297,6 +298,8 @@ function saveGame() {
         tmpPlayer.ownedPlacesmortgaged = player.ownedPlaces.map(e => e = e.mortgaged)
         tmpPlayer.ownedPlaceslevel = player.ownedPlaces.map(e => e = e.level)
         tmpPlayer.laps = player.laps
+        tmpPlayer.dead = player.dead;
+        tmpPlayer.playTime = player.playTime
         gameToSave.players.push(tmpPlayer);
     })
     let tmp = false;
@@ -314,6 +317,7 @@ function saveGame() {
     }
 
     localStorage.setItem("games", JSON.stringify(savedGames))
+    return(gameToSave)
 }
 
 
@@ -322,6 +326,7 @@ function loadGame(theGameToLoad) {
 
     board = new Board();
     board.id = gameToLoad.id;
+    playtime = gameToLoad.playtime
 
     board.settings = gameToLoad.settings;
     for (i = 0; i < gameToLoad.players.length; i++) {
@@ -337,6 +342,7 @@ function loadGame(theGameToLoad) {
         players[i].steps = gameToLoad.players[i].steps
         players[i].laps = gameToLoad.players[i].laps
         players[i].timeInJail = gameToLoad.players[i].timeInJail
+        players[i].playTime = gameToLoad.players[i].playTime
         gameToLoad.players[i].ownedPlaces.forEach(function (e, g) {
             players[i].ownedPlaces.push(board.boardPieces[e])
             board.boardPieces[e].mortgaged = gameToLoad.players[i].ownedPlacesmortgaged[g];
@@ -368,6 +374,8 @@ function loadGame(theGameToLoad) {
 
 
 }
+
+
 
 
 
@@ -707,6 +715,48 @@ class LocalLobby {
         }
     }
 }
+class StatMenu{
+    constructor(){
+        this.game = undefined;
+
+        let self = this;
+
+        this.backButton = new Button([false, false], -280, 220, images.buttons.sprites[12], function () {
+            self.current = false;
+            menus[2].current = true;
+            menus[2].init();
+            menus[0].volume.percentage = musicVolume
+            self.backButton.visible = false;
+        }, 325, 60, false, false, false, false, false, false)
+
+        this.draw = function(){
+            if (this.current) {
+                drawRotatedImageFromSpriteSheet(0, 0, 960 * drawScale, 540 * drawScale, images.statMenu.sprites[1], 0, 0, 0, 0, 960, 540)
+                this.backButton.visible = true;
+                this.backButton.draw();
+
+                this.game.players.forEach(function(e,i){
+                    let tmp = e.money;
+
+                    e.ownedPlaces.forEach(function(g,h){
+                        if(e.ownedPlacesmortgaged[h] === false){
+                            tmp += pieces[g].price / 2;
+                            if((pieces[g].housePrice)){
+                                tmp += (e.ownedPlaceslevel[h] * pieces[g].housePrice / 2);
+                            }
+                        }
+                    })
+                    
+                    c.textAlign = "left";
+                    c.fillStyle = "black";  
+                    c.font = "40px Arcade"
+                    c.fillText(i+1 + "  " + e.name + " " + tmp + "kr" + " " + timeToText(e.playTime), 20,i*54 + 134)
+
+                })
+            }
+        }
+    }
+}
 class CreditsMenu {
     constructor() {
         this.current = false;
@@ -740,6 +790,7 @@ class LoadingMenu {
             menus[0].volume.percentage = musicVolume
             self.backButton.visible = false;
             self.startButton.visible = false;
+            self.statButton.visible = false;
             self.deleteSave.visible = false;
             self.buttons.forEach(e => e.visible = false)
         }, 325, 60, false, false, false, false, false, false)
@@ -752,6 +803,7 @@ class LoadingMenu {
                     self.deleteSave.visible = false;
                     self.backButton.visible = false;
                     self.startButton.visible = false;
+                    self.statButton.visible = false;
                     self.buttons.forEach(e => e.visible = false)
                     loadGame(self.games.length - i - 1)
                 }
@@ -791,6 +843,24 @@ class LoadingMenu {
             })
         }, 40, 40)
 
+        this.statButton = new Button([false, false], -300, 650 + 20, images.statMenu.sprites[0], function () {
+            self.buttons.forEach(function (e, i) {
+                if (e.selected === true) {
+                    self.games = JSON.parse(localStorage.getItem("games"));
+                    self.current = false;
+                    menus[4].current = true;
+                    menus[4].game = self.games[self.games.length - i - 1];
+                    menus[0].volume.percentage = musicVolume
+                    self.backButton.visible = false;
+                    self.startButton.visible = false;
+                    self.statButton.visible = false;
+                    self.deleteSave.visible = false;
+                    self.buttons.forEach(e => e.visible = false)
+                }
+            })
+
+        },40,40)
+
 
         this.buttons = [];
         if (localStorage.getItem("games") != null) {
@@ -805,14 +875,20 @@ class LoadingMenu {
 
                 drawRotatedImageFromSpriteSheet(0, 0, 960 * drawScale, 540 * drawScale, images.mainMenu.sprites[3], 0, 0, 0, 0, 960, 540)
                 this.deleteSave.disabled = true;
+                this.statButton.disabled = true;
 
                 self.buttons.forEach(function (e, i) {
                     if (e.selected) {
-                        tmp = true;
+
                         c.drawImage(self.screenshot, 0, canvas.height / 4, canvas.width / 2, canvas.height / 2)
                         c.lineWidth = scale
                         c.strokeRect(0, canvas.height / 4, canvas.width / 2, canvas.height / 2)
+                        self.games = JSON.parse(localStorage.getItem("games"))
+                        if(self.games[self.games.length - i - 1].players.filter(e => {return e.dead != true}).length > 1){
+                            tmp = true;
+                        }
                         self.deleteSave.disabled = false;
+                        self.statButton.disabled = false;
                     }
                 })
                 this.deleteSave.visible = true;
@@ -826,7 +902,9 @@ class LoadingMenu {
                     e.draw();
                 })
                 this.startButton.visible = true;
+                this.statButton.visible = true;
                 this.startButton.draw();
+                this.statButton.draw();
             }
         }
 
@@ -1081,6 +1159,7 @@ async function init() {
         menus.push(new LocalLobby())
         menus.push(new LoadingMenu())
         menus.push(new CreditsMenu())
+        menus.push(new StatMenu())
         update();
 
     } else {
@@ -1088,6 +1167,7 @@ async function init() {
         menus.push(new LocalLobby())
         menus.push(new LoadingMenu())
         menus.push(new CreditsMenu())
+        menus.push(new StatMenu())
 
         menus[0].localButton.visible = false;
         menus[0].onlineButton.visible = false;
@@ -1552,7 +1632,7 @@ class Board {
                 saveGame()
                 players.forEach(e => buttons.splice(buttons.indexOf(e.playerBorder.button), 1))
                 players = [];
-                menus[0].current = true;
+                menus[4].current = true;
                 menus[0].volume.percentage = musicVolume
                 if (Api.online) Api.disconnect();
                 timeouts.forEach(e => clearTimeout(e));
@@ -1821,7 +1901,49 @@ class Board {
             }
         }
 
-        this.update = function () {
+        this.update = async function () {
+            if(players[turn].dead){
+                turn = (turn + 1) % players.length;
+                return;
+            }
+            if(players.filter(e => {{return e.dead === false}}).length === 1){
+               let tmp = async function(){
+                self.saving = true;
+                board.getToMainMenuButton.selected = false;
+                board.imageSmoothingButton.visible = false;
+                board.goToMainMenuButton.visible = false;
+                board.escapeConfirm.visible = false;
+                board.getToMainMenuButton.visible = false;
+                board.fullScreenButton.visible = false;
+                board.musicButton.visible = false;
+                board.volume.visible = false;
+                board.imageSmoothingButton.visible = false;
+                setTimeout(() => {
+                    let tmp2 = saveGame()
+                    players.forEach(e => buttons.splice(buttons.indexOf(e.playerBorder.button), 1))
+                    players = [];
+                    menus[4].current = true;
+                    menus[0].volume.percentage = musicVolume
+                    if (Api.online) Api.disconnect();
+                    timeouts.forEach(e => clearTimeout(e));
+                    intervals.forEach(e => clearInterval(e));
+                    timeouts = [];
+                    board = undefined;
+                    buttons = [];
+                    menus = [];
+    
+                    init();
+                    setTimeout(() => {
+                        menus[4].current = true;
+                        menus[4].game = tmp2;
+                    },100)
+
+                }, 100);
+               } 
+               await tmp();
+            }
+            
+            
             let fontsize = (1 / this.textsize.width) * 50000 > 50 ? 50 : (1 / this.textsize.width) * 50000
             c.fillStyle = "white";
             c.font = fontsize / 2 + "px Arcade";
@@ -1874,11 +1996,6 @@ class Board {
                 if (players[turn].inJail === true && players[turn].bot === undefined && this.auction === undefined && players[turn].rolls === false && players[turn].animationOffset === 0 && this.showDices === false && this.animateDices === false) {
                     this.showJailmenu();
                 }
-            } else {
-                c.fillStyle = "black"
-                c.font = 80 / 2 + "px Arcade"
-                c.textAlign = "center"
-                c.fillText("Grattis " + players[0].name + "! Du vann!", canvas.width / 2, canvas.height / 2 + 10)
             }
             players.forEach(e => e.playerBorder.drawButton())
 
@@ -3682,6 +3799,8 @@ class Player {
         this.timeInJail = 0;
         this.laps = 0;
         this.hasStepped = false;
+        this.dead = false;
+        this.playTime = 0;
 
         this.playerBorder = new PlayerBorder(this)
         if (bot == true) {
@@ -3693,12 +3812,14 @@ class Player {
             drawIsometricImage(800 - this.x * 64 - 32, 700 - this.y * 64 - 32, this.img, false, 0, 0, 24, 48, 0, -this.offsetY, 1)
         }
         this.update = function () {
-            this.updateVisual();
-            this.draw();
-            this.money = Math.floor(this.money)
-            this.checkMoney();
-            if (this.bot !== undefined) {
-                this.bot.update();
+            if(this.dead === false){
+                this.updateVisual();
+                this.draw();
+                this.money = Math.floor(this.money)
+                this.checkMoney();
+                if (this.bot !== undefined) {
+                    this.bot.update();
+                }
             }
         }
 
@@ -3722,7 +3843,8 @@ class Player {
                         e.mortgaged = false;
                     }
                 })
-                players.splice(players.indexOf(this), 1)
+                this.dead = true;
+                this.ownedPlaces = [];
 
             } else if (this.money < 0) {
                 this.negative = true;
@@ -4170,7 +4292,11 @@ function numberToText(number){
             }
         }else{
             if(number < 10000 && JSON.parse(JSON.stringify(number).slice(2,3)) < 2){
-                return siffror[JSON.parse(JSON.stringify(number).slice(0,1))] + siffror[29] +siffror[JSON.parse(JSON.stringify(number).slice(1,2))] + siffror[28] + siffror[JSON.parse(JSON.stringify(number).slice(2,4))]
+                if(JSON.parse(JSON.stringify(number).slice(2,3)) == 0){
+                    return siffror[JSON.parse(JSON.stringify(number).slice(0,1))] + siffror[29] +siffror[JSON.parse(JSON.stringify(number).slice(1,2))] + siffror[28] + siffror[JSON.parse(JSON.stringify(number).slice(3,4))]
+                }else{
+                    return siffror[JSON.parse(JSON.stringify(number).slice(0,1))] + siffror[29] +siffror[JSON.parse(JSON.stringify(number).slice(1,2))] + siffror[28] + siffror[JSON.parse(JSON.stringify(number).slice(2,4))]
+                }
             }else if(JSON.parse(JSON.stringify(number).slice(3,4)) == 0){
                 return siffror[JSON.parse(JSON.stringify(number).slice(0,1))] + siffror[29] + siffror[JSON.parse(JSON.stringify(number).slice(1,2))] + siffror[28] + siffror[JSON.parse(JSON.stringify(number).slice(2,3)) + 18]
             }else{
@@ -4182,28 +4308,28 @@ function numberToText(number){
 }
 
 // gammal funktion från sudoku
-function timeToText(value) {
+function timeToText(value){
     returnValue = ""
-    if (Math.floor(value / 6000) > 9) {
-        returnValue += Math.floor(value / 6000) + ":"
-    } else if (Math.floor(value / 6000) > 0) {
-        returnValue += "0" + Math.floor(value / 6000) + ":"
-    } else {
-        returnValue += "00:"
+    if(Math.floor(value/6000) > 9){
+        returnValue += Math.floor(value/6000) + ":" 
+    }else if(Math.floor(value/6000) > 0){
+        returnValue += "0"+Math.floor(value/6000) + ":" 
+    }else{
+        returnValue += "00:" 
     }
-    if (Math.floor(value / 100) % 60 > 9) {
-        returnValue += Math.floor(value / 100) % 60 + "."
-    } else if (Math.floor(value / 100) % 60 > 0) {
-        returnValue += "0" + Math.floor(value / 100) % 60 + "."
-    } else {
-        returnValue += "00."
+    if(Math.floor(value/100)%60 > 9){
+        returnValue += Math.floor(value/100)%60 + "." 
+    }else if(Math.floor(value/100)%60 > 0){
+        returnValue += "0"+Math.floor(value/100)%60 + "." 
+    }else{
+        returnValue += "00." 
     }
-    if (Math.floor(value) % 100 > 9) {
-        returnValue += Math.floor(value % 100)
-    } else if (Math.floor(value) % 100 > 0) {
-        returnValue += "0" + Math.floor(value % 100)
-    } else {
-        returnValue += "00"
+    if(Math.floor(value)%100 > 9){
+        returnValue += Math.floor(value%100)
+    }else if(Math.floor(value)%100 > 0){
+        returnValue += "0"+Math.floor(value%100)
+    }else{
+        returnValue += "00" 
     }
     return returnValue;
 }

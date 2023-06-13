@@ -184,6 +184,9 @@ var images = {
     },
     bankCheck: {
         src:["./images/community card and chance card/bankcheck"]
+    },
+    statMenu:{
+        src:["./images/buttons/statbutton","./images/menus/statmenu"]
     }
 };
 
