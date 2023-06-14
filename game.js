@@ -871,11 +871,14 @@ class LoadingMenu {
                     }
                     if (i === self.buttons.length - 1) {
                         self.buttons[i].selected = true;
+                        self.buttons[i].onClick();
                     } else {
                         if (i - 1 === -1) {
                             self.buttons[i].selected = true;
+                            self.buttons[i].onClick();
                         } else {
                             self.buttons[i - 1].selected = true;
+                            self.buttons[i - 1].onClick();
                         }
 
                     }
