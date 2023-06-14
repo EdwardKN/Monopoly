@@ -4314,6 +4314,7 @@ function numberToText(number){
 
 // gammal funktion från sudoku
 function timeToText(value){
+    value = value/100
     returnValue = ""
     if(Math.floor(value/6000) > 9){
         returnValue += Math.floor(value/6000) + ":" 
@@ -4323,16 +4324,16 @@ function timeToText(value){
         returnValue += "00:" 
     }
     if(Math.floor(value/100)%60 > 9){
-        returnValue += Math.floor(value/100)%60 + "." 
+        returnValue += Math.floor(value/100)%60 + ":" 
     }else if(Math.floor(value/100)%60 > 0){
-        returnValue += "0"+Math.floor(value/100)%60 + "." 
+        returnValue += "0"+Math.floor(value/100)%60 + ":" 
     }else{
-        returnValue += "00." 
+        returnValue += "00:" 
     }
-    if(Math.floor(value)%100 > 9){
-        returnValue += Math.floor(value%100)
-    }else if(Math.floor(value)%100 > 0){
-        returnValue += "0"+Math.floor(value%100)
+    if(Math.floor(value)%60 > 9){
+        returnValue += Math.floor(value%60)
+    }else if(Math.floor(value)%60 > 0){
+        returnValue += "0"+Math.floor(value%60)
     }else{
         returnValue += "00" 
     }
