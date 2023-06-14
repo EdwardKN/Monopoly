@@ -750,7 +750,10 @@ class StatMenu{
                     c.textAlign = "left";
                     c.fillStyle = "black";  
                     c.font = "40px Arcade"
-                    c.fillText(i+1 + "  " + e.name + " " + tmp + "kr" + " " + timeToText(e.playTime), 20,i*54 + 134)
+                    c.fillText(i+1, 20,i*54 + 134)
+                    c.fillText(e.name, 80,i*54 + 134)
+                    c.fillText(tmp + "kr", 560,i*54 + 134)
+                    c.fillText(timeToText(e.playTime), 750,i*54 + 134)
 
                 })
             }
