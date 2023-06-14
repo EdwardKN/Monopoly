@@ -396,7 +396,7 @@ class LocalLobby {
         this.settingsButtons.push(new Button([true, false], 80, 205 + this.settingsButtons.length * 42, images.buttons.sprites[10], function () { }, 500, 40, false, false, false, false, false, false, "Jämn utbyggnad", 42, "black"))
         this.settingsButtons.push(new Slider(436 * drawScale, 5 + this.settingsButtons.length * 42 * drawScale, 502 * drawScale, 40 * drawScale, 0, 3000, 100, true, 50, "kr", "Startkapital: "))
         this.settingsButtons.push(new Slider(436 * drawScale, 5 + this.settingsButtons.length * 42 * drawScale, 502 * drawScale, 40 * drawScale, 0, 5, 1, true, 50, "", "Antal varv innan köp: "))
-        this.settingsButtons.push(new Slider(436 * drawScale, 5 + this.settingsButtons.length * 42 * drawScale, 502 * drawScale, 40 * drawScale, 0, 100, 10, true, 35, "%", "Startbud på auktioner(% av gatupris): "))
+        this.settingsButtons.push(new Slider(436 * drawScale, 5 + this.settingsButtons.length * 42 * drawScale, 502 * drawScale, 40 * drawScale, 0, 100, 10, true, 35, "%", "Lägsta bud på auktioner(% av gatupris): "))
         this.settingsButtons[2].selected = true
         this.settingsButtons[3].selected = true
         this.settingsButtons[4].selected = true
@@ -2850,7 +2850,7 @@ class Auction {
     constructor(card) {
         this.card = card;
         this.turn = turn;
-        this.auctionMoney = Math.round(card.piece.price * board.settings.auctionstartprice);
+        this.auctionMoney = 0;
         this.started = false;
         this.playerlist = [...players];
         this.lastHasAdded = false;
@@ -2879,7 +2879,7 @@ class Auction {
         }, 220, 40, false)
 
         this.exitAuctionButton = new Button([false, false], -105, 550, images.auction.sprites[4], function () {
-            if (self.playerlist.length <= 2) {
+            if (self.playerlist.length == 1||self.playerlist.length <= 2 && self.auctionMoney >= Math.round(card.piece.price * board.settings.auctionstartprice)) {
                 self.lastHasAdded = true;
             }
             self.exitAuction()
@@ -2889,11 +2889,16 @@ class Auction {
             drawRotatedImageFromSpriteSheet(canvas.width, canvas.height - images.card.sprites[card.piece.card].frame.h, images.card.sprites[card.piece.card].frame.w * 2 - 22, images.card.sprites[card.piece.card].frame.h * 2, images.card.sprites[card.piece.card], 0, false, 0, 0, images.card.sprites[card.piece.card].frame.w, images.card.sprites[card.piece.card].frame.h, false)
 
             drawRotatedImageFromSpriteSheet(canvas.width - images.auction.sprites[0].frame.w * 2 + 22, canvas.height - images.card.sprites[card.piece.card].frame.h, images.auction.sprites[0].frame.w * 2, images.auction.sprites[0].frame.h * 2, images.auction.sprites[0], 0, false, 0, 0, images.auction.sprites[0].frame.w, images.auction.sprites[0].frame.h, false)
-            c.fillStyle = "black";
+            if(this.auctionMoney >= Math.round(card.piece.price * board.settings.auctionstartprice)){
+                c.fillStyle = "green";
+            }else{
+                c.fillStyle = "red";
+            }
             c.font = 80 / 2 + "px Arcade";
             c.textAlign = "center";
             c.fillText(this.auctionMoney + "kr", canvas.width / 2 - 128 + 11, 430 / 2);
             c.font = (1 / this.playerlist[this.turn].textsize.width) * 22000 > 50 ? 50 : (1 / this.playerlist[this.turn].textsize.width) * 22000 + "px Arcade";
+            c.fillStyle = "black"
             c.fillText(this.playerlist[this.turn].name, canvas.width / 2 - 128 + 11, 550 / 2);
 
             if (this.started) {
@@ -2940,7 +2945,7 @@ class Auction {
             if (this.playerlist.length === 1 && this.lastHasAdded) {
                 for (let i = 0; i < players.length; i++) {
                     if (this.playerlist[0].colorIndex == players[i].colorIndex) {
-                        if (this.auctionMoney !== Math.round(card.piece.price * board.settings.auctionstartprice) && players[i].money - this.auctionMoney >= Math.round(card.piece.price * board.settings.auctionstartprice)) {
+                        if (this.auctionMoney >= Math.round(card.piece.price * board.settings.auctionstartprice)) {
                             players[i].money -= this.auctionMoney;
                             if (board.settings.allFreeparking) {
                                 board.boardPieces[20].money += this.auctionMoney;
@@ -2989,7 +2994,7 @@ class Auction {
             this.auctionMoney += money;
             this.turn = (this.turn + 1) % this.playerlist.length;
 
-            if (this.playerlist.length === 1) {
+            if (this.playerlist.length === 1 && this.auctionMoney >= Math.round(card.piece.price * board.settings.auctionstartprice)) {
                 this.lastHasAdded = true;
                 this.exitAuction();
             }
