@@ -261,7 +261,19 @@ function startGame(playerlist, settings) {
 }
 
 function saveGame() {
-    let gameToSave = { players: [], settings: board.settings, turn: turn, freeParkingMoney: board.boardPieces[20].money, currentDay: new Date().today(), currentTime: new Date().timeNow(), playtime: playtime, screenshot: canvas.toDataURL() };
+    let gameToSave = {
+        players: [], 
+        settings: board.settings, 
+        turn: turn, 
+        freeParkingMoney: 
+        board.boardPieces[20].money, 
+        currentDay: new Date().today(), 
+        currentTime: new Date().timeNow(), 
+        playtime: playtime, 
+        screenshot: canvas.toDataURL(),
+        currentCard: board.boardPieces.indexOf(board.currentCard),
+        currentShowingCard:{card:board.currentShowingCard?.card,type:board.currentShowingCard?.type,info:board.currentShowingCard?.info}
+    };
     let savedGames = JSON.parse(localStorage.getItem("games"))
 
 
@@ -370,6 +382,33 @@ function loadGame(theGameToLoad) {
     })
     board.boardPieces[20].money = gameToLoad.freeParkingMoney;
 
+    if(gameToLoad.currentShowingCard.type == "chance"){
+        board.boardPieces[players[turn].steps].doChanceCard(gameToLoad.currentShowingCard.card,players[turn])
+    }
+    if(gameToLoad.currentShowingCard.type == "community"){
+        board.boardPieces[players[turn].steps].doCommunityChest(gameToLoad.currentShowingCard.card,players[turn])
+    }
+    if(gameToLoad.currentShowingCard.type == "bankcheck"){
+        board.currentShowingCard = new CurrentCard(0,"bankcheck",gameToLoad.currentShowingCard.info)
+
+        board.currentShowingCard.onContinue = function(){
+
+            if(players[players.map(e => e.name).indexOf(gameToLoad.currentShowingCard.info.to)]){
+                players[players.map(e => e.name).indexOf(gameToLoad.currentShowingCard.info.to)].money += gameToLoad.currentShowingCard.info.amount;
+                players[players.map(e => e.name).indexOf(gameToLoad.currentShowingCard.info.to)].playerBorder.startMoneyAnimation(gameToLoad.currentShowingCard.info.amount)
+            }
+            if(players[players.map(e => e.name).indexOf(gameToLoad.currentShowingCard.info.from)]){
+                players[players.map(e => e.name).indexOf(gameToLoad.currentShowingCard.info.from)].money -= gameToLoad.currentShowingCard.info.amount;
+                players[players.map(e => e.name).indexOf(gameToLoad.currentShowingCard.info.from)].playerBorder.startMoneyAnimation(-gameToLoad.currentShowingCard.info.amount)
+            }
+            if(gameToLoad.currentShowingCard.info.to == "Banken" || gameToLoad.currentShowingCard.info.to == "Renovering AB"){
+                if(board.settings.freeParking){
+                    board.boardPieces[20].money += amount;
+                }
+            }
+        }
+        
+    }
 
 
 
@@ -817,16 +856,16 @@ class LoadingMenu {
                 if (e.selected === true) {
                     self.buttons.forEach(e => e.selected = false)
 
-                    self.games = JSON.parse(localStorage.getItem("games"))
+                    self.games = JSON.parse(localStorage.getItem("games")).reverse()
 
-                    if (self.games.length == 1) {
+                    if (self.games.reverse().length == 1) {
                         localStorage.removeItem("games")
                         self.buttons.forEach(e => e.visible = false)
                         self.backButton.onClick();
                     } else {
-                        self.games.splice(self.games.length - 1 - i, 1)
+                        self.games.reverse().splice(self.games.reverse().length - 1 - i, 1)
 
-                        localStorage.setItem("games", JSON.stringify(self.games))
+                        localStorage.setItem("games", JSON.stringify(self.games.reverse()))
                         self.buttons.forEach(e => e.visible = false)
                         self.init();
                     }
@@ -849,10 +888,10 @@ class LoadingMenu {
         this.statButton = new Button([false, false], -300, 650 + 20, images.statMenu.sprites[0], function () {
             self.buttons.forEach(function (e, i) {
                 if (e.selected === true) {
-                    self.games = JSON.parse(localStorage.getItem("games"));
+                    self.games = JSON.parse(localStorage.getItem("games")).reverse();
                     self.current = false;
                     menus[4].current = true;
-                    menus[4].game = self.games[self.games.length - i - 1];
+                    menus[4].game = self.games.reverse()[self.games.length - i - 1];
                     menus[0].volume.percentage = musicVolume
                     self.backButton.visible = false;
                     self.startButton.visible = false;
@@ -886,8 +925,8 @@ class LoadingMenu {
                         c.drawImage(self.screenshot, 0, canvas.height / 4, canvas.width / 2, canvas.height / 2)
                         c.lineWidth = scale
                         c.strokeRect(0, canvas.height / 4, canvas.width / 2, canvas.height / 2)
-                        self.games = JSON.parse(localStorage.getItem("games"))
-                        if(self.games[self.games.length - i - 1].players.filter(e => {return e.dead != true}).length > 1){
+                        self.games = JSON.parse(localStorage.getItem("games")).reverse()
+                        if(self.games.reverse()[self.games.length - i - 1].players.filter(e => {return e.dead != true}).length > 1){
                             tmp = true;
                         }
                         self.deleteSave.disabled = false;
@@ -919,6 +958,7 @@ class LoadingMenu {
                     if (i < 10) {
                         self.buttons.push(new Button([true, false], 140, 220 + 50 * i, images.buttons.sprites[23], function () {
                             if (self.buttons[i].selected) {
+                                console.log(self.games[i].players.map(g => g.money))
                                 downscale(self.games[i].screenshot, canvas.width / 2, canvas.height / 2, { imageType: "png" }).
                                     then(function (dataURL) {
                                         self.screenshot.src = dataURL;
