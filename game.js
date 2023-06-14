@@ -960,6 +960,8 @@ class LoadingMenu {
                 this.games.forEach(function (e, i) {
                     if (i < 10) {
                         self.buttons.push(new Button([true, false], 140, 220 + 50 * i, images.buttons.sprites[23], function () {
+                            self.games = JSON.parse(localStorage.getItem("games")).reverse()
+
                             if (self.buttons[i].selected) {
                                 downscale(self.games[i].screenshot, canvas.width / 2, canvas.height / 2, { imageType: "png" }).
                                     then(function (dataURL) {
