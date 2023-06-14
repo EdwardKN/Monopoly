@@ -958,7 +958,6 @@ class LoadingMenu {
                     if (i < 10) {
                         self.buttons.push(new Button([true, false], 140, 220 + 50 * i, images.buttons.sprites[23], function () {
                             if (self.buttons[i].selected) {
-                                console.log(self.games[i].players.map(g => g.money))
                                 downscale(self.games[i].screenshot, canvas.width / 2, canvas.height / 2, { imageType: "png" }).
                                     then(function (dataURL) {
                                         self.screenshot.src = dataURL;
