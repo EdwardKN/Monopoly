@@ -3764,7 +3764,7 @@ class CurrentCard {
                 c.fillText(numberToText(info.amount),270,290)
                 c.font = "30px Handwritten"
                 c.fillText(info.reason,300,338)
-                c.font = "40px Signature"
+                c.font = "37px Signature"
                 c.fillText(info.from,510,338)
             }
         }
