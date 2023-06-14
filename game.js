@@ -1843,7 +1843,7 @@ class Board {
                 }
                 players[turn].playerBorder.startMoneyAnimation(-board.currentCard.piece.housePrice)
             }else{
-                for (let i = 0; i < board.boardPieces.length; i++) {
+                for (let i = board.boardPieces.length - 1; i > 0; i--) {
                     if (board.boardPieces[i] !== board.currentCard) {
                         if (board.boardPieces[i].piece.group === board.currentCard.piece.group) {
                             if(board.boardPieces[i].level === lowest){
