@@ -428,6 +428,9 @@ function loadGame(theGameToLoad) {
             board.auction.playerlist.push(players.filter(g => g.colorIndex == e)[0])
         })
     }
+    if(gameToLoad.currentCard){
+        board.currentCard = board.boardPieces[gameToLoad.currentCard]
+    }
 
 
 
@@ -981,7 +984,6 @@ class LoadingMenu {
                             self.games = JSON.parse(localStorage.getItem("games")).reverse()
 
                             if (self.buttons[i].selected) {
-                                console.log(self.games[i].auction)
                                 downscale(self.games[i].screenshot, canvas.width / 2, canvas.height / 2, { imageType: "png" }).
                                     then(function (dataURL) {
                                         self.screenshot.src = dataURL;
