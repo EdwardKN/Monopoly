@@ -795,15 +795,18 @@ class StatMenu{
                 drawRotatedImageFromSpriteSheet(0, 0, 960 * drawScale, 540 * drawScale, images.statMenu.sprites[1], 0, 0, 0, 0, 960, 540)
                 this.backButton.visible = true;
                 this.backButton.draw();
+                this.game.players = this.game.players.sort((a,b) => {
+                    return a.tmp - b.tmp;
+                }).reverse()
 
                 this.game.players.forEach(function(e,i){
-                    let tmp = e.money;
+                    e.tmp = e.money;
 
                     e.ownedPlaces.forEach(function(g,h){
                         if(e.ownedPlacesmortgaged[h] === false){
-                            tmp += pieces[g].price / 2;
+                            e.tmp += pieces[g].price / 2;
                             if((pieces[g].housePrice)){
-                                tmp += (e.ownedPlaceslevel[h] * pieces[g].housePrice / 2);
+                                e.tmp += (e.ownedPlaceslevel[h] * pieces[g].housePrice / 2);
                             }
                         }
                     })
@@ -813,7 +816,7 @@ class StatMenu{
                     c.font = "40px Arcade"
                     c.fillText(i+1, 20,i*54 + 134)
                     c.fillText(e.name, 80,i*54 + 134)
-                    c.fillText(tmp + "kr", 560,i*54 + 134)
+                    c.fillText(e.tmp + "kr", 560,i*54 + 134)
                     c.fillText(timeToText(e.playTime), 750,i*54 + 134)
 
                 })
