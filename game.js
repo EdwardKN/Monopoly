@@ -272,7 +272,15 @@ function saveGame() {
         playtime: playtime, 
         screenshot: canvas.toDataURL(),
         currentCard: board.boardPieces.indexOf(board.currentCard),
-        currentShowingCard:{card:board.currentShowingCard?.card,type:board.currentShowingCard?.type,info:board.currentShowingCard?.info}
+        currentShowingCard:{card:board.currentShowingCard?.card,type:board.currentShowingCard?.type,info:board.currentShowingCard?.info},
+        auction:{
+            auctionMoney:board?.auction?.auctionMoney,
+            card:board?.auction?.card.n,
+            lastHasAdded:board?.auction?.lastHasAdded,
+            started:board?.auction?.started,
+            turn:board?.auction?.turn,
+            playerlist:board?.auction?.playerlist.map(e => e.colorIndex)
+        }
     };
     let savedGames = JSON.parse(localStorage.getItem("games"))
 
@@ -408,6 +416,17 @@ function loadGame(theGameToLoad) {
             }
         }
         
+    }
+    if(gameToLoad.auction.card !== undefined){
+        board.auction = new Auction(board.boardPieces[gameToLoad.auction.card]);
+        board.auction.lastHasAdded = gameToLoad.auction.lastHasAdded;
+        board.auction.started = gameToLoad.auction.started;
+        board.auction.turn = gameToLoad.auction.turn;
+        board.auction.auctionMoney = gameToLoad.auction.auctionMoney;
+        board.auction.playerlist = [];
+        gameToLoad.auction.playerlist.forEach(e => {
+            board.auction.playerlist.push(players.filter(g => g.colorIndex == e)[0])
+        })
     }
 
 
@@ -924,7 +943,6 @@ class LoadingMenu {
 
                 self.buttons.forEach(function (e, i) {
                     if (e.selected) {
-
                         c.drawImage(self.screenshot, 0, canvas.height / 4, canvas.width / 2, canvas.height / 2)
                         c.lineWidth = scale
                         c.strokeRect(0, canvas.height / 4, canvas.width / 2, canvas.height / 2)
@@ -963,6 +981,7 @@ class LoadingMenu {
                             self.games = JSON.parse(localStorage.getItem("games")).reverse()
 
                             if (self.buttons[i].selected) {
+                                console.log(self.games[i].auction)
                                 downscale(self.games[i].screenshot, canvas.width / 2, canvas.height / 2, { imageType: "png" }).
                                     then(function (dataURL) {
                                         self.screenshot.src = dataURL;
