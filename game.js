@@ -1402,11 +1402,16 @@ async function showOnlineLobby() {
 
             location.reload();
         });
-
+        
         await Api.openWebsocketConnection(serverURL, username);
     } catch (err) {
-        alert("VIKTIGT!\nDu kommer att hamna på en annan webbsida.\nFör att gå med i spelet måste du klicka på:\nAvancerat...>Acceptera risken och fortsätt\nOm du inte gör detta så kommer du inte kunna ansluta till spelet.");
-        location = "https://" + serverURL + "/" + btoa(location.href) + "/" + encodeURI(username);
+        if (await Api.serverActive(serverURL)) {
+            alert("VIKTIGT!\nDu kommer att hamna på en annan webbsida.\nFör att gå med i spelet måste du klicka på:\nAvancerat...>Acceptera risken och fortsätt\nOm du inte gör detta så kommer du inte kunna ansluta till spelet.");
+            location = "https://" + serverURL + "/" + btoa(location.href) + "/" + encodeURI(username);
+        } else {
+            alert("Tyvärr\nDet verkar som att addressen du skrev in inte har ett aktivt spel pågående\nSäker på att du skrev rätt?");
+            location.reload();
+        }
     }
 }
 

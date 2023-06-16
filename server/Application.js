@@ -1,6 +1,7 @@
 var os = require('node:os');
 var https = require('node:https');
 var websocket = require('websocket');
+var childProcess = require('node:child_process');
 var { readFileSync } = require('node:fs');
 var { ClientRequest, ServerResponse } = require('node:http');
 
@@ -10,6 +11,7 @@ var { TileManager } = require("./modules/tile");
 const { Logger } = require('./modules/logger');
 
 const CONFIG = JSON.parse(readFileSync("./config.json", "utf-8"));
+const CENTRALIZED_SERVER = "https://monopoly.endy.workers.dev";
 
 var network = Object.values(os.networkInterfaces()).map(x => x.filter(y => !y.internal).find(y => y.family == "IPv4")).find(x => x != undefined)?.address;
 if (network == undefined) {
@@ -29,7 +31,21 @@ var server = https.createServer({ key: readFileSync("./certs/monopoly.key"), cer
     .listen(port, () => {
         Logger.log("New session started\n============================================\n", "Server.onstart", Logger.VERBOSE);
         Logger.log(`Klienter kan nu ansluta till servern med denna adress:\n${network}:${port}\n`, undefined, Logger.NONE);
+
+        var url = new URL(CENTRALIZED_SERVER + "/connect");
+        url.searchParams.set("url", encodeURI(`${network}:${port}`));
+        url.searchParams.set("visibility", "private");
+
+        https.get(url.toString(), (res) => { Logger.log("Registered with centralized server; Response-code: " + res.statusCode, "Server::OnStartUp", Logger.VERBOSE); });
     });
+
+process.on('exit', () => {
+    childProcess.execFileSync("node", ["./modules/exitHandler.js", CENTRALIZED_SERVER, network, port]);
+});
+
+process.on('SIGINT', () => {
+    process.exit();
+});
 
 var gameHasStarted = false;
 

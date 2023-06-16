@@ -11,6 +11,9 @@ class Api {
     // The id of the player at this client
     static currentPlayer = -1;
 
+    // The ...
+    static centralizedServer = "https://monopoly.endy.workers.dev";
+
     /**
      * Sent when this player exited jail
      * @param {String} type Either DICE, CARD or MONEY depending on how the player exited jail
@@ -147,7 +150,24 @@ class Api {
     }
 
     /**
-     * @param {String|URL} url The address to the LAN-server (No prefix prepended)
+     * Check if a certain url is active
+     * @param {string} serverURL 
+     * @returns {boolean} Whether or not the supplied url has an active server (No prefix)
+     */
+    static async serverActive(serverURL) {
+        var url = new URL(Api.centralizedServer + "/get");
+
+        url.searchParams.set("url", encodeURI(serverURL));
+
+        var result = await (await fetch(url.toString())).json();
+
+        if (result.error != undefined) throw result.error;
+
+        return result.exists;
+    }
+
+    /**
+     * @param {String|URL} url The address to the game server (No prefix prepended)
      */
     static async openWebsocketConnection(url, username) {
         return new Promise((resolve, reject) => {
