@@ -1134,6 +1134,7 @@ class MainMenu {
                 this.fullScreenButton.visible = true;
                 this.fullScreenButton.selected = document.fullscreenElement != null;
                 this.imageSmoothingButton.selected = renderC.imageSmoothingEnabled;
+                this.volume.visible = true;
                 this.localButton.draw();
                 this.onlineButton.draw();
                 this.loadButton.draw();
@@ -1142,7 +1143,6 @@ class MainMenu {
                 this.imageSmoothingButton.draw();
                 this.finishButton.draw();
                 this.fullScreenButton.draw();
-                this.volume.visible = true;
                 this.volume.draw();
             }
         }
@@ -1291,6 +1291,10 @@ async function init() {
 function update() {
     requestAnimationFrame(update);
 
+    buttons.forEach(e => {
+        e.visible = false;
+    });
+
     c.imageSmoothingEnabled = false;
     c.clearRect(0, 0, canvas.width, canvas.height);
     renderC.clearRect(0, 0, renderCanvas.width, renderCanvas.height);
@@ -1300,11 +1304,17 @@ function update() {
         board.update();
     }
 
+    
+    menus.forEach(e => e.draw())
+
+    renderC.drawImage(canvas, 0, 0, renderCanvas.width, renderCanvas.height)
+
     let tmp = false;
 
     buttons.forEach(e => {
         if (e.hover && e.visible) {
             tmp = true;
+            console.log("he")
         }
     });
 
@@ -1313,10 +1323,6 @@ function update() {
     } else {
         renderCanvas.style.cursor = "auto"
     }
-
-    menus.forEach(e => e.draw())
-
-    renderC.drawImage(canvas, 0, 0, renderCanvas.width, renderCanvas.height)
 }
 
 function showBackground() {
@@ -2122,7 +2128,6 @@ class Board {
             if (this.currentCard !== undefined) {
                 drawRotatedImageFromSpriteSheet(canvas.width - images.card.sprites[this.currentCard.piece.card].frame.w, canvas.height - images.card.sprites[this.currentCard.piece.card].frame.h, images.card.sprites[this.currentCard.piece.card].frame.w * drawScale, images.card.sprites[this.currentCard.piece.card].frame.h * drawScale, images.card.sprites[this.currentCard.piece.card], 0, false, 0, 0, images.card.sprites[this.currentCard.piece.card].frame.w, images.card.sprites[this.currentCard.piece.card].frame.h)
 
-                this.cardCloseButton.draw();
                 c.fillStyle = "black";
                 c.textAlign = "center";
                 c.font = 20 / 2 + "px Arcade";
@@ -2140,9 +2145,7 @@ class Board {
                         if (this.currentCard.level > 0) {
                             this.sellButton.disabled = true;
                         }
-                        this.sellButton.draw();
                         this.sellButton.visible = true;
-                        this.mortgageButton.draw();
                         this.mortgageButton.visible = true;
                         if (this.currentCard.piece.type === "utility" || this.currentCard.piece.type === "station") {
                             this.sellButton.x = 140;
@@ -2152,9 +2155,7 @@ class Board {
                         } else {
                             this.sellButton.x = 190;
                             this.mortgageButton.x = 140;
-                            this.upgradeButton.draw()
                             this.upgradeButton.visible = true;
-                            this.downgradeButton.draw();
                             this.downgradeButton.visible = true;
                         }
 
@@ -2213,9 +2214,7 @@ class Board {
                             this.auctionButton.disabled = true;
                             this.cardCloseButton.visible = true;
                         }
-                        this.buyButton.draw();
                         this.buyButton.visible = true;
-                        this.auctionButton.draw();
                         this.auctionButton.visible = true;
                         this.mortgageButton.visible = false;
                         this.sellButton.visible = false;
@@ -2243,6 +2242,14 @@ class Board {
             } else {
                 this.cardCloseButton.visible = false;
             }
+            this.sellButton.draw();
+            this.auctionButton.draw();
+            this.buyButton.draw();
+            this.upgradeButton.draw()
+            this.downgradeButton.draw();
+            this.mortgageButton.draw();
+            this.cardCloseButton.draw();
+
 
         }
         this.showJailmenu = function () {
@@ -2536,14 +2543,10 @@ class Trade {
 
         this.update = function () {
             drawIsometricImage(0, 0, images.trade.sprites[0], false, 0, 0, images.trade.sprites[0].frame.w, images.trade.sprites[0].frame.h, -320 - 71, images.trade.sprites[0].frame.h / 50 - 50, 1)
-            this.closeButton.draw();
-            this.p1ConfirmButton.draw();
-            this.p2ConfirmButton.draw();
+
 
             this.p1Slider.visible = true;
-            this.p1Slider.draw();
             this.p2Slider.visible = true;
-            this.p2Slider.draw();
             c.fillStyle = "black"
             c.textAlign = "right"
             let fontsize1 = (1 / textsize1.width) * 40000 > 25 ? 25 : (1 / textsize1.width) * 40000
@@ -2555,6 +2558,8 @@ class Trade {
             c.fillText(this.p2.name + "   " + this.p2.money + "kr", 1070 / 2, 160 / 2)
             this.p1PropertyButtons.forEach(e => { e.visible = true; e.draw() });
             this.p2PropertyButtons.forEach(e => { e.visible = true; e.draw() });
+            this.p1ConfirmButton.visible = true;
+            this.p2ConfirmButton.visible = true;
 
             if (this.p1ConfirmButton.selected && this.p2ConfirmButton.selected && !Api.online) {
                 let p1New = [];
@@ -2594,6 +2599,11 @@ class Trade {
                 board.trade = undefined;
                 board.getToMainMenuButton.visible = true; board.goToMainMenuButton.visible = false;;
             }
+            this.p1Slider.draw();
+            this.p2Slider.draw();
+            this.closeButton.draw();
+            this.p1ConfirmButton.draw();
+            this.p2ConfirmButton.draw();
         }
     }
 }
@@ -3310,6 +3320,7 @@ class BoardPiece {
                 || this.y / 64 > mouseSquareY - 2 && this.y / 64 < mouseSquareY && this.side === 1 && this.n % 10 === 0 && mouseSquareX >= 0 && mouseSquareX < 2
             ) {
                 this.offsetY = -1;
+                this.visible = true;
                 this.hover = true;
 
             } else {
