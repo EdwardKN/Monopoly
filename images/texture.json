@@ -280,15 +280,15 @@
       "frame": {
         "x": 835,
         "y": 1780,
-        "w": 707,
+        "w": 708,
         "h": 54
       },
       "rotated": false,
-      "trimmed": true,
+      "trimmed": false,
       "spriteSourceSize": {
-        "x": 1,
+        "x": 0,
         "y": 0,
-        "w": 707,
+        "w": 708,
         "h": 54
       },
       "sourceSize": {
@@ -1301,7 +1301,7 @@
       }
     },
     {
-      "filename": "buttons/rolldice.png",
+      "filename": "buttons/nextplayer.png",
       "frame": {
         "x": 2571,
         "y": 2905,
@@ -1326,7 +1326,7 @@
       }
     },
     {
-      "filename": "buttons/nextplayer.png",
+      "filename": "buttons/rolldice.png",
       "frame": {
         "x": 2571,
         "y": 2967,
@@ -1476,24 +1476,24 @@
       }
     },
     {
-      "filename": "buttons/online.png",
+      "filename": "plates/chest.png",
       "frame": {
         "x": 835,
         "y": 2004,
-        "w": 390,
-        "h": 52
+        "w": 392,
+        "h": 48
       },
       "rotated": false,
       "trimmed": false,
       "spriteSourceSize": {
         "x": 0,
         "y": 0,
-        "w": 390,
-        "h": 52
+        "w": 392,
+        "h": 48
       },
       "sourceSize": {
-        "w": 390,
-        "h": 52
+        "w": 392,
+        "h": 48
       },
       "pivot": {
         "x": 0.5,
@@ -1551,84 +1551,134 @@
       }
     },
     {
-      "filename": "dices/dices.png",
-      "frame": {
-        "x": 3091,
-        "y": 1,
-        "w": 256,
-        "h": 384
-      },
-      "rotated": false,
-      "trimmed": false,
-      "spriteSourceSize": {
-        "x": 0,
-        "y": 0,
-        "w": 256,
-        "h": 384
-      },
-      "sourceSize": {
-        "w": 256,
-        "h": 384
-      },
-      "pivot": {
-        "x": 0.5,
-        "y": 0.5
-      }
-    },
-    {
-      "filename": "plates/yellow.png",
-      "frame": {
-        "x": 2963,
-        "y": 3029,
-        "w": 384,
-        "h": 48
-      },
-      "rotated": false,
-      "trimmed": false,
-      "spriteSourceSize": {
-        "x": 0,
-        "y": 0,
-        "w": 384,
-        "h": 48
-      },
-      "sourceSize": {
-        "w": 384,
-        "h": 48
-      },
-      "pivot": {
-        "x": 0.5,
-        "y": 0.5
-      }
-    },
-    {
-      "filename": "plates/red.png",
-      "frame": {
-        "x": 2963,
-        "y": 3079,
-        "w": 384,
-        "h": 48
-      },
-      "rotated": false,
-      "trimmed": false,
-      "spriteSourceSize": {
-        "x": 0,
-        "y": 0,
-        "w": 384,
-        "h": 48
-      },
-      "sourceSize": {
-        "w": 384,
-        "h": 48
-      },
-      "pivot": {
-        "x": 0.5,
-        "y": 0.5
-      }
-    },
-    {
-      "filename": "plates/pink.png",
+      "filename": "buttons/online.png",
       "frame": {
         "x": 1,
+        "y": 2915,
+        "w": 390,
+        "h": 52
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 390,
+        "h": 52
+      },
+      "sourceSize": {
+        "w": 390,
+        "h": 52
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "plates/train.png",
+      "frame": {
+        "x": 1,
+        "y": 2969,
+        "w": 384,
+        "h": 48
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 384,
+        "h": 48
+      },
+      "sourceSize": {
+        "w": 384,
+        "h": 48
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "players/lightblueowned.png",
+      "frame": {
+        "x": 1,
+        "y": 3019,
+        "w": 384,
+        "h": 48
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 384,
+        "h": 48
+      },
+      "sourceSize": {
+        "w": 384,
+        "h": 48
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "players/greenowned.png",
+      "frame": {
+        "x": 1,
+        "y": 3069,
+        "w": 384,
+        "h": 48
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 384,
+        "h": 48
+      },
+      "sourceSize": {
+        "w": 384,
+        "h": 48
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "players/blueowned.png",
+      "frame": {
+        "x": 387,
+        "y": 2969,
+        "w": 384,
+        "h": 48
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 384,
+        "h": 48
+      },
+      "sourceSize": {
+        "w": 384,
+        "h": 48
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "players/redowned.png",
+      "frame": {
+        "x": 393,
         "y": 2915,
         "w": 384,
         "h": 48
@@ -1651,9 +1701,59 @@
       }
     },
     {
-      "filename": "plates/orange.png",
+      "filename": "plates/yellow.png",
       "frame": {
-        "x": 1,
+        "x": 387,
+        "y": 3019,
+        "w": 384,
+        "h": 48
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 384,
+        "h": 48
+      },
+      "sourceSize": {
+        "w": 384,
+        "h": 48
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "players/purpleowned.png",
+      "frame": {
+        "x": 387,
+        "y": 3069,
+        "w": 384,
+        "h": 48
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 384,
+        "h": 48
+      },
+      "sourceSize": {
+        "w": 384,
+        "h": 48
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "players/pinkowned.png",
+      "frame": {
+        "x": 773,
         "y": 2965,
         "w": 384,
         "h": 48
@@ -1678,33 +1778,8 @@
     {
       "filename": "plates/watermortgaged.png",
       "frame": {
-        "x": 1,
-        "y": 3015,
-        "w": 384,
-        "h": 48
-      },
-      "rotated": false,
-      "trimmed": false,
-      "spriteSourceSize": {
-        "x": 0,
-        "y": 0,
-        "w": 384,
-        "h": 48
-      },
-      "sourceSize": {
-        "w": 384,
-        "h": 48
-      },
-      "pivot": {
-        "x": 0.5,
-        "y": 0.5
-      }
-    },
-    {
-      "filename": "plates/mortgaged.png",
-      "frame": {
-        "x": 1,
-        "y": 3065,
+        "x": 779,
+        "y": 2915,
         "w": 384,
         "h": 48
       },
@@ -1728,8 +1803,8 @@
     {
       "filename": "plates/water.png",
       "frame": {
-        "x": 387,
-        "y": 2915,
+        "x": 773,
+        "y": 3015,
         "w": 384,
         "h": 48
       },
@@ -1753,156 +1828,6 @@
     {
       "filename": "plates/trainmortgaged.png",
       "frame": {
-        "x": 387,
-        "y": 2965,
-        "w": 384,
-        "h": 48
-      },
-      "rotated": false,
-      "trimmed": false,
-      "spriteSourceSize": {
-        "x": 0,
-        "y": 0,
-        "w": 384,
-        "h": 48
-      },
-      "sourceSize": {
-        "w": 384,
-        "h": 48
-      },
-      "pivot": {
-        "x": 0.5,
-        "y": 0.5
-      }
-    },
-    {
-      "filename": "plates/light_blue.png",
-      "frame": {
-        "x": 387,
-        "y": 3015,
-        "w": 384,
-        "h": 48
-      },
-      "rotated": false,
-      "trimmed": false,
-      "spriteSourceSize": {
-        "x": 0,
-        "y": 0,
-        "w": 384,
-        "h": 48
-      },
-      "sourceSize": {
-        "w": 384,
-        "h": 48
-      },
-      "pivot": {
-        "x": 0.5,
-        "y": 0.5
-      }
-    },
-    {
-      "filename": "plates/incometax.png",
-      "frame": {
-        "x": 387,
-        "y": 3065,
-        "w": 384,
-        "h": 48
-      },
-      "rotated": false,
-      "trimmed": false,
-      "spriteSourceSize": {
-        "x": 0,
-        "y": 0,
-        "w": 384,
-        "h": 48
-      },
-      "sourceSize": {
-        "w": 384,
-        "h": 48
-      },
-      "pivot": {
-        "x": 0.5,
-        "y": 0.5
-      }
-    },
-    {
-      "filename": "plates/green.png",
-      "frame": {
-        "x": 773,
-        "y": 2915,
-        "w": 384,
-        "h": 48
-      },
-      "rotated": false,
-      "trimmed": false,
-      "spriteSourceSize": {
-        "x": 0,
-        "y": 0,
-        "w": 384,
-        "h": 48
-      },
-      "sourceSize": {
-        "w": 384,
-        "h": 48
-      },
-      "pivot": {
-        "x": 0.5,
-        "y": 0.5
-      }
-    },
-    {
-      "filename": "plates/train.png",
-      "frame": {
-        "x": 773,
-        "y": 2965,
-        "w": 384,
-        "h": 48
-      },
-      "rotated": false,
-      "trimmed": false,
-      "spriteSourceSize": {
-        "x": 0,
-        "y": 0,
-        "w": 384,
-        "h": 48
-      },
-      "sourceSize": {
-        "w": 384,
-        "h": 48
-      },
-      "pivot": {
-        "x": 0.5,
-        "y": 0.5
-      }
-    },
-    {
-      "filename": "plates/emptyPart.png",
-      "frame": {
-        "x": 773,
-        "y": 3015,
-        "w": 384,
-        "h": 48
-      },
-      "rotated": false,
-      "trimmed": false,
-      "spriteSourceSize": {
-        "x": 0,
-        "y": 0,
-        "w": 384,
-        "h": 48
-      },
-      "sourceSize": {
-        "w": 384,
-        "h": 48
-      },
-      "pivot": {
-        "x": 0.5,
-        "y": 0.5
-      }
-    },
-    {
-      "filename": "plates/electricmortgaged.png",
-      "frame": {
         "x": 773,
         "y": 3065,
         "w": 384,
@@ -1926,7 +1851,7 @@
       }
     },
     {
-      "filename": "plates/electric.png",
+      "filename": "players/ownedslot.png",
       "frame": {
         "x": 885,
         "y": 3115,
@@ -1951,135 +1876,10 @@
       }
     },
     {
-      "filename": "plates/chest.png",
+      "filename": "players/orangeowned.png",
       "frame": {
         "x": 1159,
-        "y": 2905,
-        "w": 384,
-        "h": 48
-      },
-      "rotated": false,
-      "trimmed": true,
-      "spriteSourceSize": {
-        "x": 0,
-        "y": 0,
-        "w": 384,
-        "h": 48
-      },
-      "sourceSize": {
-        "w": 392,
-        "h": 48
-      },
-      "pivot": {
-        "x": 0.5,
-        "y": 0.5
-      }
-    },
-    {
-      "filename": "plates/chance3.png",
-      "frame": {
-        "x": 1159,
-        "y": 2955,
-        "w": 384,
-        "h": 48
-      },
-      "rotated": false,
-      "trimmed": false,
-      "spriteSourceSize": {
-        "x": 0,
-        "y": 0,
-        "w": 384,
-        "h": 48
-      },
-      "sourceSize": {
-        "w": 384,
-        "h": 48
-      },
-      "pivot": {
-        "x": 0.5,
-        "y": 0.5
-      }
-    },
-    {
-      "filename": "plates/chance2.png",
-      "frame": {
-        "x": 1159,
-        "y": 3005,
-        "w": 384,
-        "h": 48
-      },
-      "rotated": false,
-      "trimmed": false,
-      "spriteSourceSize": {
-        "x": 0,
-        "y": 0,
-        "w": 384,
-        "h": 48
-      },
-      "sourceSize": {
-        "w": 384,
-        "h": 48
-      },
-      "pivot": {
-        "x": 0.5,
-        "y": 0.5
-      }
-    },
-    {
-      "filename": "plates/chance.png",
-      "frame": {
-        "x": 1159,
-        "y": 3055,
-        "w": 384,
-        "h": 48
-      },
-      "rotated": false,
-      "trimmed": false,
-      "spriteSourceSize": {
-        "x": 0,
-        "y": 0,
-        "w": 384,
-        "h": 48
-      },
-      "sourceSize": {
-        "w": 384,
-        "h": 48
-      },
-      "pivot": {
-        "x": 0.5,
-        "y": 0.5
-      }
-    },
-    {
-      "filename": "plates/brown.png",
-      "frame": {
-        "x": 1271,
-        "y": 3105,
-        "w": 384,
-        "h": 48
-      },
-      "rotated": false,
-      "trimmed": false,
-      "spriteSourceSize": {
-        "x": 0,
-        "y": 0,
-        "w": 384,
-        "h": 48
-      },
-      "sourceSize": {
-        "w": 384,
-        "h": 48
-      },
-      "pivot": {
-        "x": 0.5,
-        "y": 0.5
-      }
-    },
-    {
-      "filename": "plates/blue.png",
-      "frame": {
-        "x": 1657,
-        "y": 2905,
+        "y": 2965,
         "w": 384,
         "h": 48
       },
@@ -2103,6 +1903,131 @@
     {
       "filename": "plates/supertax.png",
       "frame": {
+        "x": 1165,
+        "y": 2905,
+        "w": 384,
+        "h": 48
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 384,
+        "h": 48
+      },
+      "sourceSize": {
+        "w": 384,
+        "h": 48
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "plates/red.png",
+      "frame": {
+        "x": 1159,
+        "y": 3015,
+        "w": 384,
+        "h": 48
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 384,
+        "h": 48
+      },
+      "sourceSize": {
+        "w": 384,
+        "h": 48
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "plates/pink.png",
+      "frame": {
+        "x": 1159,
+        "y": 3065,
+        "w": 384,
+        "h": 48
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 384,
+        "h": 48
+      },
+      "sourceSize": {
+        "w": 384,
+        "h": 48
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "plates/orange.png",
+      "frame": {
+        "x": 1271,
+        "y": 3115,
+        "w": 384,
+        "h": 48
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 384,
+        "h": 48
+      },
+      "sourceSize": {
+        "w": 384,
+        "h": 48
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "plates/mortgaged.png",
+      "frame": {
+        "x": 1657,
+        "y": 2905,
+        "w": 384,
+        "h": 48
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 384,
+        "h": 48
+      },
+      "sourceSize": {
+        "w": 384,
+        "h": 48
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "plates/light_blue.png",
+      "frame": {
         "x": 1657,
         "y": 2955,
         "w": 384,
@@ -2126,24 +2051,299 @@
       }
     },
     {
-      "filename": "menus/playerinfomiddle.png",
+      "filename": "plates/incometax.png",
       "frame": {
-        "x": 1544,
-        "y": 1819,
-        "w": 354,
-        "h": 13
+        "x": 1657,
+        "y": 3005,
+        "w": 384,
+        "h": 48
       },
       "rotated": false,
       "trimmed": false,
       "spriteSourceSize": {
         "x": 0,
         "y": 0,
-        "w": 354,
-        "h": 13
+        "w": 384,
+        "h": 48
       },
       "sourceSize": {
-        "w": 354,
-        "h": 13
+        "w": 384,
+        "h": 48
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "plates/green.png",
+      "frame": {
+        "x": 1545,
+        "y": 3055,
+        "w": 384,
+        "h": 48
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 384,
+        "h": 48
+      },
+      "sourceSize": {
+        "w": 384,
+        "h": 48
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "plates/emptyPart.png",
+      "frame": {
+        "x": 1657,
+        "y": 3105,
+        "w": 384,
+        "h": 48
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 384,
+        "h": 48
+      },
+      "sourceSize": {
+        "w": 384,
+        "h": 48
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "plates/electricmortgaged.png",
+      "frame": {
+        "x": 3091,
+        "y": 1,
+        "w": 384,
+        "h": 48
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 384,
+        "h": 48
+      },
+      "sourceSize": {
+        "w": 384,
+        "h": 48
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "plates/electric.png",
+      "frame": {
+        "x": 3091,
+        "y": 51,
+        "w": 384,
+        "h": 48
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 384,
+        "h": 48
+      },
+      "sourceSize": {
+        "w": 384,
+        "h": 48
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "plates/blue.png",
+      "frame": {
+        "x": 3091,
+        "y": 101,
+        "w": 384,
+        "h": 48
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 384,
+        "h": 48
+      },
+      "sourceSize": {
+        "w": 384,
+        "h": 48
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "plates/chance3.png",
+      "frame": {
+        "x": 3091,
+        "y": 151,
+        "w": 384,
+        "h": 48
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 384,
+        "h": 48
+      },
+      "sourceSize": {
+        "w": 384,
+        "h": 48
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "dices/dices.png",
+      "frame": {
+        "x": 3091,
+        "y": 201,
+        "w": 256,
+        "h": 384
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 256,
+        "h": 384
+      },
+      "sourceSize": {
+        "w": 256,
+        "h": 384
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "plates/chance2.png",
+      "frame": {
+        "x": 3085,
+        "y": 587,
+        "w": 384,
+        "h": 48
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 384,
+        "h": 48
+      },
+      "sourceSize": {
+        "w": 384,
+        "h": 48
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "plates/chance.png",
+      "frame": {
+        "x": 3085,
+        "y": 637,
+        "w": 384,
+        "h": 48
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 384,
+        "h": 48
+      },
+      "sourceSize": {
+        "w": 384,
+        "h": 48
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "plates/brown.png",
+      "frame": {
+        "x": 3085,
+        "y": 687,
+        "w": 384,
+        "h": 48
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 384,
+        "h": 48
+      },
+      "sourceSize": {
+        "w": 384,
+        "h": 48
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "players/yellowowned.png",
+      "frame": {
+        "x": 3085,
+        "y": 737,
+        "w": 384,
+        "h": 48
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 384,
+        "h": 48
+      },
+      "sourceSize": {
+        "w": 384,
+        "h": 48
       },
       "pivot": {
         "x": 0.5,
@@ -2153,7 +2353,7 @@
     {
       "filename": "menus/playerinfobottom.png",
       "frame": {
-        "x": 1657,
+        "x": 2043,
         "y": 3137,
         "w": 354,
         "h": 27
@@ -2176,9 +2376,34 @@
       }
     },
     {
+      "filename": "menus/playerinfomiddle.png",
+      "frame": {
+        "x": 1545,
+        "y": 1819,
+        "w": 354,
+        "h": 13
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 354,
+        "h": 13
+      },
+      "sourceSize": {
+        "w": 354,
+        "h": 13
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
       "filename": "menus/playerinfotop.png",
       "frame": {
-        "x": 2013,
+        "x": 2399,
         "y": 3137,
         "w": 354,
         "h": 27
@@ -2203,8 +2428,8 @@
     {
       "filename": "menus/auctionmenubackground.png",
       "frame": {
-        "x": 3091,
-        "y": 387,
+        "x": 3085,
+        "y": 787,
         "w": 256,
         "h": 324
       },
@@ -2226,10 +2451,10 @@
       }
     },
     {
-      "filename": "Cards/bluecard2.png",
+      "filename": "Cards/pinkcard2.png",
       "frame": {
         "x": 3085,
-        "y": 713,
+        "y": 1113,
         "w": 256,
         "h": 324
       },
@@ -2251,10 +2476,10 @@
       }
     },
     {
-      "filename": "Cards/yellowcard2.png",
+      "filename": "Cards/pinkcard1.png",
       "frame": {
         "x": 3085,
-        "y": 1039,
+        "y": 1439,
         "w": 256,
         "h": 324
       },
@@ -2276,10 +2501,10 @@
       }
     },
     {
-      "filename": "Cards/yellowcard1.png",
+      "filename": "Cards/orangecard3.png",
       "frame": {
         "x": 3085,
-        "y": 1365,
+        "y": 1765,
         "w": 256,
         "h": 324
       },
@@ -2301,10 +2526,10 @@
       }
     },
     {
-      "filename": "Cards/waterworkscard.png",
+      "filename": "Cards/orangecard2.png",
       "frame": {
         "x": 3085,
-        "y": 1691,
+        "y": 2091,
         "w": 256,
         "h": 324
       },
@@ -2326,10 +2551,10 @@
       }
     },
     {
-      "filename": "Cards/southstation.png",
+      "filename": "Cards/orangecard1.png",
       "frame": {
         "x": 3085,
-        "y": 2017,
+        "y": 2417,
         "w": 256,
         "h": 324
       },
@@ -2351,10 +2576,10 @@
       }
     },
     {
-      "filename": "Cards/redcard3.png",
+      "filename": "Cards/northstation.png",
       "frame": {
         "x": 3085,
-        "y": 2343,
+        "y": 2743,
         "w": 256,
         "h": 324
       },
@@ -2376,32 +2601,7 @@
       }
     },
     {
-      "filename": "Cards/redcard2.png",
-      "frame": {
-        "x": 3085,
-        "y": 2669,
-        "w": 256,
-        "h": 324
-      },
-      "rotated": false,
-      "trimmed": false,
-      "spriteSourceSize": {
-        "x": 0,
-        "y": 0,
-        "w": 256,
-        "h": 324
-      },
-      "sourceSize": {
-        "w": 256,
-        "h": 324
-      },
-      "pivot": {
-        "x": 0.5,
-        "y": 0.5
-      }
-    },
-    {
-      "filename": "Cards/redcard1.png",
+      "filename": "Cards/mortgageoverlay.png",
       "frame": {
         "x": 1,
         "y": 3169,
@@ -2426,7 +2626,7 @@
       }
     },
     {
-      "filename": "Cards/pinkcard3.png",
+      "filename": "Cards/lightbluecard3.png",
       "frame": {
         "x": 259,
         "y": 3169,
@@ -2451,7 +2651,7 @@
       }
     },
     {
-      "filename": "Cards/pinkcard2.png",
+      "filename": "Cards/lightbluecard2.png",
       "frame": {
         "x": 517,
         "y": 3169,
@@ -2476,7 +2676,7 @@
       }
     },
     {
-      "filename": "Cards/pinkcard1.png",
+      "filename": "Cards/lightbluecard1.png",
       "frame": {
         "x": 775,
         "y": 3169,
@@ -2501,7 +2701,7 @@
       }
     },
     {
-      "filename": "Cards/orangecard3.png",
+      "filename": "Cards/greencard3.png",
       "frame": {
         "x": 1033,
         "y": 3166,
@@ -2526,7 +2726,7 @@
       }
     },
     {
-      "filename": "Cards/orangecard2.png",
+      "filename": "Cards/browncard1.png",
       "frame": {
         "x": 1291,
         "y": 3166,
@@ -2551,7 +2751,7 @@
       }
     },
     {
-      "filename": "Cards/orangecard1.png",
+      "filename": "Cards/bluecard1.png",
       "frame": {
         "x": 1549,
         "y": 3166,
@@ -2576,7 +2776,7 @@
       }
     },
     {
-      "filename": "Cards/northstation.png",
+      "filename": "Cards/yellowcard3.png",
       "frame": {
         "x": 1807,
         "y": 3166,
@@ -2601,7 +2801,7 @@
       }
     },
     {
-      "filename": "Cards/browncard1.png",
+      "filename": "Cards/greencard2.png",
       "frame": {
         "x": 2065,
         "y": 3166,
@@ -2626,7 +2826,7 @@
       }
     },
     {
-      "filename": "Cards/lightbluecard3.png",
+      "filename": "Cards/bluecard2.png",
       "frame": {
         "x": 2323,
         "y": 3166,
@@ -2651,10 +2851,10 @@
       }
     },
     {
-      "filename": "Cards/lightbluecard2.png",
+      "filename": "Cards/yellowcard2.png",
       "frame": {
         "x": 2581,
-        "y": 3137,
+        "y": 3166,
         "w": 256,
         "h": 324
       },
@@ -2676,7 +2876,7 @@
       }
     },
     {
-      "filename": "Cards/lightbluecard1.png",
+      "filename": "Cards/yellowcard1.png",
       "frame": {
         "x": 2839,
         "y": 3137,
@@ -2701,210 +2901,35 @@
       }
     },
     {
-      "filename": "Cards/greencard3.png",
-      "frame": {
-        "x": 3349,
-        "y": 1,
-        "w": 256,
-        "h": 324
-      },
-      "rotated": false,
-      "trimmed": false,
-      "spriteSourceSize": {
-        "x": 0,
-        "y": 0,
-        "w": 256,
-        "h": 324
-      },
-      "sourceSize": {
-        "w": 256,
-        "h": 324
-      },
-      "pivot": {
-        "x": 0.5,
-        "y": 0.5
-      }
-    },
-    {
-      "filename": "Cards/bluecard1.png",
-      "frame": {
-        "x": 3349,
-        "y": 327,
-        "w": 256,
-        "h": 324
-      },
-      "rotated": false,
-      "trimmed": false,
-      "spriteSourceSize": {
-        "x": 0,
-        "y": 0,
-        "w": 256,
-        "h": 324
-      },
-      "sourceSize": {
-        "w": 256,
-        "h": 324
-      },
-      "pivot": {
-        "x": 0.5,
-        "y": 0.5
-      }
-    },
-    {
-      "filename": "Cards/browncard2.png",
-      "frame": {
-        "x": 3349,
-        "y": 653,
-        "w": 256,
-        "h": 324
-      },
-      "rotated": false,
-      "trimmed": false,
-      "spriteSourceSize": {
-        "x": 0,
-        "y": 0,
-        "w": 256,
-        "h": 324
-      },
-      "sourceSize": {
-        "w": 256,
-        "h": 324
-      },
-      "pivot": {
-        "x": 0.5,
-        "y": 0.5
-      }
-    },
-    {
-      "filename": "Cards/centralstation.png",
-      "frame": {
-        "x": 3349,
-        "y": 979,
-        "w": 256,
-        "h": 324
-      },
-      "rotated": false,
-      "trimmed": false,
-      "spriteSourceSize": {
-        "x": 0,
-        "y": 0,
-        "w": 256,
-        "h": 324
-      },
-      "sourceSize": {
-        "w": 256,
-        "h": 324
-      },
-      "pivot": {
-        "x": 0.5,
-        "y": 0.5
-      }
-    },
-    {
-      "filename": "Cards/greencard2.png",
-      "frame": {
-        "x": 3349,
-        "y": 1305,
-        "w": 256,
-        "h": 324
-      },
-      "rotated": false,
-      "trimmed": false,
-      "spriteSourceSize": {
-        "x": 0,
-        "y": 0,
-        "w": 256,
-        "h": 324
-      },
-      "sourceSize": {
-        "w": 256,
-        "h": 324
-      },
-      "pivot": {
-        "x": 0.5,
-        "y": 0.5
-      }
-    },
-    {
-      "filename": "Cards/yellowcard3.png",
-      "frame": {
-        "x": 3349,
-        "y": 1631,
-        "w": 256,
-        "h": 324
-      },
-      "rotated": false,
-      "trimmed": false,
-      "spriteSourceSize": {
-        "x": 0,
-        "y": 0,
-        "w": 256,
-        "h": 324
-      },
-      "sourceSize": {
-        "w": 256,
-        "h": 324
-      },
-      "pivot": {
-        "x": 0.5,
-        "y": 0.5
-      }
-    },
-    {
-      "filename": "Cards/eaststation.png",
-      "frame": {
-        "x": 3349,
-        "y": 1957,
-        "w": 256,
-        "h": 324
-      },
-      "rotated": false,
-      "trimmed": false,
-      "spriteSourceSize": {
-        "x": 0,
-        "y": 0,
-        "w": 256,
-        "h": 324
-      },
-      "sourceSize": {
-        "w": 256,
-        "h": 324
-      },
-      "pivot": {
-        "x": 0.5,
-        "y": 0.5
-      }
-    },
-    {
-      "filename": "Cards/electricitycard.png",
-      "frame": {
-        "x": 3349,
-        "y": 2283,
-        "w": 256,
-        "h": 324
-      },
-      "rotated": false,
-      "trimmed": false,
-      "spriteSourceSize": {
-        "x": 0,
-        "y": 0,
-        "w": 256,
-        "h": 324
-      },
-      "sourceSize": {
-        "w": 256,
-        "h": 324
-      },
-      "pivot": {
-        "x": 0.5,
-        "y": 0.5
-      }
-    },
-    {
       "filename": "Cards/greencard1.png",
       "frame": {
-        "x": 3349,
-        "y": 2609,
+        "x": 3097,
+        "y": 3069,
+        "w": 256,
+        "h": 324
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 256,
+        "h": 324
+      },
+      "sourceSize": {
+        "w": 256,
+        "h": 324
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "Cards/waterworkscard.png",
+      "frame": {
+        "x": 3477,
+        "y": 1,
         "w": 256,
         "h": 324
       },
@@ -2928,7 +2953,207 @@
     {
       "filename": "Cards/emptytraincardtemplate.png",
       "frame": {
-        "x": 3349,
+        "x": 3471,
+        "y": 327,
+        "w": 256,
+        "h": 324
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 256,
+        "h": 324
+      },
+      "sourceSize": {
+        "w": 256,
+        "h": 324
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "Cards/electricitycard.png",
+      "frame": {
+        "x": 3471,
+        "y": 653,
+        "w": 256,
+        "h": 324
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 256,
+        "h": 324
+      },
+      "sourceSize": {
+        "w": 256,
+        "h": 324
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "Cards/eaststation.png",
+      "frame": {
+        "x": 3355,
+        "y": 979,
+        "w": 256,
+        "h": 324
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 256,
+        "h": 324
+      },
+      "sourceSize": {
+        "w": 256,
+        "h": 324
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "Cards/southstation.png",
+      "frame": {
+        "x": 3355,
+        "y": 1305,
+        "w": 256,
+        "h": 324
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 256,
+        "h": 324
+      },
+      "sourceSize": {
+        "w": 256,
+        "h": 324
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "Cards/redcard3.png",
+      "frame": {
+        "x": 3355,
+        "y": 1631,
+        "w": 256,
+        "h": 324
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 256,
+        "h": 324
+      },
+      "sourceSize": {
+        "w": 256,
+        "h": 324
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "Cards/redcard2.png",
+      "frame": {
+        "x": 3355,
+        "y": 1957,
+        "w": 256,
+        "h": 324
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 256,
+        "h": 324
+      },
+      "sourceSize": {
+        "w": 256,
+        "h": 324
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "Cards/redcard1.png",
+      "frame": {
+        "x": 3355,
+        "y": 2283,
+        "w": 256,
+        "h": 324
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 256,
+        "h": 324
+      },
+      "sourceSize": {
+        "w": 256,
+        "h": 324
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "Cards/pinkcard3.png",
+      "frame": {
+        "x": 3355,
+        "y": 2609,
+        "w": 256,
+        "h": 324
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 256,
+        "h": 324
+      },
+      "sourceSize": {
+        "w": 256,
+        "h": 324
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "Cards/centralstation.png",
+      "frame": {
+        "x": 3355,
         "y": 2935,
         "w": 256,
         "h": 324
@@ -2951,199 +3176,24 @@
       }
     },
     {
-      "filename": "players/pinkowned.png",
+      "filename": "Cards/browncard2.png",
       "frame": {
-        "x": 1545,
-        "y": 3005,
-        "w": 312,
-        "h": 38
+        "x": 1,
+        "y": 3495,
+        "w": 256,
+        "h": 324
       },
       "rotated": false,
-      "trimmed": true,
+      "trimmed": false,
       "spriteSourceSize": {
-        "x": 13,
-        "y": 5,
-        "w": 312,
-        "h": 38
+        "x": 0,
+        "y": 0,
+        "w": 256,
+        "h": 324
       },
       "sourceSize": {
-        "w": 384,
-        "h": 48
-      },
-      "pivot": {
-        "x": 0.5,
-        "y": 0.5
-      }
-    },
-    {
-      "filename": "players/lightblueowned.png",
-      "frame": {
-        "x": 1545,
-        "y": 3045,
-        "w": 312,
-        "h": 38
-      },
-      "rotated": false,
-      "trimmed": true,
-      "spriteSourceSize": {
-        "x": 13,
-        "y": 5,
-        "w": 312,
-        "h": 38
-      },
-      "sourceSize": {
-        "w": 384,
-        "h": 48
-      },
-      "pivot": {
-        "x": 0.5,
-        "y": 0.5
-      }
-    },
-    {
-      "filename": "players/redowned.png",
-      "frame": {
-        "x": 1657,
-        "y": 3085,
-        "w": 312,
-        "h": 38
-      },
-      "rotated": false,
-      "trimmed": true,
-      "spriteSourceSize": {
-        "x": 13,
-        "y": 5,
-        "w": 312,
-        "h": 38
-      },
-      "sourceSize": {
-        "w": 384,
-        "h": 48
-      },
-      "pivot": {
-        "x": 0.5,
-        "y": 0.5
-      }
-    },
-    {
-      "filename": "players/purpleowned.png",
-      "frame": {
-        "x": 3097,
-        "y": 3261,
-        "w": 312,
-        "h": 38
-      },
-      "rotated": false,
-      "trimmed": true,
-      "spriteSourceSize": {
-        "x": 13,
-        "y": 5,
-        "w": 312,
-        "h": 38
-      },
-      "sourceSize": {
-        "w": 384,
-        "h": 48
-      },
-      "pivot": {
-        "x": 0.5,
-        "y": 0.5
-      }
-    },
-    {
-      "filename": "players/blueowned.png",
-      "frame": {
-        "x": 3097,
-        "y": 3301,
-        "w": 312,
-        "h": 38
-      },
-      "rotated": false,
-      "trimmed": true,
-      "spriteSourceSize": {
-        "x": 13,
-        "y": 5,
-        "w": 312,
-        "h": 38
-      },
-      "sourceSize": {
-        "w": 384,
-        "h": 48
-      },
-      "pivot": {
-        "x": 0.5,
-        "y": 0.5
-      }
-    },
-    {
-      "filename": "players/greenowned.png",
-      "frame": {
-        "x": 3097,
-        "y": 3341,
-        "w": 312,
-        "h": 38
-      },
-      "rotated": false,
-      "trimmed": true,
-      "spriteSourceSize": {
-        "x": 13,
-        "y": 5,
-        "w": 312,
-        "h": 38
-      },
-      "sourceSize": {
-        "w": 384,
-        "h": 48
-      },
-      "pivot": {
-        "x": 0.5,
-        "y": 0.5
-      }
-    },
-    {
-      "filename": "players/yellowowned.png",
-      "frame": {
-        "x": 3097,
-        "y": 3381,
-        "w": 312,
-        "h": 38
-      },
-      "rotated": false,
-      "trimmed": true,
-      "spriteSourceSize": {
-        "x": 13,
-        "y": 5,
-        "w": 312,
-        "h": 38
-      },
-      "sourceSize": {
-        "w": 384,
-        "h": 48
-      },
-      "pivot": {
-        "x": 0.5,
-        "y": 0.5
-      }
-    },
-    {
-      "filename": "players/orangeowned.png",
-      "frame": {
-        "x": 3097,
-        "y": 3421,
-        "w": 312,
-        "h": 38
-      },
-      "rotated": false,
-      "trimmed": true,
-      "spriteSourceSize": {
-        "x": 13,
-        "y": 5,
-        "w": 312,
-        "h": 38
-      },
-      "sourceSize": {
-        "w": 384,
-        "h": 48
+        "w": 256,
+        "h": 324
       },
       "pivot": {
         "x": 0.5,
@@ -3153,8 +3203,8 @@
     {
       "filename": "menus/prisonmenu.png",
       "frame": {
-        "x": 1,
-        "y": 3495,
+        "x": 3355,
+        "y": 3261,
         "w": 300,
         "h": 90
       },
@@ -3178,8 +3228,8 @@
     {
       "filename": "buttons/buythislawn.png",
       "frame": {
-        "x": 303,
-        "y": 3495,
+        "x": 3355,
+        "y": 3353,
         "w": 291,
         "h": 40
       },
@@ -3203,8 +3253,8 @@
     {
       "filename": "buttons/auction.png",
       "frame": {
-        "x": 303,
-        "y": 3537,
+        "x": 259,
+        "y": 3495,
         "w": 291,
         "h": 40
       },
@@ -3226,35 +3276,10 @@
       }
     },
     {
-      "filename": "players/ownedslot.png",
-      "frame": {
-        "x": 596,
-        "y": 3495,
-        "w": 266,
-        "h": 38
-      },
-      "rotated": false,
-      "trimmed": true,
-      "spriteSourceSize": {
-        "x": 59,
-        "y": 5,
-        "w": 266,
-        "h": 38
-      },
-      "sourceSize": {
-        "w": 384,
-        "h": 48
-      },
-      "pivot": {
-        "x": 0.5,
-        "y": 0.5
-      }
-    },
-    {
       "filename": "menus/exitmenu.png",
       "frame": {
-        "x": 1,
-        "y": 3587,
+        "x": 259,
+        "y": 3537,
         "w": 256,
         "h": 256
       },
@@ -3279,7 +3304,7 @@
       "filename": "buttons/prisonpay.png",
       "frame": {
         "x": 835,
-        "y": 2058,
+        "y": 2054,
         "w": 246,
         "h": 35
       },
@@ -3304,7 +3329,7 @@
       "filename": "buttons/prisongetoutofjail.png",
       "frame": {
         "x": 1083,
-        "y": 2058,
+        "y": 2054,
         "w": 246,
         "h": 35
       },
@@ -3319,31 +3344,6 @@
       "sourceSize": {
         "w": 246,
         "h": 35
-      },
-      "pivot": {
-        "x": 0.5,
-        "y": 0.5
-      }
-    },
-    {
-      "filename": "Cards/mortgageoverlay.png",
-      "frame": {
-        "x": 259,
-        "y": 3587,
-        "w": 224,
-        "h": 158
-      },
-      "rotated": false,
-      "trimmed": true,
-      "spriteSourceSize": {
-        "x": 16,
-        "y": 76,
-        "w": 224,
-        "h": 158
-      },
-      "sourceSize": {
-        "w": 256,
-        "h": 324
       },
       "pivot": {
         "x": 0.5,
@@ -3378,8 +3378,8 @@
     {
       "filename": "buttons/prisonrolldice.png",
       "frame": {
-        "x": 2369,
-        "y": 3127,
+        "x": 1803,
+        "y": 43,
         "w": 164,
         "h": 35
       },
@@ -3394,31 +3394,6 @@
       "sourceSize": {
         "w": 164,
         "h": 35
-      },
-      "pivot": {
-        "x": 0.5,
-        "y": 0.5
-      }
-    },
-    {
-      "filename": "buttons/auction+2.png",
-      "frame": {
-        "x": 1859,
-        "y": 3005,
-        "w": 162,
-        "h": 54
-      },
-      "rotated": false,
-      "trimmed": false,
-      "spriteSourceSize": {
-        "x": 0,
-        "y": 0,
-        "w": 162,
-        "h": 54
-      },
-      "sourceSize": {
-        "w": 162,
-        "h": 54
       },
       "pivot": {
         "x": 0.5,
@@ -3428,8 +3403,33 @@
     {
       "filename": "buttons/auction+100.png",
       "frame": {
-        "x": 3411,
-        "y": 3261,
+        "x": 517,
+        "y": 3537,
+        "w": 162,
+        "h": 54
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 162,
+        "h": 54
+      },
+      "sourceSize": {
+        "w": 162,
+        "h": 54
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "buttons/auction+2.png",
+      "frame": {
+        "x": 517,
+        "y": 3593,
         "w": 162,
         "h": 54
       },
@@ -3453,8 +3453,8 @@
     {
       "filename": "buttons/auction+10.png",
       "frame": {
-        "x": 3411,
-        "y": 3317,
+        "x": 517,
+        "y": 3649,
         "w": 162,
         "h": 54
       },
@@ -3469,31 +3469,6 @@
       "sourceSize": {
         "w": 162,
         "h": 54
-      },
-      "pivot": {
-        "x": 0.5,
-        "y": 0.5
-      }
-    },
-    {
-      "filename": "playercolorbuttons/unselected.png",
-      "frame": {
-        "x": 1803,
-        "y": 43,
-        "w": 160,
-        "h": 40
-      },
-      "rotated": false,
-      "trimmed": false,
-      "spriteSourceSize": {
-        "x": 0,
-        "y": 0,
-        "w": 160,
-        "h": 40
-      },
-      "sourceSize": {
-        "w": 160,
-        "h": 40
       },
       "pivot": {
         "x": 0.5,
@@ -3503,8 +3478,8 @@
     {
       "filename": "playercolorbuttons/playercolorbutton8.png",
       "frame": {
-        "x": 835,
-        "y": 2095,
+        "x": 552,
+        "y": 3495,
         "w": 160,
         "h": 40
       },
@@ -3526,9 +3501,34 @@
       }
     },
     {
-      "filename": "buttons/flag.png",
+      "filename": "playercolorbuttons/playercolorbutton4.png",
       "frame": {
-        "x": 1227,
+        "x": 835,
+        "y": 2091,
+        "w": 160,
+        "h": 40
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 160,
+        "h": 40
+      },
+      "sourceSize": {
+        "w": 160,
+        "h": 40
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "buttons/menu.png",
+      "frame": {
+        "x": 1229,
         "y": 2004,
         "w": 160,
         "h": 40
@@ -3553,8 +3553,8 @@
     {
       "filename": "buttons/fullscreen.png",
       "frame": {
-        "x": 3411,
-        "y": 3373,
+        "x": 517,
+        "y": 3705,
         "w": 160,
         "h": 40
       },
@@ -3576,59 +3576,9 @@
       }
     },
     {
-      "filename": "playercolorbuttons/playercolorbutton7.png",
+      "filename": "buttons/flag.png",
       "frame": {
-        "x": 3411,
-        "y": 3415,
-        "w": 160,
-        "h": 40
-      },
-      "rotated": false,
-      "trimmed": false,
-      "spriteSourceSize": {
-        "x": 0,
-        "y": 0,
-        "w": 160,
-        "h": 40
-      },
-      "sourceSize": {
-        "w": 160,
-        "h": 40
-      },
-      "pivot": {
-        "x": 0.5,
-        "y": 0.5
-      }
-    },
-    {
-      "filename": "buttons/menu.png",
-      "frame": {
-        "x": 3411,
-        "y": 3457,
-        "w": 160,
-        "h": 40
-      },
-      "rotated": false,
-      "trimmed": false,
-      "spriteSourceSize": {
-        "x": 0,
-        "y": 0,
-        "w": 160,
-        "h": 40
-      },
-      "sourceSize": {
-        "w": 160,
-        "h": 40
-      },
-      "pivot": {
-        "x": 0.5,
-        "y": 0.5
-      }
-    },
-    {
-      "filename": "buttons/antilising.png",
-      "frame": {
-        "x": 259,
+        "x": 517,
         "y": 3747,
         "w": 160,
         "h": 40
@@ -3653,8 +3603,58 @@
     {
       "filename": "buttons/bot.png",
       "frame": {
-        "x": 259,
-        "y": 3789,
+        "x": 679,
+        "y": 3705,
+        "w": 160,
+        "h": 40
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 160,
+        "h": 40
+      },
+      "sourceSize": {
+        "w": 160,
+        "h": 40
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "buttons/antilising.png",
+      "frame": {
+        "x": 679,
+        "y": 3747,
+        "w": 160,
+        "h": 40
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 160,
+        "h": 40
+      },
+      "sourceSize": {
+        "w": 160,
+        "h": 40
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "playercolorbuttons/playercolorbutton7.png",
+      "frame": {
+        "x": 681,
+        "y": 3537,
         "w": 160,
         "h": 40
       },
@@ -3678,8 +3678,8 @@
     {
       "filename": "playercolorbuttons/playercolorbutton6.png",
       "frame": {
-        "x": 421,
-        "y": 3747,
+        "x": 714,
+        "y": 3495,
         "w": 160,
         "h": 40
       },
@@ -3703,8 +3703,8 @@
     {
       "filename": "playercolorbuttons/playercolorbutton5.png",
       "frame": {
-        "x": 421,
-        "y": 3789,
+        "x": 681,
+        "y": 3579,
         "w": 160,
         "h": 40
       },
@@ -3726,10 +3726,10 @@
       }
     },
     {
-      "filename": "playercolorbuttons/playercolorbutton4.png",
+      "filename": "playercolorbuttons/unselected.png",
       "frame": {
-        "x": 3097,
-        "y": 3129,
+        "x": 681,
+        "y": 3621,
         "w": 160,
         "h": 40
       },
@@ -3753,8 +3753,8 @@
     {
       "filename": "playercolorbuttons/playercolorbutton.png",
       "frame": {
-        "x": 3097,
-        "y": 3171,
+        "x": 681,
+        "y": 3663,
         "w": 160,
         "h": 40
       },
@@ -3778,8 +3778,8 @@
     {
       "filename": "playercolorbuttons/playercolorbutton2.png",
       "frame": {
-        "x": 3097,
-        "y": 3213,
+        "x": 841,
+        "y": 3705,
         "w": 160,
         "h": 40
       },
@@ -3803,8 +3803,8 @@
     {
       "filename": "playercolorbuttons/playercolorbutton3.png",
       "frame": {
-        "x": 485,
-        "y": 3579,
+        "x": 841,
+        "y": 3747,
         "w": 160,
         "h": 40
       },
@@ -3828,8 +3828,8 @@
     {
       "filename": "corners/parking.png",
       "frame": {
-        "x": 485,
-        "y": 3621,
+        "x": 2963,
+        "y": 3069,
         "w": 128,
         "h": 64
       },
@@ -3853,8 +3853,8 @@
     {
       "filename": "corners/Go.png",
       "frame": {
-        "x": 583,
-        "y": 3687,
+        "x": 843,
+        "y": 3537,
         "w": 128,
         "h": 64
       },
@@ -3878,8 +3878,8 @@
     {
       "filename": "corners/gotoprison.png",
       "frame": {
-        "x": 615,
-        "y": 3621,
+        "x": 843,
+        "y": 3603,
         "w": 128,
         "h": 64
       },
@@ -3903,58 +3903,8 @@
     {
       "filename": "buttons/statbutton.png",
       "frame": {
-        "x": 596,
-        "y": 3535,
-        "w": 120,
-        "h": 40
-      },
-      "rotated": false,
-      "trimmed": false,
-      "spriteSourceSize": {
-        "x": 0,
-        "y": 0,
-        "w": 120,
-        "h": 40
-      },
-      "sourceSize": {
-        "w": 120,
-        "h": 40
-      },
-      "pivot": {
-        "x": 0.5,
-        "y": 0.5
-      }
-    },
-    {
-      "filename": "buttons/music.png",
-      "frame": {
-        "x": 647,
-        "y": 3577,
-        "w": 120,
-        "h": 40
-      },
-      "rotated": false,
-      "trimmed": false,
-      "spriteSourceSize": {
-        "x": 0,
-        "y": 0,
-        "w": 120,
-        "h": 40
-      },
-      "sourceSize": {
-        "w": 120,
-        "h": 40
-      },
-      "pivot": {
-        "x": 0.5,
-        "y": 0.5
-      }
-    },
-    {
-      "filename": "buttons/plus.png",
-      "frame": {
-        "x": 718,
-        "y": 3535,
+        "x": 3349,
+        "y": 201,
         "w": 120,
         "h": 40
       },
@@ -3978,8 +3928,8 @@
     {
       "filename": "buttons/arrowup.png",
       "frame": {
-        "x": 1875,
-        "y": 1181,
+        "x": 3613,
+        "y": 979,
         "w": 120,
         "h": 40
       },
@@ -4003,8 +3953,8 @@
     {
       "filename": "buttons/arrowdown.png",
       "frame": {
-        "x": 1875,
-        "y": 1223,
+        "x": 876,
+        "y": 3495,
         "w": 120,
         "h": 40
       },
@@ -4026,35 +3976,10 @@
       }
     },
     {
-      "filename": "buttons/sellbutton.png",
+      "filename": "buttons/plus.png",
       "frame": {
-        "x": 1875,
-        "y": 1265,
-        "w": 120,
-        "h": 40
-      },
-      "rotated": false,
-      "trimmed": false,
-      "spriteSourceSize": {
-        "x": 0,
-        "y": 0,
-        "w": 120,
-        "h": 40
-      },
-      "sourceSize": {
-        "w": 120,
-        "h": 40
-      },
-      "pivot": {
-        "x": 0.5,
-        "y": 0.5
-      }
-    },
-    {
-      "filename": "buttons/mortgage.png",
-      "frame": {
-        "x": 1875,
-        "y": 1307,
+        "x": 3349,
+        "y": 243,
         "w": 120,
         "h": 40
       },
@@ -4078,8 +4003,8 @@
     {
       "filename": "buttons/minus.png",
       "frame": {
-        "x": 1875,
-        "y": 1349,
+        "x": 3613,
+        "y": 1021,
         "w": 120,
         "h": 40
       },
@@ -4093,6 +4018,131 @@
       },
       "sourceSize": {
         "w": 120,
+        "h": 40
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "buttons/sellbutton.png",
+      "frame": {
+        "x": 3349,
+        "y": 285,
+        "w": 120,
+        "h": 40
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 120,
+        "h": 40
+      },
+      "sourceSize": {
+        "w": 120,
+        "h": 40
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "buttons/music.png",
+      "frame": {
+        "x": 3613,
+        "y": 1063,
+        "w": 120,
+        "h": 40
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 120,
+        "h": 40
+      },
+      "sourceSize": {
+        "w": 120,
+        "h": 40
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "buttons/mortgage.png",
+      "frame": {
+        "x": 3349,
+        "y": 327,
+        "w": 120,
+        "h": 40
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 120,
+        "h": 40
+      },
+      "sourceSize": {
+        "w": 120,
+        "h": 40
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "buildings/house.png",
+      "frame": {
+        "x": 259,
+        "y": 3795,
+        "w": 96,
+        "h": 24
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 96,
+        "h": 24
+      },
+      "sourceSize": {
+        "w": 96,
+        "h": 24
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "buttons/yes.png",
+      "frame": {
+        "x": 3648,
+        "y": 3353,
+        "w": 80,
+        "h": 40
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 80,
+        "h": 40
+      },
+      "sourceSize": {
+        "w": 80,
         "h": 40
       },
       "pivot": {
@@ -4102,31 +4152,6 @@
     },
     {
       "filename": "buttons/no.png",
-      "frame": {
-        "x": 1971,
-        "y": 3061,
-        "w": 80,
-        "h": 40
-      },
-      "rotated": false,
-      "trimmed": false,
-      "spriteSourceSize": {
-        "x": 0,
-        "y": 0,
-        "w": 80,
-        "h": 40
-      },
-      "sourceSize": {
-        "w": 80,
-        "h": 40
-      },
-      "pivot": {
-        "x": 0.5,
-        "y": 0.5
-      }
-    },
-    {
-      "filename": "buttons/yes.png",
       "frame": {
         "x": 1331,
         "y": 2046,
@@ -4151,135 +4176,10 @@
       }
     },
     {
-      "filename": "buildings/house.png",
-      "frame": {
-        "x": 1900,
-        "y": 1819,
-        "w": 80,
-        "h": 14
-      },
-      "rotated": false,
-      "trimmed": true,
-      "spriteSourceSize": {
-        "x": 7,
-        "y": 5,
-        "w": 80,
-        "h": 14
-      },
-      "sourceSize": {
-        "w": 96,
-        "h": 24
-      },
-      "pivot": {
-        "x": 0.5,
-        "y": 0.5
-      }
-    },
-    {
-      "filename": "players/player8.png",
-      "frame": {
-        "x": 3575,
-        "y": 3261,
-        "w": 24,
-        "h": 48
-      },
-      "rotated": false,
-      "trimmed": false,
-      "spriteSourceSize": {
-        "x": 0,
-        "y": 0,
-        "w": 24,
-        "h": 48
-      },
-      "sourceSize": {
-        "w": 24,
-        "h": 48
-      },
-      "pivot": {
-        "x": 0.5,
-        "y": 0.5
-      }
-    },
-    {
-      "filename": "players/player3.png",
-      "frame": {
-        "x": 2023,
-        "y": 3005,
-        "w": 24,
-        "h": 48
-      },
-      "rotated": false,
-      "trimmed": false,
-      "spriteSourceSize": {
-        "x": 0,
-        "y": 0,
-        "w": 24,
-        "h": 48
-      },
-      "sourceSize": {
-        "w": 24,
-        "h": 48
-      },
-      "pivot": {
-        "x": 0.5,
-        "y": 0.5
-      }
-    },
-    {
-      "filename": "players/player5.png",
-      "frame": {
-        "x": 3575,
-        "y": 3311,
-        "w": 24,
-        "h": 48
-      },
-      "rotated": false,
-      "trimmed": false,
-      "spriteSourceSize": {
-        "x": 0,
-        "y": 0,
-        "w": 24,
-        "h": 48
-      },
-      "sourceSize": {
-        "w": 24,
-        "h": 48
-      },
-      "pivot": {
-        "x": 0.5,
-        "y": 0.5
-      }
-    },
-    {
-      "filename": "players/player6.png",
-      "frame": {
-        "x": 3575,
-        "y": 3361,
-        "w": 24,
-        "h": 48
-      },
-      "rotated": false,
-      "trimmed": false,
-      "spriteSourceSize": {
-        "x": 0,
-        "y": 0,
-        "w": 24,
-        "h": 48
-      },
-      "sourceSize": {
-        "w": 24,
-        "h": 48
-      },
-      "pivot": {
-        "x": 0.5,
-        "y": 0.5
-      }
-    },
-    {
       "filename": "players/player7.png",
       "frame": {
-        "x": 3573,
-        "y": 3411,
+        "x": 1931,
+        "y": 3055,
         "w": 24,
         "h": 48
       },
@@ -4303,8 +4203,8 @@
     {
       "filename": "players/player4.png",
       "frame": {
-        "x": 3573,
-        "y": 3461,
+        "x": 997,
+        "y": 2091,
         "w": 24,
         "h": 48
       },
@@ -4326,10 +4226,10 @@
       }
     },
     {
-      "filename": "players/player2.png",
+      "filename": "players/player5.png",
       "frame": {
-        "x": 485,
-        "y": 3687,
+        "x": 1957,
+        "y": 3055,
         "w": 24,
         "h": 48
       },
@@ -4351,10 +4251,10 @@
       }
     },
     {
-      "filename": "players/player.png",
+      "filename": "players/player6.png",
       "frame": {
-        "x": 1965,
-        "y": 43,
+        "x": 1983,
+        "y": 3055,
         "w": 24,
         "h": 48
       },
@@ -4378,22 +4278,122 @@
     {
       "filename": "buildings/hotel.png",
       "frame": {
-        "x": 259,
-        "y": 3831,
-        "w": 45,
-        "h": 15
+        "x": 1437,
+        "y": 1898,
+        "w": 48,
+        "h": 24
       },
       "rotated": false,
-      "trimmed": true,
+      "trimmed": false,
       "spriteSourceSize": {
-        "x": 2,
-        "y": 6,
-        "w": 45,
-        "h": 15
+        "x": 0,
+        "y": 0,
+        "w": 48,
+        "h": 24
       },
       "sourceSize": {
         "w": 48,
         "h": 24
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "players/player8.png",
+      "frame": {
+        "x": 2009,
+        "y": 3055,
+        "w": 24,
+        "h": 48
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 24,
+        "h": 48
+      },
+      "sourceSize": {
+        "w": 24,
+        "h": 48
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "players/player2.png",
+      "frame": {
+        "x": 1969,
+        "y": 43,
+        "w": 24,
+        "h": 48
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 24,
+        "h": 48
+      },
+      "sourceSize": {
+        "w": 24,
+        "h": 48
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "players/player3.png",
+      "frame": {
+        "x": 1963,
+        "y": 93,
+        "w": 24,
+        "h": 48
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 24,
+        "h": 48
+      },
+      "sourceSize": {
+        "w": 24,
+        "h": 48
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "players/player.png",
+      "frame": {
+        "x": 1963,
+        "y": 143,
+        "w": 24,
+        "h": 48
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 24,
+        "h": 48
+      },
+      "sourceSize": {
+        "w": 24,
+        "h": 48
       },
       "pivot": {
         "x": 0.5,
@@ -4428,18 +4428,18 @@
     {
       "filename": "buttons/exitCardTrans.png",
       "frame": {
-        "x": 2043,
-        "y": 2905,
-        "w": 12,
-        "h": 11
+        "x": 3065,
+        "y": 2925,
+        "w": 18,
+        "h": 18
       },
       "rotated": false,
-      "trimmed": true,
+      "trimmed": false,
       "spriteSourceSize": {
-        "x": 3,
-        "y": 4,
-        "w": 12,
-        "h": 11
+        "x": 0,
+        "y": 0,
+        "w": 18,
+        "h": 18
       },
       "sourceSize": {
         "w": 18,
@@ -4457,8 +4457,8 @@
     "image": "texture.png",
     "format": "RGBA8888",
     "size": {
-      "w": 3606,
-      "h": 3847
+      "w": 3734,
+      "h": 3820
     },
     "scale": 1
   }
