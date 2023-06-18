@@ -1,6 +1,5 @@
 var canvas = document.createElement("canvas");
 var c = canvas.getContext("2d");
-canvas.id = "game"
 var backCanvas = document.createElement("canvas");
 var backC = backCanvas.getContext("2d");
 var renderCanvas = document.createElement("canvas");
