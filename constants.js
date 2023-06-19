@@ -157,7 +157,7 @@ var images = {
         src: ["./images/menus/prisonmenu", "./images/buttons/prisonpay", "./images/buttons/prisonrolldice", "./images/buttons/prisongetoutofjail"]
     },
     lobbyMenu: {
-        src: ["./images/buttons/plus", "./images/buttons/minus"]
+        src: ["./images/buttons/plus", "./images/buttons/minus", "./images/buttons/arrowright", "./images/buttons/gamemode"]
     },
     mainMenu: {
         src: ["./images/menus/mainmenu", "./images/buttons/local", "./images/buttons/online", "./images/menus/lobbymenu", "./images/buttons/credits", "./images/menus/creditsmenu",]

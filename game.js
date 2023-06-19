@@ -237,9 +237,10 @@ function playSound(sound, volume, repeat) {
         }
     }
 };
-function startGame(playerlist, settings) {
+function startGame(playerlist, gamemode, settings) {
     board = new Board();
     playtime = 0;
+    board.gamemode = gamemode;
 
 
     board.settings = settings;
@@ -262,6 +263,7 @@ function startGame(playerlist, settings) {
 function saveGame() {
     let gameToSave = {
         players: [], 
+        gamemode:board.gamemode,
         settings: board.settings, 
         turn: turn, 
         freeParkingMoney: 
@@ -344,6 +346,8 @@ function loadGame(theGameToLoad) {
     let gameToLoad = JSON.parse(localStorage.getItem("games"))[theGameToLoad]
 
     board = new Board();
+    board.gamemode = gameToLoad.gamemode !== undefined ? gameToLoad.gamemode : 0; 
+
     board.id = gameToLoad.id;
     playtime = gameToLoad.playtime
 
@@ -445,28 +449,50 @@ class LocalLobby {
         let self = this;
         this.playerInputs = [];
         this.amountBots = 0;
-        this.settingsButtons = [];
-        this.settingsButtons.push(new Button([true, false], 80, 205, images.buttons.sprites[10], function () { }, 500, 40, false, false, false, false, false, false, "Ge alla skattepengar till fri parkering", 42, "black"))
-        this.settingsButtons.push(new Button([true, false], 80, 205 + this.settingsButtons.length * 42, images.buttons.sprites[10], function () { }, 500, 40, false, false, false, false, false, false, "Ge alla bankpengar till fri parkering", 42, "black"))
-        this.settingsButtons.push(new Button([true, false], 80, 205 + this.settingsButtons.length * 42, images.buttons.sprites[10], function () { }, 500, 40, false, false, false, false, false, false, "Dubbel hyra på komplett färggrupp", 42, "black"))
-        this.settingsButtons.push(new Button([true, false], 80, 205 + this.settingsButtons.length * 42, images.buttons.sprites[10], function () { }, 500, 40, false, false, false, false, false, false, "Auktioner", 42, "black"))
-        this.settingsButtons.push(new Button([true, false], 80, 205 + this.settingsButtons.length * 42, images.buttons.sprites[10], function () { }, 500, 40, false, false, false, false, false, false, "Få/förlora pengar i fängelset", 42, "black"))
-        this.settingsButtons.push(new Button([true, false], 80, 205 + this.settingsButtons.length * 42, images.buttons.sprites[10], function () { }, 500, 40, false, false, false, false, false, false, "Möjlighet att inteckna", 42, "black"))
-        this.settingsButtons.push(new Button([true, false], 80, 205 + this.settingsButtons.length * 42, images.buttons.sprites[10], function () { }, 500, 40, false, false, false, false, false, false, "Möjlighet att sälja", 42, "black"))
-        this.settingsButtons.push(new Button([true, false], 80, 205 + this.settingsButtons.length * 42, images.buttons.sprites[10], function () { }, 500, 40, false, false, false, false, false, false, "Jämn utbyggnad", 42, "black"))
-        this.settingsButtons.push(new Slider(436 * drawScale, 5 + this.settingsButtons.length * 42 * drawScale, 502 * drawScale, 40 * drawScale, 0, 3000, 100, true, 50, "kr", "Startkapital: "))
-        this.settingsButtons.push(new Slider(436 * drawScale, 5 + this.settingsButtons.length * 42 * drawScale, 502 * drawScale, 40 * drawScale, 0, 5, 1, true, 50, "", "Antal varv innan köp: "))
-        this.settingsButtons.push(new Slider(436 * drawScale, 5 + this.settingsButtons.length * 42 * drawScale, 502 * drawScale, 40 * drawScale, 0, 100, 10, true, 35, "%", "Lägsta bud på auktioner(% av gatupris): "))
-        this.settingsButtons[2].selected = true
-        this.settingsButtons[3].selected = true
-        this.settingsButtons[4].selected = true
-        this.settingsButtons[5].selected = true
-        this.settingsButtons[6].selected = true
-        this.settingsButtons[7].selected = true
-        this.settingsButtons[8].percentage = 0.45
-        this.settingsButtons[10].percentage = 0.5
+        
+        this.businessSettingsbuttons = [];
+        this.businessSettingsbuttons.push(new Slider(436 * drawScale, 92 + this.businessSettingsbuttons.length * 42 * drawScale, 502 * drawScale, 40 * drawScale, 50, 350, 10, true, 50, "%", "Återköpspris: "))
+        this.businessSettingsbuttons[0].percentage = 0.5;
+        this.businessSettingsbuttons.push(new Slider(436 * drawScale, 92 + this.businessSettingsbuttons.length * 42 * drawScale, 502 * drawScale, 40 * drawScale, 150, 250, 10, true, 50, "%", "Världsturnefaktor: "))
+        this.businessSettingsbuttons[1].percentage = 0.5;
+
+        this.classicSettingsbuttons = [];
+        this.classicSettingsbuttons.push(new Button([true, false], 80, 247, images.buttons.sprites[10], function () { }, 500, 35, false, false, false, false, false, false, "Ge alla skattepengar till fri parkering", 42, "black"))
+        this.classicSettingsbuttons.push(new Button([true, false], 80, 247 + this.classicSettingsbuttons.length * 37, images.buttons.sprites[10], function () { }, 500, 35, false, false, false, false, false, false, "Ge alla bankpengar till fri parkering", 42, "black"))
+        this.classicSettingsbuttons.push(new Button([true, false], 80, 247 + this.classicSettingsbuttons.length * 37, images.buttons.sprites[10], function () { }, 500, 35, false, false, false, false, false, false, "Dubbel hyra på komplett färggrupp", 42, "black"))
+        this.classicSettingsbuttons.push(new Button([true, false], 80, 247 + this.classicSettingsbuttons.length * 37, images.buttons.sprites[10], function () { }, 500, 35, false, false, false, false, false, false, "Auktioner", 42, "black"))
+        this.classicSettingsbuttons.push(new Button([true, false], 80, 247 + this.classicSettingsbuttons.length * 37, images.buttons.sprites[10], function () { }, 500, 35, false, false, false, false, false, false, "Få/förlora pengar i fängelset", 42, "black"))
+        this.classicSettingsbuttons.push(new Button([true, false], 80, 247 + this.classicSettingsbuttons.length * 37, images.buttons.sprites[10], function () { }, 500, 35, false, false, false, false, false, false, "Möjlighet att inteckna", 42, "black"))
+        this.classicSettingsbuttons.push(new Button([true, false], 80, 247 + this.classicSettingsbuttons.length * 37, images.buttons.sprites[10], function () { }, 500, 35, false, false, false, false, false, false, "Möjlighet att sälja", 42, "black"))
+        this.classicSettingsbuttons.push(new Button([true, false], 80, 247 + this.classicSettingsbuttons.length * 37, images.buttons.sprites[10], function () { }, 500, 35, false, false, false, false, false, false, "Jämn utbyggnad", 42, "black"))
+        this.classicSettingsbuttons.push(new Slider(436 * drawScale, 12 + this.classicSettingsbuttons.length * 42 * drawScale, 502 * drawScale, 40 * drawScale, 0, 3000, 100, true, 50, "kr", "Startkapital: "))
+        this.classicSettingsbuttons.push(new Slider(436 * drawScale, 12 + this.classicSettingsbuttons.length * 42 * drawScale, 502 * drawScale, 40 * drawScale, 0, 5, 1, true, 50, "", "Antal varv innan köp: "))
+        this.classicSettingsbuttons.push(new Slider(436 * drawScale, 12 + this.classicSettingsbuttons.length * 42 * drawScale, 502 * drawScale, 40 * drawScale, 0, 100, 10, true, 35, "%", "Lägsta bud på auktioner(% av gatupris): "))
+        this.classicSettingsbuttons[2].selected = true
+        this.classicSettingsbuttons[3].selected = true
+        this.classicSettingsbuttons[4].selected = true
+        this.classicSettingsbuttons[5].selected = true
+        this.classicSettingsbuttons[6].selected = true
+        this.classicSettingsbuttons[7].selected = true
+        this.classicSettingsbuttons[8].percentage = 0.45
+        this.classicSettingsbuttons[10].percentage = 0.5
         this.readyPlayers = [];
-        this.settingsButtons[1].disabled = true;
+        this.classicSettingsbuttons[1].disabled = true;
+
+        this.gameModeSelect = {
+            leftButton: new Button([false, false], 80, 205, images.lobbyMenu.sprites[2], function () {
+                self.gameModeSelect.currentSelected.id = (self.gameModeSelect.currentSelected.id + self.gameModeSelect.currentSelected.text.length - 1)%self.gameModeSelect.currentSelected.text.length;
+            }, 40, 40,false,true),
+            rightButton: new Button([false, false], 80 + 460, 205, images.lobbyMenu.sprites[2], function () {
+                self.gameModeSelect.currentSelected.id = (self.gameModeSelect.currentSelected.id + self.gameModeSelect.currentSelected.text.length + 1)%self.gameModeSelect.currentSelected.text.length;
+            }, 40, 40,false,false),
+            gamemode: new Button([false, false], 80 + 40, 205, images.lobbyMenu.sprites[3], function () { }, 420, 40,false,false,false,false,false,false,"",80,"black"),
+            currentSelected:{
+                id:0,
+                text:["Klassiskt","Affärsresa"],
+                settingsbuttons:[this.classicSettingsbuttons,this.businessSettingsbuttons]
+            }
+        }
 
         this.backButton = new Button([false, false], -337, 220, images.buttons.sprites[12], function () {
             self.current = false;
@@ -489,7 +515,7 @@ class LocalLobby {
                 e.textInput.htmlElement.disabled = false;
                 e.textInput.oldvalue = ""
             })
-            self.settingsButtons.forEach(e => e.visible = false)
+            self.classicSettingsbuttons.forEach(e => e.visible = false)
         }, 325, 60, false, false, false, false, false, false)
         this.startButton = new Button([false, false], 250, 670, images.buttons.sprites[11], function () {
             let playerlist = []
@@ -509,23 +535,23 @@ class LocalLobby {
                 playerlist.push(tmp)
             })
             let settings = {
-                freeParking: self.settingsButtons[0].selected,
-                allFreeparking: self.settingsButtons[1].selected,
-                doubleincome: self.settingsButtons[2].selected,
-                auctions: self.settingsButtons[3].selected,
-                prisonmoney: self.settingsButtons[4].selected,
-                mortgage: self.settingsButtons[5].selected,
-                sellable: self.settingsButtons[6].selected,
-                even: self.settingsButtons[7].selected,
-                startmoney: self.settingsButtons[8].value,
-                roundsBeforePurchase: self.settingsButtons[9].value,
-                auctionstartprice: self.settingsButtons[10].percentage,
+                freeParking: self.classicSettingsbuttons[0].selected,
+                allFreeparking: self.classicSettingsbuttons[1].selected,
+                doubleincome: self.classicSettingsbuttons[2].selected,
+                auctions: self.classicSettingsbuttons[3].selected,
+                prisonmoney: self.classicSettingsbuttons[4].selected,
+                mortgage: self.classicSettingsbuttons[5].selected,
+                sellable: self.classicSettingsbuttons[6].selected,
+                even: self.classicSettingsbuttons[7].selected,
+                startmoney: self.classicSettingsbuttons[8].value,
+                roundsBeforePurchase: self.classicSettingsbuttons[9].value,
+                auctionstartprice: self.classicSettingsbuttons[10].percentage,
             }
-            startGame(playerlist, settings)
+            startGame(playerlist, self.gameModeSelect.currentSelected.id, settings)
             self.current = false;
             self.backButton.visible = false;
             self.startButton.visible = false;
-            self.settingsButtons.forEach(e => e.visible = false)
+            self.classicSettingsbuttons.forEach(e => e.visible = false)
             self.playerInputs.forEach(e => {
                 e.textInput.htmlElement.style.display = "none"
                 e.textInput.value = "";
@@ -634,16 +660,28 @@ class LocalLobby {
 
         this.draw = function () {
             if (this.current) {
+                
                 drawRotatedImageFromSpriteSheet(0, 0, 960 * drawScale, 540 * drawScale, images.mainMenu.sprites[3], 0, 0, 0, 0, 960, 540)
                 this.readyPlayers = [];
+                this.gameModeSelect.leftButton.visible = true;
+                this.gameModeSelect.leftButton.draw();
+                this.gameModeSelect.rightButton.visible = true;
+                this.gameModeSelect.rightButton.draw();
+                this.gameModeSelect.gamemode.visible = true;
+                this.gameModeSelect.gamemode.draw();
+                this.gameModeSelect.gamemode.text = this.gameModeSelect.currentSelected.text[this.gameModeSelect.currentSelected.id]
 
-                if (this.settingsButtons[0].selected === true) {
-                    this.settingsButtons[1].disabled = false;
+                if (this.classicSettingsbuttons[0].selected === true) {
+                    this.classicSettingsbuttons[1].disabled = false;
                 } else {
-                    this.settingsButtons[1].disabled = true;
-                    this.settingsButtons[1].selected = false;
+                    this.classicSettingsbuttons[1].disabled = true;
+                    this.classicSettingsbuttons[1].selected = false;
                 }
-                this.settingsButtons.forEach(e => { e.visible = true; e.draw() })
+                if(this.gameModeSelect.currentSelected.id === 0){
+                    this.classicSettingsbuttons.forEach(e => { e.visible = true; e.draw() })
+                }else if(this.gameModeSelect.currentSelected.id === 1){
+                    this.businessSettingsbuttons.forEach(e => { e.visible = true; e.draw() })
+                }
                 this.backButton.visible = true;
                 this.startButton.visible = true;
                 this.backButton.draw();
@@ -1281,7 +1319,7 @@ async function init() {
             roundsBeforePurchase: 0,
             auctionstartprice: 0.5,
         }
-        startGame(playerlist, settings)
+        startGame(playerlist, gamemode, settings)
         update();
 
     }
