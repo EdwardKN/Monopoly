@@ -1726,9 +1726,6 @@ class Board {
             board.goToMainMenuButton.visible = false;
             board.musicButton.visible = false;
             board.fullScreenButton.visible = false;
-            setTimeout(() => {
-                board.getToMainMenuButton.visible = true;
-            }, 100);
         }, 40, 40, false, false, false, false, false, { x: 722, y: 336, w: 256 * drawScale, h: 256 * drawScale });
         this.escapeConfirm = new Button([false, false], 5 + 49 * 2.5, 520, images.buttons.sprites[16], function () {
             self.saving = true;
@@ -1736,7 +1733,6 @@ class Board {
             board.imageSmoothingButton.visible = false;
             board.goToMainMenuButton.visible = false;
             board.escapeConfirm.visible = false;
-            board.getToMainMenuButton.visible = false;
             board.fullScreenButton.visible = false;
             board.musicButton.visible = false;
             board.volume.visible = false;
@@ -1764,7 +1760,6 @@ class Board {
             self.volume.percentage = musicVolume
         }, 80, 40, false, false, false, true, false, false)
 
-        this.getToMainMenuButton.visible = true;
 
         this.payJailButton = new Button([false, false], -15, 500, images.jailMenu.sprites[1], function () {
             players[turn].money -= 50;
@@ -1839,7 +1834,7 @@ class Board {
             board.mortgageButton.visible = false;
             board.upgradeButton.visible = false;
             board.downgradeButton.visible = false;
-            board.getToMainMenuButton.visible = true; board.goToMainMenuButton.visible = false;;
+            board.goToMainMenuButton.visible = false;;
         }, 18, 18, false, false, false, false, false, { x: 722, y: 236, w: 256 * drawScale, h: 324 * drawScale })
         this.sellButton = new Button([false, false], 100, 570, images.buttons.sprites[2], function () {
             if (board.currentCard.mortgaged === false) {
@@ -1857,7 +1852,7 @@ class Board {
             board.mortgageButton.visible = false;
             board.upgradeButton.visible = false;
             board.downgradeButton.visible = false;
-            board.getToMainMenuButton.visible = true; board.goToMainMenuButton.visible = false;;
+            board.goToMainMenuButton.visible = false;;
         }, 40, 40, false, false, false, true);
         this.mortgageButton = new Button([false, false], 50, 570, images.buttons.sprites[3], function () {
             if (board.currentCard.mortgaged === true) {
@@ -1988,7 +1983,7 @@ class Board {
             players[turn].ownedPlaces.push(board.currentCard);
             board.currentCard = undefined;
             board.sellButton.visible = false;
-            board.getToMainMenuButton.visible = true; board.goToMainMenuButton.visible = false;;
+            board.goToMainMenuButton.visible = false;;
             board.buyButton.visible = false;
             board.auctionButton.visible = false;
         }, 97, 40);
@@ -2001,7 +1996,7 @@ class Board {
             board.auction = new Auction(board.currentCard)
             board.currentCard = undefined;
             board.sellButton.visible = false;
-            board.getToMainMenuButton.visible = false; board.goToMainMenuButton.visible = false;
+            board.goToMainMenuButton.visible = false;
             board.buyButton.visible = false;
             board.auctionButton.visible = false;
         }, 97, 40);
@@ -2026,7 +2021,6 @@ class Board {
                 board.imageSmoothingButton.visible = false;
                 board.goToMainMenuButton.visible = false;
                 board.escapeConfirm.visible = false;
-                board.getToMainMenuButton.visible = false;
                 board.fullScreenButton.visible = false;
                 board.musicButton.visible = false;
                 board.volume.visible = false;
@@ -2125,17 +2119,19 @@ class Board {
             if (this.trade !== undefined) {
                 this.trade.update();
             }
-            this.getToMainMenuButton.draw();
+
             if (this.getToMainMenuButton.selected) {
                 this.confirmMenu();
+            }else if(board.auction == undefined && board.trade == undefined && board.currentCard == undefined && board.currentShowingCard == undefined && board.showDices == false && board.animateDices == false && players[turn].animationOffset === 0 ){
+                this.getToMainMenuButton.visible = true;
             }
+            this.getToMainMenuButton.draw();
             if (this.currentShowingCard !== undefined) {
                 this.currentShowingCard.draw();
             }
         }
 
         this.confirmMenu = function () {
-            this.getToMainMenuButton.visible = false;
             drawRotatedImageFromSpriteSheet(704, 336, 512, 512, images.exitMenu.sprites[0], 0, false, 0, 0, 256, 256)
             this.musicButton.selected = musicVolume === 0 ? true : false;
 
@@ -2465,7 +2461,7 @@ class Trade {
         };
 
         let self = this;
-        this.closeButton = new Button([false, false], 364 + 128 + 63, 290 - 65, images.buttons.sprites[7], function () { if (Api.online) { Api.tradeConcluded(self.p2.colorIndex, false); } self.closeButton.visible = false; board.trade = undefined; board.getToMainMenuButton.visible = true; board.goToMainMenuButton.visible = false;; players.forEach(e => { e.playerBorder.button.disabled = false }) }, 18, 18, false,
+        this.closeButton = new Button([false, false], 364 + 128 + 63, 290 - 65, images.buttons.sprites[7], function () { if (Api.online) { Api.tradeConcluded(self.p2.colorIndex, false); } self.closeButton.visible = false; board.trade = undefined; board.goToMainMenuButton.visible = false;; players.forEach(e => { e.playerBorder.button.disabled = false }) }, 18, 18, false,
             false, false, false, false, { x: 66, y: 70, w: 1025 + 512 + 280, h: 1020 })
         this.closeButton.visible = true;
 
@@ -2633,7 +2629,7 @@ class Trade {
                 this.p2PropertyButtons.forEach(e => { e.visible = false });
                 players.forEach(e => { e.playerBorder.button.selected = false; e.playerBorder.button.disabled = false })
                 board.trade = undefined;
-                board.getToMainMenuButton.visible = true; board.goToMainMenuButton.visible = false;;
+                board.goToMainMenuButton.visible = false;;
             }
             this.p1Slider.draw();
             this.p2Slider.draw();
@@ -2682,7 +2678,6 @@ class PlayerBorder {
                 Api.requestTrade(self.player.colorIndex);
             }
             board.trade = new Trade(players[turn], self.player);
-            board.getToMainMenuButton.visible = false;
         }, 219, 34, false, false, true)
 
 
@@ -3078,7 +3073,7 @@ class Auction {
                         buttons.splice(buttons.indexOf(this.exitAuctionButton), 1)
                         board.currentCard = undefined;
                         board.sellButton.visible = false;
-                        board.getToMainMenuButton.visible = true; board.goToMainMenuButton.visible = false;;
+                        board.goToMainMenuButton.visible = false;;
                         board.buyButton.visible = false;
                         board.auction = undefined;
                     }
@@ -3434,7 +3429,6 @@ class BoardPiece {
                 playSound(sounds.release, 1)
                 if (this.piece.card !== undefined) {
                     board.currentCard = this;
-                    board.getToMainMenuButton.visible = false;
                 }
             }
         }
@@ -3463,7 +3457,6 @@ class BoardPiece {
                 } else if (this.piece.price > 0 && this.owner === undefined) {
                     if (player.bot === undefined) {
                         board.currentCard = this;
-                        board.getToMainMenuButton.visible = false;
                     }
                 } else if (this.owner !== player && this.owner !== undefined && board.settings.prisonmoney || this.owner !== player && this.owner !== undefined && !board.settings.prisonmoney && !this.owner.inJail) {
                     if (this.piece.type === "utility") {
@@ -4118,7 +4111,6 @@ class Player {
             this.animateSteps(oldStep, this.steps, dicesum, direction, getMoney);
         }
         this.animateSteps = function (from, to, dicesum, direction, getMoney) {
-            board.getToMainMenuButton.visible = false;
 
             let self = this;
             clearInterval(this.timer)
@@ -4138,7 +4130,7 @@ class Player {
                 if(board.currentShowingCard == undefined){
                     board.goToMainMenuButton.visible = false;
                     if (self.animationOffset <= 0 && direction === 1 || self.animationOffset >= 0 && direction === -1) {
-                        board.getToMainMenuButton.visible = true; board.goToMainMenuButton.visible = false;;
+                        board.goToMainMenuButton.visible = false;;
                         clearInterval(self.timer);
 
                         board.boardPieces.forEach(function (b, i2) {
@@ -4237,7 +4229,6 @@ class Player {
                         this.diceSum = dice1 + dice2;
                         this.dice1 = dice1
                         this.dice2 = dice2
-                        board.getToMainMenuButton.visible = false;
 
                         let self = this;
                         this.animateDice(dice1, dice2, function () {
