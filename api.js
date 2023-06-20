@@ -44,6 +44,7 @@ class Api {
      * @param {{ money: number, tiles: BoardPiece.piece[] }} contents 
      */
     static tradeContentUpdated(target, contents) {
+        console.trace(contents.money);
         Api.getWebSocket().send(JSON.stringify({ event_type: "trade_content_update", target_player: target, contents }));
     }
 
@@ -155,7 +156,7 @@ class Api {
      * @returns {boolean} Whether or not the supplied url has an active server (No prefix)
      */
     static async serverActive(serverURL) {
-        var url = new URL(Api.centralizedServer + "/get");
+        var url = new URL(Api.centralizedServer + "/exists");
 
         url.searchParams.set("url", encodeURI(serverURL));
 
@@ -164,6 +165,23 @@ class Api {
         if (result.error != undefined) throw result.error;
 
         return result.exists;
+    }
+
+    /**
+     * Acts as a DNS and converts the given id to a url to which we can connect
+     * @param {number} id 
+     * @returns {{ id: number, url: string }}
+     */
+    static async getURLFromID(id) {
+        var url = new URL(Api.centralizedServer + "/get");
+
+        url.searchParams.set("id", id);
+
+        var result = await (await fetch(url.toString())).json();
+
+        if (result.error != undefined) throw result.error;
+
+        return result;
     }
 
     /**

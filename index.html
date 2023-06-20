@@ -15,6 +15,27 @@
         <!-- Players in the lobby -->
         <div id="player-container"></div>
 
+        <!-- View the applied settings -->
+        <div id="settings-container">
+            <button disabled id="freeParking">Ge alla skattepengar till fri parkering</button>
+            <button disabled id="allFreeparking">Ge alla bankpengar till fri parkering</button>
+            <button disabled id="doubleincome">Dubbel hyra på komplett färggrupp</button>
+            <button disabled id="auctions">Auktioner</button>
+            <button disabled id="prisonmoney">Få/Förlora pengar i fängelset</button>
+            <button disabled id="mortgage">Möjlighet att inteckna</button>
+            <button disabled id="sellable">Möjlighet att sälja</button>
+            <button disabled id="even">Jämn utbyggnad</button>
+
+            <label for="startmoney" content="Startkapital" id="startmoney-label"></label>
+            <input disabled id="startmoney" type="range" min="0" max="3000">
+
+            <label for="roundsBeforePurchase" content="Antal varv innan köp" id="roundsBeforePurchase-label"></label>
+            <input disabled id="roundsBeforePurchase" type="range" min="0" max="5">
+        </div>
+
+        <!-- Leave -->
+        <button id="leave-button" onclick="location.reload()">Lämna</button>
+
         <!-- Ready up -->
         <button class="waiting" onclick="this.className = this.className == 'ready' ? 'waiting' : 'ready';  Api.readyUp();"></button>
     </div>

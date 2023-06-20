@@ -1093,6 +1093,8 @@ async function showOnlineLobby() {
     var username, serverURL;
     Api.online = true;
 
+    username = Math.round(Math.random() * 1e6).toString(16);
+
     // Set username and server address
     while (username == "" || username == undefined) username = location.search == "" ? prompt("Vad vill du ha för namn?") : decodeURI(location.search.split("&")[1]);
     while (serverURL == "" || serverURL == undefined) serverURL = location.search == "" ? prompt("Ange addressen som servern visar, för att gå med i ett spel.\n(Obs. Om du inte har en server, följ anvisningarna på github)") : atob(location.search.substring(1).split("&")[0]);
@@ -1121,11 +1123,47 @@ async function showOnlineLobby() {
             update();
         });
 
+        function addPlayerToLobbyList(beforeContent, color, index, name) {
+            var player = document.createElement("div");
+            var span = document.createElement("span");
+            var imgContainer = document.createElement("div");
+
+            player.className = "player";
+            player.style.color = color;
+            player.setAttribute("before-content", beforeContent);
+            
+            span.innerText = name;
+            imgContainer.className = "image-container";
+            imgContainer.style.backgroundColor = Player.playerColors[index];
+
+            player.appendChild(span);
+            player.appendChild(imgContainer);
+
+            document.getElementById("player-container").appendChild(player);
+        }
+
         document.body.addEventListener("join_info", (evt) => {
             var data = evt.detail;
             window.board = new Board();
 
             board.settings = data.settings;
+
+            Object.entries(board.settings).forEach(s => {
+                var name = s[0];
+                var value = s[1];
+                var element = document.getElementById(name);
+
+                if (element.tagName == "BUTTON") {
+                    // Value can be true or false
+                    if (value == true) {
+                        element.style.backgroundColor = "green";
+                    }
+                } else {
+                    // Value is numerical
+                    element.value = value;
+                    document.getElementById(name + "-label").setAttribute("value", value);
+                }
+            });
 
             data.players.forEach((player) => {
                 players.push(new Player(images.player.sprites[player.colorIndex], player.colorIndex, player.name, false));
@@ -1134,23 +1172,18 @@ async function showOnlineLobby() {
             Api.currentPlayer = data.thisPlayer;
 
             document.getElementById("lobby").style.display = "grid";
+            
+            for (var i = 0; i < data.max_amount_of_players; i++) {
+                addPlayerToLobbyList("-", "#ccc", i, "Väntar");
+            }
 
             data.players.forEach(p => {
-                var player = document.createElement("div");
-                var span = document.createElement("span");
-                var img = document.createElement("img");
+                var player = document.getElementById("player-container").children[p.colorIndex];
 
-                player.className = "player";
+                player.querySelector("span").innerText = p.name;
+                player.setAttribute("before-content", !p.isReady ? "✗" : "✓");
                 player.style.color = !p.isReady ? "red" : "green";
-
-                span.innerText = p.name;
-                img.src = images.player.src[p.colorIndex] + ".png";
-
-                player.appendChild(span);
-                player.appendChild(img);
-
-                document.getElementById("player-container").appendChild(player);
-            })
+            });
         });
 
         document.body.addEventListener("player_left", (evt) => {
@@ -1158,8 +1191,13 @@ async function showOnlineLobby() {
                 // If the lobby is visible, remove this player from the list
                 var playerContainer = document.getElementById("player-container");
                 var index = players.findIndex(x => x.colorIndex == evt.detail.index);
-                var player = players.splice(index, 1);
-                playerContainer.removeChild(playerContainer.children[index]);
+                var player = playerContainer.children[evt.detail.index];
+
+                players.splice(index, 1);
+
+                player.querySelector("span").innerText = "Väntar";
+                player.setAttribute("before-content", "-");
+                player.style.color = "#ccc";
             } else {
                 // Set the player to a bot if it left
                 var player = players.find(x => x.colorIndex == evt.detail.index);
@@ -1171,19 +1209,11 @@ async function showOnlineLobby() {
             if (evt.detail.index == Api.currentPlayer || Api.currentPlayer == -1) return;
             players.push(new Player(images.player.sprites[evt.detail.index], evt.detail.index, evt.detail.username, false));
 
-            var player = document.createElement("div");
-            var span = document.createElement("span");
-            var img = document.createElement("img");
+            var player = document.getElementById("player-container").children[evt.detail.index];
 
-            player.className = "player";
-
-            span.innerText = evt.detail.username;
-            img.src = images.player.src[evt.detail.index] + ".png";
-
-            player.appendChild(span);
-            player.appendChild(img);
-
-            document.getElementById("player-container").appendChild(player);
+            player.querySelector("span").innerText = evt.detail.username;
+            player.setAttribute("before-content", "✗");
+            player.style.color = "red";
         });
 
         document.body.addEventListener("move_event", (evt) => players[evt.detail.player].teleportTo(evt.detail.steps, evt.detail.step != 10, false));
@@ -1286,7 +1316,10 @@ async function showOnlineLobby() {
             var index = players.findIndex(x => x.colorIndex == evt.detail.player);
             if (document.getElementById("lobby").style.display != "none") {
                 var playerContainer = document.getElementById("player-container");
-                playerContainer.children[index].style.color = playerContainer.children[index].style.color == "green" ? "red" : "green";
+                var player = playerContainer.children[index];
+                var isReady = player.style.color != "green";
+                player.style.color = !isReady ? "red" : "green";
+                player.setAttribute("before-content", !isReady ? "✗" : "✓");
             }
         });
 
@@ -3450,9 +3483,20 @@ class CurrentCard {
 }
 
 class Player {
+    static playerColors = [
+        "#E51C23",
+        "#E91E63",
+        "#9C27B0",
+        "#3F51B5",
+        "#738FFE",
+        "#259B24",
+        "#FFEB3B",
+        "#FF8F00"
+    ];
 
     constructor(img, index, name, bot) {
         this.name = name;
+        this.color = Player.playerColors[index];
         this.img = img;
         this.x = 0;
         this.y = 0;

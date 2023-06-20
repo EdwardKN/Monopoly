@@ -2,6 +2,8 @@
     "PORT": 55042,
     "ALLOWED_DOMAINS": [ "edwardkn.github.io", "localhost" ],
     "LOGGING_LEVEL": "STANDARD",
+    "MAX_ALLOWED_PLAYERS": 8,
+    "VISIBILITY": "private",
     "GAME_SETTINGS": {
         "freeParking": false,
         "allFreeparking": false,

@@ -28,15 +28,27 @@ TileManager.initBoard();
 
 var port = CONFIG.PORT;
 var server = https.createServer({ key: readFileSync("./certs/monopoly.key"), cert: readFileSync("./certs/monopoly.crt"), passphrase: readFileSync("./certs/passphrase", "utf-8") }, serverHandler)
-    .listen(port, () => {
+.listen(port, () => {
         Logger.log("New session started\n============================================\n", "Server.onstart", Logger.VERBOSE);
-        Logger.log(`Klienter kan nu ansluta till servern med denna adress:\n${network}:${port}\n`, undefined, Logger.NONE);
-
         var url = new URL(CENTRALIZED_SERVER + "/connect");
-        url.searchParams.set("url", encodeURI(`${network}:${port}`));
-        url.searchParams.set("visibility", "private");
 
-        https.get(url.toString(), (res) => { Logger.log("Registered with centralized server; Response-code: " + res.statusCode, "Server::OnStartUp", Logger.VERBOSE); });
+        url.searchParams.set("url", encodeURI(`${network}:${port}`));
+        url.searchParams.set("visibility", CONFIG.VISIBILITY);
+        
+        https.get(url.toString(), (res) => {
+            Logger.log("Registered with centralized server; Response-code: " + res.statusCode, "Server::OnStartUp", Logger.VERBOSE);
+
+            var body = "";
+            res.on("data", (chunk) => {
+                body += chunk;
+            });
+
+            res.once("end", () => {
+                var data = JSON.parse(body);
+                Logger.log(`Klienter kan nu ansluta till servern med detta id: ${data.id}\n`, undefined, Logger.NONE);
+            });
+        });
+
     });
 
 process.on('exit', () => {
@@ -86,7 +98,7 @@ function websocketHandler(request) {
         connection.sendUTF(JSON.stringify({ event_type: "reject", data: { reason: "GAME_ONGOING" } }));
         connection.close();
         return;
-    } else if (PlayerManager.getNumberOfPlayers() >= 8) {
+    } else if (PlayerManager.getNumberOfPlayers() >= CONFIG.MAX_ALLOWED_PLAYERS) {
         var connection = request.accept(null, request.origin);
         connection.sendUTF(JSON.stringify({ event_type: "reject", data: { reason: "GAME_FULL" } }));
         connection.close();
@@ -109,6 +121,7 @@ function websocketHandler(request) {
         data: {
             players: playerInfo,
             thisPlayer: player.colorIndex,
+            max_amount_of_players: CONFIG.MAX_ALLOWED_PLAYERS,
             settings: CONFIG.GAME_SETTINGS,
         }
     }));
@@ -260,7 +273,7 @@ function websocketHandler(request) {
                     if (event.successful) {
                         player.money -= event.contents.p1.money;
                         player.money += event.contents.p2.money;
-                        
+
                         var p2 = PlayerManager.players.find(p => p.colorIndex == event.target_player);
                         p2.money -= event.contents.p2.money;
                         p2.money += event.contents.p1.money;
@@ -272,7 +285,7 @@ function websocketHandler(request) {
 
                         event.contents.p2.tiles.forEach(t => {
                             var tile = TileManager.getFromID(t.card);
-                            tile.owner = p1;
+                            tile.owner = player;
                         });
                     }
 

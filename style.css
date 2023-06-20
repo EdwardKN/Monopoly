@@ -16,28 +16,42 @@ button {
     cursor: pointer;
 }
 
-#lobby>button {
-    width: 30vmin;
+#lobby > button {
+    width: 45vw;
     height: 10vmin;
-
-    margin: auto;
 
     font-size: 5vmin;
 
-    border: 1px solid white;
-    border-radius: 2vmin;
+    border: 1px solid black;
+    border-radius: 1vmin;
 
     color: white;
+
+    position: absolute;
+    bottom: 2.5vh;
+
+    background-image: linear-gradient(rgba(0, 0, 0, 0.25), rgba(100, 100, 100, 0.25), rgba(150, 150, 150, 0.25), rgba(100, 100, 100, 0.25), rgba(0, 0, 0, 0.25));
 }
 
-button.waiting::before { content: "Inte redo"; }
-button.waiting {
-    background-color: firebrick;
+#leave-button {
+    left: 2.5vw;
+
+    background-color: #9E9E9E;
 }
+
+button.waiting, button.ready {
+    right: 2.5vw;
+}
+
+button.waiting::before { content: "Inte Redo"; }
+button.waiting { background-color: firebrick; }
 
 button.ready::before { content: "Redo!"; }
-button.ready {
-    background-color: green;
+button.ready { background-color: #080; }
+
+#leave-button:hover {
+    /* Built-in hover effect didn't work, therefore this is needed to darken the color little */
+    background-color: #8D8D8D;
 }
 
 button.waiting:hover {
@@ -47,7 +61,7 @@ button.waiting:hover {
 
 button.ready:hover {
     /* Built-in hover effect didn't work, therefore this is needed to darken the color little */
-    background-color: rgb(0, 108, 0);
+    background-color: #070;
 }
 
 #lobby {
@@ -70,6 +84,51 @@ button.ready:hover {
     z-index: 1000;
 }
 
+#settings-container {
+    width: 50vw;
+    height: calc(8*10vh);
+
+    right: 1vw;
+    top: 1vh;
+
+    display: grid;
+
+    grid-template-columns: 1fr;
+    grid-auto-rows: calc(100%/12 - 1%);
+
+    row-gap: 1%;
+
+    position: absolute;
+}
+
+#settings-container > * {
+    width: 100%;
+    text-align: center;
+    font-size: 3vh;
+
+    color: white;
+
+    cursor: default;
+}
+
+label::before {
+    content:  attr(content) ": " attr(value);
+}
+
+#settings-container > button {
+    border: 1px solid black;
+    border-radius: 1vmin;
+}
+
+#settings-container > label {
+    height: 100%;
+    width: fit-content;
+    display: grid;
+    align-items: end;
+    grid-template-columns: max-content auto;
+    margin: auto;
+}
+
 .player {
     display: grid;
 
@@ -78,8 +137,15 @@ button.ready:hover {
     background-color: white;
 }
 
-.player > img {
-    height: 95%;
+.image-container > img {
+    height: 100%;
+    image-rendering: pixelated;
+}
+
+.player > .image-container {
+    overflow: hidden;
+    height: 100%;
+    width: 100%;
 }
 
 .player > * {
@@ -87,16 +153,7 @@ button.ready:hover {
     font-size: 8vh;
 }
 
-/* Almost better to just use javascript for this... */
-.player:nth-child(n)::before { margin: auto; font-size: 8vh; }
-.player:nth-child(1)::before { content: "1"; }
-.player:nth-child(2)::before { content: "2"; }
-.player:nth-child(3)::before { content: "3"; }
-.player:nth-child(4)::before { content: "4"; }
-.player:nth-child(5)::before { content: "5"; }
-.player:nth-child(6)::before { content: "6"; }
-.player:nth-child(7)::before { content: "7"; }
-.player:nth-child(8)::before { content: "8"; }
+.player:nth-child(n)::before { margin: auto; font-size: 7vh; content: attr(before-content) }
 
 .player:nth-child(even) {
     background-color: whitesmoke;
@@ -109,9 +166,11 @@ button.ready:hover {
     grid-auto-rows: 10vh;
 
     width: 40vw;
+    
+    left: 1vw;
+    top: 1vh;
 
-    margin: auto;
-    margin-top: 1%;
+    position: absolute;
 
     border-radius: 1vmin;
     overflow: hidden;
