@@ -238,9 +238,8 @@ function playSound(sound, volume, repeat) {
     }
 };
 function startGame(playerlist, gamemode, settings) {
-    board = new Board();
+    board = new Board(gamemode);
     playtime = 0;
-    board.gamemode = gamemode;
 
 
     board.settings = settings;
@@ -345,8 +344,7 @@ function saveGame() {
 function loadGame(theGameToLoad) {
     let gameToLoad = JSON.parse(localStorage.getItem("games"))[theGameToLoad]
 
-    board = new Board();
-    board.gamemode = gameToLoad.gamemode !== undefined ? gameToLoad.gamemode : 0; 
+    board = new Board(gameToLoad.gamemode !== undefined ? gameToLoad.gamemode : 0);
 
     board.id = gameToLoad.id;
     playtime = gameToLoad.playtime
@@ -841,9 +839,9 @@ class StatMenu{
 
                     e.ownedPlaces.forEach(function(g,h){
                         if(e.ownedPlacesmortgaged[h] === false){
-                            e.tmp += pieces[g].price / 2;
+                            e.tmp += pieces[board.gamemode][g].price / 2;
                             if((pieces[g].housePrice)){
-                                e.tmp += (e.ownedPlaceslevel[h] * pieces[g].housePrice / 2);
+                                e.tmp += (e.ownedPlaceslevel[h] * pieces[board.gamemode][g].housePrice / 2);
                             }
                         }
                     })
@@ -1400,7 +1398,7 @@ async function showOnlineLobby() {
 
         document.body.addEventListener("join_info", (evt) => {
             var data = evt.detail;
-            window.board = new Board();
+            window.board = new Board(0);
 
             board.settings = data.settings;
 
@@ -1664,8 +1662,9 @@ async function showOnlineLobby() {
 }
 
 class Board {
-    constructor(id) {
-        id = undefined;
+    constructor(gamemode) {
+        let id = undefined;
+        this.gamemode = gamemode;
         this.boardSettings = {
             freeParking: false
         }
@@ -1674,7 +1673,7 @@ class Board {
         this.dice1Type = 0;
         this.dice2Type = 0;
         this.boardPieces = [];
-        this.prisonExtra = new BoardPiece(-1, [])
+        this.prisonExtra = new BoardPiece(-1, [],10,this.gamemode)
         this.showDices = false;
         this.animateDices = false;
         this.auction = undefined;
@@ -2001,13 +2000,24 @@ class Board {
             board.auctionButton.visible = false;
         }, 97, 40);
 
-        for (let n = 0; n < 40; n++) {
-            if (n % 10 === 0) {
-                this.boardPieces.push(new BoardPiece(n, images.corner.sprites))
-            } else {
-                this.boardPieces.push(new BoardPiece(n, images.part.sprites))
+        if(this.gamemode == 0){
+            for (let n = 0; n < 40; n++) {
+                if (n % 10 === 0) {
+                    this.boardPieces.push(new BoardPiece(n, images.corner.sprites,10,this.gamemode))
+                } else {
+                    this.boardPieces.push(new BoardPiece(n, images.part.sprites,10,this.gamemode))
+                }
+            }
+        }else if(this.gamemode == 1){
+            for (let n = 0; n < 32; n++) {
+                if (n % 8 === 0) {
+                    this.boardPieces.push(new BoardPiece(n, images.corner.sprites,8,this.gamemode))
+                } else {
+                    this.boardPieces.push(new BoardPiece(n, images.part.sprites,8,this.gamemode))
+                }
             }
         }
+        
 
         this.update = async function () {
             if(players[turn].dead){
@@ -2072,7 +2082,7 @@ class Board {
                 this.nextPlayerButton.draw();
                 this.boardPieces.forEach(g => g.drawHouses())
 
-                for (let i = 20; i >= 0; i--) {
+                for (let i = pieces[this.gamemode].length/2; i >= 0; i--) {
                     if (this.boardPieces[i].side == 0 || this.boardPieces[i].side === 3) {
                         this.boardPieces[i].currentPlayer.forEach(p => p.update())
                     } else {
@@ -2084,7 +2094,7 @@ class Board {
                         this.prisonExtra.currentPlayer.forEach(p => p.update())
                     }
                 }
-                for (let i = 20; i < 40; i++) {
+                for (let i = pieces[this.gamemode].length/2; i < pieces[this.gamemode].length; i++) {
                     if (this.boardPieces[i].side == 0 || this.boardPieces[i].side === 3) {
                         this.boardPieces[i].currentPlayer.forEach(p => p.update())
                     } else {
@@ -3265,10 +3275,12 @@ class Button {
 }
 
 class BoardPiece {
-    constructor(n, img) {
-        this.side = Math.floor(n / 10);
+    constructor(n, img,sidelength,gamemode) {
+        this.sidelength = sidelength;
+        this.gamemode = gamemode;
+        this.side = Math.floor(n / this.sidelength);
         this.n = n;
-        this.piece = pieces[this.n];
+        this.piece = pieces[this.gamemode][this.n];
         if (this.n !== -1) {
             this.img = img[this.piece.img];
         }
@@ -3296,31 +3308,31 @@ class BoardPiece {
                 this.imgSide = 0;
             }
             if (this.side === 1) {
-                this.x = 34;
-                this.y = -32 + 128 * 10.5 + - this.n * 64;
+                this.x = 34 - 64*this.sidelength + 64*10;
+                this.y = -32 + 128 * 10.5 + - this.n * 64 + 64*this.sidelength - 64*10;;
                 this.imgSide = 3;
-                if (this.n % 10 === 0) {
-                    this.x = 1;
-                    this.y = -32 + 128 * 10.75 + - this.n * 64;
+                if (this.n % this.sidelength === 0) {
+                    this.x = 1 - 64*this.sidelength + 64*10;
+                    this.y = -32 + 128 * 10.75 + - this.n * 64 + 64*this.sidelength - 64*10;;
                 }
             }
             if (this.side === 2) {
-                this.x = (this.n % 10) * 64;
-                this.y = 0;
+                this.x = (this.n % this.sidelength) * 64 - 64*this.sidelength + 64*10;
+                this.y = 0 - 64*this.sidelength + 64*10;;
                 this.imgSide = 1;
-                if (this.n % 10 !== 0) {
-                    this.x = (this.n % 10) * 64 + 64;
-                    this.y = 2;
+                if (this.n % this.sidelength !== 0) {
+                    this.x = (this.n % this.sidelength) * 64 + 64 - 64*this.sidelength + 64*10;
+                    this.y = 2 - 64*this.sidelength + 64*10;;
                 }
             }
 
             if (this.side === 3) {
                 this.x = 128 * 5.5
-                this.y = 0
+                this.y = 0 - 64*this.sidelength + 64*10;
                 this.imgSide = 2;
-                if (this.n % 10 !== 0) {
+                if (this.n % this.sidelength !== 0) {
                     this.x = 128 * 5.75
-                    this.y = 0.25 * 128 + 64 * (this.n % 10)
+                    this.y = 0.25 * 128 + 64 * (this.n % this.sidelength) - 64*this.sidelength + 64*10;
                 }
             }
         }
@@ -3338,17 +3350,17 @@ class BoardPiece {
             if (board.currentCard !== undefined || this.piece.type === "chance" || this.piece.type === "community chest" || this.piece.type === "income tax" || this.piece.type === "tax" || this.n % 10 === 0 || board.auction !== undefined || board.trade !== undefined || players[turn].inJail === true || board.showDices || board.animateDices || players[turn].animationOffset !== 0 || board.getToMainMenuButton.selected || board.currentShowingCard !== undefined || players.map(e => e.playerBorder.button.selected).includes(true)) {
                 this.offsetY = this.currentOffsetvalue;
                 this.hover = false;
-            } else if (this.x / 64 > mouseSquareX - 1 && this.x / 64 < mouseSquareX && this.side === 2 && this.n % 10 !== 0 && mouseSquareY >= 0 && mouseSquareY < 2
-                || this.x / 64 > mouseSquareX - 2 && this.x / 64 < mouseSquareX && this.side === 2 && this.n % 10 === 0 && mouseSquareY >= 0 && mouseSquareY < 2
+            } else if (this.x / 64 > mouseSquareX - 1 && this.x / 64 < mouseSquareX && this.side === 2 && this.n % this.sidelength !== 0 && mouseSquareY >= 0 - this.sidelength + 10 && mouseSquareY < 2 - this.sidelength + 10
+                || this.x / 64 > mouseSquareX - 2 && this.x / 64 < mouseSquareX && this.side === 2 && this.n % this.sidelength === 0 && mouseSquareY >= 0 - this.sidelength + 10 && mouseSquareY < 2 - this.sidelength + 10
 
-                || this.x / 64 > mouseSquareX - 1 && this.x / 64 < mouseSquareX && this.side === 0 && this.n % 10 !== 0 && mouseSquareY >= 11 && mouseSquareY < 13
-                || this.x / 64 > mouseSquareX - 2 && this.x / 64 < mouseSquareX && this.side === 0 && this.n % 10 === 0 && mouseSquareY >= 11 && mouseSquareY < 13
+                || this.x / 64 > mouseSquareX - 1 && this.x / 64 < mouseSquareX && this.side === 0 && this.n % this.sidelength !== 0 && mouseSquareY >= 11 && mouseSquareY < 13
+                || this.x / 64 > mouseSquareX - 2 && this.x / 64 < mouseSquareX && this.side === 0 && this.n % this.sidelength === 0 && mouseSquareY >= 11 && mouseSquareY < 13
 
-                || this.y / 64 > mouseSquareY - 1.5 && this.y / 64 < mouseSquareY - 0.5 && this.side === 3 && this.n % 10 !== 0 && mouseSquareX >= 11 && mouseSquareX < 13
-                || this.y / 64 > mouseSquareY - 2 && this.y / 64 < mouseSquareY && this.side === 3 && this.n % 10 === 0 && mouseSquareX >= 11 && mouseSquareX < 13
+                || this.y / 64 > mouseSquareY - 1.5 && this.y / 64 < mouseSquareY - 0.5 && this.side === 3 && this.n % this.sidelength !== 0 && mouseSquareX >= 11 && mouseSquareX < 13
+                || this.y / 64 > mouseSquareY - 2 && this.y / 64 < mouseSquareY && this.side === 3 && this.n % this.sidelength === 0 && mouseSquareX >= 11 && mouseSquareX < 13
 
-                || this.y / 64 > mouseSquareY - 1.5 && this.y / 64 < mouseSquareY - 0.5 && this.side === 1 && this.n % 10 !== 0 && mouseSquareX >= 0 && mouseSquareX < 2
-                || this.y / 64 > mouseSquareY - 2 && this.y / 64 < mouseSquareY && this.side === 1 && this.n % 10 === 0 && mouseSquareX >= 0 && mouseSquareX < 2
+                || this.y / 64 > mouseSquareY - 1.5 && this.y / 64 < mouseSquareY - 0.5 && this.side === 1 && this.n % this.sidelength !== 0 && mouseSquareX >= 0 - this.sidelength + 10 && mouseSquareX < 2 - this.sidelength + 10
+                || this.y / 64 > mouseSquareY - 2 && this.y / 64 < mouseSquareY && this.side === 1 && this.n % this.sidelength === 0 && mouseSquareX >= 0 - this.sidelength + 10 && mouseSquareX < 2 - this.sidelength + 10
             ) {
                 this.offsetY = -1;
                 this.visible = true;
@@ -3363,7 +3375,7 @@ class BoardPiece {
 
         }
         this.draw = function () {
-            if (this.n % 10 !== 0) {
+            if (this.n % this.sidelength !== 0) {
                 if (this.mortgaged === false) {
                     drawIsometricImage(this.x, this.y, this.img, false, 96 * this.imgSide, 0, 96, 48, this.offsetX, this.offsetY);
                 } else if (this.piece.type === "station") {
