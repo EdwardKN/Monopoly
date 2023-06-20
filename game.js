@@ -4001,43 +4001,43 @@ class Player {
             }
         }
         this.updateVisual = function () {
-            this.stepsWithOffset = 40 + (this.steps) - this.animationOffset
-            this.stepsWithOffset = this.stepsWithOffset % 40;
+            this.stepsWithOffset = pieces[board.gamemode].length + (this.steps) - this.animationOffset
+            this.stepsWithOffset = this.stepsWithOffset % pieces[board.gamemode].length;
 
             if (this.stepsWithOffset === 0) {
                 this.x = 0;
                 this.y = 0;
             }
-            if (this.stepsWithOffset > 0 && this.stepsWithOffset < 10) {
+            if (this.stepsWithOffset > 0 && this.stepsWithOffset < pieces[board.gamemode].length / 4) {
                 this.y = 0.5;
                 this.x = this.stepsWithOffset + 1;
             }
-            if (this.stepsWithOffset > 9 && this.stepsWithOffset < 21) {
-                this.x = 11.5
-                if (this.stepsWithOffset === 10) {
-                    this.x = 12
-                    this.y = this.stepsWithOffset - 10;
-                } else if (this.stepsWithOffset < 20) {
-                    this.y = this.stepsWithOffset - 9;
+            if (this.stepsWithOffset > pieces[board.gamemode].length / 4 - 1 && this.stepsWithOffset < pieces[board.gamemode].length / 2 + 1) {
+                this.x = 11.5 - (10 - (pieces[board.gamemode].length / 4))
+                if (this.stepsWithOffset === pieces[board.gamemode].length / 4) {
+                    this.x = 12 - (10 - (pieces[board.gamemode].length / 4))
+                    this.y = this.stepsWithOffset - (pieces[board.gamemode].length / 4);
+                } else if (this.stepsWithOffset < pieces[board.gamemode].length / 2) {
+                    this.y = this.stepsWithOffset - (pieces[board.gamemode].length / 4) + 1;
                 } else {
-                    this.x = 11.5
-                    this.y = this.stepsWithOffset - 8 - 0.5;
+                    this.x = 11.5 - (10 - (pieces[board.gamemode].length / 4))
+                    this.y = this.stepsWithOffset - (pieces[board.gamemode].length / 4) - 0.5 + 2;
                 }
             }
-            if (this.stepsWithOffset > 20 && this.stepsWithOffset < 30) {
-                this.y = 11.5;
-                this.x = 12 - (this.stepsWithOffset - 19)
+            if (this.stepsWithOffset > (pieces[board.gamemode].length / 2) && this.stepsWithOffset < (pieces[board.gamemode].length / 4) * 3) {
+                this.y = 11.5 - (10 - (pieces[board.gamemode].length / 4));
+                this.x = 12 - (this.stepsWithOffset - (pieces[board.gamemode].length / 2) + 1)  - (10 - (pieces[board.gamemode].length / 4))
             }
-            if (this.stepsWithOffset > 29) {
+            if (this.stepsWithOffset > (pieces[board.gamemode].length / 4) * 3 - 1) {
                 this.x = 0.5;
-                if (this.stepsWithOffset === 30) {
+                if (this.stepsWithOffset === (pieces[board.gamemode].length / 4) * 3) {
                     this.x = 0.5;
-                    this.y = 12 - (this.stepsWithOffset - 30) - 0.5
+                    this.y = 12 - (this.stepsWithOffset - (pieces[board.gamemode].length / 4) * 3) - 0.5 - (10 - (pieces[board.gamemode].length / 4))
                 } else {
-                    this.y = 12 - (this.stepsWithOffset - 29)
+                    this.y = 12 - (this.stepsWithOffset - (pieces[board.gamemode].length / 4) * 3 + 1) - (10 - (pieces[board.gamemode].length / 4))
                 }
             }
-            let tmpSteps = (this.steps - this.animationOffset + 40) % 40;
+            let tmpSteps = (this.steps - this.animationOffset + (pieces[board.gamemode].length)) % pieces[board.gamemode].length;
 
             if (this.inJail === true && this.animationOffset === 0) {
                 this.x = 11.25;
@@ -4077,10 +4077,10 @@ class Player {
             }
         }
         this.goToPrison = function () {
-            if (this.steps >= 30 || this.steps < 10) {
-                this.teleportTo(10, false, false);
+            if (this.steps >= (pieces[board.gamemode].length / 4) * 3 || this.steps < (pieces[board.gamemode].length / 4)) {
+                this.teleportTo((pieces[board.gamemode].length / 4), false, false);
             } else {
-                this.teleportTo(-10, false, false);
+                this.teleportTo(-(pieces[board.gamemode].length / 4), false, false);
             }
             this.inJail = true;
             this.rolls = true;
@@ -4098,7 +4098,7 @@ class Player {
                 }
             })
             self.inJail = false;
-            self.steps = 10;
+            self.steps = pieces[board.gamemode].length / 4;
             self.timeInJail = 0;
             board.boardPieces[10].playerStep(true, self);
         }
@@ -4115,10 +4115,10 @@ class Player {
                 step = -step
             }
 
-            this.steps = step % 40;
+            this.steps = step % pieces[board.gamemode].length;
 
             var dicesum = this.steps - oldStep;
-            if (this.steps < oldStep) dicesum += 40;
+            if (this.steps < oldStep) dicesum += (pieces[board.gamemode].length);
 
             this.animateSteps(oldStep, this.steps, dicesum, direction, getMoney);
         }
@@ -4127,7 +4127,7 @@ class Player {
             let self = this;
             clearInterval(this.timer)
             if (to < from && direction === 1) {
-                to += 40
+                to += (pieces[board.gamemode].length)
             }
             let to2 = to
             if (direction < 0) {
@@ -4136,7 +4136,7 @@ class Player {
                 this.animationOffset = to - from;
             }
 
-            to = to % 40
+            to = to % pieces[board.gamemode].length
             board.showDices = true;
             self.timer = setInterval(function () {
                 if(board.currentShowingCard == undefined){
@@ -4162,7 +4162,7 @@ class Player {
                                 board.boardPieces[to].playerStep(false, self, dicesum);
                             }
                         }
-                        if (to === 30) {
+                        if (to === 30 && board.gamemode === 0 || to === 8 && board.gamemode === 1) {
                             board.currentShowingCard = new CurrentCard(1, "special")
                             board.currentShowingCard.onContinue = function () { self.goToPrison() };
                         }
@@ -4179,7 +4179,7 @@ class Player {
 
                         self.animationOffset -= 1 * direction;
                         playSound(sounds.movement, 1)
-                        if (((to - self.animationOffset) % 40 - 1) === -1 && getMoney) {
+                        if (((to - self.animationOffset) % pieces[board.gamemode].length - 1) === -1 && getMoney) {
                             board.boardPieces[0].playerStep(true, self);
                             board.currentShowingCard = new CurrentCard(0,"bankcheck",{to:self.name,amount:200,reason:"Inkomst",from:"Banken"})
                             board.currentShowingCard.onContinue = function(){
@@ -4188,7 +4188,7 @@ class Player {
                             }
                             self.laps++;
                         } else {
-                            board.boardPieces[(to2 - self.animationOffset) % 40].playerStep(true, self);
+                            board.boardPieces[(to2 - self.animationOffset) % pieces[board.gamemode].length].playerStep(true, self);
                         }
 
 
@@ -4250,7 +4250,7 @@ class Player {
                                 return;
                             }
                             board.animateDices = false;
-                            self.teleportTo((self.steps + dice1 + dice2) % 40);
+                            self.teleportTo((self.steps + dice1 + dice2) % pieces[board.gamemode].length);
                             board.nextPlayerButton.visible = true;
                         })
                     }

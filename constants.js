@@ -112,8 +112,7 @@ var images = {
         ]
     },
     corner: {
-        src: ["./images/corners/Go", "./images/corners/prison", "./images/corners/parking", "./images/corners/gotoprison"
-        ]
+        src: ["./images/corners/Go", "./images/corners/prison", "./images/corners/parking", "./images/corners/gotoprison", "./images/corners/lostisland", "./images/corners/worldchampionship", "./images/corners/worldtour",]
     },
     player: {
         src: ["./images/players/player", "./images/players/player2", "./images/players/player3", "./images/players/player4",
@@ -636,7 +635,7 @@ const pieces = [
         },
         {
             name: "fängelse",
-            img: 1
+            img: 4
         },
         {
             name: "Venedig",
@@ -703,7 +702,7 @@ const pieces = [
         },
         {
             name: "Fri parkering",
-            img: 2
+            img: 5
         },
         {
             name: "London",
@@ -770,7 +769,7 @@ const pieces = [
         },
         {
             name: "Gå till finkan",
-            img: 3
+            img: 6
         },
         {
             name: "Nice",
