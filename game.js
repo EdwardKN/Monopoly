@@ -4054,16 +4054,16 @@ class Player {
                             this.y -= ((i - Math.floor(board.boardPieces[tmpSteps].currentPlayer.length / 2)) / 1.4)
                         }
                     } else {
-                        if (Math.floor(this.stepsWithOffset / 10) === 0) {
+                        if (Math.floor(this.stepsWithOffset / (board.boardPieces[tmpSteps].currentPlayer.length / 4)) === 0) {
                             this.y -= ((i) / 1.4)
                         }
-                        if (Math.floor(this.stepsWithOffset / 10) === 1) {
+                        if (Math.floor(this.stepsWithOffset / (board.boardPieces[tmpSteps].currentPlayer.length / 4)) === 1) {
                             this.x += ((i) / 1.4)
                         }
-                        if (Math.floor(this.stepsWithOffset / 10) === 2) {
+                        if (Math.floor(this.stepsWithOffset / (board.boardPieces[tmpSteps].currentPlayer.length / 4)) === 2) {
                             this.y += ((i) / 1.4)
                         }
-                        if (Math.floor(this.stepsWithOffset / 10) === 3) {
+                        if (Math.floor(this.stepsWithOffset / (board.boardPieces[tmpSteps].currentPlayer.length / 4)) === 3) {
                             this.x -= ((i) / 1.4)
                         }
                     }
