@@ -827,7 +827,8 @@ class MainMenu {
             self.imageSmoothingButton.visible = false;
             self.finishButton.visible = false;
             self.loadButton.visible = false;
-            showOnlineLobby();
+
+            showServerList();
         }, 195, 52, false, false, true)
 
         this.musicButton = new Button([true, false], -317 + 40 + 140, 700, images.buttons.sprites[14], function () {
@@ -982,12 +983,11 @@ async function init() {
     await preRender(images);
     loadSounds(sounds);
 
-
     if (location.search != "") {
-        await showOnlineLobby();
+        var searchParams = new URL(location).searchParams;
+        await showOnlineLobby(searchParams.get("username"), searchParams.get("url"));
         return;
     }
-
 
     if (fastLoad === false) {
         menus.push(new MainMenu())
@@ -1089,15 +1089,87 @@ function showBackground() {
     drawIsometricImage(-92, 352, images.background.sprites[0], false, 0, 0, 572, 286, 0, 0)
 }
 
-async function showOnlineLobby() {
-    var username, serverURL;
+var joiningServer = false;
+async function joinServer(username = Api.username, id) {
+    if (joiningServer) return;
+    joiningServer = true;
+
+    try {
+        var serverURL = (await Api.getURLFromID(id))?.url;
+        
+        if (username == null || username == "") {
+            document.getElementById("username-input").className = "shake";
+            setTimeout(() => { document.getElementById("username-input").className = ""; joiningServer = false; }, 1000);
+        } else {
+            await showOnlineLobby(username, serverURL)
+            document.getElementById("server-list-container").style.display = "none";
+            joiningServer = false;
+        }
+    } catch(err) {
+        var div = document.createElement("div");
+        div.id = "error-div";
+        div.innerText = err;
+        document.getElementById("server-list-container").appendChild(div);
+
+        setTimeout(() => { document.getElementById("server-list-container").removeChild(div); }, 3000);
+
+        joiningServer = false;
+    }
+}
+
+async function showServerList() {
+    Api.username = document.getElementById("username-input").value;
+
+    document.getElementById("modal-server-id-input").value = "";
+    document.getElementById("server-list-container").style.display = "grid";
+
+    var publicServers = await Api.getPublicServers();
+
+    // Sort the servers based on how full they are
+    publicServers.sort((a, b) => b.number_of_players/b.max_number_of_players - a.number_of_players/a.max_number_of_players);
+
+    function addServerEntry(id, name, amountOfPlayers, maxAmountOfPlayers) {
+        var entry = document.createElement("div");
+        var image = document.createElement("img");
+        var nameSpan = document.createElement("span");
+        var playerSpan = document.createElement("span");
+        var joinButton = document.createElement("div");
+        var joinButtonImage = document.createElement("img");
+
+        nameSpan.innerText = name;
+        playerSpan.innerText = `${amountOfPlayers}/${maxAmountOfPlayers}`;
+
+        image.src = "images/menus/ServerDefaultImage.jpg";
+        image.draggable = false;
+
+        joinButtonImage.src = "images/menus/JoinServerButton.png";
+        joinButtonImage.draggable = false;
+
+        joinButton.onclick = async () => {
+            joinServer(Api.username, id);
+        }
+
+        joinButton.appendChild(joinButtonImage);
+
+        entry.appendChild(image);
+        entry.appendChild(nameSpan);
+        entry.appendChild(playerSpan);
+        entry.appendChild(joinButton);
+
+        document.getElementById("server-list").appendChild(entry);
+    }
+
+    publicServers.forEach(s => {
+        addServerEntry(s.id, s.name, s.number_of_players, s.max_number_of_players);
+    });
+
+    if (publicServers.length == 0) {
+        document.getElementById("server-list").appendChild(document.createElement("info"));
+    }
+}
+
+async function showOnlineLobby(username, serverURL) {
     Api.online = true;
-
-    username = Math.round(Math.random() * 1e6).toString(16);
-
-    // Set username and server address
-    while (username == "" || username == undefined) username = location.search == "" ? prompt("Vad vill du ha för namn?") : decodeURI(location.search.split("&")[1]);
-    while (serverURL == "" || serverURL == undefined) serverURL = location.search == "" ? prompt("Ange addressen som servern visar, för att gå med i ett spel.\n(Obs. Om du inte har en server, följ anvisningarna på github)") : atob(location.search.substring(1).split("&")[0]);
 
     history.replaceState(undefined, undefined, location.href.replace(location.search, ""));
 
@@ -1440,7 +1512,7 @@ async function showOnlineLobby() {
     } catch (err) {
         if (await Api.serverActive(serverURL)) {
             alert("VIKTIGT!\nDu kommer att hamna på en annan webbsida.\nFör att gå med i spelet måste du klicka på:\nAvancerat...>Acceptera risken och fortsätt\nOm du inte gör detta så kommer du inte kunna ansluta till spelet.");
-            location = "https://" + serverURL + "/" + btoa(location.href) + "/" + encodeURI(username);
+            location = "https://" + serverURL + "/?returnURL=" + encodeURI(location.href) + "&username=" + encodeURI(username);
         } else {
             alert("Tyvärr\nDet verkar som att addressen du skrev in inte har ett aktivt spel pågående\nSäker på att du skrev rätt?");
             location.reload();
@@ -2777,6 +2849,10 @@ class Auction {
 
         this.addMoney = function (money) {
             if (Api.online) {
+                this.addMoneyButton2.visible = false;
+                this.addMoneyButton10.visible = false;
+                this.addMoneyButton100.visible = false;
+
                 Api.auctionBid(this.card, this.auctionMoney + money, false);
                 return;
             }

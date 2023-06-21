@@ -34,6 +34,8 @@ var server = https.createServer({ key: readFileSync("./certs/monopoly.key"), cer
 
         url.searchParams.set("url", encodeURI(`${network}:${port}`));
         url.searchParams.set("visibility", CONFIG.VISIBILITY);
+        url.searchParams.set("name", CONFIG.ROOM_NAME);
+        url.searchParams.set("maxNumberOfPlayers", CONFIG.MAX_ALLOWED_PLAYERS)
         
         https.get(url.toString(), (res) => {
             Logger.log("Registered with centralized server; Response-code: " + res.statusCode, "Server::OnStartUp", Logger.VERBOSE);
@@ -46,13 +48,15 @@ var server = https.createServer({ key: readFileSync("./certs/monopoly.key"), cer
             res.once("end", () => {
                 var data = JSON.parse(body);
                 Logger.log(`Klienter kan nu ansluta till servern med detta id: ${data.id}\n`, undefined, Logger.NONE);
+                global.id = data.id;
+                global.clientSecret = data.client_secret;
             });
         });
 
     });
 
 process.on('exit', () => {
-    childProcess.execFileSync("node", ["./modules/exitHandler.js", CENTRALIZED_SERVER, network, port]);
+    childProcess.execFileSync("node", ["./modules/exitHandler.js", CENTRALIZED_SERVER, network, port, global.clientSecret ]);
 });
 
 process.on('SIGINT', () => {
@@ -67,7 +71,13 @@ var gameHasStarted = false;
  * @param {ServerResponse} response 
  */
 function serverHandler(request, response) {
-    response.setHeader("Location", Buffer.from(request.url.split("/")[1], "base64") + "?" + btoa(network + ":" + port) + "&" + request.url.split("/")[2]);
+    var searchParams = new URL("https://[::1]" + request.url).searchParams;
+    var url = new URL(decodeURI(searchParams.get("returnURL")));
+    
+    url.searchParams.set("url", encodeURI(network + ":" + port));
+    url.searchParams.set("username", searchParams.get("username"));
+
+    response.setHeader("Location", url.toString());
     response.writeHead(302).end();
 }
 
@@ -110,7 +120,7 @@ function websocketHandler(request) {
         return;
     }
 
-    var connection = request.accept(null, request.origin);    
+    var connection = request.accept(null, request.origin);
     
     // Send message with info about the game
     var playerInfo = PlayerManager.playerJoined(playername);
@@ -125,6 +135,14 @@ function websocketHandler(request) {
             settings: CONFIG.GAME_SETTINGS,
         }
     }));
+
+    var url = new URL(CENTRALIZED_SERVER + "/playercount");
+
+    url.searchParams.set("id", global.id);
+    url.searchParams.set("playerCount", PlayerManager.getNumberOfPlayers());
+    url.searchParams.set("clientSecret", global.clientSecret);
+
+    https.get(url.toString());
     
     Logger.log(`Player (${player.name}) joined the lobby`, "Connection::onOpen", Logger.STANDARD);
     connection.on('message', message => {
@@ -226,12 +244,20 @@ function websocketHandler(request) {
                 case "ready_up":
                     player.isReady = !player.isReady;
 
-                    Logger.log(`Player (${player.name}) is ${player.isReady ? "" : "not"} ready`, location, Logger.STANDARD);
+                    Logger.log(`Player (${player.name}) is ${player.isReady ? "" : "not "}ready`, location, Logger.STANDARD);
                     Logger.log(JSON.stringify(player), location, Logger.VERBOSE);
 
                     if (PlayerManager.getNumberOfPlayers() >= 2 && PlayerManager.players.every(x => x.isReady)) {
                         gameHasStarted = true;
                         api.startGame(PlayerManager.players);
+
+                        var url = new URL(CENTRALIZED_SERVER + "/gamestate");
+
+                        url.searchParams.set("id", global.id);
+                        url.searchParams.set("gameState", "GAME_ONGOING");
+                        url.searchParams.set("clientSecret", global.clientSecret)
+                    
+                        https.get(url.toString());                   
                     } else {
                         api.readyUp(player.colorIndex);
                     }
@@ -326,6 +352,13 @@ function websocketHandler(request) {
 
     connection.on('close', (reasonCode, description) => {
         PlayerManager.playerLeft(player);
+        var url = new URL(CENTRALIZED_SERVER + "/playercount");
+
+        url.searchParams.set("id", global.id);
+        url.searchParams.set("playerCount", PlayerManager.getNumberOfPlayers());
+        url.searchParams.set("clientSecret", global.clientSecret);
+    
+        https.get(url.toString());   
     });
 }
 

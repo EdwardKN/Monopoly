@@ -11,6 +11,28 @@
     <title>Monopol</title>
 </head>
 <body>
+    <div id="server-list-container">
+        <!-- Can be used to join a specific server -->
+        <div id="private-server-container" style="align-items: center;">
+            <span>*</span>
+            <input type="text" id="username-input" placeholder="Ditt namn" maxlength="10" onchange="Api.username = this.value;">
+            <span>*</span>
+        </div>
+
+        <!-- List of open public servers -->
+        <div id="server-list"></div>
+
+        <!-- Back button -->
+        <button style="left: 1vmin;" onclick="location.reload()">⬅ Back</button>
+
+        <!-- Private server button -->
+        <button style="right: 1vmin;" onclick="document.getElementById('private-server-modal').showModal(); document.getElementById('private-server-modal').style.display = 'grid';">Join a specific server ⮕</button>
+
+        <dialog id="private-server-modal" onclose="this.style.display = 'none';">
+            <input type="text" placeholder="Server ID" id="modal-server-id-input" style="text-align: center;">
+            <button onclick="document.getElementById('private-server-modal').close(); joinServer(undefined, document.getElementById('modal-server-id-input').value);">Join</button>
+        </dialog>
+    </div>
     <div id="lobby">
         <!-- Players in the lobby -->
         <div id="player-container"></div>
@@ -26,10 +48,10 @@
             <button disabled id="sellable">Möjlighet att sälja</button>
             <button disabled id="even">Jämn utbyggnad</button>
 
-            <label for="startmoney" content="Startkapital" id="startmoney-label"></label>
+            <label for="startmoney" content="Startkapital" unit="kr" id="startmoney-label"></label>
             <input disabled id="startmoney" type="range" min="0" max="3000">
 
-            <label for="roundsBeforePurchase" content="Antal varv innan köp" id="roundsBeforePurchase-label"></label>
+            <label for="roundsBeforePurchase" content="Antal varv innan köp" unit="" id="roundsBeforePurchase-label"></label>
             <input disabled id="roundsBeforePurchase" type="range" min="0" max="5">
         </div>
 

@@ -3,6 +3,7 @@
     "ALLOWED_DOMAINS": [ "edwardkn.github.io", "localhost" ],
     "LOGGING_LEVEL": "STANDARD",
     "MAX_ALLOWED_PLAYERS": 8,
+    "ROOM_NAME": "Default Room",
     "VISIBILITY": "private",
     "GAME_SETTINGS": {
         "freeParking": false,

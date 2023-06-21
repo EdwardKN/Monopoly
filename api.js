@@ -14,6 +14,8 @@ class Api {
     // The ...
     static centralizedServer = "https://monopoly.endy.workers.dev";
 
+    static username = "";
+
     /**
      * Sent when this player exited jail
      * @param {String} type Either DICE, CARD or MONEY depending on how the player exited jail
@@ -177,6 +179,19 @@ class Api {
 
         url.searchParams.set("id", id);
 
+        var result = await (await fetch(url.toString())).json();
+
+        if (result.error != undefined) throw result.error;
+
+        return result;
+    }
+
+    /**
+     * Get a list of all the public servers
+     * @returns {{ id: number, name: string, number_of_players: number, max_number_of_players: number }[]}
+     */
+    static async getPublicServers() {
+        var url = new URL(Api.centralizedServer + "/list");
         var result = await (await fetch(url.toString())).json();
 
         if (result.error != undefined) throw result.error;
