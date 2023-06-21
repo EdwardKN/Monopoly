@@ -28,8 +28,9 @@ TileManager.initBoard();
 
 var port = CONFIG.PORT;
 var server = https.createServer({ key: readFileSync("./certs/monopoly.key"), cert: readFileSync("./certs/monopoly.crt"), passphrase: readFileSync("./certs/passphrase", "utf-8") }, serverHandler)
-.listen(port, () => {
+.listen(port, async () => {
         Logger.log("New session started\n============================================\n", "Server.onstart", Logger.VERBOSE);
+        if (CONFIG.VISIBILITY == "public") network = await getPublicIP();
         var url = new URL(CENTRALIZED_SERVER + "/connect");
 
         url.searchParams.set("url", encodeURI(`${network}:${port}`));
@@ -64,6 +65,18 @@ process.on('SIGINT', () => {
 });
 
 var gameHasStarted = false;
+
+async function getPublicIP() {
+    return new Promise((resolve) => {
+        Logger.log("Fetching public IP", "Network::GetPublicIP", Logger.VERBOSE);
+        https.get(CENTRALIZED_SERVER + "/ip", (resp) => {
+            resp.on('data', function(ip) {
+                Logger.log("Public IP Fetched (" + ip + ")", "Network::GetPublicIP", Logger.VERBOSE);
+                resolve(ip);
+            });
+        });
+    });
+}
 
 /**
  * 
