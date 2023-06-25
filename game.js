@@ -3774,11 +3774,14 @@ class CurrentCard {
         this.draw = function () {
             if (players[turn].bot === undefined) {
                 this.okayButton.visible = true;
+                this.cardCloseButton.visible = false;
             } else {
                 this.cardCloseButton.visible = true;
+                this.okayButton.visible = false;
             }
             if(this.type === "bankcheck"){
                 this.cardCloseButton.visible = true;
+                this.okayButton.visible = false;
             }
             drawRotatedImageFromSpriteSheet(470, 300, 512 * 2, 256 * 2, this.img, 0, false, 0, 0, 512, 256, 0, c)
             this.cardCloseButton.draw();
