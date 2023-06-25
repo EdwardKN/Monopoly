@@ -261,6 +261,7 @@ function startGame(playerlist, settings) {
 
 function saveGame() {
     let gameToSave = {
+        saveVersion:1,
         players: [], 
         settings: board.settings, 
         turn: turn, 
@@ -794,11 +795,20 @@ class StatMenu{
         this.changeTypeButton = new Button([true, true], -345 + 340, 212, images.statMenu.sprites[6], function () {}, 81, 81, false, false, false, false, false, { x: 385, y: 184, w: 400*2, h: 400*2, onlySelected: true })
 
         this.statButtons = []
-        this.statButtons.push(new Button([false,false],-154,380 + 60*this.statButtons.length,images.statMenu.sprites[8],function(){self.type = self.statButtons.indexOf(this) + 1},380,55))
-        this.statButtons.push(new Button([false,false],-154,380 + 60*this.statButtons.length,images.statMenu.sprites[9],function(){self.type = self.statButtons.indexOf(this) + 1},380,55))
-        this.statButtons.push(new Button([false,false],-154,380 + 60*this.statButtons.length,images.statMenu.sprites[10],function(){self.type = self.statButtons.indexOf(this) + 1},380,55))
-        this.statButtons.push(new Button([false,false],-154,380 + 60*this.statButtons.length,images.statMenu.sprites[11],function(){self.type = self.statButtons.indexOf(this) + 1},380,55))
-        this.statButtons.push(new Button([false,false],-154,380 + 60*this.statButtons.length,images.statMenu.sprites[12],function(){self.type = self.statButtons.indexOf(this) + 1},380,55))
+        this.statButtons.push(new Button([false,false],-154,380 + 60*this.statButtons.length,images.statMenu.sprites[8],function(){self.changeType(self.statButtons.indexOf(this) + 1)},380,55))
+        this.statButtons.push(new Button([false,false],-154,380 + 60*this.statButtons.length,images.statMenu.sprites[9],function(){self.changeType(self.statButtons.indexOf(this) + 1)},380,55))
+        this.statButtons.push(new Button([false,false],-154,380 + 60*this.statButtons.length,images.statMenu.sprites[10],function(){self.changeType(self.statButtons.indexOf(this) + 1)},380,55))
+        this.statButtons.push(new Button([false,false],-154,380 + 60*this.statButtons.length,images.statMenu.sprites[11],function(){self.changeType(self.statButtons.indexOf(this) + 1)},380,55))
+        this.statButtons.push(new Button([false,false],-154,380 + 60*this.statButtons.length,images.statMenu.sprites[12],function(){self.changeType(self.statButtons.indexOf(this) + 1)},380,55))
+
+        this.changeType = function(typeToChangeTo){
+            if(this.game.saveVersion >= 1){
+                this.type = typeToChangeTo;
+            }else{
+                let tmp = this.game?.saveVersion == undefined ? 0 : this.game.saveVersion;
+                alert("Sparfiler med format "+tmp +  " stödjer inte den statistiken")
+            }
+        }
 
         this.draw = function(){
             if (this.current) {
