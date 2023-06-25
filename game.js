@@ -1716,10 +1716,11 @@ class Board {
             }
         }, 40, 40, false)
 
-        this.goToMainMenuButton = new Button([false, false], 5 + 49 * 1.5, 520, images.buttons.sprites[15], function () {
+        this.goToMainMenuButton = new Button([false, false], 5 + 49 * 1, 520, images.buttons.sprites[15], function () {
             board.getToMainMenuButton.selected = false;
         }, 40, 40, false, false, false, false, false, { x: 722, y: 336, w: 256 * drawScale, h: 256 * drawScale });
-        this.escapeConfirm = new Button([false, false], 5 + 49 * 2.5, 520, images.buttons.sprites[16], function () {
+
+        this.escapeConfirm = new Button([false, false], 5 + 49 * 3, 520, images.buttons.sprites[16], function () {
             board.getToMainMenuButton.selected = false;
             setTimeout(() => {
                 saveGame()
@@ -1739,10 +1740,35 @@ class Board {
             }, 100);
 
         }, 40, 40, false, false, false, false, false,);
+        this.statButton = new Button([false, false], 5 + 49 * 2, 520, images.statMenu.sprites[0], function () {
+            board.getToMainMenuButton.selected = false;
+            setTimeout(() => {
+                let tmp2 = saveGame()
+                players.forEach(e => buttons.splice(buttons.indexOf(e.playerBorder.button), 1))
+                players = [];
+                menus[4].current = true;
+                menus[0].volume.percentage = musicVolume
+                if (Api.online) Api.disconnect();
+                timeouts.forEach(e => clearTimeout(e));
+                intervals.forEach(e => clearInterval(e));
+                timeouts = [];
+                board = undefined;
+                buttons = [];
+                menus = [];
 
+                init();
+                setTimeout(() => {
+                    menus[4].current = true;
+                    menus[4].game = tmp2;
+                    menus[0].current = false;
+                },100)
+            }, 100);
+
+        }, 40, 40, false, false, false, false, false,);
         this.getToMainMenuButton = new Button([true, false], 84, 700, images.buttons.sprites[17], function () {
             self.volume.percentage = musicVolume
         }, 80, 40, false, false, false, true, false, false)
+
 
         this.payJailButton = new Button([false, false], -15, 500, images.jailMenu.sprites[1], function () {
             players[turn].money -= 50;
@@ -2087,6 +2113,8 @@ class Board {
             this.goToMainMenuButton.draw();
             this.escapeConfirm.visible = true;
             this.escapeConfirm.draw();
+            this.statButton.visible = true;
+            this.statButton.draw();
             this.volume.visible = true;
             this.volume.draw();
             this.musicButton.visible = true;
