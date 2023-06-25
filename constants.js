@@ -186,7 +186,7 @@ var images = {
         src:["./images/community card and chance card/bankcheck"]
     },
     statMenu:{
-        src:["./images/buttons/statbutton","./images/menus/statmenu"]
+        src:["./images/buttons/statbutton","./images/menus/statmenu","./images/menus/statmenu2","./images/menus/statmenu3","./images/menus/statmenu4","./images/menus/statmenu5","./images/buttons/changestat","./images/menus/stats","./images/buttons/networth","./images/buttons/moneyearned","./images/buttons/moneylost","./images/buttons/bestpiece","./images/buttons/worstpiece"]
     }
 };
 
