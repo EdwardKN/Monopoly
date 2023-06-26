@@ -626,7 +626,7 @@ class LocalLobby {
 
 
 
-                }, 40, 40, false, false))
+                }, 40, 40, false, false,false))
 
                 if (i === tmp.colorId) {
                     tmp.colorButtons[i].selected = true;
@@ -795,18 +795,15 @@ class StatMenu{
         this.changeTypeButton = new Button([true, true], -345 + 340, 212, images.statMenu.sprites[6], function () {}, 81, 81, false, false, false, false, false, { x: 385, y: 184, w: 400*2, h: 400*2, onlySelected: true })
 
         this.statButtons = []
-        this.statButtons.push(new Button([false,false],-154,380 + 60*this.statButtons.length,images.statMenu.sprites[8],function(){self.changeType(self.statButtons.indexOf(this) + 1)},380,55))
-        this.statButtons.push(new Button([false,false],-154,380 + 60*this.statButtons.length,images.statMenu.sprites[9],function(){self.changeType(self.statButtons.indexOf(this) + 1)},380,55))
-        this.statButtons.push(new Button([false,false],-154,380 + 60*this.statButtons.length,images.statMenu.sprites[10],function(){self.changeType(self.statButtons.indexOf(this) + 1)},380,55))
-        this.statButtons.push(new Button([false,false],-154,380 + 60*this.statButtons.length,images.statMenu.sprites[11],function(){self.changeType(self.statButtons.indexOf(this) + 1)},380,55))
-        this.statButtons.push(new Button([false,false],-154,380 + 60*this.statButtons.length,images.statMenu.sprites[12],function(){self.changeType(self.statButtons.indexOf(this) + 1)},380,55))
+        this.statButtons.push(new Button([false,false],-154,380 + 60*this.statButtons.length,images.statMenu.sprites[8],function(){self.changeType(self.statButtons.indexOf(this) + 1)},380,55,false,false,false,true))
+        this.statButtons.push(new Button([false,false],-154,380 + 60*this.statButtons.length,images.statMenu.sprites[9],function(){self.changeType(self.statButtons.indexOf(this) + 1)},380,55,false,false,false,true))
+        this.statButtons.push(new Button([false,false],-154,380 + 60*this.statButtons.length,images.statMenu.sprites[10],function(){self.changeType(self.statButtons.indexOf(this) + 1)},380,55,false,false,false,true))
+        this.statButtons.push(new Button([false,false],-154,380 + 60*this.statButtons.length,images.statMenu.sprites[11],function(){self.changeType(self.statButtons.indexOf(this) + 1)},380,55,false,false,false,true))
+        this.statButtons.push(new Button([false,false],-154,380 + 60*this.statButtons.length,images.statMenu.sprites[12],function(){self.changeType(self.statButtons.indexOf(this) + 1)},380,55,false,false,false,true))
 
         this.changeType = function(typeToChangeTo){
             if(this.game.saveVersion >= 1){
                 this.type = typeToChangeTo;
-            }else{
-                let tmp = this.game?.saveVersion == undefined ? 0 : this.game.saveVersion;
-                alert("Sparfiler med format "+tmp +  " stödjer inte den statistiken")
             }
         }
 
@@ -817,6 +814,8 @@ class StatMenu{
                 this.changeTypeButton.draw();
                 this.backButton.visible = true;
                 this.backButton.draw();
+                this.statButtons.forEach((e,i) => e.disabled = (this.game.saveVersion >= 1 && i!==0))
+
                 
                 if(this.type == 1){
                     this.game.players = this.game.players.sort((a,b) => {
@@ -1031,8 +1030,10 @@ class LoadingMenu {
                         if(self.games.reverse()[self.games.length - i - 1].players.filter(e => {return e.dead != true}).length > 1){
                             tmp = true;
                         }
+                        if(self.games.reverse()[self.games.length - i - 1].saveVersion !== undefined){
+                            self.statButton.disabled = false;
+                        }
                         self.deleteSave.disabled = false;
-                        self.statButton.disabled = false;
                     }
                 })
                 this.deleteSave.visible = true;
@@ -3105,7 +3106,11 @@ class Button {
                     if (this.disabled) {
                         this.hover = false;
                         if (this.select[0] === false) {
-                            drawRotatedImageFromSpriteSheet(this.x * drawScale + 715, this.y * drawScale - 400, this.w * drawScale, this.h * drawScale, this.img, 0, this.mirror, this.w * 2, 0, this.w, this.h)
+                            if(this.disableselectTexture){
+                                drawRotatedImageFromSpriteSheet(this.x * drawScale + 715, this.y * drawScale - 400, this.w * drawScale, this.h * drawScale, this.img, 0, this.mirror, this.w * 1, 0, this.w, this.h)
+                            }else{
+                                drawRotatedImageFromSpriteSheet(this.x * drawScale + 715, this.y * drawScale - 400, this.w * drawScale, this.h * drawScale, this.img, 0, this.mirror, this.w * 2, 0, this.w, this.h)
+                            }
                         } else {
                             if (this.img.frame.w > this.w * 2) {
                                 if (this.selected) {
