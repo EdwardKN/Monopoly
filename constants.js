@@ -12,6 +12,8 @@ const fastSpeed = false;
 
 const disableAlert = false;
 
+const latestSaveVersion = 1;
+
 var namn
 
 if (disableAlert) {
@@ -21,9 +23,13 @@ if (disableAlert) {
 
 var f = new FontFace('Arcade', 'url(./fonts/SFPixelate.ttf)');
 var fb = new FontFace('ArcadeBold', 'url(./fonts/SFPixelate-Bold.ttf)');
+var fbc = new FontFace('Handwritten', 'url(./fonts/Always-In-My-Heart.ttf)');
+var fbcd = new FontFace('Signature', 'url(./fonts/Scribble.ttf)');
 
 f.load().then(function (font) { document.fonts.add(font); });
 fb.load().then(function (font) { document.fonts.add(font); });
+fbc.load().then(function (font) { document.fonts.add(font); });
+fbcd.load().then(function (font) { document.fonts.add(font); });
 
 var buttons = [];
 
@@ -144,7 +150,7 @@ var images = {
         ]
     },
     auction: {
-        src: ["./images/menus/auctionmenubackground", "./images/buttons/auction+2", "./images/buttons/auction+10", "./images/buttons/auction+100", "./images/menus/auctionloadingbar", "./images/buttons/startauction"]
+        src: ["./images/menus/auctionmenubackground", "./images/buttons/auction+2", "./images/buttons/auction+10", "./images/buttons/auction+100", "./images/buttons/exitauction", "./images/buttons/startauction"]
     },
     trade: {
         src: ["./images/menus/tradingmenu", "./images/buttons/accept", "./images/buttons/tradingcityname"]
@@ -156,7 +162,7 @@ var images = {
         src: ["./images/buttons/plus", "./images/buttons/minus"]
     },
     mainMenu: {
-        src: ["./images/menus/mainmenu", "./images/buttons/local", "./images/buttons/online", "./images/menus/lobbymenu"]
+        src: ["./images/menus/mainmenu", "./images/buttons/local", "./images/buttons/online", "./images/menus/lobbymenu", "./images/buttons/credits", "./images/menus/creditsmenu",]
     },
     exitMenu: {
         src: ["./images/menus/exitmenu", "./images/buttons/exitCardTrans"]
@@ -177,6 +183,12 @@ var images = {
     },
     specialCards: {
         src: ["./images/community card and chance card/specialempty", "./images/community card and chance card/gatillfinkanS", "./images/community card and chance card/illegaldices", "./images/community card and chance card/payincometax", "./images/community card and chance card/payrichtax"]
+    },
+    bankCheck: {
+        src:["./images/community card and chance card/bankcheck"]
+    },
+    statMenu:{
+        src:["./images/buttons/statbutton","./images/menus/statmenu","./images/menus/statmenu2","./images/menus/statmenu3","./images/menus/statmenu4","./images/menus/statmenu5","./images/buttons/changestat","./images/menus/stats","./images/buttons/networth","./images/buttons/moneyearned","./images/buttons/moneylost","./images/buttons/bestpiece","./images/buttons/worstpiece"]
     }
 };
 
