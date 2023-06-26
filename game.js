@@ -261,7 +261,7 @@ function startGame(playerlist, settings) {
 
 function saveGame() {
     let gameToSave = {
-        saveVersion:1,
+        saveVersion:latestSaveVersion,
         players: [], 
         settings: board.settings, 
         turn: turn, 
@@ -814,7 +814,7 @@ class StatMenu{
                 this.changeTypeButton.draw();
                 this.backButton.visible = true;
                 this.backButton.draw();
-                this.statButtons.forEach((e,i) => e.disabled = (this.game.saveVersion >= 1 && i!==0))
+                this.statButtons.forEach((e,i) => e.disabled = !(this.game.saveVersion <= 1 || i ===0))
 
                 
                 if(this.type == 1){
@@ -1026,11 +1026,19 @@ class LoadingMenu {
                         c.drawImage(self.screenshot, 0, canvas.height / 4, canvas.width / 2, canvas.height / 2)
                         c.lineWidth = scale
                         c.strokeRect(0, canvas.height / 4, canvas.width / 2, canvas.height / 2)
+                        c.fillStyle = self.games.reverse()[self.games.length - i - 1].saveVersion == latestSaveVersion ? "green" : "red";
+                        c.shadowBlur = 5;
+                        c.shadowColor = "black";
+                        c.font = "20px Arcade";
+                        c.textAlign = "left";
+                        c.fillText("Sparfilsversion: " + self.games.reverse()[self.games.length - i - 1].saveVersion, 10, 425);
+                        c.fillText("Spelversion: " + latestSaveVersion, 10, 445);
+                        c.shadowBlur = 0;
                         self.games = JSON.parse(localStorage.getItem("games")).reverse()
                         if(self.games.reverse()[self.games.length - i - 1].players.filter(e => {return e.dead != true}).length > 1){
                             tmp = true;
                         }
-                        if(self.games.reverse()[self.games.length - i - 1].saveVersion !== undefined){
+                        if(self.games.reverse()[self.games.length - i - 1].saveVersion === latestSaveVersion){
                             self.statButton.disabled = false;
                         }
                         self.deleteSave.disabled = false;
