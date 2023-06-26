@@ -113,10 +113,9 @@ class Bot {
             }
         } else { this.player.rollDice() }
 
-        while (this.player.animationOffset !== 0) { await new Promise(requestAnimationFrame) } 
-
-        if (board.currentShowingCard) {
-            board.currentShowingCard.continue()
+        while (board.showDices || board.animateDices || this.player.animationOffset !== 0) {
+            await new Promise(requestAnimationFrame)
+            if (board.currentShowingCard) { board.currentShowingCard.continue() }
         }
 
         while (this.player.animationOffset !== 0) { await new Promise(requestAnimationFrame) } 
@@ -217,24 +216,28 @@ class Bot {
         this.player.money += boardPiece.piece.price / 2
         this.player.playerBorder.startMoneyAnimation(boardPiece.piece.price / 2)
         boardPiece.mortgaged = true
+        this.player.totalEarned += boardPiece.piece.price / 2
     }
 
     unmortgagePiece(boardPiece) {
-        this.player.money -= 1.1 * boardPiece.piece.price / 2
+        this.player.money -= 0.65 * boardPiece.piece.price
         this.player.playerBorder.startMoneyAnimation(- 1.1 * boardPiece.piece.price / 2)
         boardPiece.mortgaged = false
+        this.player.totalLost += 0.65 * boardPiece.piece.price
     }
 
     buyHouse(boardPiece) {
         this.player.money -= boardPiece.piece.housePrice
         this.player.playerBorder.startMoneyAnimation(-boardPiece.piece.housePrice)
         boardPiece.level++
+        this.player.totalLost += boardPiece.piece.housePrice
     }
 
     sellHouse(boardPiece) {
         this.player.money += boardPiece.piece.housePrice / 2
         this.player.playerBorder.startMoneyAnimation(boardPiece.piece.housePrice / 2)
         boardPiece.level--
+        this.player.totalEarned += boardPiece.piece.housePrice / 2
     }
 
     buyPiece(boardPiece) {
@@ -242,6 +245,7 @@ class Bot {
         this.player.playerBorder.startMoneyAnimation(-boardPiece.piece.price)
         boardPiece.owner = this.player
         this.player.ownedPlaces.push(boardPiece)
+        this.player.totalLost += boardPiece.piece.price
     }
 
     sellPiece(boardPiece) {
@@ -249,6 +253,7 @@ class Bot {
         boardPiece.owner = undefined
         this.player.ownedPlaces.splice(this.player.ownedPlaces.indexOf(boardPiece), 1)
         if (this.player.ownedPlaces.length === 0 && this.player.money < 0) { this.player.checkDept() }
+        this.player.totalEarned += boardPiece.piece.price / 2
     }
 
     createAuction(boardPiece) {
@@ -426,9 +431,10 @@ class Bot {
                         resolve()
                     }, randomIntFromRange(speeds.botMin, speeds.botMax))
                 })
-                break
+                return true
             }
         }
+        board.auction.exitAuctionButton.onClick()
     }
 
     // Handle trade requests
