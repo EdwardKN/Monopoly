@@ -1031,7 +1031,7 @@ class LoadingMenu {
                         c.shadowColor = "black";
                         c.font = "20px Arcade";
                         c.textAlign = "left";
-                        c.fillText("Sparfilsversion: " + self.games.reverse()[self.games.length - i - 1].saveVersion, 10, 425);
+                        c.fillText("Sparfilsversion: " + (self.games.reverse()[self.games.length - i - 1].saveVersion == undefined ? 0 : self.games.reverse()[self.games.length - i - 1].saveVersion), 10, 425);
                         c.fillText("Spelversion: " + latestSaveVersion, 10, 445);
                         c.shadowBlur = 0;
                         self.games = JSON.parse(localStorage.getItem("games")).reverse()
