@@ -130,18 +130,18 @@ class Bot {
         }
 
         if (this.player.laps >= board.settings.roundsBeforePurchase &&
-            Object.keys(boardWeights).includes(`${bP.n}`) && !bP.owner) {
-            // Buy or Auction
+            !bP.owner && Object.keys(boardWeights).includes(`${bP.n}`)) {
+
             let moneyLeft = this.player.money - bP.piece.price
             let func = bP.piece.group || bP.piece.type
 
             if (moneyLeft > 2 * this.getAverageLoss(12) || (moneyLeft > this.getAverageLoss(12) &&
                 players.some(player => window[func](player, bP.piece.group).length >= 0.5))) {
-                this.buyPiece(bP)
+                buyPiece(this.player, bP)
             } else if (board.settings.auctions) {
-                this.createAuction(bP)
+                createAuction(bP)
                 await this.sleep(1000)
-                this.startAuction()
+                startAuction()
             }
         } else if (bP.owner && bP.owner !== this.player) { this.player.checkDebt(bP.owner) }
 
@@ -163,7 +163,7 @@ class Bot {
                 for (let n of minN) {
                     let bP = board.boardPieces[n]
                     if (bP.level < 5 && this.player.money - bP.piece.housePrice > this.getAverageLoss(40)) {
-                        this.buyHouse(bP)
+                        buyHouse(this.player, bP)
                         bought = true
                     }
                 }
@@ -193,7 +193,7 @@ class Bot {
 
         for (let bP of mortgaged) {
             if (this.player.money - 1.1 * bP.piece.price / 2 > this.getAverageLoss(40)) {
-                this.unmortgagePiece(bP)
+                unmortgagePiece(this.player, bP)
             }
         }
 
@@ -206,70 +206,6 @@ class Bot {
         }
         Bot.thinking = false
         this.player.rolls = false
-    }
-
-    async sleep(ms) {
-        return new Promise(resolve => setTimeout(resolve, ms))
-    }
-
-    mortgagePiece(boardPiece) {
-        this.player.money += boardPiece.piece.price / 2
-        this.player.playerBorder.startMoneyAnimation(boardPiece.piece.price / 2)
-        boardPiece.mortgaged = true
-        this.player.totalEarned += boardPiece.piece.price / 2
-    }
-
-    unmortgagePiece(boardPiece) {
-        this.player.money -= 0.65 * boardPiece.piece.price
-        this.player.playerBorder.startMoneyAnimation(- 1.1 * boardPiece.piece.price / 2)
-        boardPiece.mortgaged = false
-        this.player.totalLost += 0.65 * boardPiece.piece.price
-    }
-
-    buyHouse(boardPiece) {
-        this.player.money -= boardPiece.piece.housePrice
-        this.player.playerBorder.startMoneyAnimation(-boardPiece.piece.housePrice)
-        boardPiece.level++
-        this.player.totalLost += boardPiece.piece.housePrice
-    }
-
-    sellHouse(boardPiece) {
-        this.player.money += boardPiece.piece.housePrice / 2
-        this.player.playerBorder.startMoneyAnimation(boardPiece.piece.housePrice / 2)
-        boardPiece.level--
-        this.player.totalEarned += boardPiece.piece.housePrice / 2
-    }
-
-    buyPiece(boardPiece) {
-        this.player.money -= boardPiece.piece.price
-        this.player.playerBorder.startMoneyAnimation(-boardPiece.piece.price)
-        boardPiece.owner = this.player
-        this.player.ownedPlaces.push(boardPiece)
-        this.player.totalLost += boardPiece.piece.price
-    }
-
-    sellPiece(boardPiece) {
-        if (!boardPiece.mortgaged) { this.player.money += boardPiece.piece.price / 2; this.player.playerBorder.startMoneyAnimation(boardPiece.piece.price / 2) }
-        boardPiece.owner = undefined
-        this.player.ownedPlaces.splice(this.player.ownedPlaces.indexOf(boardPiece), 1)
-        if (this.player.ownedPlaces.length === 0 && this.player.money < 0) { this.player.checkDept() }
-        this.player.totalEarned += boardPiece.piece.price / 2
-    }
-
-    createAuction(boardPiece) {
-        board.auction = new Auction(boardPiece)
-        board.currentCard = undefined
-        board.buyButton.visible = false
-        board.auctionButton.visible = false
-    }
-
-    startAuction() {
-        board.auction.started = true
-        board.auction.duration = 10 * speeds.auctionSpeed
-        board.auction.startTime = performance.now()
-        board.auction.timer = setInterval(() => {
-            board.auction.time = 472 * (1 - (performance.now() - board.auction.startTime) / board.auction.duration)
-        }, 10)
     }
 
     getAverageLoss(ahead) {
@@ -322,10 +258,10 @@ class Bot {
             if (left.length === 0) { return false }
 
             if (left[0].level > 0) {
-                this.sellHouse(left[0])
+                sellHouse(this.player, left[0])
             } else {
-                if (board.settings.mortgage) { this.mortgagePiece(left[0]) }
-                else { this.sellPiece(left[0]) }
+                if (board.settings.mortgage) { mortgagePiece(this.player, left[0]) }
+                else { sellPiece(this.player, left[0]) }
             }
         }
         return true
@@ -563,10 +499,7 @@ function testAuction(group, station, utility) {
 
     let n = nums[randomIntFromRange(0, nums.length - 1)]
     let bP = board.boardPieces[n]
-    board.auction = new Auction(bP)
-    board.currentCard = undefined
-    board.buyButton.visible = false
-    board.auctionButton.visible = false
+    createAuction(bP)
 }
 
 function testBuyProperty(player) {
@@ -579,33 +512,3 @@ function testBuyProperty(player) {
         bP.level = lowest + (Math.random() > 0.5 ? 1 : 0)
     }
 }
-
-`
-- ( rentStation + allSTATION - 1    *  (före rent - nya rent)
-
-rentStation = 25 * Math.pow(2, ownedStations(this.player).length - 1)
-allStation = ownedStations(this.player).length - 1
-föreRent = 25 * Math.pow(2, ownedStations(this.player).length - 1)
-nyaRent = 25 * Math.pow(2, ownedStations(this.player).length - 1) * Math.pow(2, -1)
-
-- (
-    25 * Math.pow(2, ownedStations(this.player).length - 1) + 
-    (ownedStations(this.player).length - 1) * (
-        25 * Math.pow(2, ownedStations(this.player).length - 1) -
-        25 * Math.pow(2, ownedStations(this.player).length - 1) * Math.pow(2, -1)
-    )
-)
-
-- (
-    25 * Math.pow(2, ownedStations(this.player).length - 1) + 
-    (ownedStations(this.player).length - 1) * (
-        25 * Math.pow(2, ownedStations(this.player).length - 1) * (1 - 1 / 2)
-    )
-)
-
-25 * Math.pow(2, ownedStations(this.player).length - 1) * (
-        (ownedStations(this.player).length) / 2)
-25 * (2^a-2) * a
-
-
-        `
