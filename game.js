@@ -13,6 +13,8 @@ var musictimer;
 
 var musicPlaying;
 
+
+
 var finish = JSON.parse(getCookie("finish") === undefined ? false : getCookie("finish"));;
 
 var musicVolume = JSON.parse(getCookie("musicVolume") === undefined ? 100 : getCookie("musicVolume"));
@@ -1690,6 +1692,10 @@ class Board {
         this.currentShowingCard = undefined;
         let self = this;
         this.textsize = 0;
+        this.numberOfHotels = 0;
+        this.numberOfHouses = 0;
+
+
         this.musicButton = new Button([true, false], 5 + 49 * 4, 530 + 40, images.buttons.sprites[14], function () {
             if (self.musicButton.selected) {
                 document.cookie = `musicOn=${musicVolume};Expires=Sun, 22 oct 2030 08:00:00 UTC;`;
@@ -2005,6 +2011,16 @@ class Board {
         }
 
         this.update = async function () {
+            this.numberOfHotels = 0;
+            this.numberOfHouses = 0;
+            board.boardPieces.forEach(e => {
+                if(e.level < 5 && e.level > 0){
+                    this.numberOfHouses += e.level;
+                }else if(e.level == 5){
+                    this.numberOfHotels++;
+                }
+            })
+            
             if(players[turn].dead){
                 turn = (turn + 1) % players.length;
                 return;
@@ -2192,7 +2208,31 @@ class Board {
                         if (lowest > board.currentCard.level || !board.settings.even) { lowest = board.currentCard.level }
 
                         if (lowest < 5 && this.currentCard.piece.housePrice !== undefined && ownAll === true && players[turn].money >= this.currentCard.piece.housePrice) {
-                            this.upgradeButton.disabled = false;
+                            if(this.currentCard.level == lowest){
+                                if(this.currentCard.level == 4 && this.numberOfHotels < 12){
+                                    this.upgradeButton.disabled = false;
+                                }else if(this.currentCard.level < 4 && this.numberOfHouses < 32){
+                                    this.upgradeButton.disabled = false;
+                                }else{
+                                    this.upgradeButton.disabled = true;
+                                }
+                            }else{
+                                for (let i = board.boardPieces.length - 1; i > 0; i--) {
+                                    if (board.boardPieces[i] !== board.currentCard) {
+                                        if (board.boardPieces[i].piece.group === board.currentCard.piece.group) {
+                                            if(board.boardPieces[i].level === lowest){
+                                                if(board.boardPieces[i].level == 4 && this.numberOfHotels < 12){
+                                                    this.upgradeButton.disabled = false;
+                                                }else if(board.boardPieces[i].level < 4 && this.numberOfHouses < 32){
+                                                    this.upgradeButton.disabled = false;
+                                                }else{
+                                                    this.upgradeButton.disabled = true;
+                                                }                                          
+                                            }
+                                        }
+                                    }
+                                }
+                            }
                         } else {
                             this.upgradeButton.disabled = true;
                         }
