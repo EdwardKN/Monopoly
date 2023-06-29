@@ -810,9 +810,7 @@ class StatMenu{
         this.statButtons.push(new Button([false,false],-154,380 + 60*this.statButtons.length,images.statMenu.sprites[12],function(){self.changeType(self.statButtons.indexOf(this) + 1)},380,55,false,false,false,true))
 
         this.changeType = function(typeToChangeTo){
-            if(this.game.saveVersion >= 1){
-                this.type = typeToChangeTo;
-            }
+            this.type = typeToChangeTo;
         }
 
         this.draw = function(){
@@ -822,7 +820,6 @@ class StatMenu{
                 this.changeTypeButton.draw();
                 this.backButton.visible = true;
                 this.backButton.draw();
-                this.statButtons.forEach((e,i) => e.disabled = !(this.game.saveVersion <= 1 || i ===0))
 
                 
                 if(this.type == 1){
@@ -1031,6 +1028,7 @@ class LoadingMenu {
 
                 self.buttons.forEach(function (e, i) {
                     if (e.selected) {
+                        self.games = JSON.parse(localStorage.getItem("games")).reverse()
                         c.drawImage(self.screenshot, 0, canvas.height / 4, canvas.width / 2, canvas.height / 2)
                         c.lineWidth = scale
                         c.strokeRect(0, canvas.height / 4, canvas.width / 2, canvas.height / 2)
@@ -1042,11 +1040,10 @@ class LoadingMenu {
                         c.fillText("Sparfilsversion: " + (self.games.reverse()[self.games.length - i - 1].saveVersion == undefined ? 0 : self.games.reverse()[self.games.length - i - 1].saveVersion), 10, 425);
                         c.fillText("Spelversion: " + latestSaveVersion, 10, 445);
                         c.shadowBlur = 0;
-                        self.games = JSON.parse(localStorage.getItem("games")).reverse()
                         if(self.games.reverse()[self.games.length - i - 1].players.filter(e => {return e.dead != true}).length > 1){
                             tmp = true;
                         }
-                        if(self.games.reverse()[self.games.length - i - 1].saveVersion === latestSaveVersion){
+                        if(self.games.reverse()[self.games.length - i - 1].saveVersion == latestSaveVersion){
                             self.statButton.disabled = false;
                         }else{
                             tmp = false;
