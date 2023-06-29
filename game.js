@@ -477,9 +477,11 @@ class LocalLobby {
         this.settingsButtons.push(new Button([true, false], 80, 205 + this.settingsButtons.length * 42, images.buttons.sprites[10], function () { }, 500, 40, false, false, false, false, false, false, "Möjlighet att inteckna", 42, "black"))
         this.settingsButtons.push(new Button([true, false], 80, 205 + this.settingsButtons.length * 42, images.buttons.sprites[10], function () { }, 500, 40, false, false, false, false, false, false, "Möjlighet att sälja", 42, "black"))
         this.settingsButtons.push(new Button([true, false], 80, 205 + this.settingsButtons.length * 42, images.buttons.sprites[10], function () { }, 500, 40, false, false, false, false, false, false, "Jämn utbyggnad", 42, "black"))
-        this.settingsButtons.push(new Slider(436 * drawScale, 5 + this.settingsButtons.length * 42 * drawScale, 502 * drawScale, 40 * drawScale, 0, 3000, 100, true, 50, "kr", "Startkapital: "))
-        this.settingsButtons.push(new Slider(436 * drawScale, 5 + this.settingsButtons.length * 42 * drawScale, 502 * drawScale, 40 * drawScale, 0, 5, 1, true, 50, "", "Antal varv innan köp: "))
-        this.settingsButtons.push(new Slider(436 * drawScale, 5 + this.settingsButtons.length * 42 * drawScale, 502 * drawScale, 40 * drawScale, 0, 100, 10, true, 35, "%", "Lägsta bud på auktioner(% av gatupris): "))
+        this.settingsButtons.push(new Slider(436 * drawScale, 75 + this.settingsButtons.length * 38 * drawScale, 502 * drawScale, 38 * drawScale, 0, 3000, 100, true, 50, "kr", "Startkapital: "))
+        this.settingsButtons.push(new Slider(436 * drawScale, 75 + this.settingsButtons.length * 38 * drawScale, 502 * drawScale, 38 * drawScale, 0, 5, 1, true, 50, "", "Antal varv innan köp: "))
+        this.settingsButtons.push(new Slider(436 * drawScale, 75 + this.settingsButtons.length * 38 * drawScale, 502 * drawScale, 38 * drawScale, 0, 100, 10, true, 35, "%", "Lägsta bud på auktioner(% av gatupris): "))
+        this.settingsButtons.push(new Slider(436 * drawScale, 75 + this.settingsButtons.length * 38 * drawScale, 502 * drawScale, 38 * drawScale, 1, 88, 1, true, 50, "", "Max antal hus: "))
+        this.settingsButtons.push(new Slider(436 * drawScale, 75 + this.settingsButtons.length * 38 * drawScale, 502 * drawScale, 38 * drawScale, 1, 22, 1, true, 35, "", "Max antal Hotell: "))
         this.settingsButtons[2].selected = true
         this.settingsButtons[3].selected = true
         this.settingsButtons[4].selected = true
@@ -487,11 +489,13 @@ class LocalLobby {
         this.settingsButtons[6].selected = true
         this.settingsButtons[7].selected = true
         this.settingsButtons[8].percentage = 0.45
-        this.settingsButtons[10].percentage = 0.5
+        this.settingsButtons[10].percentage = 0.5        
+        this.settingsButtons[11].percentage = 0.36
+        this.settingsButtons[12].percentage = 0.5
         this.readyPlayers = [];
         this.settingsButtons[1].disabled = true;
 
-        this.backButton = new Button([false, false], -337, 220, images.buttons.sprites[12], function () {
+        this.backButton = new Button([false, false], -337, 205, images.buttons.sprites[12], function () {
             self.current = false;
             menus[0].current = true;
             menus[0].volume.percentage = musicVolume
@@ -507,7 +511,7 @@ class LocalLobby {
                 e.textInput.oldvalue = ""
             })
         }, 325, 60, false, false, false, false, false, false)
-        this.startButton = new Button([false, false], 250, 670, images.buttons.sprites[11], function () {
+        this.startButton = new Button([false, false], -250, 670, images.buttons.sprites[11], function () {
             let playerlist = []
 
             self.readyPlayers.forEach(e => {
@@ -536,6 +540,8 @@ class LocalLobby {
                 startmoney: self.settingsButtons[8].value,
                 roundsBeforePurchase: self.settingsButtons[9].value,
                 auctionstartprice: self.settingsButtons[10].percentage,
+                maxhouses: self.settingsButtons[11].value,
+                maxhotels: self.settingsButtons[12].value,
             }
             startGame(playerlist, settings)
             self.current = false;
@@ -562,7 +568,7 @@ class LocalLobby {
             let tmp = {
                 id: id,
                 colorId: undefined,
-                y: (self.playerInputs.length * 110 - 100),
+                y: (self.playerInputs.length * 100 - 140),
                 nameIndex: randomIntFromRange(0, namn.length - 1),
                 textInput: new TextInput(40, 300, 560, 80, true, 50, 10, "Spelare " + (id + 1)),
                 botButton: new Button([true, false], -50 + 42, self.playerInputs.length * 55 - 32, images.buttons.sprites[13], function () {
@@ -1042,6 +1048,8 @@ class LoadingMenu {
                         }
                         if(self.games.reverse()[self.games.length - i - 1].saveVersion === latestSaveVersion){
                             self.statButton.disabled = false;
+                        }else{
+                            tmp = false;
                         }
                         self.deleteSave.disabled = false;
                     }
@@ -1275,64 +1283,14 @@ async function init() {
     }
 
 
-    if (fastLoad === false) {
-        menus.push(new MainMenu())
-        menus.push(new LocalLobby())
-        menus.push(new LoadingMenu())
-        menus.push(new CreditsMenu())
-        menus.push(new StatMenu())
-        update();
+    menus.push(new MainMenu())
+    menus.push(new LocalLobby())
+    menus.push(new LoadingMenu())
+    menus.push(new CreditsMenu())
+    menus.push(new StatMenu())
+    update();
 
-    } else {
-        menus.push(new MainMenu())
-        menus.push(new LocalLobby())
-        menus.push(new LoadingMenu())
-        menus.push(new CreditsMenu())
-        menus.push(new StatMenu())
-
-        menus[0].current = false;
-
-        let playerlist = []
-        let playerAmount = 2;
-        let botAmount = 0;
-        let useableColors = [0, 1, 2, 3, 4, 5, 6, 7]
-        for (let i = 0; i < (playerAmount + botAmount); i++) {
-            let random = randomIntFromRange(0, useableColors.length - 1)
-            if (i < playerAmount) {
-                let tmp = {
-                    name: "Spelare " + (i + 1),
-                    color: useableColors[random],
-                    bot: false
-                }
-                playerlist.push(tmp)
-            } else {
-                let tmp = {
-                    name: "Bot " + (i - 1),
-                    color: useableColors[random],
-                    bot: true
-                }
-                playerlist.push(tmp)
-            }
-            useableColors.splice(random, 1)
-
-        }
-
-        let settings = {
-            freeParking: false,
-            allFreeparking: false,
-            doubleincome: true,
-            auctions: true,
-            prisonmoney: true,
-            mortgage: true,
-            even: true,
-            startmoney: 1400,
-            roundsBeforePurchase: 0,
-            auctionstartprice: 0.5,
-        }
-        startGame(playerlist, settings)
-        update();
-
-    }
+    
 }
 
 function update() {
@@ -1920,7 +1878,7 @@ class Board {
             }
             let lowest = self.getlevelinfoofgroup(self.currentCard).lowest;
             if(board.currentCard.level == lowest){
-                if(board.getNumberOfHousesAndHotels().numberOfHouses == 32){
+                if(board.getNumberOfHousesAndHotels().numberOfHouses == this.settings.maxhouses){
                     board.currentCard.level = 5;
                     if(self.getlevelinfoofgroup(self.currentCard).lowest < 4){
                         return self.calculateUpgrade(levelsBefore,levelsAfter);
@@ -1941,7 +1899,7 @@ class Board {
                     if (board.boardPieces[i] !== board.currentCard) {
                         if (board.boardPieces[i].piece.group === board.currentCard.piece.group) {
                             if(board.boardPieces[i].level === lowest){
-                                if(board.getNumberOfHousesAndHotels().numberOfHouses == 32){
+                                if(board.getNumberOfHousesAndHotels().numberOfHouses == this.settings.maxhouses){
                                     board.boardPieces[i].level = 5;
                                     if(self.getlevelinfoofgroup(self.currentCard).lowest < 4){
                                         return self.calculateUpgrade(levelsBefore,levelsAfter);
@@ -1985,14 +1943,14 @@ class Board {
             if(board.currentCard.level === highest){
                 if(board.currentCard.level === 5){
                     board.currentCard.level--;
-                    if(board.getNumberOfHousesAndHotels().numberOfHouses > 32){
+                    if(board.getNumberOfHousesAndHotels().numberOfHouses > this.settings.maxhouses){
                         return board.calculateDowngrade(levelsBefore,levelsAfterInput)
                     }else{
                         return this.getPriceForLevelChanges(levelsBefore,self.getlevelinfoofgroup(self.currentCard).grouplevels)
                     }
                 }else{
                     board.currentCard.level--;
-                    if(board.getNumberOfHousesAndHotels().numberOfHouses > 32){
+                    if(board.getNumberOfHousesAndHotels().numberOfHouses > this.settings.maxhouses){
                         return board.calculateDowngrade(levelsBefore,levelsAfterInput)
                     }else{
                         return this.getPriceForLevelChanges(levelsBefore,self.getlevelinfoofgroup(self.currentCard).grouplevels)
@@ -2004,7 +1962,7 @@ class Board {
                         if (board.boardPieces[i]?.piece?.group === board.currentCard?.piece?.group) {
                             if(board.boardPieces[i].level === highest){
                                 board.boardPieces[i].level--;
-                                if(board.getNumberOfHousesAndHotels().numberOfHouses > 32){
+                                if(board.getNumberOfHousesAndHotels().numberOfHouses > this.settings.maxhouses){
                                     return board.calculateDowngrade(levelsBefore,levelsAfterInput)
                                 }else{
                                     return this.getPriceForLevelChanges(levelsBefore,self.getlevelinfoofgroup(self.currentCard).grouplevels)
@@ -2302,11 +2260,11 @@ class Board {
 
                         if (lowest < 5 && this.currentCard.piece.housePrice !== undefined && ownAll === true && players[turn].money >= this.currentCard.piece.housePrice) {
                             if(this.currentCard.level == lowest){
-                                if(this.currentCard.level == 4 && this.numberOfHotels < 12){
+                                if(this.currentCard.level == 4 && this.numberOfHotels < this.settings.maxhotels){
                                     this.upgradeButton.disabled = false;
-                                }else if(this.currentCard.level < 4 && this.numberOfHouses < 32){
+                                }else if(this.currentCard.level < 4 && this.numberOfHouses < this.settings.maxhouses){
                                     this.upgradeButton.disabled = false;
-                                }else if(this.currentCard.level < 5 && this.numberOfHouses == 32){
+                                }else if(this.currentCard.level < 5 && this.numberOfHouses == this.settings.maxhouses){
                                     this.upgradeButton.disabled = false;
                                 }else{
                                     this.upgradeButton.disabled = true;
@@ -2316,11 +2274,11 @@ class Board {
                                     if (board.boardPieces[i] !== board.currentCard) {
                                         if (board.boardPieces[i].piece.group === board.currentCard.piece.group) {
                                             if(board.boardPieces[i].level === lowest){
-                                                if(board.boardPieces[i].level == 4 && this.numberOfHotels < 12){
+                                                if(board.boardPieces[i].level == 4 && this.numberOfHotels < this.settings.maxhotels){
                                                     this.upgradeButton.disabled = false;
-                                                }else if(board.boardPieces[i].level < 4 && this.numberOfHouses < 32){
+                                                }else if(board.boardPieces[i].level < 4 && this.numberOfHouses < this.settings.maxhouses){
                                                     this.upgradeButton.disabled = false;
-                                                }else if(board.boardPieces[i].level < 5 && this.numberOfHouses == 32){
+                                                }else if(board.boardPieces[i].level < 5 && this.numberOfHouses == this.settings.maxhouses){
                                                     this.upgradeButton.disabled = false;
                                                 }else{
                                                     this.upgradeButton.disabled = true;
@@ -2491,7 +2449,7 @@ class Slider {
                     this.value = this.from;
                 }
                 c.fillStyle = "black";
-                c.fillRect(this.x, this.y, this.w, this.h)
+                c.fillRect(this.x+1, this.y+1, this.w-2, this.h-2)
                 c.fillStyle = "white";
                 c.fillRect(this.x + 4, this.y + 4, this.w - 8, this.h - 8)
                 c.fillStyle = "black";

@@ -6,13 +6,11 @@ var players = [];
 
 const drawScale = 2;
 
-const fastLoad = false;
-
 const fastSpeed = false;
 
 const disableAlert = false;
 
-const latestSaveVersion = 1;
+const latestSaveVersion = 2;
 
 var namn
 
