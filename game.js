@@ -1047,10 +1047,10 @@ class LoadingMenu {
                         c.fillText("Sparfilsversion: " + (self.games.reverse()[self.games.length - i - 1].saveVersion == undefined ? 0 : self.games.reverse()[self.games.length - i - 1].saveVersion), 10, 425);
                         c.fillText("Spelversion: " + latestSaveVersion, 10, 445);
                         c.shadowBlur = 0;
-                        if(self.games.reverse()[self.games.length - i - 1].players.filter(e => {return e.dead != true}).length > 1){
+                        if(self.games[self.games.length - i - 1].players.filter(e => {return e.dead != true}).length > 1){
                             tmp = true;
                         }
-                        if(self.games.reverse()[self.games.length - i - 1].saveVersion == latestSaveVersion){
+                        if(self.games[self.games.length - i - 1].saveVersion == latestSaveVersion){
                             self.statButton.disabled = false;
                         }else{
                             tmp = false;
@@ -1809,7 +1809,6 @@ class Board {
             if (board.currentCard.mortgaged === false) {
                 players[turn].money += board.currentCard.piece.price / 2
                 players[turn].totalEarned += board.currentCard.piece.price / 2
-                players[turn].checkDebt(board.boardPieces[20]);
                 players[turn].playerBorder.startMoneyAnimation(board.currentCard.piece.price / 2);
             } else {
                 board.currentCard.mortgaged = false;
@@ -1818,6 +1817,7 @@ class Board {
             board.currentCard.owner = undefined;
             players[turn].hasStepped = true;
             board.currentCard = undefined;
+            players[turn].checkDebt(board.boardPieces[20]);
         }, 40, 40, false, false, false, true);
         this.mortgageButton = new Button([false, false], 50, 570, images.buttons.sprites[3], function () {
             if (board.currentCard.mortgaged === true) {
@@ -1981,10 +1981,6 @@ class Board {
             if (Api.online) {
                 Api.propertyChangedLevel(board.currentCard, board.currentCard.level - 1, false);
                 return;
-                board.currentCard.owner.money += board.currentCard.piece.housePrice / 2;
-                board.currentCard.owner.totalEarned += board.currentCard.piece.housePrice / 2;
-                players[turn].playerBorder.startMoneyAnimation(board.currentCard.piece.housePrice / 2)
-                players[turn].checkDebt(board.boardPieces[20]);
             }
             
             let levels = self.calculateDowngrade(self.getlevelinfoofgroup(self.currentCard).grouplevels)
@@ -1997,6 +1993,7 @@ class Board {
                     });
                     players[turn].money += levels.levelsUpgraded * self.currentCard.piece.housePrice / 2;
                     players[turn].playerBorder.startMoneyAnimation(levels.levelsUpgraded * self.currentCard.piece.housePrice / 2)
+                    players[turn].checkDebt(board.boardPieces[20]);
                 }
             }else{
                 let pieces = board.boardPieces.filter(e => e.piece.group == self.currentCard.piece.group)
@@ -2005,6 +2002,7 @@ class Board {
                 });
                 players[turn].money += levels.levelsUpgraded * self.currentCard.piece.housePrice / 2;
                 players[turn].playerBorder.startMoneyAnimation(levels.levelsUpgraded * self.currentCard.piece.housePrice / 2)
+                players[turn].checkDebt(board.boardPieces[20]);
             }
             
             
@@ -4106,6 +4104,7 @@ class Player {
             }
         }
         this.checkDebt = function (player) {
+            console.log()
             if (this.money < 0 && this.lastMoneyInDebt === 0) {
                 player.money += this.money;
                 this.inDebtTo = player;
