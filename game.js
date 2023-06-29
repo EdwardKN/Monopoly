@@ -829,7 +829,14 @@ class StatMenu{
     
                     this.game.players.forEach(function(e,i){
                         e.tmp = e.money;
-    
+                        e.ownedPlaces.forEach(function(g,h){
+                            if(e.ownedPlacesmortgaged[h] === false){
+                                e.tmp += pieces[g].price / 2;
+                                if((pieces[g].housePrice)){
+                                    e.tmp += (e.ownedPlaceslevel[h] * pieces[g].housePrice / 2);
+                                }
+                            }
+                        })
                         c.textAlign = "left";
                         c.fillStyle = "black";  
                         c.font = "40px Arcade"
@@ -3496,6 +3503,12 @@ class BoardPiece {
                 }else if(this.piece?.name == "Gå till finkan"){
                     playSound(sounds.freeze,1)
                 }else if(this.piece?.name == "fängelse"){
+
+                }else if(this.piece?.type == "income tax"){
+
+                }else if(this.piece?.type == "tax"){
+
+                }else if(this.piece?.name == "Start"){
 
                 }else{
                     playSound(sounds.bell,1)
