@@ -1889,34 +1889,52 @@ class Board {
                 Api.propertyChangedLevel(board.currentCard, board.currentCard.level + 1, true);
                 return;
             }
+            let levelsBefore = self.getlevelinfoofgroup(self.currentCard).grouplevels;
+            let levels = self.calculateUpgrade(levelsBefore);
+            if(levels.levelsUpgraded > 1){
+                self.currentShowingCard = new CurrentCard(0,"special",["Matchen har slut på hus och","du måste uppgradera några","gator till hotell.","Detta kommer att kosta " + levels.levelsUpgraded * self.currentCard.piece.housePrice + "kr", "Är du säker på att du vill", "göra detta?"],true)
+                self.currentShowingCard.onContinue = function(){
+                    let pieces = board.boardPieces.filter(e => e.piece.group == self.currentCard.piece.group)
+                    pieces.forEach(function(e,i){
+                        e.level = levels.after[i]
+                    });
+                    players[turn].money -= levels.levelsUpgraded * self.currentCard.piece.housePrice;
+                    players[turn].playerBorder.startMoneyAnimation(-levels.levelsUpgraded * self.currentCard.piece.housePrice)
+                }
+            }else{
+                let pieces = board.boardPieces.filter(e => e.piece.group == self.currentCard.piece.group)
+                pieces.forEach(function(e,i){
+                    e.level = levels.after[i]
+                });
+                players[turn].money -= levels.levelsUpgraded * self.currentCard.piece.housePrice;
+                players[turn].playerBorder.startMoneyAnimation(-levels.levelsUpgraded * self.currentCard.piece.housePrice)
+            }
+            
 
+        }, 40, 40);
+
+        this.calculateUpgrade = function(levelsBefore,levelsAfterInput){
+            let levelsAfter = levelsAfterInput;
+            if(levelsAfterInput == undefined){
+                levelsAfter = levelsBefore;
+            }
             let lowest = self.getlevelinfoofgroup(self.currentCard).lowest;
             if(board.currentCard.level == lowest){
                 if(board.getNumberOfHousesAndHotels().numberOfHouses == 32){
-                    let housesLeft = 5 - board.currentCard.level
-                    board.currentCard.owner.money -= board.currentCard.piece.housePrice * housesLeft;
-                    board.currentCard.owner.totalLost += board.currentCard.piece.housePrice * housesLeft;
-                    if (board.settings.allFreeparking) {
-                        board.boardPieces[20].money += board.currentCard.piece.housePrice * housesLeft;
-                    }
-                    players[turn].playerBorder.startMoneyAnimation(-board.currentCard.piece.housePrice * housesLeft)
                     board.currentCard.level = 5;
-
                     if(self.getlevelinfoofgroup(self.currentCard).lowest < 4){
-                        self.upgradeButton.onClick();
+                        return self.calculateUpgrade(levelsBefore,levelsAfter);
+                    }else{
+                        return self.getPriceForLevelChanges(levelsBefore,self.getlevelinfoofgroup(self.currentCard).grouplevels);
                     }
 
                 }else{
                     board.currentCard.level++;
-                    board.currentCard.owner.money -= board.currentCard.piece.housePrice;
-                    board.currentCard.owner.totalLost += board.currentCard.piece.housePrice;
-                    if (board.settings.allFreeparking) {
-                        board.boardPieces[20].money += board.currentCard.piece.housePrice;
-                    }
                     if(self.getlevelinfoofgroup(self.currentCard).lowest < 4 && self.getlevelinfoofgroup(self.currentCard).highest == 5){
-                        self.upgradeButton.onClick();
+                        return self.calculateUpgrade(levelsBefore,levelsAfter);
+                    }else{
+                        return self.getPriceForLevelChanges(levelsBefore,self.getlevelinfoofgroup(self.currentCard).grouplevels);
                     }
-                    players[turn].playerBorder.startMoneyAnimation(-board.currentCard.piece.housePrice)
                 }
             }else{
                 for (let i = board.boardPieces.length - 1; i > 0; i--) {
@@ -1924,32 +1942,19 @@ class Board {
                         if (board.boardPieces[i].piece.group === board.currentCard.piece.group) {
                             if(board.boardPieces[i].level === lowest){
                                 if(board.getNumberOfHousesAndHotels().numberOfHouses == 32){
-                                    let housesLeft = 5 - board.boardPieces[i].level
-                                    board.boardPieces[i].owner.money -= board.boardPieces[i].piece.housePrice * housesLeft;
-                                    board.boardPieces[i].owner.totalLost +=board.boardPieces[i].piece.housePrice * housesLeft;
-                                    if (board.settings.allFreeparking) {
-                                        board.boardPieces[20].money += board.boardPieces[i].piece.housePrice * housesLeft;
-                                    }
-                                    players[turn].playerBorder.startMoneyAnimation(-board.boardPieces[i].piece.housePrice * housesLeft)
                                     board.boardPieces[i].level = 5;
-                                    console.log("he")
-
                                     if(self.getlevelinfoofgroup(self.currentCard).lowest < 4){
-                                        self.upgradeButton.onClick();
+                                        return self.calculateUpgrade(levelsBefore,levelsAfter);
+                                    }else{
+                                        return self.getPriceForLevelChanges(levelsBefore,self.getlevelinfoofgroup(self.currentCard).grouplevels);
                                     }
 
                                 }else{
                                     board.boardPieces[i].level++;
-                                    board.boardPieces[i].owner.money -= board.boardPieces[i].piece.housePrice;
-                                    board.boardPieces[i].owner.totalLost += board.boardPieces[i].piece.housePrice;
-                                    if (board.settings.allFreeparking) {
-                                        board.boardPieces[20].money += board.boardPieces[i].piece.housePrice;
-                                    }
-                                    players[turn].playerBorder.startMoneyAnimation(-board.boardPieces[i].piece.housePrice)
-                                    console.log("hhee")
-
                                     if(self.getlevelinfoofgroup(self.currentCard).lowest < 4 && self.getlevelinfoofgroup(self.currentCard).highest == 5){
-                                        self.upgradeButton.onClick();
+                                        return self.calculateUpgrade(levelsBefore,levelsAfter);
+                                    }else{
+                                        return self.getPriceForLevelChanges(levelsBefore,self.getlevelinfoofgroup(self.currentCard).grouplevels);
                                     }
                                 }
 
@@ -1958,32 +1963,39 @@ class Board {
                     }
                 }
             }
-        }, 40, 40);
-        this.downgradeButton = new Button([false, false], 15, 570, images.buttons.sprites[5], function () {
-            if (Api.online) {
-                Api.propertyChangedLevel(board.currentCard, board.currentCard.level - 1, false);
-                return;
+        }
+        this.getPriceForLevelChanges = function(before,after){
+            let pieces = board.boardPieces.filter(e => e.piece.group == self.currentCard.piece.group)
+            pieces.forEach(function(e,i){
+                e.level = before[i]
+            });
+            let levelsUpgraded = 0;
+            before.forEach(function(e,i){
+                levelsUpgraded += (after[i] - e)
+            })
+            return {levelsUpgraded:levelsUpgraded,after:after};
+        }
+        this.calculateDowngrade = function(levelsBefore,levelsAfterInput){
+            let levelsAfter = levelsAfterInput;
+            if(levelsAfterInput == undefined){
+                levelsAfter = levelsBefore;
             }
             let highest = self.getlevelinfoofgroup(self.currentCard).highest;
 
             if(board.currentCard.level === highest){
                 if(board.currentCard.level === 5){
                     board.currentCard.level--;
-                    board.currentCard.owner.money += board.currentCard.piece.housePrice / 2;
-                    board.currentCard.owner.totalEarned += board.currentCard.piece.housePrice / 2;
-                    players[turn].playerBorder.startMoneyAnimation(board.currentCard.piece.housePrice / 2)
-                    players[turn].checkDebt(board.boardPieces[20]);
                     if(board.getNumberOfHousesAndHotels().numberOfHouses > 32){
-                        board.downgradeButton.onClick();
+                        return board.calculateDowngrade(levelsBefore,levelsAfterInput)
+                    }else{
+                        return this.getPriceForLevelChanges(levelsBefore,self.getlevelinfoofgroup(self.currentCard).grouplevels)
                     }
                 }else{
                     board.currentCard.level--;
-                    board.currentCard.owner.money += board.currentCard.piece.housePrice / 2;
-                    board.currentCard.owner.totalEarned += board.currentCard.piece.housePrice / 2;
-                    players[turn].playerBorder.startMoneyAnimation(board.currentCard.piece.housePrice / 2)
-                    players[turn].checkDebt(board.boardPieces[20]);
                     if(board.getNumberOfHousesAndHotels().numberOfHouses > 32){
-                        board.downgradeButton.onClick();
+                        return board.calculateDowngrade(levelsBefore,levelsAfterInput)
+                    }else{
+                        return this.getPriceForLevelChanges(levelsBefore,self.getlevelinfoofgroup(self.currentCard).grouplevels)
                     }
                 }
             }else{
@@ -1992,19 +2004,47 @@ class Board {
                         if (board.boardPieces[i]?.piece?.group === board.currentCard?.piece?.group) {
                             if(board.boardPieces[i].level === highest){
                                 board.boardPieces[i].level--;
-                                board.boardPieces[i].owner.money += board.boardPieces[i].piece.housePrice / 2;
-                                board.boardPieces[i].owner.totalEarned += board.boardPieces[i].piece.housePrice / 2;
-                                players[turn].playerBorder.startMoneyAnimation(board.boardPieces[i].piece.housePrice / 2)
-                                players[turn].checkDebt(board.boardPieces[20]);
                                 if(board.getNumberOfHousesAndHotels().numberOfHouses > 32){
-                                    board.downgradeButton.onClick();
+                                    return board.calculateDowngrade(levelsBefore,levelsAfterInput)
+                                }else{
+                                    return this.getPriceForLevelChanges(levelsBefore,self.getlevelinfoofgroup(self.currentCard).grouplevels)
                                 }
-                                return;
                             }
                         }
                     }
                 }
             }
+        }
+        this.downgradeButton = new Button([false, false], 15, 570, images.buttons.sprites[5], function () {
+            if (Api.online) {
+                Api.propertyChangedLevel(board.currentCard, board.currentCard.level - 1, false);
+                return;
+                board.currentCard.owner.money += board.currentCard.piece.housePrice / 2;
+                board.currentCard.owner.totalEarned += board.currentCard.piece.housePrice / 2;
+                players[turn].playerBorder.startMoneyAnimation(board.currentCard.piece.housePrice / 2)
+                players[turn].checkDebt(board.boardPieces[20]);
+            }
+            
+            let levels = self.calculateDowngrade(self.getlevelinfoofgroup(self.currentCard).grouplevels)
+            if(levels.levelsUpgraded < -1){
+                self.currentShowingCard = new CurrentCard(0,"special",["Matchen har slut på hus och","du måste nedgradera några","gator mer än en nivå.","Detta kommer att ge dig " + -levels.levelsUpgraded * self.currentCard.piece.housePrice / 2 + "kr", "Är du säker på att du vill", "göra detta?"],true)
+                self.currentShowingCard.onContinue = function(){
+                    let pieces = board.boardPieces.filter(e => e.piece.group == self.currentCard.piece.group)
+                    pieces.forEach(function(e,i){
+                        e.level = levels.after[i]
+                    });
+                    players[turn].money += levels.levelsUpgraded * self.currentCard.piece.housePrice / 2;
+                    players[turn].playerBorder.startMoneyAnimation(levels.levelsUpgraded * self.currentCard.piece.housePrice / 2)
+                }
+            }else{
+                let pieces = board.boardPieces.filter(e => e.piece.group == self.currentCard.piece.group)
+                pieces.forEach(function(e,i){
+                    e.level = levels.after[i]
+                });
+                players[turn].money += levels.levelsUpgraded * self.currentCard.piece.housePrice / 2;
+                players[turn].playerBorder.startMoneyAnimation(levels.levelsUpgraded * self.currentCard.piece.housePrice / 2)
+            }
+            
             
         }, 40, 40);
         this.buyButton = new Button([false, false], 15, 570, images.buttons.sprites[6], function () {
@@ -2043,11 +2083,11 @@ class Board {
             let ownAll = true;
             let highest = 0;
             let lowest = 5;
-            let grouplevels = [bp.level];
+            let grouplevels = [];
             for (let i = 0; i < this.boardPieces.length; i++) {
-                if (this.boardPieces[i] !== bp) {
-                    if (this.boardPieces[i].piece.group === bp.piece.group) {
-                        grouplevels.push(this.boardPieces[i].level)
+                if (this.boardPieces[i].piece.group === bp.piece.group) {
+                    grouplevels.push(this.boardPieces[i].level)
+                    if (this.boardPieces[i] !== bp) {
                         if (highest < this.boardPieces[i].level) { highest = this.boardPieces[i].level }
                         if (lowest > this.boardPieces[i].level) { lowest = this.boardPieces[i].level }
                         if (bp.owner !== this.boardPieces[i].owner) {
@@ -2290,6 +2330,9 @@ class Board {
                                     }
                                 }
                             }
+                            if(this.calculateUpgrade(self.getlevelinfoofgroup(self.currentCard).grouplevels).levelsUpgraded * self.currentCard.piece.housePrice > players[turn].money){
+                                this.upgradeButton.disabled = true;
+                            }   
                         } else {
                             this.upgradeButton.disabled = true;
                         }
@@ -3941,6 +3984,14 @@ class CurrentCard {
             drawRotatedImageFromSpriteSheet(470, 300, 512 * 2, 256 * 2, this.img, 0, false, 0, 0, 512, 256, 0, c)
             this.cardCloseButton.draw();
             this.okayButton.draw();
+            if(this.type == "special" && this.info !== undefined){
+                c.fillStyle = "black"
+                c.textAlign = "left"
+                c.font = "25px Arcade"
+                this.info.forEach(function(e,i){
+                    c.fillText(e,250,i*25 + 180)
+                })
+            }
             if(this.type === "bankcheck"){
                 c.fillStyle = "black"
                 c.textAlign = "left"
@@ -3962,6 +4013,10 @@ class CurrentCard {
             self.card = undefined;
             board.currentShowingCard = undefined;
             self.onContinue();
+        }
+        this.close = function(){
+            self.card = undefined;
+            board.currentShowingCard = undefined;
         }
 
 
