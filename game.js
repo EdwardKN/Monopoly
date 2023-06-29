@@ -3470,6 +3470,24 @@ class BoardPiece {
         }
         this.playerStep = function (onlyStep, player, diceRoll) {
             this.currentPlayer.push(player);
+            if(!onlyStep){
+                if(this.n === -1){
+                    playSound(sounds.prison,1)
+                }else if(this.piece.name == "Vattenledningsverket"){
+                    playSound(sounds.water, 1)
+                }else if(this.piece?.name == "Elverket"){
+                    playSound(sounds.electric, 1)
+                }else if(this.piece?.type == "station"){
+                    playSound(sounds.train, 1)
+                }else if(this.piece?.type == "chance" ||this.piece?.type == "community chest"){
+                    playSound(sounds.card, 1)
+                }else if(this.piece?.name == "Fri parkering"){
+                    playSound(sounds.car,1)
+                }else if(this.piece?.name == "Gå till finkan"){
+                    playSound(sounds.freeze,1)
+                }
+            }
+            
             if (this.currentPlayer.length <= 2) {
                 this.currentOffsetvalue = 1;
                 let self = this;
@@ -3478,7 +3496,7 @@ class BoardPiece {
                 }, speeds.stepSpeed));
             }
 
-            if (!onlyStep && !this.mortgaged && player.laps >= board.settings.roundsBeforePurchase) {
+            if (!onlyStep && !this.mortgaged && player.laps >= board.settings.roundsBeforePurchase && this.n !== -1) {
                 if (this.piece.price < 0) {
                     board.currentShowingCard = new CurrentCard(4, "special")
                     let self = this;
@@ -4234,7 +4252,7 @@ class Player {
                             board.boardPieces[0].playerStep(false, self);
                         } else {
                             if (self.inJail === true) {
-                                board.prisonExtra.playerStep(true, self);
+                                board.prisonExtra.playerStep(false, self);
                             } else {
                                 board.boardPieces[to].playerStep(false, self, dicesum);
                             }

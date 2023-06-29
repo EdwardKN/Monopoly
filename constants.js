@@ -191,6 +191,34 @@ var images = {
 };
 
 var sounds = {
+    card: {
+        type: "single",
+        src: "./sounds/card.mp3"
+    },
+    prison: {
+        type: "single",
+        src: "./sounds/prison.mp3"
+    },
+    car: {
+        type: "single",
+        src: "./sounds/car.mp3"
+    },
+    freeze: {
+        type: "single",
+        src: "./sounds/freeze.mp3"
+    },
+    train: {
+        type: "single",
+        src: "./sounds/train.mp3"
+    },
+    electric: {
+        type: "single",
+        src: "./sounds/electric.mp3"
+    },
+    water: {
+        type: "single",
+        src: "./sounds/water.mp3"
+    },
     dice: {
         type: "single",
         src: "./sounds/dice.mp3"
