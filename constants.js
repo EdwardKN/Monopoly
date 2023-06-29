@@ -191,6 +191,10 @@ var images = {
 };
 
 var sounds = {
+    bell: {
+        type: "single",
+        src: "./sounds/bell.mp3"
+    },
     card: {
         type: "single",
         src: "./sounds/card.mp3"
