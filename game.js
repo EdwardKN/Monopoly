@@ -1853,7 +1853,6 @@ class Board {
             }
             let levelsBefore = self.getlevelinfoofgroup(self.currentCard).grouplevels;
             let levels = self.calculateUpgrade(levelsBefore);
-            console.log(levels)
             if(levels.levelsUpgraded > 1){
                 self.currentShowingCard = new CurrentCard(0,"special",["Matchen har slut på hus och","du måste uppgradera några","gator till hotell.","Detta kommer att kosta " + levels.levelsUpgraded * self.currentCard.piece.housePrice + "kr", "Är du säker på att du vill", "göra detta?"],true)
                 self.currentShowingCard.onContinue = function(){
@@ -4105,7 +4104,6 @@ class Player {
             }
         }
         this.checkDebt = function (player) {
-            console.log()
             if (this.money < 0 && this.lastMoneyInDebt === 0) {
                 player.money += this.money;
                 this.inDebtTo = player;
