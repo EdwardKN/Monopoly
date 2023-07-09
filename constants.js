@@ -10,7 +10,7 @@ const fastSpeed = false;
 
 const disableAlert = false;
 
-const latestSaveVersion = 2;
+const latestSaveVersion = 3;
 
 var namn
 

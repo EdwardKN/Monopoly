@@ -469,29 +469,30 @@ class LocalLobby {
         this.playerInputs = [];
         this.amountBots = 0;
         this.settingsButtons = [];
-        this.settingsButtons.push(new Button([true, false], 80, 205, images.buttons.sprites[10], function () { }, 500, 40, false, false, false, false, false, false, "Ge alla skattepengar till fri parkering", 42, "black"))
-        this.settingsButtons.push(new Button([true, false], 80, 205 + this.settingsButtons.length * 42, images.buttons.sprites[10], function () { }, 500, 40, false, false, false, false, false, false, "Ge alla bankpengar till fri parkering", 42, "black"))
-        this.settingsButtons.push(new Button([true, false], 80, 205 + this.settingsButtons.length * 42, images.buttons.sprites[10], function () { }, 500, 40, false, false, false, false, false, false, "Dubbel hyra på komplett färggrupp", 42, "black"))
-        this.settingsButtons.push(new Button([true, false], 80, 205 + this.settingsButtons.length * 42, images.buttons.sprites[10], function () { }, 500, 40, false, false, false, false, false, false, "Auktioner", 42, "black"))
-        this.settingsButtons.push(new Button([true, false], 80, 205 + this.settingsButtons.length * 42, images.buttons.sprites[10], function () { }, 500, 40, false, false, false, false, false, false, "Få/förlora pengar i fängelset", 42, "black"))
-        this.settingsButtons.push(new Button([true, false], 80, 205 + this.settingsButtons.length * 42, images.buttons.sprites[10], function () { }, 500, 40, false, false, false, false, false, false, "Möjlighet att inteckna", 42, "black"))
-        this.settingsButtons.push(new Button([true, false], 80, 205 + this.settingsButtons.length * 42, images.buttons.sprites[10], function () { }, 500, 40, false, false, false, false, false, false, "Möjlighet att sälja", 42, "black"))
-        this.settingsButtons.push(new Button([true, false], 80, 205 + this.settingsButtons.length * 42, images.buttons.sprites[10], function () { }, 500, 40, false, false, false, false, false, false, "Jämn utbyggnad", 42, "black"))
-        this.settingsButtons.push(new Slider(436 * drawScale, 75 + this.settingsButtons.length * 38 * drawScale, 502 * drawScale, 38 * drawScale, 0, 3000, 100, true, 50, "kr", "Startkapital: "))
-        this.settingsButtons.push(new Slider(436 * drawScale, 75 + this.settingsButtons.length * 38 * drawScale, 502 * drawScale, 38 * drawScale, 0, 5, 1, true, 50, "", "Antal varv innan köp: "))
-        this.settingsButtons.push(new Slider(436 * drawScale, 75 + this.settingsButtons.length * 38 * drawScale, 502 * drawScale, 38 * drawScale, 0, 100, 10, true, 35, "%", "Lägsta bud på auktioner(% av gatupris): "))
-        this.settingsButtons.push(new Slider(436 * drawScale, 75 + this.settingsButtons.length * 38 * drawScale, 502 * drawScale, 38 * drawScale, 1, 88, 1, true, 50, "", "Max antal hus: "))
-        this.settingsButtons.push(new Slider(436 * drawScale, 75 + this.settingsButtons.length * 38 * drawScale, 502 * drawScale, 38 * drawScale, 1, 22, 1, true, 35, "", "Max antal Hotell: "))
+        this.settingsButtons.push(new Button([true, false], 80, 210, images.buttons.sprites[10], function () { }, 500, 35, false, false, false, false, false, false, "Ge alla skattepengar till fri parkering", 42, "black"))
+        this.settingsButtons.push(new Button([true, false], 80, 210 + this.settingsButtons.length * 37, images.buttons.sprites[10], function () { }, 500, 35, false, false, false, false, false, false, "Ge alla bankpengar till fri parkering", 42, "black"))
+        this.settingsButtons.push(new Button([true, false], 80, 210 + this.settingsButtons.length * 37, images.buttons.sprites[10], function () { }, 500, 35, false, false, false, false, false, false, "Dubbel hyra på komplett färggrupp", 42, "black"))
+        this.settingsButtons.push(new Button([true, false], 80, 210 + this.settingsButtons.length * 37, images.buttons.sprites[10], function () { }, 500, 35, false, false, false, false, false, false, "Auktioner", 42, "black"))
+        this.settingsButtons.push(new Button([true, false], 80, 210 + this.settingsButtons.length * 37, images.buttons.sprites[10], function () { }, 500, 35, false, false, false, false, false, false, "Få/förlora pengar i fängelset", 42, "black"))
+        this.settingsButtons.push(new Button([true, false], 80, 210 + this.settingsButtons.length * 37, images.buttons.sprites[10], function () { }, 500, 35, false, false, false, false, false, false, "Möjlighet att inteckna", 42, "black"))
+        this.settingsButtons.push(new Button([true, false], 80, 210 + this.settingsButtons.length * 37, images.buttons.sprites[10], function () { }, 500, 35, false, false, false, false, false, false, "Möjlighet att sälja", 42, "black"))
+        this.settingsButtons.push(new Button([true, false], 80, 210 + this.settingsButtons.length * 37, images.buttons.sprites[10], function () { }, 500, 35, false, false, false, false, false, false, "Jämn utbyggnad", 42, "black"))
+        this.settingsButtons.push(new Button([true, false], 80, 210 + this.settingsButtons.length * 37, images.buttons.sprites[10], function () { }, 500, 35, false, false, false, false, false, false, "Endast köpa hus på den man står på", 42, "black"))
+        this.settingsButtons.push(new Slider(436 * drawScale, this.settingsButtons.length * 38 * drawScale, 502 * drawScale, 38 * drawScale, 0, 3000, 100, true, 50, "kr", "Startkapital: "))
+        this.settingsButtons.push(new Slider(436 * drawScale, this.settingsButtons.length * 38 * drawScale, 502 * drawScale, 38 * drawScale, 0, 5, 1, true, 50, "", "Antal varv innan köp: "))
+        this.settingsButtons.push(new Slider(436 * drawScale, this.settingsButtons.length * 38 * drawScale, 502 * drawScale, 38 * drawScale, 0, 100, 10, true, 35, "%", "Lägsta bud på auktioner(% av gatupris): "))
+        this.settingsButtons.push(new Slider(436 * drawScale, this.settingsButtons.length * 38 * drawScale, 502 * drawScale, 38 * drawScale, 1, 88, 1, true, 50, "", "Max antal hus: "))
+        this.settingsButtons.push(new Slider(436 * drawScale, this.settingsButtons.length * 38 * drawScale, 502 * drawScale, 38 * drawScale, 1, 22, 1, true, 35, "", "Max antal Hotell: "))
         this.settingsButtons[2].selected = true
         this.settingsButtons[3].selected = true
         this.settingsButtons[4].selected = true
         this.settingsButtons[5].selected = true
         this.settingsButtons[6].selected = true
         this.settingsButtons[7].selected = true
-        this.settingsButtons[8].percentage = 0.45
-        this.settingsButtons[10].percentage = 0.5        
-        this.settingsButtons[11].percentage = 0.36
-        this.settingsButtons[12].percentage = 0.5
+        this.settingsButtons[9].percentage = 0.45
+        this.settingsButtons[11].percentage = 0.5        
+        this.settingsButtons[12].percentage = 0.36
+        this.settingsButtons[13].percentage = 0.5
         this.readyPlayers = [];
         this.settingsButtons[1].disabled = true;
 
@@ -537,11 +538,12 @@ class LocalLobby {
                 mortgage: self.settingsButtons[5].selected,
                 sellable: self.settingsButtons[6].selected,
                 even: self.settingsButtons[7].selected,
-                startmoney: self.settingsButtons[8].value,
-                roundsBeforePurchase: self.settingsButtons[9].value,
-                auctionstartprice: self.settingsButtons[10].percentage,
-                maxhouses: self.settingsButtons[11].value,
-                maxhotels: self.settingsButtons[12].value,
+                upgradething: self.settingsButtons[8].selected,
+                startmoney: self.settingsButtons[9].value,
+                roundsBeforePurchase: self.settingsButtons[10].value,
+                auctionstartprice: self.settingsButtons[11].percentage,
+                maxhouses: self.settingsButtons[12].value,
+                maxhotels: self.settingsButtons[13].value,
             }
             startGame(playerlist, settings)
             self.current = false;
@@ -1991,8 +1993,8 @@ class Board {
                     pieces.forEach(function(e,i){
                         e.level = levels.after[i]
                     });
-                    players[turn].money += levels.levelsUpgraded * self.currentCard.piece.housePrice / 2;
-                    players[turn].playerBorder.startMoneyAnimation(levels.levelsUpgraded * self.currentCard.piece.housePrice / 2)
+                    players[turn].money -= levels.levelsUpgraded * self.currentCard.piece.housePrice / 2;
+                    players[turn].playerBorder.startMoneyAnimation(-levels.levelsUpgraded * self.currentCard.piece.housePrice / 2)
                     players[turn].checkDebt(board.boardPieces[20]);
                 }
             }else{
@@ -2000,8 +2002,8 @@ class Board {
                 pieces.forEach(function(e,i){
                     e.level = levels.after[i]
                 });
-                players[turn].money += levels.levelsUpgraded * self.currentCard.piece.housePrice / 2;
-                players[turn].playerBorder.startMoneyAnimation(levels.levelsUpgraded * self.currentCard.piece.housePrice / 2)
+                players[turn].money -= levels.levelsUpgraded * self.currentCard.piece.housePrice / 2;
+                players[turn].playerBorder.startMoneyAnimation(-levels.levelsUpgraded * self.currentCard.piece.housePrice / 2)
                 players[turn].checkDebt(board.boardPieces[20]);
             }
             
@@ -2293,6 +2295,11 @@ class Board {
                             if(this.calculateUpgrade(self.getlevelinfoofgroup(self.currentCard).grouplevels).levelsUpgraded * self.currentCard.piece.housePrice > players[turn].money){
                                 this.upgradeButton.disabled = true;
                             }   
+                            if(this.settings.upgradething){
+                                if(self.currentCard.n !== players[turn].steps){
+                                    this.upgradeButton.disabled = true;
+                                }
+                            }
                         } else {
                             this.upgradeButton.disabled = true;
                         }
