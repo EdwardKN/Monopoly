@@ -1853,6 +1853,7 @@ class Board {
             }
             let levelsBefore = self.getlevelinfoofgroup(self.currentCard).grouplevels;
             let levels = self.calculateUpgrade(levelsBefore);
+            console.log(levels)
             if(levels.levelsUpgraded > 1){
                 self.currentShowingCard = new CurrentCard(0,"special",["Matchen har slut på hus och","du måste uppgradera några","gator till hotell.","Detta kommer att kosta " + levels.levelsUpgraded * self.currentCard.piece.housePrice + "kr", "Är du säker på att du vill", "göra detta?"],true)
                 self.currentShowingCard.onContinue = function(){
@@ -1881,7 +1882,7 @@ class Board {
                 levelsAfter = levelsBefore;
             }
             let lowest = self.getlevelinfoofgroup(self.currentCard).lowest;
-            if(board.currentCard.level == lowest){
+            if(board.currentCard.level == lowest || board.getNumberOfHousesAndHotels().numberOfHouses == this.settings.maxhouses){
                 if(board.getNumberOfHousesAndHotels().numberOfHouses == this.settings.maxhouses){
                     board.currentCard.level = 5;
                     if(self.getlevelinfoofgroup(self.currentCard).lowest < 4){
