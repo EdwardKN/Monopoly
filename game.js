@@ -356,8 +356,7 @@ function saveGame() {
 }
 
 
-function loadGame(theGameToLoad) {
-    let gameToLoad = JSON.parse(localStorage.getItem("games"))[theGameToLoad]
+function loadGame(gameToLoad) {
 
     board = new Board();
     board.id = gameToLoad.id;
@@ -791,16 +790,23 @@ class LocalLobby {
 class StatMenu{
     constructor(){
         this.game = undefined;
+        this.startGame = false;
         let self = this;
         
 
         this.type = 1;
 
         this.backButton = new Button([false, false], -345, 220, images.buttons.sprites[12], function () {
-            self.current = false;
-            menus[2].current = true;
-            menus[2].init();
-            menus[0].volume.percentage = musicVolume
+            if(self.startGame){
+                menus[4].current = false;
+                console.log(self.game)
+                loadGame(self.game)
+            }else{
+                self.current = false;
+                menus[2].current = true;
+                menus[2].init();
+                menus[0].volume.percentage = musicVolume
+            }
         }, 325, 60, false, false, false, false, false, false)
         this.changeTypeButton = new Button([true, true], -345 + 340, 212, images.statMenu.sprites[6], function () {}, 81, 81, false, false, false, false, false, { x: 385, y: 184, w: 400*2, h: 400*2, onlySelected: true })
 
@@ -965,7 +971,7 @@ class LoadingMenu {
                 if (e.selected === true) {
                     self.games = JSON.parse(localStorage.getItem("games")).reverse()
                     menus[2].current = false;
-                    loadGame(self.games.length - i - 1)
+                    loadGame(JSON.parse(localStorage.getItem("games"))[self.games.length - i - 1])
                 }
             })
         }, 97 * 2, 60)
@@ -1011,6 +1017,7 @@ class LoadingMenu {
                     self.current = false;
                     menus[4].current = true;
                     menus[4].game = self.games.reverse()[self.games.length - i - 1];
+                    menus[4].startGame = false;
                     menus[0].volume.percentage = musicVolume
                 }
             })
@@ -1737,6 +1744,7 @@ class Board {
                 setTimeout(() => {
                     menus[4].current = true;
                     menus[4].game = tmp2;
+                    menus[4].startGame = true;
                     menus[0].current = false;
                 },100)
             }, 100);
@@ -2114,6 +2122,7 @@ class Board {
                     setTimeout(() => {
                         menus[4].current = true;
                         menus[4].game = tmp2;
+                        menus[4].startGame = false;
                     },100)
 
                 }, 100);
