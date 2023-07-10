@@ -883,7 +883,7 @@ class StatMenu{
                 if(this.type == 4){
                     this.game.boardPiecesFiltered = this.game.boardPieces.filter(e => {
                         return (e.name !== "Start" && e.name !== "Allmänning" && e.name !== "Chans" && e.name !== "fängelse" && e.name !== "Fri parkering" && e.name !== "Gå till finkan")
-                    })
+                    }).filter(e => e.totalEarned !== 0)
                     this.game.boardPiecesFiltered = this.game.boardPiecesFiltered.sort((a,b) => {
                         return b.totalEarned - a.totalEarned;
                     })
@@ -895,14 +895,13 @@ class StatMenu{
                         c.fillText(i+1, 20,i*54 + 134)
                         c.fillText(this.game.boardPiecesFiltered[i].name, 80,i*54 + 134)
                         c.fillText(this.game.boardPiecesFiltered[i].totalEarned + "kr", 560,i*54 + 134)
-                        c.fillText(timeToText(this.game.boardPiecesFiltered[i].owner), 750,i*54 + 134)
                     }    
                     
                 }
                 if(this.type == 5){
                     this.game.boardPiecesFiltered = this.game.boardPieces.filter(e => {
                         return (e.name !== "Start" && e.name !== "Allmänning" && e.name !== "Chans" && e.name !== "fängelse" && e.name !== "Fri parkering" && e.name !== "Gå till finkan")
-                    })
+                    }).filter(e => e.totalEarned !== 0)
                     this.game.boardPiecesFiltered = this.game.boardPiecesFiltered.sort((a,b) => {
                         return a.totalEarned - b.totalEarned;
                     })
@@ -914,7 +913,6 @@ class StatMenu{
                         c.fillText(i+1, 20,i*54 + 134)
                         c.fillText(this.game.boardPiecesFiltered[i].name, 80,i*54 + 134)
                         c.fillText(this.game.boardPiecesFiltered[i].totalEarned + "kr", 560,i*54 + 134)
-                        c.fillText(timeToText(this.game.boardPiecesFiltered[i].owner), 750,i*54 + 134)
                     }    
                     
                 }
