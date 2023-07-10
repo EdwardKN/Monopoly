@@ -3515,8 +3515,10 @@ class BoardPiece {
 
                 }else if(this.piece?.name == "Start"){
 
-                }else{
+                }else if(this.owner !== undefined){
                     playSound(sounds.bell,1)
+                }else{
+                    
                 }
             }
             
