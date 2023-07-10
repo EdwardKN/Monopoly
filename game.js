@@ -2057,6 +2057,9 @@ class Board {
                         }
                     }
                 }
+                if (this.boardPieces[i].mortgaged == true) {
+                    ownAll = false;
+                }
             }
             if (highest < bp.level || !this.settings.even) { highest = bp.level }
             if (lowest > bp.level || !board.settings.even) { lowest = bp.level }
@@ -2257,7 +2260,7 @@ class Board {
                             this.downgradeButton.visible = true;
                         }
 
-                        let ownAll = true;
+                        let ownAll = this.getlevelinfoofgroup(this.currentCard).ownAll;
                         let highest = this.getlevelinfoofgroup(this.currentCard).highest;
                         let lowest = this.getlevelinfoofgroup(this.currentCard).lowest;
                         
@@ -2303,7 +2306,7 @@ class Board {
                         } else {
                             this.upgradeButton.disabled = true;
                         }
-                        if (highest > 0) {
+                        if (highest > 0 && ownAll) {
                             this.downgradeButton.disabled = false;
                         } else {
                             this.downgradeButton.disabled = true;
@@ -3495,13 +3498,13 @@ class BoardPiece {
             if(!onlyStep){
                 if(this.n === -1){
                     playSound(sounds.prison,1)
-                }else if(this.piece.name == "Vattenledningsverket"){
+                }else if(this.piece.name == "Vattenledningsverket" && this?.owner !== player){
                     playSound(sounds.water, 1)
-                }else if(this.piece?.name == "Elverket"){
+                }else if(this.piece?.name == "Elverket" && this?.owner !== player){
                     playSound(sounds.electric, 1)
-                }else if(this.piece?.type == "station"){
+                }else if(this.piece?.type == "station" && this?.owner !== player){
                     playSound(sounds.train, 1)
-                }else if(this.piece?.type == "chance" ||this.piece?.type == "community chest"){
+                }else if(this.piece?.type == "chance" ||this?.type == "community chest"){
                     playSound(sounds.card, 1)
                 }else if(this.piece?.name == "Fri parkering"){
                     playSound(sounds.car,1)
@@ -3515,7 +3518,7 @@ class BoardPiece {
 
                 }else if(this.piece?.name == "Start"){
 
-                }else if(this.owner !== undefined){
+                }else if(this.owner !== undefined && this?.owner !== player){
                     playSound(sounds.bell,1)
                 }else{
                     
