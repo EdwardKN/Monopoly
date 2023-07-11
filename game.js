@@ -894,13 +894,13 @@ class StatMenu{
                         return b.totalEarned - a.totalEarned;
                     })
     
-                    for(let i = 0; i < 8; i++){
+                    for(let i = 0; i < (this.game.boardPiecesFiltered.length > 8 ? 8 : this.game.boardPiecesFiltered.length); i++){
                         c.textAlign = "left";
                         c.fillStyle = "black";  
                         c.font = "40px Arcade"
                         c.fillText(i+1, 20,i*54 + 134)
                         c.fillText(this.game.boardPiecesFiltered[i].name, 80,i*54 + 134)
-                        c.fillText(this.game.boardPiecesFiltered[i].totalEarned + "kr", 560,i*54 + 134)
+                        c.fillText(this.game.boardPiecesFiltered[i].totalEarned + "kr", 660,i*54 + 134)
                     }    
                     
                 }
@@ -912,13 +912,13 @@ class StatMenu{
                         return a.totalEarned - b.totalEarned;
                     })
     
-                    for(let i = 0; i < 8; i++){
+                    for(let i = 0; i < (this.game.boardPiecesFiltered.length > 8 ? 8 : this.game.boardPiecesFiltered.length); i++){
                         c.textAlign = "left";
                         c.fillStyle = "black";  
                         c.font = "40px Arcade"
                         c.fillText(i+1, 20,i*54 + 134)
                         c.fillText(this.game.boardPiecesFiltered[i].name, 80,i*54 + 134)
-                        c.fillText(this.game.boardPiecesFiltered[i].totalEarned + "kr", 560,i*54 + 134)
+                        c.fillText(this.game.boardPiecesFiltered[i].totalEarned + "kr", 660,i*54 + 134)
                     }    
                     
                 }
@@ -3506,15 +3506,15 @@ class BoardPiece {
                 if(this.n === -1){
                     playSound(sounds.prison,1)
                 }else if(this.piece.name == "Vattenledningsverket" && this?.owner !== player){
-                    playSound(sounds.water, 1)
+                    playSound(sounds.water, 0.5)
                 }else if(this.piece?.name == "Elverket" && this?.owner !== player){
-                    playSound(sounds.electric, 1)
+                    playSound(sounds.electric, 0.5)
                 }else if(this.piece?.type == "station" && this?.owner !== player){
-                    playSound(sounds.train, 1)
+                    playSound(sounds.train, 0.5)
                 }else if(this.piece?.type == "chance" ||this?.type == "community chest"){
                     playSound(sounds.card, 1)
                 }else if(this.piece?.name == "Fri parkering"){
-                    playSound(sounds.car,1)
+                    playSound(sounds.car,0.5)
                 }else if(this.piece?.name == "Gå till finkan"){
                     //playSound(sounds.freeze,1)
                 }else if(this.piece?.name == "fängelse"){
