@@ -3516,7 +3516,7 @@ class BoardPiece {
                 }else if(this.piece?.name == "Fri parkering"){
                     playSound(sounds.car,1)
                 }else if(this.piece?.name == "Gå till finkan"){
-                    playSound(sounds.freeze,1)
+                    //playSound(sounds.freeze,1)
                 }else if(this.piece?.name == "fängelse"){
 
                 }else if(this.piece?.type == "income tax"){
