@@ -416,7 +416,6 @@ function loadGame(gameToLoad) {
         board.currentShowingCard = new CurrentCard(0,"bankcheck",gameToLoad.currentShowingCard.info)
 
         board.currentShowingCard.onContinue = function(){
-
             if(players[players.map(e => e.name).indexOf(gameToLoad.currentShowingCard.info.to)]){
                 players[players.map(e => e.name).indexOf(gameToLoad.currentShowingCard.info.to)].money += gameToLoad.currentShowingCard.info.amount;
                 players[players.map(e => e.name).indexOf(gameToLoad.currentShowingCard.info.to)].totalEarned += gameToLoad.currentShowingCard.info.amount;
@@ -424,7 +423,7 @@ function loadGame(gameToLoad) {
             }
             if(players[players.map(e => e.name).indexOf(gameToLoad.currentShowingCard.info.from)]){
                 players[players.map(e => e.name).indexOf(gameToLoad.currentShowingCard.info.from)].money -= gameToLoad.currentShowingCard.info.amount;
-                players[players.map(e => e.name).indexOf(gameToLoad.currentShowingCard.info.to)].totalLost += gameToLoad.currentShowingCard.info.amount;
+                players[players.map(e => e.name).indexOf(gameToLoad.currentShowingCard.info.from)].totalLost += gameToLoad.currentShowingCard.info.amount;
                 players[players.map(e => e.name).indexOf(gameToLoad.currentShowingCard.info.from)].playerBorder.startMoneyAnimation(-gameToLoad.currentShowingCard.info.amount)
             }
             if(gameToLoad.currentShowingCard.info.to == "Banken" || gameToLoad.currentShowingCard.info.to == "Renovering AB"){
@@ -799,7 +798,6 @@ class StatMenu{
         this.backButton = new Button([false, false], -345, 220, images.buttons.sprites[12], function () {
             if(self.startGame){
                 menus[4].current = false;
-                console.log(self.game)
                 loadGame(self.game)
             }else{
                 self.current = false;
@@ -1791,16 +1789,15 @@ class Board {
         }, 82, 35);
         this.rollDiceButton = new Button([false, false], 1, 480, images.buttons.sprites[0], function () { players[turn].rollDice() }, 246, 60, false, false, false, true)
         this.nextPlayerButton = new Button([false, false], 1, 480, images.buttons.sprites[1], function () {
-            if (players[turn].money >= 0) {
-                players[turn].rolls = false;
-                players[turn].numberOfRolls = 0;
-                if (Api.online) {
-                    Api.changeTurn();
-                } else {
-                    turn = (turn + 1) % players.length;
-                    board.textsize = measureText({ font: "Arcade", text: "Just nu: " + players[turn].name });
-                }
+            players[turn].rolls = false;
+            players[turn].numberOfRolls = 0;
+            if (Api.online) {
+                Api.changeTurn();
+            } else {
+                turn = (turn + 1) % players.length;
+                board.textsize = measureText({ font: "Arcade", text: "Just nu: " + players[turn].name });
             }
+            
             board.animateDices = false;
             board.showDices = false;
         }, 246, 60)
@@ -2062,10 +2059,11 @@ class Board {
                             ownAll = false;
                         }
                     }
+                    if (this.boardPieces[i].mortgaged == true) {
+                        ownAll = false;
+                    }
                 }
-                if (this.boardPieces[i].mortgaged == true) {
-                    ownAll = false;
-                }
+                
             }
             if (highest < bp.level || !this.settings.even) { highest = bp.level }
             if (lowest > bp.level || !board.settings.even) { lowest = bp.level }
@@ -2271,7 +2269,6 @@ class Board {
                         let highest = this.getlevelinfoofgroup(this.currentCard).highest;
                         let lowest = this.getlevelinfoofgroup(this.currentCard).lowest;
                         
-
                         if (lowest < 5 && this.currentCard.piece.housePrice !== undefined && ownAll === true && players[turn].money >= this.currentCard.piece.housePrice) {
                             if(this.currentCard.level == lowest){
                                 if(this.currentCard.level == 4 && this.numberOfHotels < this.settings.maxhotels){
@@ -2406,10 +2403,20 @@ class Board {
                 if (players[turn].rolls === false) {
                     if (players[turn].bot === undefined && this.auction === undefined && players[turn].inJail === false && !this.getToMainMenuButton.selected && this.currentShowingCard === undefined && this.currentCard === undefined) {
                         this.rollDiceButton.visible = true;
+                        if (players[turn].money < 0) {
+                            this.rollDiceButton.disabled = true;
+                        }else{
+                            this.rollDiceButton.disabled = false;
+                        }
                     }
                 } else {
                     if (players[turn].bot === undefined && this.auction === undefined && !this.getToMainMenuButton.selected && this.currentShowingCard === undefined && this.currentCard === undefined) {
                         this.nextPlayerButton.visible = true;
+                        if (players[turn].money < 0) {
+                            this.nextPlayerButton.disabled = true;
+                        }else{
+                            this.nextPlayerButton.disabled = false;
+                        }
                     }
                 }
 
@@ -3505,11 +3512,11 @@ class BoardPiece {
             if(!onlyStep){
                 if(this.n === -1){
                     playSound(sounds.prison,1)
-                }else if(this.piece.name == "Vattenledningsverket" && this?.owner !== player){
+                }else if(this.piece.name == "Vattenledningsverket" && this?.owner !== player && this.mortgaged == false){
                     playSound(sounds.water, 0.5)
-                }else if(this.piece?.name == "Elverket" && this?.owner !== player){
+                }else if(this.piece?.name == "Elverket" && this?.owner !== player && this.mortgaged == false){
                     playSound(sounds.electric, 0.5)
-                }else if(this.piece?.type == "station" && this?.owner !== player){
+                }else if(this.piece?.type == "station" && this?.owner !== player && this.mortgaged == false){
                     playSound(sounds.train, 0.5)
                 }else if(this.piece?.type == "chance" ||this?.type == "community chest"){
                     playSound(sounds.card, 1)
@@ -3525,8 +3532,8 @@ class BoardPiece {
 
                 }else if(this.piece?.name == "Start"){
 
-                }else if(this.owner !== undefined && this?.owner !== player){
-                    playSound(sounds.bell,1)
+                }else if(this.owner !== undefined && this?.owner !== player && this.mortgaged == false){
+                    playSound(sounds.bell,0.4)
                 }else{
                     
                 }
@@ -3655,17 +3662,17 @@ class BoardPiece {
                         board.currentShowingCard = new CurrentCard(0,"bankcheck",{to:"Banken",amount:player.money > 2000 ? 200 : Math.round(player.money * 0.1),reason:"Skatt",from:player.name})
                         board.currentShowingCard.onContinue = function(){
                             if (player.money > 2000) {
+                                board.boardPieces[4].totalEarned += 200;
                                 player.money -= 200;
                                 player.totalLost += 200;
-                                self.totalEarned += 200;
                                 board.boardPieces[20].money += 200;
                                 player.playerBorder.startMoneyAnimation(-200)
                             } else {
+                                board.boardPieces[4].totalEarned += (Math.round(player.money * 0.1));
                                 player.playerBorder.startMoneyAnimation(-Math.round(player.money * 0.1))
                                 player.money = Math.round(player.money * 0.9);
                                 board.boardPieces[20].money += (Math.round(player.money * 0.1));
                                 player.totalLost += (Math.round(player.money * 0.1));
-                                self.totalEarned += (Math.round(player.money * 0.1));
                             }
                         }
                     }
@@ -4014,7 +4021,7 @@ class CurrentCard {
                 c.textAlign = "left"
                 c.font = "25px Handwritten"
                 c.fillText(new Date().getDate() + " " + monthToText(new Date().getMonth()),595,203)
-                c.font = "50px Handwritten"
+                c.font = "45px Handwritten"
                 c.fillText(info.to,400,245)
                 c.font = "25px Handwritten"
                 c.fillText(info.amount,670,249)
@@ -4096,7 +4103,20 @@ class Player {
         this.checkMoney = function () {
             let mortgaged = 0;
             this.ownedPlaces.forEach(e => { if (e.mortgaged === true) { mortgaged++ } })
-            if (this.money < 0 && this.ownedPlaces.length == 0 + mortgaged || this.money < 0 && !board.settings.sellable) {
+
+            let tmp = this.money;
+
+            this.ownedPlaces.forEach(function(g,h){
+                if(g.mortgaged === false){
+                    tmp += g.piece.price / 2;
+                    if((g.piece.housePrice)){
+                        tmp += (g.level * g.piece.housePrice / 2);
+                    }
+                }
+            })
+            console.log(tmp,this.name)
+
+            if (this.money < 0 && this.ownedPlaces.length == 0 + mortgaged || this.money < 0 && !board.settings.sellable || tmp < 0) {
                 if (Api.online) {
                     Api.changeTurn();
                 } else {
