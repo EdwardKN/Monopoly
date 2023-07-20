@@ -191,9 +191,33 @@ var images = {
 };
 
 var sounds = {
-    bell: {
+    wind: {
         type: "single",
-        src: "./sounds/bell.mp3"
+        src: "./sounds/wind.mp3"
+    },
+    bam: {
+        type: "single",
+        src: "./sounds/bam.mp3"
+    },
+    bam2: {
+        type: "single",
+        src: "./sounds/bam2.mp3"
+    },
+    siren: {
+        type: "single",
+        src: "./sounds/siren.mp3"
+    },
+    whoosh: {
+        type: "single",
+        src: "./sounds/whoosh.mp3"
+    },
+    loose: {
+        type: "single",
+        src: "./sounds/loosecash.mp3"
+    },
+    get: {
+        type: "single",
+        src: "./sounds/getcash.mp3"
     },
     card: {
         type: "single",
@@ -202,26 +226,6 @@ var sounds = {
     prison: {
         type: "single",
         src: "./sounds/prison.mp3"
-    },
-    car: {
-        type: "single",
-        src: "./sounds/car.mp3"
-    },
-    freeze: {
-        type: "single",
-        src: "./sounds/freeze.mp3"
-    },
-    train: {
-        type: "single",
-        src: "./sounds/train.mp3"
-    },
-    electric: {
-        type: "single",
-        src: "./sounds/electric.mp3"
-    },
-    water: {
-        type: "single",
-        src: "./sounds/water.mp3"
     },
     dice: {
         type: "single",

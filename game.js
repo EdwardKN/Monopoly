@@ -196,7 +196,10 @@ function isNumeric(str) {
         !isNaN(parseFloat(str))
 }
 
-function drawIsometricImage(x, y, img, mirror, cropX, cropY, cropW, cropH, offsetX, offsetY, sizeOveride, drawcanvas) {
+function drawIsometricImage(x, y, img, mirror, cropX, cropY, cropW, cropH, offsetX, offsetY, sizeOveride, drawcanvas,rotation) {
+    if(rotation == undefined){
+        rotation = 0;
+    }
     let scaleOfThis = drawScale;
     if (sizeOveride !== undefined) {
         scaleOfThis = sizeOveride * drawScale;
@@ -204,7 +207,7 @@ function drawIsometricImage(x, y, img, mirror, cropX, cropY, cropW, cropH, offse
     if (drawcanvas === undefined) {
         drawcanvas = c;
     }
-    drawRotatedImageFromSpriteSheet(to_screen_coordinate(x * drawScale, y * drawScale).x + 832 + offsetX * drawScale, to_screen_coordinate(x * drawScale, y * drawScale).y + 120 + offsetY * drawScale, cropW * scaleOfThis, cropH * scaleOfThis, img, 0, mirror, cropX, cropY, cropW, cropH, true, drawcanvas)
+    drawRotatedImageFromSpriteSheet(to_screen_coordinate(x * drawScale, y * drawScale).x + 832 + offsetX * drawScale, to_screen_coordinate(x * drawScale, y * drawScale).y + 120 + offsetY * drawScale, cropW * scaleOfThis, cropH * scaleOfThis, img, rotation, mirror, cropX, cropY, cropW, cropH, true, drawcanvas)
 }
 
 
@@ -854,7 +857,7 @@ class StatMenu{
                 }
                 if(this.type == 2){
                     this.game.players = this.game.players.sort((a,b) => {
-                        return a.tmp - b.tmp;
+                        return b.tmp - a.tmp;
                     })
     
                     this.game.players.forEach(function(e,i){
@@ -870,7 +873,7 @@ class StatMenu{
                 }
                 if(this.type == 3){
                     this.game.players = this.game.players.sort((a,b) => {
-                        return a.tmp - b.tmp;
+                        return b.tmp - a.tmp;
                     })
     
                     this.game.players.forEach(function(e,i){
@@ -2327,7 +2330,6 @@ class Board {
 
 
                 } else {
-                    this.cardCloseButton.visible = true;
                     if (this.currentCard === board.boardPieces[players[Api.online ? Api.currentPlayer : turn].steps] && this.auction === undefined && players[Api.online ? Api.currentPlayer : turn].bot === undefined && players[turn].hasStepped === false) {
                         if (board.settings.auctions) {
                             this.auctionButton.disabled = false;
@@ -2401,7 +2403,7 @@ class Board {
                 }
 
                 if (players[turn].rolls === false) {
-                    if (players[turn].bot === undefined && this.auction === undefined && players[turn].inJail === false && !this.getToMainMenuButton.selected && this.currentShowingCard === undefined && this.currentCard === undefined) {
+                    if (players[turn].bot === undefined && this.auction === undefined && players[turn].inJail === false && !this.getToMainMenuButton.selected && this.currentShowingCard === undefined && this.currentCard === undefined && players[turn].inPrisonAnimation === false) {
                         this.rollDiceButton.visible = true;
                         if (players[turn].money < 0) {
                             this.rollDiceButton.disabled = true;
@@ -2410,7 +2412,7 @@ class Board {
                         }
                     }
                 } else {
-                    if (players[turn].bot === undefined && this.auction === undefined && !this.getToMainMenuButton.selected && this.currentShowingCard === undefined && this.currentCard === undefined) {
+                    if (players[turn].bot === undefined && this.auction === undefined && !this.getToMainMenuButton.selected && this.currentShowingCard === undefined && this.currentCard === undefined && players[turn].inPrisonAnimation === false) {
                         this.nextPlayerButton.visible = true;
                         if (players[turn].money < 0) {
                             this.nextPlayerButton.disabled = true;
@@ -2760,8 +2762,12 @@ class PlayerBorder {
             this.moneyTime = 1;
             this.latestTrancaction = money;
             if (!disablesound) {
-                playSound(sounds.cash, 1)
-            }
+                if(this.latestTrancaction < 0){
+                    playSound(sounds.loose, 1)
+                }else{
+                    playSound(sounds.get, 1)
+                }
+            } 
         }
         this.moneyAnimation = function () {
             if (this.latestTrancaction < 0) {
@@ -3511,19 +3517,19 @@ class BoardPiece {
             this.currentPlayer.push(player);
             if(!onlyStep){
                 if(this.n === -1){
-                    playSound(sounds.prison,1)
+                    
                 }else if(this.piece.name == "Vattenledningsverket" && this?.owner !== player && this.mortgaged == false){
-                    playSound(sounds.water, 0.5)
+
                 }else if(this.piece?.name == "Elverket" && this?.owner !== player && this.mortgaged == false){
-                    playSound(sounds.electric, 0.5)
+
                 }else if(this.piece?.type == "station" && this?.owner !== player && this.mortgaged == false){
-                    playSound(sounds.train, 0.5)
+
                 }else if(this.piece?.type == "chance" ||this?.type == "community chest"){
-                    playSound(sounds.card, 1)
+
                 }else if(this.piece?.name == "Fri parkering"){
-                    playSound(sounds.car,0.5)
+
                 }else if(this.piece?.name == "Gå till finkan"){
-                    //playSound(sounds.freeze,1)
+                    playSound(sounds.siren,1)
                 }else if(this.piece?.name == "fängelse"){
 
                 }else if(this.piece?.type == "income tax"){
@@ -3533,7 +3539,7 @@ class BoardPiece {
                 }else if(this.piece?.name == "Start"){
 
                 }else if(this.owner !== undefined && this?.owner !== player && this.mortgaged == false){
-                    playSound(sounds.bell,0.4)
+
                 }else{
                     
                 }
@@ -3552,14 +3558,12 @@ class BoardPiece {
                     board.currentShowingCard = new CurrentCard(4, "special")
                     let self = this;
                     board.currentShowingCard.onContinue = function () {
-                        board.currentShowingCard = new CurrentCard(0,"bankcheck",{to:"Banken",amount:-self.piece.price,reason:"Skatt",from:player.name})
-                        board.currentShowingCard.onContinue = function(){
-                            player.money += self.piece.price;
-                            self.totalEarned -= self.piece.price;
-                            player.totalLost -= self.piece.price;
-                            board.boardPieces[20].money -= self.piece.price;
-                            player.playerBorder.startMoneyAnimation(self.piece.price)
-                        }
+                        player.money += self.piece.price;
+                        self.totalEarned -= self.piece.price;
+                        player.totalLost -= self.piece.price;
+                        board.boardPieces[20].money -= self.piece.price;
+                        player.playerBorder.startMoneyAnimation(self.piece.price)
+                    
                     }
                 } else if (this.piece.price > 0 && this.owner === undefined) {
                     if (player.bot === undefined) {
@@ -3589,8 +3593,8 @@ class BoardPiece {
                             self.owner.money += diceRoll * multiply;
                             self.owner.totalEarned += diceRoll * multiply;
                             self.totalEarned += diceRoll * multiply;
-                            player.playerBorder.startMoneyAnimation(-diceRoll * multiply, true)
-                            self.owner.playerBorder.startMoneyAnimation(diceRoll * multiply)
+                            player.playerBorder.startMoneyAnimation(-diceRoll * multiply)
+                            self.owner.playerBorder.startMoneyAnimation(diceRoll * multiply,true)
                             player.checkDebt(self.owner);
                         }
                     } else if (this.piece.type === "station") {
@@ -3608,8 +3612,8 @@ class BoardPiece {
                             self.owner.money += 25 * Math.pow(2, tmp);
                             self.owner.totalEarned += 25 * Math.pow(2, tmp);
                             self.totalEarned += 25 * Math.pow(2, tmp);
-                            player.playerBorder.startMoneyAnimation(-25 * Math.pow(2, tmp), true)
-                            self.owner.playerBorder.startMoneyAnimation(25 * Math.pow(2, tmp))
+                            player.playerBorder.startMoneyAnimation(-25 * Math.pow(2, tmp))
+                            self.owner.playerBorder.startMoneyAnimation(25 * Math.pow(2, tmp),true)
                             player.checkDebt(self.owner);
                         }
             
@@ -3637,8 +3641,8 @@ class BoardPiece {
                             self.owner.money += self.piece.rent[self.level] * multiply;
                             self.owner.totalEarned += self.piece.rent[self.level] * multiply;
                             self.totalEarned += self.piece.rent[self.level] * multiply;
-                            player.playerBorder.startMoneyAnimation(-self.piece.rent[self.level] * multiply, true)
-                            self.owner.playerBorder.startMoneyAnimation(self.piece.rent[self.level] * multiply)
+                            player.playerBorder.startMoneyAnimation(-self.piece.rent[self.level] * multiply)
+                            self.owner.playerBorder.startMoneyAnimation(self.piece.rent[self.level] * multiply,true)
                             player.checkDebt(self.owner);
                         }
                     }
@@ -3777,8 +3781,8 @@ class BoardPiece {
                     board.currentShowingCard.onContinue = function(){
                         player.money += (players.length - 1) * 50
                         player.totalEarned += (players.length - 1) * 50;
-                        player.playerBorder.startMoneyAnimation(((players.length - 1) * 50), true)
-                        players.forEach(e => { if (e !== player) { e.money -= 50; e.totalLost += 50;e.playerBorder.startMoneyAnimation(-50) } })
+                        player.playerBorder.startMoneyAnimation(((players.length - 1) * 50))
+                        players.forEach(e => { if (e !== player) { e.money -= 50; e.totalLost += 50;e.playerBorder.startMoneyAnimation(-50,true) } })
                     }
                 }
             }
@@ -3958,6 +3962,11 @@ class CurrentCard {
         this.type = type;
         this.info = info;
         this.ableToClose = ableToClose;
+        this.xOffset = 0;
+        this.yOffset = 0;
+        this.scale = 1;
+        this.beenUp = false;
+        this.animateAway = false;
         this.continue = function () { };
         this.close = function(){}
 
@@ -3972,11 +3981,14 @@ class CurrentCard {
                 this.img = images.communityCards.sprites[0]
             }
         } else if (this.type == "special") {
+            this.scale = 0;
             this.img = images.specialCards.sprites[this.card]
             if (this.img === undefined) {
                 this.img = images.specialCards.sprites[0]
             }
         }else if (this.type == "bankcheck") {
+            this.xOffset = 1024;
+            playSound(sounds.whoosh,1)
             this.img = images.bankCheck.sprites[this.card]
             if (this.img === undefined) {
                 this.img = images.bankCheck.sprites[0]
@@ -3989,23 +4001,62 @@ class CurrentCard {
         
 
         this.draw = function () {
-            if (players[turn].bot === undefined) {
-                this.okayButton.visible = true;
-                this.cardCloseButton.visible = false;
-                if(this.ableToClose == true){
-                    this.cardCloseButton.visible = true;
-                    this.cardCloseButton.onClick = this.close;
-                    this.okayButton.invertedHitbox = false;
+            if(this.animateAway){
+                if(this.yOffset < 800){
+                    if(this.beenUp){
+                        this.yOffset += 3 + Math.abs(this.yOffset/15);
+                    }else{
+                        this.yOffset -= 2;
+                    }
+                    if(this.yOffset < -10){
+                        this.beenUp = true;
+                    }
+                }else{
+                    self.card = undefined;
+                    board.currentShowingCard = undefined;
+                    self.onContinue();
                 }
-            } else {
-                this.cardCloseButton.visible = true;
-                this.okayButton.visible = false;
+            }else{
+                if (players[turn].bot === undefined) {
+                    this.okayButton.visible = true;
+                    this.cardCloseButton.visible = false;
+                    if(this.ableToClose == true){
+                        this.cardCloseButton.visible = true;
+                        this.cardCloseButton.onClick = this.close;
+                        this.okayButton.invertedHitbox = false;
+                    }
+                } else {
+                    this.cardCloseButton.visible = true;
+                    this.okayButton.visible = false;
+                }
             }
+            
             if(this.type === "bankcheck"){
-                this.cardCloseButton.visible = true;
+                this.cardCloseButton.visible = false;
                 this.okayButton.visible = false;
             }
-            drawRotatedImageFromSpriteSheet(470, 300, 512 * 2, 256 * 2, this.img, 0, false, 0, 0, 512, 256, 0, c)
+            if(this.type === "special"){
+                let self = this;
+                this.okayButton.visible = false;
+                if(this.scale > 0.5 && this.yOffset < 800){
+                    if(this.beenUp){
+                        this.yOffset += 3 + Math.abs(this.yOffset/15);
+                    }else{
+                        this.yOffset -= 2;
+                    }
+                    if(this.yOffset < -10){
+                        this.beenUp = true;
+                    }
+                }else if(this.scale < 0.5){
+                    this.scale += 0.006;
+                }else{
+                    self.card = undefined;
+                    board.currentShowingCard = undefined;
+                    self.onContinue();
+                }
+            }
+            
+            drawRotatedImageFromSpriteSheet(452 + this.xOffset*2 - 512 * this.scale + 512, 300 - 256 * this.scale + 256 + this.yOffset*2, 512 * 2 * this.scale, 256 * 2 * this.scale, this.img, 0, false, 0, 0, 512, 256, 0, c)
             this.cardCloseButton.draw();
             this.okayButton.draw();
             if(this.type == "special" && this.info !== undefined){
@@ -4017,26 +4068,34 @@ class CurrentCard {
                 })
             }
             if(this.type === "bankcheck"){
+                if(Math.round(this.xOffset) === 0){
+                    this.onContinue();
+                    playSound(sounds.whoosh,1)
+                };
+                if(Math.round(this.xOffset) < -470 + -1024){
+                    self.card = undefined;
+                    board.currentShowingCard = undefined;
+                }
+                this.xOffset-= Math.abs(this.xOffset/30) + 1;
                 c.fillStyle = "black"
                 c.textAlign = "left"
                 c.font = "25px Handwritten"
-                c.fillText(new Date().getDate() + " " + monthToText(new Date().getMonth()),595,203)
+                c.fillText(new Date().getDate() + " " + monthToText(new Date().getMonth()),595+ this.xOffset,203)
                 c.font = "45px Handwritten"
-                c.fillText(info.to,400,245)
+                c.fillText(info.to,400+ this.xOffset,245)
                 c.font = "25px Handwritten"
-                c.fillText(info.amount,670,249)
+                c.fillText(info.amount,670+ this.xOffset,249)
                 c.font = "30px Handwritten"
-                c.fillText(numberToText(info.amount),270,290)
+                c.fillText(numberToText(info.amount),270+ this.xOffset,290)
                 c.font = "30px Handwritten"
-                c.fillText(info.reason,300,338)
+                c.fillText(info.reason,300+ this.xOffset,338)
                 c.font = "37px Signature"
-                c.fillText(info.from,510,338)
+                c.fillText(info.from,510+ this.xOffset,338)
+                
             }
         }
         this.continue = function () {
-            self.card = undefined;
-            board.currentShowingCard = undefined;
-            self.onContinue();
+            this.animateAway = true;
         }
         this.close = function(){
             self.card = undefined;
@@ -4078,6 +4137,9 @@ class Player {
         this.playTime = 0;
         this.totalEarned = board.settings.startmoney;
         this.totalLost = 0;
+        this.rotation = 0;
+        this.inPrisonAnimation = false;
+        this.prisonAnimationState = 0;
 
         this.playerBorder = new PlayerBorder(this)
         if (bot == true) {
@@ -4086,7 +4148,7 @@ class Player {
 
 
         this.draw = function () {
-            drawIsometricImage(800 - this.x * 64 - 32, 700 - this.y * 64 - 32, this.img, false, 0, 0, 24, 48, 0, -this.offsetY, 1)
+            drawIsometricImage(800 - this.x * 64 - 32, 700 - this.y * 64 - 32, this.img, false, 0, 0, 24, 48, 0, this.offsetY, 1,c,this.rotation)
         }
         this.update = function () {
             if(this.dead === false){
@@ -4114,7 +4176,6 @@ class Player {
                     }
                 }
             })
-            console.log(tmp,this.name)
 
             if (this.money < 0 && this.ownedPlaces.length == 0 + mortgaged || this.money < 0 && !board.settings.sellable || tmp < 0) {
                 if (Api.online) {
@@ -4152,16 +4213,56 @@ class Player {
                 this.lastMoneyInDebt = this.money
                 this.inDebtTo.money += (moneyToAdd);
                 if (this.money >= 0) {
-                    this.inDebtTo.playerBorder.startMoneyAnimation(moneyToAdd - this.money);
+                    this.inDebtTo.playerBorder.startMoneyAnimation(moneyToAdd - this.money,true);
                     this.inDebtTo.money -= this.money;
                     this.inDebtTo = undefined;
                     this.lastMoneyInDebt = 0;
                 } else {
-                    this.inDebtTo.playerBorder.startMoneyAnimation(moneyToAdd);
+                    this.inDebtTo.playerBorder.startMoneyAnimation(moneyToAdd,true);
                 }
             }
         }
         this.updateVisual = function () {
+            if(this.inPrisonAnimation && this.prisonAnimationState == 0){
+                this.offsetY-= 2 + Math.abs(this.offsetY/500);
+                
+                if(this.offsetY < -500){
+                    this.prisonAnimationState = 1;
+                    this.stopPrisonAnimation();
+                    playSound(sounds.wind,1)
+                }
+            }
+            if(this.inPrisonAnimation && this.prisonAnimationState == 1){
+                this.offsetY+= 20 + -Math.abs(this.offsetY/50);
+                if(this.offsetY > 0){
+                    this.prisonAnimationState = 2;
+                    this.offsetY = 0;
+                    if(randomIntFromRange(1,20) == 20){
+                        playSound(sounds.bam2,1);
+                    }else{
+                        playSound(sounds.bam,1);
+                    }
+
+                }
+            }
+            if(this.inPrisonAnimation && this.prisonAnimationState == 2){
+                this.rotation+=5;
+                if(this.rotation > 90){
+                    this.prisonAnimationState = 3;
+                    this.rotation = 90;                    
+                }
+            }
+            if(this.inPrisonAnimation && this.prisonAnimationState == 3){
+                this.rotation-= 1 + -Math.abs((this.rotation-45)/100);
+                if(Math.round(this.rotation) == 75){
+                    playSound(sounds.prison,1);
+                }
+                if(this.rotation < 0){
+                    this.rotation = 0;
+                    this.inPrisonAnimation = false;
+                }
+            }
+
             this.stepsWithOffset = 40 + (this.steps) - this.animationOffset
             this.stepsWithOffset = this.stepsWithOffset % 40;
 
@@ -4237,14 +4338,23 @@ class Player {
                 }
             }
         }
-        this.goToPrison = function () {
-            if (this.steps >= 30 || this.steps < 10) {
-                this.teleportTo(10, false, false);
-            } else {
-                this.teleportTo(-10, false, false);
-            }
+        this.stopPrisonAnimation = function(){
+            let self = this;
+            board.boardPieces.forEach(function (b, i2) {
+                b.currentPlayer.forEach(function (d, i3) {
+                    if (d === self) {
+                        b.currentPlayer.splice(i3, 1)
+                    }
+                })
+            })
             this.inJail = true;
             this.rolls = true;
+            this.steps = 10;
+            board.prisonExtra.playerStep(false, this);
+        }
+        this.goToPrison = function () {
+            this.inPrisonAnimation = true;
+            this.prisonAnimationState = 0;
         }
         this.getOutOfJail = function (type, sendToServer = true) {
             if (Api.online && sendToServer) {
