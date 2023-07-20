@@ -1747,7 +1747,7 @@ class Board {
                     menus[4].game = tmp2;
                     menus[4].startGame = true;
                     menus[0].current = false;
-                },100)
+                },150)
             }, 100);
 
         }, 40, 40, false, false, false, false, false,);
@@ -1783,6 +1783,14 @@ class Board {
                 if (dice1 === dice2) {
                     self.teleportTo(self.steps + dice1 + dice2);
                     players[turn].rolls = false;
+                }else{
+                    players[turn].rolls = false;
+                    players[turn].numberOfRolls = 0;
+                    turn = (turn + 1) % players.length;
+                    board.textsize = measureText({ font: "Arcade", text: "Just nu: " + players[turn].name });
+                    
+                    board.animateDices = false;
+                    board.showDices = false;
                 }
             })
         }, 82, 35);
@@ -4260,6 +4268,14 @@ class Player {
                 if(this.rotation < 0){
                     this.rotation = 0;
                     this.inPrisonAnimation = false;
+
+                    this.rolls = false;
+                    this.numberOfRolls = 0;
+                    turn = (turn + 1) % players.length;
+                    board.textsize = measureText({ font: "Arcade", text: "Just nu: " + players[turn].name });
+                    
+                    board.animateDices = false;
+                    board.showDices = false;
                 }
             }
 
