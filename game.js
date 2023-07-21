@@ -1670,6 +1670,7 @@ class Board {
         this.textsize = 0;
         this.numberOfHotels = 0;
         this.numberOfHouses = 0;
+        this.currentcardScale = 0;
 
 
         this.musicButton = new Button([true, false], 5 + 49 * 4, 530 + 40, images.buttons.sprites[14], function () {
@@ -2255,12 +2256,17 @@ class Board {
         }
         this.showCard = function () {
             if (this.currentCard !== undefined && this.currentShowingCard == undefined) {
-                drawRotatedImageFromSpriteSheet(canvas.width - images.card.sprites[this.currentCard.piece.card].frame.w, canvas.height - images.card.sprites[this.currentCard.piece.card].frame.h, images.card.sprites[this.currentCard.piece.card].frame.w * drawScale, images.card.sprites[this.currentCard.piece.card].frame.h * drawScale, images.card.sprites[this.currentCard.piece.card], 0, false, 0, 0, images.card.sprites[this.currentCard.piece.card].frame.w, images.card.sprites[this.currentCard.piece.card].frame.h)
-
-                c.fillStyle = "black";
+                drawRotatedImageFromSpriteSheet(canvas.width - images.card.sprites[this.currentCard.piece.card].frame.w - images.card.sprites[this.currentCard.piece.card].frame.w * this.currentcardScale + images.card.sprites[this.currentCard.piece.card].frame.w
+                , canvas.height - images.card.sprites[this.currentCard.piece.card].frame.h - images.card.sprites[this.currentCard.piece.card].frame.h * this.currentcardScale + images.card.sprites[this.currentCard.piece.card].frame.h
+                , images.card.sprites[this.currentCard.piece.card].frame.w * drawScale * this.currentcardScale, images.card.sprites[this.currentCard.piece.card].frame.h * drawScale* this.currentcardScale, images.card.sprites[this.currentCard.piece.card], 0, false, 0, 0, images.card.sprites[this.currentCard.piece.card].frame.w, images.card.sprites[this.currentCard.piece.card].frame.h)
+                if(this.currentcardScale < 1){
+                    this.currentcardScale += 0.1 * deltatime;
+                }else{
+                    this.currentcardScale = 1;
+                    c.fillStyle = "black";
                 c.textAlign = "center";
                 c.font = 20 / 2 + "px Arcade";
-
+                this.cardCloseButton.visible = true;
                 if (this.currentCard.owner !== undefined) {
                     if (this.currentCard.piece.type !== "utility" && this.currentCard.piece.type !== "station") {
                         c.fillText("Ägare: " + this.currentCard.owner.name, 965 / 2, 348 / 2)
@@ -2344,7 +2350,7 @@ class Board {
 
 
                     }
-                    this.cardCloseButton.visible = true;
+                    
 
 
                 } else {
@@ -2377,6 +2383,8 @@ class Board {
                 if (this.currentCard.mortgaged === true) {
                     drawRotatedImageFromSpriteSheet(702, 216, images.mortgageOverlay.sprites[0].frame.w * drawScale, images.mortgageOverlay.sprites[0].frame.h * drawScale, images.mortgageOverlay.sprites[0], 0, false, 0, 0, images.mortgageOverlay.sprites[0].frame.w, images.mortgageOverlay.sprites[0].frame.h)
                 }
+                }
+                
             }
             this.sellButton.draw();
             this.auctionButton.draw();
@@ -2646,6 +2654,23 @@ class Trade {
             self.p1PropertyButtons.push(but);
         });
 
+        for(let i = 0; i < this.p1.jailcardAmount; i++){
+            let tmp = 0;
+            if (self.p1PropertyButtons.length % 2 === 1) {
+                tmp = 190
+            }
+            let fontSize = 21
+            let textColor = "black";
+
+            let but = (new Button([true, false], -360 + tmp + 198 - 128, 240 + 22 * Math.floor((self.p1PropertyButtons.length + i) / 2) + 110, images.trade.sprites[2], function () {
+                self.p1ConfirmButton.selected = false;
+                self.p2ConfirmButton.selected = false;
+            }, 186, 21, false, false, false, false, false, false, "Frikort", fontSize, textColor, "ArcadeBold"))
+            
+            but.card = "jailcard"
+            self.p1PropertyButtons.push(but);
+        }
+
         this.p2.ownedPlaces.forEach(function (e, i) {
             let tmp = 0;
             if (i % 2 === 1) {
@@ -2677,6 +2702,23 @@ class Trade {
             self.p2PropertyButtons.push(but);
         });
 
+        for(let i = 0; i < this.p2.jailcardAmount; i++){
+            let tmp = 0;
+            if (self.p2PropertyButtons.length % 2 === 1) {
+                tmp = 190
+            }
+            let fontSize = 21
+            let textColor = "black";
+
+            let but = (new Button([true, false], -30 + tmp + 200, 240 + 22 * Math.floor((self.p2PropertyButtons.length + i) / 2) + 110, images.trade.sprites[2], function () {
+                self.p1ConfirmButton.selected = false;
+                self.p2ConfirmButton.selected = false;
+            }, 186, 21, false, false, false, false, false, false, "Frikort", fontSize, textColor, "ArcadeBold"))
+            
+            but.card = "jailcard"
+            self.p2PropertyButtons.push(but);
+        }
+
         this.update = function () {
             drawIsometricImage(0, 0, images.trade.sprites[0], false, 0, 0, images.trade.sprites[0].frame.w, images.trade.sprites[0].frame.h, -320 - 71, images.trade.sprites[0].frame.h / 50 - 50, 1)
 
@@ -2701,24 +2743,38 @@ class Trade {
                 let p1New = [];
                 let p2New = [];
                 this.p1PropertyButtons.forEach(function (e, i) {
-                    if (e.selected === true) {
+                    if (e.selected === true && e.card !== "jailcard") {
                         p2New.push(self.p1.ownedPlaces[i])
+                    }else if(e.selected === true){
+                        p2New.push("jailcard")
                     }
                 })
                 this.p2PropertyButtons.forEach(function (e, i) {
-                    if (e.selected === true) {
+                    if (e.selected === true && e.card !== "jailcard") {
                         p1New.push(self.p2.ownedPlaces[i])
+                    }else if(e.selected === true){
+                        p1New.push("jailcard")
                     }
                 })
                 p1New.forEach(e => {
-                    self.p2.ownedPlaces.splice(self.p2.ownedPlaces.indexOf(e), 1);
-                    self.p1.ownedPlaces.push(e);
-                    e.owner = self.p1;
+                    if(e == "jailcard"){
+                        self.p1.jailcardAmount++;
+                        self.p2.jailcardAmount--;
+                    }else{
+                        self.p2.ownedPlaces.splice(self.p2.ownedPlaces.indexOf(e), 1);
+                        self.p1.ownedPlaces.push(e);
+                        e.owner = self.p1;
+                    }
                 })
                 p2New.forEach(e => {
-                    self.p1.ownedPlaces.splice(self.p1.ownedPlaces.indexOf(e), 1);
-                    self.p2.ownedPlaces.push(e);
-                    e.owner = self.p2;
+                    if(e == "jailcard"){
+                        self.p2.jailcardAmount++;
+                        self.p1.jailcardAmount--;
+                    }else{
+                        self.p1.ownedPlaces.splice(self.p2.ownedPlaces.indexOf(e), 1);
+                        self.p2.ownedPlaces.push(e);
+                        e.owner = self.p2;
+                    }
                 })
                 this.p1.money += this.p2Slider.value;
                 this.p2.money += this.p1Slider.value;
@@ -3527,6 +3583,7 @@ class BoardPiece {
             if (this.hover === true) {
                 playSound(sounds.release, 1)
                 if (this.piece.card !== undefined) {
+                    board.currentcardScale = 0;
                     board.currentCard = this;
                 }
             }
@@ -3586,10 +3643,12 @@ class BoardPiece {
                 } else if (this.piece.price > 0 && this.owner === undefined) {
                     if (player.bot === undefined) {
                         if(players[turn].money >= this.piece.price){
+                            board.currentcardScale = 0;
                             board.currentCard = this; 
                         }else{
                             if (board.settings.auctions) {
                                 if (players.filter(e => e.money - this.piece.price * board.settings.auctionstartprice >= 0).length < 2) {}else{
+                                    board.currentcardScale = 0;
                                     board.currentCard = this; 
                                 }
                             }
@@ -3763,6 +3822,7 @@ class BoardPiece {
                 board.currentShowingCard.onContinue = function () { player.teleportTo(-(player.steps - 3), false, false) }
             }
             if (random === 9) {
+                playSound(sounds.siren,1)
                 board.currentShowingCard.onContinue = function () { player.goToPrison(); }
             }
             if (random === 10) {
@@ -3856,6 +3916,7 @@ class BoardPiece {
                 }
             }
             if (random === 6) {
+                playSound(sounds.siren,1)
                 board.currentShowingCard.onContinue = function () {
                     player.goToPrison()
                 }
@@ -4466,8 +4527,9 @@ class Player {
                             }
                         }
                         if (to === 30) {
+                            playSound(sounds.siren,1)
                             board.currentShowingCard = new CurrentCard(1, "special")
-                            board.currentShowingCard.onContinue = function () { self.goToPrison() };
+                            board.currentShowingCard.onContinue = function () { self.goToPrison(); };
                         }
                         board.showDices = false;
 
