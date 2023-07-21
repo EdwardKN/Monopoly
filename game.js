@@ -1323,6 +1323,11 @@ function update() {
 
     
     menus.forEach(e => e.draw())
+    /*
+    c.fillStyle = "black";
+    c.font = "5px Arcade";
+    c.fillText(fps,10,10)
+    */
 
     renderC.drawImage(canvas, 0, 0, renderCanvas.width, renderCanvas.height)
 
@@ -1339,6 +1344,7 @@ function update() {
     } else {
         renderCanvas.style.cursor = "auto"
     }
+
 }
 
 function showBackground() {
@@ -1798,7 +1804,7 @@ class Board {
             players[turn].jailcardAmount--;
             players[turn].getOutOfJail("CARD");
         }, 82, 35);
-        this.rollDiceButton = new Button([false, false], 1, 480, images.buttons.sprites[0], function () { players[turn].rollDice() }, 246, 60, false, false, false, true)
+        this.rollDiceButton = new Button([false, false], 1, 480, images.buttons.sprites[0], function () { players[turn].rollDice() }, 246, 60, false, false, false, false)
         this.nextPlayerButton = new Button([false, false], 1, 480, images.buttons.sprites[1], function () {
             players[turn].rolls = false;
             players[turn].numberOfRolls = 0;
@@ -2115,24 +2121,28 @@ class Board {
                 board.getToMainMenuButton.selected = false;
                 setTimeout(() => {
                     let tmp2 = saveGame()
-                    players.forEach(e => buttons.splice(buttons.indexOf(e.playerBorder.button), 1))
-                    players = [];
-                    menus[4].current = true;
-                    menus[0].volume.percentage = musicVolume
-                    if (Api.online) Api.disconnect();
-                    timeouts.forEach(e => clearTimeout(e));
-                    intervals.forEach(e => clearInterval(e));
-                    timeouts = [];
-                    board = undefined;
-                    buttons = [];
-                    menus = [];
-    
-                    init();
                     setTimeout(() => {
+                        players.forEach(e => buttons.splice(buttons.indexOf(e.playerBorder.button), 1))
+                        players = [];
                         menus[4].current = true;
-                        menus[4].game = tmp2;
-                        menus[4].startGame = false;
+                        menus[0].volume.percentage = musicVolume
+                        if (Api.online) Api.disconnect();
+                        timeouts.forEach(e => clearTimeout(e));
+                        intervals.forEach(e => clearInterval(e));
+                        timeouts = [];
+                        board = undefined;
+                        buttons = [];
+                        menus = [];
+                        init();
+                        setTimeout(() => {
+                            menus[4].current = true;
+                            menus[4].game = tmp2;
+                            menus[4].startGame = false;
+                        },200)
                     },100)
+
+    
+
 
                 }, 100);
                } 
@@ -2880,7 +2890,7 @@ class PlayerBorder {
         }
 
         this.draw = function () {
-            this.moneyTime -= speeds.moneyAnimationSpeed;
+            this.moneyTime -= speeds.moneyAnimationSpeed * deltatime;
 
             if (this.index === 0) {
                 this.x = -358
@@ -3575,7 +3585,15 @@ class BoardPiece {
                     }
                 } else if (this.piece.price > 0 && this.owner === undefined) {
                     if (player.bot === undefined) {
-                        board.currentCard = this;
+                        if(players[turn].money >= this.piece.price){
+                            board.currentCard = this; 
+                        }else{
+                            if (board.settings.auctions) {
+                                if (players.filter(e => e.money - this.piece.price * board.settings.auctionstartprice >= 0).length < 2) {}else{
+                                    board.currentCard = this; 
+                                }
+                            }
+                        }
                     }
                 } else if (this.owner !== player && this.owner !== undefined && board.settings.prisonmoney || this.owner !== player && this.owner !== undefined && !board.settings.prisonmoney && !this.owner.inJail) {
                     if (this.piece.type === "utility") {
@@ -4012,9 +4030,9 @@ class CurrentCard {
             if(this.animateAway){
                 if(this.yOffset < 800){
                     if(this.beenUp){
-                        this.yOffset += 3 + Math.abs(this.yOffset/15);
+                        this.yOffset += (3 + Math.abs(this.yOffset/15)) * deltatime;
                     }else{
-                        this.yOffset -= 2;
+                        this.yOffset -= 2 * deltatime;
                     }
                     if(this.yOffset < -10){
                         this.beenUp = true;
@@ -4046,17 +4064,17 @@ class CurrentCard {
             if(this.type === "special"){
                 let self = this;
                 this.okayButton.visible = false;
-                if(this.scale > 0.5 && this.yOffset < 800){
+                if(this.scale > 0.75 && this.yOffset < 800){
                     if(this.beenUp){
-                        this.yOffset += 3 + Math.abs(this.yOffset/15);
+                        this.yOffset += (3 + Math.abs(this.yOffset/15)) * deltatime;
                     }else{
-                        this.yOffset -= 2;
+                        this.yOffset -= 2 * deltatime;
                     }
                     if(this.yOffset < -10){
                         this.beenUp = true;
                     }
-                }else if(this.scale < 0.5){
-                    this.scale += 0.006;
+                }else if(this.scale < 0.75){
+                    this.scale += 0.006 * deltatime;
                 }else{
                     self.card = undefined;
                     board.currentShowingCard = undefined;
@@ -4084,7 +4102,7 @@ class CurrentCard {
                     self.card = undefined;
                     board.currentShowingCard = undefined;
                 }
-                this.xOffset-= Math.abs(this.xOffset/30) + 1;
+                this.xOffset-= (Math.abs(this.xOffset/30) + 1) * deltatime;
                 c.fillStyle = "black"
                 c.textAlign = "left"
                 c.font = "25px Handwritten"
@@ -4232,7 +4250,7 @@ class Player {
         }
         this.updateVisual = function () {
             if(this.inPrisonAnimation && this.prisonAnimationState == 0){
-                this.offsetY-= 2 + Math.abs(this.offsetY/500);
+                this.offsetY-= (2 + Math.abs(this.offsetY/500)) * deltatime;
                 
                 if(this.offsetY < -500){
                     this.prisonAnimationState = 1;
@@ -4241,7 +4259,7 @@ class Player {
                 }
             }
             if(this.inPrisonAnimation && this.prisonAnimationState == 1){
-                this.offsetY+= 20 + -Math.abs(this.offsetY/50);
+                this.offsetY+= (20 + -Math.abs(this.offsetY/50)) * deltatime;
                 if(this.offsetY > 0){
                     this.prisonAnimationState = 2;
                     this.offsetY = 0;
@@ -4254,14 +4272,14 @@ class Player {
                 }
             }
             if(this.inPrisonAnimation && this.prisonAnimationState == 2){
-                this.rotation+=5;
+                this.rotation+=5 * deltatime;
                 if(this.rotation > 90){
                     this.prisonAnimationState = 3;
                     this.rotation = 90;                    
                 }
             }
             if(this.inPrisonAnimation && this.prisonAnimationState == 3){
-                this.rotation-= 1 + -Math.abs((this.rotation-45)/100);
+                this.rotation-= (1 + -Math.abs((this.rotation-45)/100)) * deltatime;
                 if(Math.round(this.rotation) == 75){
                     playSound(sounds.prison,1);
                 }
@@ -4531,6 +4549,7 @@ class Player {
                         let self = this;
                         this.animateDice(dice1, dice2, function () {
                             if (self.numberOfRolls === 3 && dice1 === dice2) {
+                                playSound(sounds.siren,1)
                                 board.currentShowingCard = new CurrentCard(2, "special")
                                 board.currentShowingCard.onContinue = function () { self.goToPrison(); }
                                 return;
@@ -4748,6 +4767,25 @@ function timeToText(value){
 }
 
 init();
+
+var times = [];
+var fps;
+var deltatime = 0;
+
+function refreshLoop() {
+    window.requestAnimationFrame(function () {
+        const now = performance.now();
+        while (times.length > 0 && times[0] <= now - 1000) {
+            times.shift();
+        }
+        times.push(now);
+        fps = times.length;
+        deltatime = 60/fps;
+        refreshLoop();
+    });
+}
+
+refreshLoop();
 
 //Sortering och inläggning av namn
 /*
