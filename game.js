@@ -2261,8 +2261,10 @@ class Board {
                 , images.card.sprites[this.currentCard.piece.card].frame.w * drawScale * this.currentcardScale, images.card.sprites[this.currentCard.piece.card].frame.h * drawScale* this.currentcardScale, images.card.sprites[this.currentCard.piece.card], 0, false, 0, 0, images.card.sprites[this.currentCard.piece.card].frame.w, images.card.sprites[this.currentCard.piece.card].frame.h)
                 if(this.currentcardScale < 1){
                     this.currentcardScale += 0.1 * deltatime;
+                    if(this.currentcardScale > 1){
+                        this.currentcardScale = 1;
+                    }
                 }else{
-                    this.currentcardScale = 1;
                     c.fillStyle = "black";
                 c.textAlign = "center";
                 c.font = 20 / 2 + "px Arcade";
