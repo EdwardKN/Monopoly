@@ -264,7 +264,10 @@ function startGame(playerlist, settings) {
     Bot.boardInfo = players.reduce((dict, player, i) => { dict[i] = player.ownedPlaces; return dict }, {})
 }
 
-function saveGame() {
+async function saveGame() {
+    board.getToMainMenuButton.selected = false;
+    await c.clearRect(0,0,canvas.width,canvas.height);
+    await update();
     let gameToSave = {
         saveVersion:latestSaveVersion,
         players: [], 
@@ -1712,50 +1715,44 @@ class Board {
             board.getToMainMenuButton.selected = false;
         }, 40, 40, false, false, false, false, false, { x: 722, y: 336, w: 256 * drawScale, h: 256 * drawScale });
 
-        this.escapeConfirm = new Button([false, false], 5 + 49 * 3, 520, images.buttons.sprites[16], function () {
+        this.escapeConfirm = new Button([false, false], 5 + 49 * 3, 520, images.buttons.sprites[16], async function () {
             board.getToMainMenuButton.selected = false;
-            setTimeout(() => {
-                saveGame()
-                players.forEach(e => buttons.splice(buttons.indexOf(e.playerBorder.button), 1))
-                players = [];
-                menus[4].current = true;
-                menus[0].volume.percentage = musicVolume
-                if (Api.online) Api.disconnect();
-                timeouts.forEach(e => clearTimeout(e));
-                intervals.forEach(e => clearInterval(e));
-                timeouts = [];
-                board = undefined;
-                buttons = [];
-                menus = [];
+            await saveGame()
+            players.forEach(e => buttons.splice(buttons.indexOf(e.playerBorder.button), 1))
+            players = [];
+            menus[4].current = true;
+            menus[0].volume.percentage = musicVolume
+            if (Api.online) Api.disconnect();
+            timeouts.forEach(e => clearTimeout(e));
+            intervals.forEach(e => clearInterval(e));
+            timeouts = [];
+            board = undefined;
+            buttons = [];
+            menus = [];
 
-                init();
-            }, 100);
+            init();
 
         }, 40, 40, false, false, false, false, false,);
-        this.statButton = new Button([false, false], 5 + 49 * 2, 520, images.statMenu.sprites[0], function () {
+        this.statButton = new Button([false, false], 5 + 49 * 2, 520, images.statMenu.sprites[0], async function () {
             board.getToMainMenuButton.selected = false;
-            setTimeout(() => {
-                let tmp2 = saveGame()
-                players.forEach(e => buttons.splice(buttons.indexOf(e.playerBorder.button), 1))
-                players = [];
-                menus[4].current = true;
-                menus[0].volume.percentage = musicVolume
-                if (Api.online) Api.disconnect();
-                timeouts.forEach(e => clearTimeout(e));
-                intervals.forEach(e => clearInterval(e));
-                timeouts = [];
-                board = undefined;
-                buttons = [];
-                menus = [];
+            let tmp2 = await saveGame()
+            players.forEach(e => buttons.splice(buttons.indexOf(e.playerBorder.button), 1))
+            players = [];
+            menus[4].current = true;
+            menus[0].volume.percentage = musicVolume
+            if (Api.online) Api.disconnect();
+            timeouts.forEach(e => clearTimeout(e));
+            intervals.forEach(e => clearInterval(e));
+            timeouts = [];
+            board = undefined;
+            buttons = [];
+            menus = [];
 
-                init();
-                setTimeout(() => {
-                    menus[4].current = true;
-                    menus[4].game = tmp2;
-                    menus[4].startGame = true;
-                    menus[0].current = false;
-                },150)
-            }, 100);
+            await init();
+            menus[4].current = true;
+            menus[4].game = tmp2;
+            menus[4].startGame = true;
+            menus[0].current = false;
 
         }, 40, 40, false, false, false, false, false,);
         this.getToMainMenuButton = new Button([true, false], 84, 700, images.buttons.sprites[17], function () {
@@ -2120,32 +2117,22 @@ class Board {
             if(players.filter(e => {{return e.dead === false}}).length === 1){
                let tmp = async function(){
                 board.getToMainMenuButton.selected = false;
-                setTimeout(() => {
-                    let tmp2 = saveGame()
-                    setTimeout(() => {
-                        players.forEach(e => buttons.splice(buttons.indexOf(e.playerBorder.button), 1))
-                        players = [];
-                        menus[4].current = true;
-                        menus[0].volume.percentage = musicVolume
-                        if (Api.online) Api.disconnect();
-                        timeouts.forEach(e => clearTimeout(e));
-                        intervals.forEach(e => clearInterval(e));
-                        timeouts = [];
-                        board = undefined;
-                        buttons = [];
-                        menus = [];
-                        init();
-                        setTimeout(() => {
-                            menus[4].current = true;
-                            menus[4].game = tmp2;
-                            menus[4].startGame = false;
-                        },200)
-                    },100)
-
-    
-
-
-                }, 100);
+                let tmp2 = await saveGame()
+                players.forEach(e => buttons.splice(buttons.indexOf(e.playerBorder.button), 1))
+                players = [];
+                menus[4].current = true;
+                menus[0].volume.percentage = musicVolume
+                if (Api.online) Api.disconnect();
+                timeouts.forEach(e => clearTimeout(e));
+                intervals.forEach(e => clearInterval(e));
+                timeouts = [];
+                board = undefined;
+                buttons = [];
+                menus = [];
+                await init();
+                menus[4].current = true;
+                menus[4].game = tmp2;
+                menus[4].startGame = false;
                } 
                await tmp();
             }
@@ -4485,10 +4472,9 @@ class Player {
 
             this.steps = step % 40;
 
-            var dicesum = this.steps - oldStep;
-            if (this.steps < oldStep) dicesum += 40;
+            if (this.steps < oldStep) this.dicesum += 40;
 
-            this.animateSteps(oldStep, this.steps, dicesum, direction, getMoney);
+            this.animateSteps(oldStep, this.steps, this.dicesum, direction, getMoney);
         }
         this.animateSteps = function (from, to, dicesum, direction, getMoney) {
 
@@ -4605,12 +4591,11 @@ class Player {
                         } else {
                             this.rolls = true;
                         }
-
-                        this.diceSum = dice1 + dice2;
+                        let self = this;
+                        self.dicesum = dice1 + dice2;
                         this.dice1 = dice1
                         this.dice2 = dice2
 
-                        let self = this;
                         this.animateDice(dice1, dice2, function () {
                             if (self.numberOfRolls === 3 && dice1 === dice2) {
                                 playSound(sounds.siren,1)
