@@ -13,6 +13,8 @@ var musictimer;
 
 var musicPlaying;
 
+
+
 var finish = JSON.parse(getCookie("finish") === undefined ? false : getCookie("finish"));;
 
 var musicVolume = JSON.parse(getCookie("musicVolume") === undefined ? 100 : getCookie("musicVolume"));
@@ -194,7 +196,10 @@ function isNumeric(str) {
         !isNaN(parseFloat(str))
 }
 
-function drawIsometricImage(x, y, img, mirror, cropX, cropY, cropW, cropH, offsetX, offsetY, sizeOveride, drawcanvas) {
+function drawIsometricImage(x, y, img, mirror, cropX, cropY, cropW, cropH, offsetX, offsetY, sizeOveride, drawcanvas,rotation) {
+    if(rotation == undefined){
+        rotation = 0;
+    }
     let scaleOfThis = drawScale;
     if (sizeOveride !== undefined) {
         scaleOfThis = sizeOveride * drawScale;
@@ -202,7 +207,7 @@ function drawIsometricImage(x, y, img, mirror, cropX, cropY, cropW, cropH, offse
     if (drawcanvas === undefined) {
         drawcanvas = c;
     }
-    drawRotatedImageFromSpriteSheet(to_screen_coordinate(x * drawScale, y * drawScale).x + 832 + offsetX * drawScale, to_screen_coordinate(x * drawScale, y * drawScale).y + 120 + offsetY * drawScale, cropW * scaleOfThis, cropH * scaleOfThis, img, 0, mirror, cropX, cropY, cropW, cropH, true, drawcanvas)
+    drawRotatedImageFromSpriteSheet(to_screen_coordinate(x * drawScale, y * drawScale).x + 832 + offsetX * drawScale, to_screen_coordinate(x * drawScale, y * drawScale).y + 120 + offsetY * drawScale, cropW * scaleOfThis, cropH * scaleOfThis, img, rotation, mirror, cropX, cropY, cropW, cropH, true, drawcanvas)
 }
 
 
@@ -259,7 +264,10 @@ function startGame(playerlist, settings) {
     Bot.boardInfo = players.reduce((dict, player, i) => { dict[i] = player.ownedPlaces; return dict }, {})
 }
 
-function saveGame() {
+async function saveGame() {
+    board.getToMainMenuButton.selected = false;
+    await c.clearRect(0,0,canvas.width,canvas.height);
+    await update();
     let gameToSave = {
         saveVersion:latestSaveVersion,
         players: [], 
@@ -354,8 +362,7 @@ function saveGame() {
 }
 
 
-function loadGame(theGameToLoad) {
-    let gameToLoad = JSON.parse(localStorage.getItem("games"))[theGameToLoad]
+function loadGame(gameToLoad) {
 
     board = new Board();
     board.id = gameToLoad.id;
@@ -415,7 +422,6 @@ function loadGame(theGameToLoad) {
         board.currentShowingCard = new CurrentCard(0,"bankcheck",gameToLoad.currentShowingCard.info)
 
         board.currentShowingCard.onContinue = function(){
-
             if(players[players.map(e => e.name).indexOf(gameToLoad.currentShowingCard.info.to)]){
                 players[players.map(e => e.name).indexOf(gameToLoad.currentShowingCard.info.to)].money += gameToLoad.currentShowingCard.info.amount;
                 players[players.map(e => e.name).indexOf(gameToLoad.currentShowingCard.info.to)].totalEarned += gameToLoad.currentShowingCard.info.amount;
@@ -423,7 +429,7 @@ function loadGame(theGameToLoad) {
             }
             if(players[players.map(e => e.name).indexOf(gameToLoad.currentShowingCard.info.from)]){
                 players[players.map(e => e.name).indexOf(gameToLoad.currentShowingCard.info.from)].money -= gameToLoad.currentShowingCard.info.amount;
-                players[players.map(e => e.name).indexOf(gameToLoad.currentShowingCard.info.to)].totalLost += gameToLoad.currentShowingCard.info.amount;
+                players[players.map(e => e.name).indexOf(gameToLoad.currentShowingCard.info.from)].totalLost += gameToLoad.currentShowingCard.info.amount;
                 players[players.map(e => e.name).indexOf(gameToLoad.currentShowingCard.info.from)].playerBorder.startMoneyAnimation(-gameToLoad.currentShowingCard.info.amount)
             }
             if(gameToLoad.currentShowingCard.info.to == "Banken" || gameToLoad.currentShowingCard.info.to == "Renovering AB"){
@@ -467,29 +473,34 @@ class LocalLobby {
         this.playerInputs = [];
         this.amountBots = 0;
         this.settingsButtons = [];
-        this.settingsButtons.push(new Button([true, false], 80, 205, images.buttons.sprites[10], function () { }, 500, 40, false, false, false, false, false, false, "Ge alla skattepengar till fri parkering", 42, "black"))
-        this.settingsButtons.push(new Button([true, false], 80, 205 + this.settingsButtons.length * 42, images.buttons.sprites[10], function () { }, 500, 40, false, false, false, false, false, false, "Ge alla bankpengar till fri parkering", 42, "black"))
-        this.settingsButtons.push(new Button([true, false], 80, 205 + this.settingsButtons.length * 42, images.buttons.sprites[10], function () { }, 500, 40, false, false, false, false, false, false, "Dubbel hyra på komplett färggrupp", 42, "black"))
-        this.settingsButtons.push(new Button([true, false], 80, 205 + this.settingsButtons.length * 42, images.buttons.sprites[10], function () { }, 500, 40, false, false, false, false, false, false, "Auktioner", 42, "black"))
-        this.settingsButtons.push(new Button([true, false], 80, 205 + this.settingsButtons.length * 42, images.buttons.sprites[10], function () { }, 500, 40, false, false, false, false, false, false, "Få/förlora pengar i fängelset", 42, "black"))
-        this.settingsButtons.push(new Button([true, false], 80, 205 + this.settingsButtons.length * 42, images.buttons.sprites[10], function () { }, 500, 40, false, false, false, false, false, false, "Möjlighet att inteckna", 42, "black"))
-        this.settingsButtons.push(new Button([true, false], 80, 205 + this.settingsButtons.length * 42, images.buttons.sprites[10], function () { }, 500, 40, false, false, false, false, false, false, "Möjlighet att sälja", 42, "black"))
-        this.settingsButtons.push(new Button([true, false], 80, 205 + this.settingsButtons.length * 42, images.buttons.sprites[10], function () { }, 500, 40, false, false, false, false, false, false, "Jämn utbyggnad", 42, "black"))
-        this.settingsButtons.push(new Slider(436 * drawScale, 5 + this.settingsButtons.length * 42 * drawScale, 502 * drawScale, 40 * drawScale, 0, 3000, 100, true, 50, "kr", "Startkapital: "))
-        this.settingsButtons.push(new Slider(436 * drawScale, 5 + this.settingsButtons.length * 42 * drawScale, 502 * drawScale, 40 * drawScale, 0, 5, 1, true, 50, "", "Antal varv innan köp: "))
-        this.settingsButtons.push(new Slider(436 * drawScale, 5 + this.settingsButtons.length * 42 * drawScale, 502 * drawScale, 40 * drawScale, 0, 100, 10, true, 35, "%", "Lägsta bud på auktioner(% av gatupris): "))
+        this.settingsButtons.push(new Button([true, false], 80, 210, images.buttons.sprites[10], function () { }, 500, 35, false, false, false, false, false, false, "Ge alla skattepengar till fri parkering", 42, "black"))
+        this.settingsButtons.push(new Button([true, false], 80, 210 + this.settingsButtons.length * 37, images.buttons.sprites[10], function () { }, 500, 35, false, false, false, false, false, false, "Ge alla bankpengar till fri parkering", 42, "black"))
+        this.settingsButtons.push(new Button([true, false], 80, 210 + this.settingsButtons.length * 37, images.buttons.sprites[10], function () { }, 500, 35, false, false, false, false, false, false, "Dubbel hyra på komplett färggrupp", 42, "black"))
+        this.settingsButtons.push(new Button([true, false], 80, 210 + this.settingsButtons.length * 37, images.buttons.sprites[10], function () { }, 500, 35, false, false, false, false, false, false, "Auktioner", 42, "black"))
+        this.settingsButtons.push(new Button([true, false], 80, 210 + this.settingsButtons.length * 37, images.buttons.sprites[10], function () { }, 500, 35, false, false, false, false, false, false, "Få/förlora pengar i fängelset", 42, "black"))
+        this.settingsButtons.push(new Button([true, false], 80, 210 + this.settingsButtons.length * 37, images.buttons.sprites[10], function () { }, 500, 35, false, false, false, false, false, false, "Möjlighet att inteckna", 42, "black"))
+        this.settingsButtons.push(new Button([true, false], 80, 210 + this.settingsButtons.length * 37, images.buttons.sprites[10], function () { }, 500, 35, false, false, false, false, false, false, "Möjlighet att sälja", 42, "black"))
+        this.settingsButtons.push(new Button([true, false], 80, 210 + this.settingsButtons.length * 37, images.buttons.sprites[10], function () { }, 500, 35, false, false, false, false, false, false, "Jämn utbyggnad", 42, "black"))
+        this.settingsButtons.push(new Button([true, false], 80, 210 + this.settingsButtons.length * 37, images.buttons.sprites[10], function () { }, 500, 35, false, false, false, false, false, false, "Endast köpa hus på den man står på", 42, "black"))
+        this.settingsButtons.push(new Slider(436 * drawScale, this.settingsButtons.length * 38 * drawScale, 502 * drawScale, 38 * drawScale, 0, 3000, 100, true, 50, "kr", "Startkapital: "))
+        this.settingsButtons.push(new Slider(436 * drawScale, this.settingsButtons.length * 38 * drawScale, 502 * drawScale, 38 * drawScale, 0, 5, 1, true, 50, "", "Antal varv innan köp: "))
+        this.settingsButtons.push(new Slider(436 * drawScale, this.settingsButtons.length * 38 * drawScale, 502 * drawScale, 38 * drawScale, 0, 100, 10, true, 35, "%", "Lägsta bud på auktioner(% av gatupris): "))
+        this.settingsButtons.push(new Slider(436 * drawScale, this.settingsButtons.length * 38 * drawScale, 502 * drawScale, 38 * drawScale, 1, 88, 1, true, 50, "", "Max antal hus: "))
+        this.settingsButtons.push(new Slider(436 * drawScale, this.settingsButtons.length * 38 * drawScale, 502 * drawScale, 38 * drawScale, 1, 22, 1, true, 35, "", "Max antal Hotell: "))
         this.settingsButtons[2].selected = true
         this.settingsButtons[3].selected = true
         this.settingsButtons[4].selected = true
         this.settingsButtons[5].selected = true
         this.settingsButtons[6].selected = true
         this.settingsButtons[7].selected = true
-        this.settingsButtons[8].percentage = 0.45
-        this.settingsButtons[10].percentage = 0.5
+        this.settingsButtons[9].percentage = 0.45
+        this.settingsButtons[11].percentage = 0.5        
+        this.settingsButtons[12].percentage = 0.36
+        this.settingsButtons[13].percentage = 0.5
         this.readyPlayers = [];
         this.settingsButtons[1].disabled = true;
 
-        this.backButton = new Button([false, false], -337, 220, images.buttons.sprites[12], function () {
+        this.backButton = new Button([false, false], -337, 205, images.buttons.sprites[12], function () {
             self.current = false;
             menus[0].current = true;
             menus[0].volume.percentage = musicVolume
@@ -505,7 +516,7 @@ class LocalLobby {
                 e.textInput.oldvalue = ""
             })
         }, 325, 60, false, false, false, false, false, false)
-        this.startButton = new Button([false, false], 250, 670, images.buttons.sprites[11], function () {
+        this.startButton = new Button([false, false], -250, 670, images.buttons.sprites[11], function () {
             let playerlist = []
 
             self.readyPlayers.forEach(e => {
@@ -531,9 +542,12 @@ class LocalLobby {
                 mortgage: self.settingsButtons[5].selected,
                 sellable: self.settingsButtons[6].selected,
                 even: self.settingsButtons[7].selected,
-                startmoney: self.settingsButtons[8].value,
-                roundsBeforePurchase: self.settingsButtons[9].value,
-                auctionstartprice: self.settingsButtons[10].percentage,
+                upgradething: self.settingsButtons[8].selected,
+                startmoney: self.settingsButtons[9].value,
+                roundsBeforePurchase: self.settingsButtons[10].value,
+                auctionstartprice: self.settingsButtons[11].percentage,
+                maxhouses: self.settingsButtons[12].value,
+                maxhotels: self.settingsButtons[13].value,
             }
             startGame(playerlist, settings)
             self.current = false;
@@ -560,7 +574,7 @@ class LocalLobby {
             let tmp = {
                 id: id,
                 colorId: undefined,
-                y: (self.playerInputs.length * 110 - 100),
+                y: (self.playerInputs.length * 100 - 140),
                 nameIndex: randomIntFromRange(0, namn.length - 1),
                 textInput: new TextInput(40, 300, 560, 80, true, 50, 10, "Spelare " + (id + 1)),
                 botButton: new Button([true, false], -50 + 42, self.playerInputs.length * 55 - 32, images.buttons.sprites[13], function () {
@@ -781,16 +795,22 @@ class LocalLobby {
 class StatMenu{
     constructor(){
         this.game = undefined;
+        this.startGame = false;
         let self = this;
         
 
         this.type = 1;
 
         this.backButton = new Button([false, false], -345, 220, images.buttons.sprites[12], function () {
-            self.current = false;
-            menus[2].current = true;
-            menus[2].init();
-            menus[0].volume.percentage = musicVolume
+            if(self.startGame){
+                menus[4].current = false;
+                loadGame(self.game)
+            }else{
+                self.current = false;
+                menus[2].current = true;
+                menus[2].init();
+                menus[0].volume.percentage = musicVolume
+            }
         }, 325, 60, false, false, false, false, false, false)
         this.changeTypeButton = new Button([true, true], -345 + 340, 212, images.statMenu.sprites[6], function () {}, 81, 81, false, false, false, false, false, { x: 385, y: 184, w: 400*2, h: 400*2, onlySelected: true })
 
@@ -802,9 +822,7 @@ class StatMenu{
         this.statButtons.push(new Button([false,false],-154,380 + 60*this.statButtons.length,images.statMenu.sprites[12],function(){self.changeType(self.statButtons.indexOf(this) + 1)},380,55,false,false,false,true))
 
         this.changeType = function(typeToChangeTo){
-            if(this.game.saveVersion >= 1){
-                this.type = typeToChangeTo;
-            }
+            this.type = typeToChangeTo;
         }
 
         this.draw = function(){
@@ -814,7 +832,6 @@ class StatMenu{
                 this.changeTypeButton.draw();
                 this.backButton.visible = true;
                 this.backButton.draw();
-                this.statButtons.forEach((e,i) => e.disabled = !(this.game.saveVersion <= 1 || i ===0))
 
                 
                 if(this.type == 1){
@@ -824,7 +841,14 @@ class StatMenu{
     
                     this.game.players.forEach(function(e,i){
                         e.tmp = e.money;
-    
+                        e.ownedPlaces.forEach(function(g,h){
+                            if(e.ownedPlacesmortgaged[h] === false){
+                                e.tmp += pieces[g].price / 2;
+                                if((pieces[g].housePrice)){
+                                    e.tmp += (e.ownedPlaceslevel[h] * pieces[g].housePrice / 2);
+                                }
+                            }
+                        })
                         c.textAlign = "left";
                         c.fillStyle = "black";  
                         c.font = "40px Arcade"
@@ -836,7 +860,7 @@ class StatMenu{
                 }
                 if(this.type == 2){
                     this.game.players = this.game.players.sort((a,b) => {
-                        return a.tmp - b.tmp;
+                        return b.tmp - a.tmp;
                     })
     
                     this.game.players.forEach(function(e,i){
@@ -852,7 +876,7 @@ class StatMenu{
                 }
                 if(this.type == 3){
                     this.game.players = this.game.players.sort((a,b) => {
-                        return a.tmp - b.tmp;
+                        return b.tmp - a.tmp;
                     })
     
                     this.game.players.forEach(function(e,i){
@@ -869,38 +893,36 @@ class StatMenu{
                 if(this.type == 4){
                     this.game.boardPiecesFiltered = this.game.boardPieces.filter(e => {
                         return (e.name !== "Start" && e.name !== "Allmänning" && e.name !== "Chans" && e.name !== "fängelse" && e.name !== "Fri parkering" && e.name !== "Gå till finkan")
-                    })
+                    }).filter(e => e.totalEarned !== 0)
                     this.game.boardPiecesFiltered = this.game.boardPiecesFiltered.sort((a,b) => {
                         return b.totalEarned - a.totalEarned;
                     })
     
-                    for(let i = 0; i < 8; i++){
+                    for(let i = 0; i < (this.game.boardPiecesFiltered.length > 8 ? 8 : this.game.boardPiecesFiltered.length); i++){
                         c.textAlign = "left";
                         c.fillStyle = "black";  
                         c.font = "40px Arcade"
                         c.fillText(i+1, 20,i*54 + 134)
                         c.fillText(this.game.boardPiecesFiltered[i].name, 80,i*54 + 134)
-                        c.fillText(this.game.boardPiecesFiltered[i].totalEarned + "kr", 560,i*54 + 134)
-                        c.fillText(timeToText(this.game.boardPiecesFiltered[i].owner), 750,i*54 + 134)
+                        c.fillText(this.game.boardPiecesFiltered[i].totalEarned + "kr", 660,i*54 + 134)
                     }    
                     
                 }
                 if(this.type == 5){
                     this.game.boardPiecesFiltered = this.game.boardPieces.filter(e => {
                         return (e.name !== "Start" && e.name !== "Allmänning" && e.name !== "Chans" && e.name !== "fängelse" && e.name !== "Fri parkering" && e.name !== "Gå till finkan")
-                    })
+                    }).filter(e => e.totalEarned !== 0)
                     this.game.boardPiecesFiltered = this.game.boardPiecesFiltered.sort((a,b) => {
                         return a.totalEarned - b.totalEarned;
                     })
     
-                    for(let i = 0; i < 8; i++){
+                    for(let i = 0; i < (this.game.boardPiecesFiltered.length > 8 ? 8 : this.game.boardPiecesFiltered.length); i++){
                         c.textAlign = "left";
                         c.fillStyle = "black";  
                         c.font = "40px Arcade"
                         c.fillText(i+1, 20,i*54 + 134)
                         c.fillText(this.game.boardPiecesFiltered[i].name, 80,i*54 + 134)
-                        c.fillText(this.game.boardPiecesFiltered[i].totalEarned + "kr", 560,i*54 + 134)
-                        c.fillText(timeToText(this.game.boardPiecesFiltered[i].owner), 750,i*54 + 134)
+                        c.fillText(this.game.boardPiecesFiltered[i].totalEarned + "kr", 660,i*54 + 134)
                     }    
                     
                 }
@@ -953,7 +975,7 @@ class LoadingMenu {
                 if (e.selected === true) {
                     self.games = JSON.parse(localStorage.getItem("games")).reverse()
                     menus[2].current = false;
-                    loadGame(self.games.length - i - 1)
+                    loadGame(JSON.parse(localStorage.getItem("games"))[self.games.length - i - 1])
                 }
             })
         }, 97 * 2, 60)
@@ -999,6 +1021,7 @@ class LoadingMenu {
                     self.current = false;
                     menus[4].current = true;
                     menus[4].game = self.games.reverse()[self.games.length - i - 1];
+                    menus[4].startGame = false;
                     menus[0].volume.percentage = musicVolume
                 }
             })
@@ -1023,6 +1046,7 @@ class LoadingMenu {
 
                 self.buttons.forEach(function (e, i) {
                     if (e.selected) {
+                        self.games = JSON.parse(localStorage.getItem("games")).reverse()
                         c.drawImage(self.screenshot, 0, canvas.height / 4, canvas.width / 2, canvas.height / 2)
                         c.lineWidth = scale
                         c.strokeRect(0, canvas.height / 4, canvas.width / 2, canvas.height / 2)
@@ -1031,15 +1055,16 @@ class LoadingMenu {
                         c.shadowColor = "black";
                         c.font = "20px Arcade";
                         c.textAlign = "left";
-                        c.fillText("Sparfilsversion: " + self.games.reverse()[self.games.length - i - 1].saveVersion, 10, 425);
+                        c.fillText("Sparfilsversion: " + (self.games.reverse()[self.games.length - i - 1].saveVersion == undefined ? 0 : self.games.reverse()[self.games.length - i - 1].saveVersion), 10, 425);
                         c.fillText("Spelversion: " + latestSaveVersion, 10, 445);
                         c.shadowBlur = 0;
-                        self.games = JSON.parse(localStorage.getItem("games")).reverse()
-                        if(self.games.reverse()[self.games.length - i - 1].players.filter(e => {return e.dead != true}).length > 1){
+                        if(self.games[self.games.length - i - 1].players.filter(e => {return e.dead != true}).length > 1){
                             tmp = true;
                         }
-                        if(self.games.reverse()[self.games.length - i - 1].saveVersion === latestSaveVersion){
+                        if(self.games[self.games.length - i - 1].saveVersion == latestSaveVersion){
                             self.statButton.disabled = false;
+                        }else{
+                            tmp = false;
                         }
                         self.deleteSave.disabled = false;
                     }
@@ -1273,64 +1298,14 @@ async function init() {
     }
 
 
-    if (fastLoad === false) {
-        menus.push(new MainMenu())
-        menus.push(new LocalLobby())
-        menus.push(new LoadingMenu())
-        menus.push(new CreditsMenu())
-        menus.push(new StatMenu())
-        update();
+    menus.push(new MainMenu())
+    menus.push(new LocalLobby())
+    menus.push(new LoadingMenu())
+    menus.push(new CreditsMenu())
+    menus.push(new StatMenu())
+    update();
 
-    } else {
-        menus.push(new MainMenu())
-        menus.push(new LocalLobby())
-        menus.push(new LoadingMenu())
-        menus.push(new CreditsMenu())
-        menus.push(new StatMenu())
-
-        menus[0].current = false;
-
-        let playerlist = []
-        let playerAmount = 2;
-        let botAmount = 0;
-        let useableColors = [0, 1, 2, 3, 4, 5, 6, 7]
-        for (let i = 0; i < (playerAmount + botAmount); i++) {
-            let random = randomIntFromRange(0, useableColors.length - 1)
-            if (i < playerAmount) {
-                let tmp = {
-                    name: "Spelare " + (i + 1),
-                    color: useableColors[random],
-                    bot: false
-                }
-                playerlist.push(tmp)
-            } else {
-                let tmp = {
-                    name: "Bot " + (i - 1),
-                    color: useableColors[random],
-                    bot: true
-                }
-                playerlist.push(tmp)
-            }
-            useableColors.splice(random, 1)
-
-        }
-
-        let settings = {
-            freeParking: false,
-            allFreeparking: false,
-            doubleincome: true,
-            auctions: true,
-            prisonmoney: true,
-            mortgage: true,
-            even: true,
-            startmoney: 1400,
-            roundsBeforePurchase: 0,
-            auctionstartprice: 0.5,
-        }
-        startGame(playerlist, settings)
-        update();
-
-    }
+    
 }
 
 function update() {
@@ -1351,6 +1326,11 @@ function update() {
 
     
     menus.forEach(e => e.draw())
+    /*
+    c.fillStyle = "black";
+    c.font = "5px Arcade";
+    c.fillText(fps,10,10)
+    */
 
     renderC.drawImage(canvas, 0, 0, renderCanvas.width, renderCanvas.height)
 
@@ -1367,6 +1347,7 @@ function update() {
     } else {
         renderCanvas.style.cursor = "auto"
     }
+
 }
 
 function showBackground() {
@@ -1690,6 +1671,11 @@ class Board {
         this.currentShowingCard = undefined;
         let self = this;
         this.textsize = 0;
+        this.numberOfHotels = 0;
+        this.numberOfHouses = 0;
+        this.currentcardScale = 0;
+
+
         this.musicButton = new Button([true, false], 5 + 49 * 4, 530 + 40, images.buttons.sprites[14], function () {
             if (self.musicButton.selected) {
                 document.cookie = `musicOn=${musicVolume};Expires=Sun, 22 oct 2030 08:00:00 UTC;`;
@@ -1729,49 +1715,44 @@ class Board {
             board.getToMainMenuButton.selected = false;
         }, 40, 40, false, false, false, false, false, { x: 722, y: 336, w: 256 * drawScale, h: 256 * drawScale });
 
-        this.escapeConfirm = new Button([false, false], 5 + 49 * 3, 520, images.buttons.sprites[16], function () {
+        this.escapeConfirm = new Button([false, false], 5 + 49 * 3, 520, images.buttons.sprites[16], async function () {
             board.getToMainMenuButton.selected = false;
-            setTimeout(() => {
-                saveGame()
-                players.forEach(e => buttons.splice(buttons.indexOf(e.playerBorder.button), 1))
-                players = [];
-                menus[4].current = true;
-                menus[0].volume.percentage = musicVolume
-                if (Api.online) Api.disconnect();
-                timeouts.forEach(e => clearTimeout(e));
-                intervals.forEach(e => clearInterval(e));
-                timeouts = [];
-                board = undefined;
-                buttons = [];
-                menus = [];
+            await saveGame()
+            players.forEach(e => buttons.splice(buttons.indexOf(e.playerBorder.button), 1))
+            players = [];
+            menus[4].current = true;
+            menus[0].volume.percentage = musicVolume
+            if (Api.online) Api.disconnect();
+            timeouts.forEach(e => clearTimeout(e));
+            intervals.forEach(e => clearInterval(e));
+            timeouts = [];
+            board = undefined;
+            buttons = [];
+            menus = [];
 
-                init();
-            }, 100);
+            init();
 
         }, 40, 40, false, false, false, false, false,);
-        this.statButton = new Button([false, false], 5 + 49 * 2, 520, images.statMenu.sprites[0], function () {
+        this.statButton = new Button([false, false], 5 + 49 * 2, 520, images.statMenu.sprites[0], async function () {
             board.getToMainMenuButton.selected = false;
-            setTimeout(() => {
-                let tmp2 = saveGame()
-                players.forEach(e => buttons.splice(buttons.indexOf(e.playerBorder.button), 1))
-                players = [];
-                menus[4].current = true;
-                menus[0].volume.percentage = musicVolume
-                if (Api.online) Api.disconnect();
-                timeouts.forEach(e => clearTimeout(e));
-                intervals.forEach(e => clearInterval(e));
-                timeouts = [];
-                board = undefined;
-                buttons = [];
-                menus = [];
+            let tmp2 = await saveGame()
+            players.forEach(e => buttons.splice(buttons.indexOf(e.playerBorder.button), 1))
+            players = [];
+            menus[4].current = true;
+            menus[0].volume.percentage = musicVolume
+            if (Api.online) Api.disconnect();
+            timeouts.forEach(e => clearTimeout(e));
+            intervals.forEach(e => clearInterval(e));
+            timeouts = [];
+            board = undefined;
+            buttons = [];
+            menus = [];
 
-                init();
-                setTimeout(() => {
-                    menus[4].current = true;
-                    menus[4].game = tmp2;
-                    menus[0].current = false;
-                },100)
-            }, 100);
+            await init();
+            menus[4].current = true;
+            menus[4].game = tmp2;
+            menus[4].startGame = true;
+            menus[0].current = false;
 
         }, 40, 40, false, false, false, false, false,);
         this.getToMainMenuButton = new Button([true, false], 84, 700, images.buttons.sprites[17], function () {
@@ -1806,6 +1787,14 @@ class Board {
                 if (dice1 === dice2) {
                     self.teleportTo(self.steps + dice1 + dice2);
                     players[turn].rolls = false;
+                }else{
+                    players[turn].rolls = false;
+                    players[turn].numberOfRolls = 0;
+                    turn = (turn + 1) % players.length;
+                    board.textsize = measureText({ font: "Arcade", text: "Just nu: " + players[turn].name });
+                    
+                    board.animateDices = false;
+                    board.showDices = false;
                 }
             })
         }, 82, 35);
@@ -1813,18 +1802,17 @@ class Board {
             players[turn].jailcardAmount--;
             players[turn].getOutOfJail("CARD");
         }, 82, 35);
-        this.rollDiceButton = new Button([false, false], 1, 480, images.buttons.sprites[0], function () { players[turn].rollDice() }, 246, 60, false, false, false, true)
+        this.rollDiceButton = new Button([false, false], 1, 480, images.buttons.sprites[0], function () { players[turn].rollDice() }, 246, 60, false, false, false, false)
         this.nextPlayerButton = new Button([false, false], 1, 480, images.buttons.sprites[1], function () {
-            if (players[turn].money >= 0) {
-                players[turn].rolls = false;
-                players[turn].numberOfRolls = 0;
-                if (Api.online) {
-                    Api.changeTurn();
-                } else {
-                    turn = (turn + 1) % players.length;
-                    board.textsize = measureText({ font: "Arcade", text: "Just nu: " + players[turn].name });
-                }
+            players[turn].rolls = false;
+            players[turn].numberOfRolls = 0;
+            if (Api.online) {
+                Api.changeTurn();
+            } else {
+                turn = (turn + 1) % players.length;
+                board.textsize = measureText({ font: "Arcade", text: "Just nu: " + players[turn].name });
             }
+            
             board.animateDices = false;
             board.showDices = false;
         }, 246, 60)
@@ -1841,7 +1829,6 @@ class Board {
             if (board.currentCard.mortgaged === false) {
                 players[turn].money += board.currentCard.piece.price / 2
                 players[turn].totalEarned += board.currentCard.piece.price / 2
-                players[turn].checkDebt(board.boardPieces[20]);
                 players[turn].playerBorder.startMoneyAnimation(board.currentCard.piece.price / 2);
             } else {
                 board.currentCard.mortgaged = false;
@@ -1850,6 +1837,7 @@ class Board {
             board.currentCard.owner = undefined;
             players[turn].hasStepped = true;
             board.currentCard = undefined;
+            players[turn].checkDebt(board.boardPieces[20]);
         }, 40, 40, false, false, false, true);
         this.mortgageButton = new Button([false, false], 50, 570, images.buttons.sprites[3], function () {
             if (board.currentCard.mortgaged === true) {
@@ -1883,93 +1871,160 @@ class Board {
                 Api.propertyChangedLevel(board.currentCard, board.currentCard.level + 1, true);
                 return;
             }
-            let lowest = 5;
-            let highest = 0;
-            for (let i = 0; i < board.boardPieces.length; i++) {
-                if (board.boardPieces[i] !== board.currentCard) {
-                    if (board.boardPieces[i]?.piece?.group === board.currentCard?.piece?.group) {
-                        if (lowest > board.boardPieces[i].level) { lowest = board.boardPieces[i].level }
-                        if (highest < board.boardPieces[i].level) { highest = board.boardPieces[i].level }
-                        if (board.currentCard.owner !== board.boardPieces[i].owner) {
-                            ownAll = false;
-                        }
+            let levelsBefore = self.getlevelinfoofgroup(self.currentCard).grouplevels;
+            let levels = self.calculateUpgrade(levelsBefore);
+            if(levels.levelsUpgraded > 1){
+                self.currentShowingCard = new CurrentCard(0,"special",["Matchen har slut på hus och","du måste uppgradera några","gator till hotell.","Detta kommer att kosta " + levels.levelsUpgraded * self.currentCard.piece.housePrice + "kr", "Är du säker på att du vill", "göra detta?"],true)
+                self.currentShowingCard.onContinue = function(){
+                    let pieces = board.boardPieces.filter(e => e.piece.group == self.currentCard.piece.group)
+                    pieces.forEach(function(e,i){
+                        e.level = levels.after[i]
+                    });
+                    players[turn].money -= levels.levelsUpgraded * self.currentCard.piece.housePrice;
+                    players[turn].playerBorder.startMoneyAnimation(-levels.levelsUpgraded * self.currentCard.piece.housePrice)
+                }
+            }else{
+                let pieces = board.boardPieces.filter(e => e.piece.group == self.currentCard.piece.group)
+                pieces.forEach(function(e,i){
+                    e.level = levels.after[i]
+                });
+                players[turn].money -= levels.levelsUpgraded * self.currentCard.piece.housePrice;
+                players[turn].playerBorder.startMoneyAnimation(-levels.levelsUpgraded * self.currentCard.piece.housePrice)
+            }
+            
+
+        }, 40, 40);
+
+        this.calculateUpgrade = function(levelsBefore,levelsAfterInput){
+            let levelsAfter = levelsAfterInput;
+            if(levelsAfterInput == undefined){
+                levelsAfter = levelsBefore;
+            }
+            let lowest = self.getlevelinfoofgroup(self.currentCard).lowest;
+            if(board.currentCard.level == lowest || board.getNumberOfHousesAndHotels().numberOfHouses == this.settings.maxhouses){
+                if(board.getNumberOfHousesAndHotels().numberOfHouses == this.settings.maxhouses){
+                    board.currentCard.level = 5;
+                    if(self.getlevelinfoofgroup(self.currentCard).lowest < 4){
+                        return self.calculateUpgrade(levelsBefore,levelsAfter);
+                    }else{
+                        return self.getPriceForLevelChanges(levelsBefore,self.getlevelinfoofgroup(self.currentCard).grouplevels);
+                    }
+
+                }else{
+                    board.currentCard.level++;
+                    if(self.getlevelinfoofgroup(self.currentCard).lowest < 4 && self.getlevelinfoofgroup(self.currentCard).highest == 5){
+                        return self.calculateUpgrade(levelsBefore,levelsAfter);
+                    }else{
+                        return self.getPriceForLevelChanges(levelsBefore,self.getlevelinfoofgroup(self.currentCard).grouplevels);
                     }
                 }
-            }
-            if (lowest > board.currentCard.level || !board.settings.even) { lowest = board.currentCard.level }
-            if (highest < board.currentCard.level || !board.settings.even) { highest = board.currentCard.level }
-            
-            if(board.currentCard.level == lowest){
-                board.currentCard.level++;
-                board.currentCard.owner.money -= board.currentCard.piece.housePrice;
-                board.currentCard.owner.totalLost += board.currentCard.piece.housePrice;
-                if (board.settings.allFreeparking) {
-                    board.boardPieces[20].money += board.currentCard.piece.housePrice;
-                }
-                players[turn].playerBorder.startMoneyAnimation(-board.currentCard.piece.housePrice)
             }else{
                 for (let i = board.boardPieces.length - 1; i > 0; i--) {
                     if (board.boardPieces[i] !== board.currentCard) {
                         if (board.boardPieces[i].piece.group === board.currentCard.piece.group) {
                             if(board.boardPieces[i].level === lowest){
-                                board.boardPieces[i].level++;
-                                board.boardPieces[i].owner.money -= board.boardPieces[i].piece.housePrice;
-                                board.boardPieces[i].owner.totalLost += board.boardPieces[i].piece.housePrice;
-                                if (board.settings.allFreeparking) {
-                                    board.boardPieces[20].money += board.boardPieces[i].piece.housePrice;
+                                if(board.getNumberOfHousesAndHotels().numberOfHouses == this.settings.maxhouses){
+                                    board.boardPieces[i].level = 5;
+                                    if(self.getlevelinfoofgroup(self.currentCard).lowest < 4){
+                                        return self.calculateUpgrade(levelsBefore,levelsAfter);
+                                    }else{
+                                        return self.getPriceForLevelChanges(levelsBefore,self.getlevelinfoofgroup(self.currentCard).grouplevels);
+                                    }
+
+                                }else{
+                                    board.boardPieces[i].level++;
+                                    if(self.getlevelinfoofgroup(self.currentCard).lowest < 4 && self.getlevelinfoofgroup(self.currentCard).highest == 5){
+                                        return self.calculateUpgrade(levelsBefore,levelsAfter);
+                                    }else{
+                                        return self.getPriceForLevelChanges(levelsBefore,self.getlevelinfoofgroup(self.currentCard).grouplevels);
+                                    }
                                 }
-                                players[turn].playerBorder.startMoneyAnimation(-board.boardPieces[i].piece.housePrice)
-                                return;
+
                             }
                         }
                     }
                 }
             }
-            
-        }, 40, 40);
-        this.downgradeButton = new Button([false, false], 15, 570, images.buttons.sprites[5], function () {
-            if (Api.online) {
-                Api.propertyChangedLevel(board.currentCard, board.currentCard.level - 1, false);
-                return;
+        }
+        this.getPriceForLevelChanges = function(before,after){
+            let pieces = board.boardPieces.filter(e => e.piece.group == self.currentCard.piece.group)
+            pieces.forEach(function(e,i){
+                e.level = before[i]
+            });
+            let levelsUpgraded = 0;
+            before.forEach(function(e,i){
+                levelsUpgraded += (after[i] - e)
+            })
+            return {levelsUpgraded:levelsUpgraded,after:after};
+        }
+        this.calculateDowngrade = function(levelsBefore,levelsAfterInput){
+            let levelsAfter = levelsAfterInput;
+            if(levelsAfterInput == undefined){
+                levelsAfter = levelsBefore;
             }
-            let lowest = 5;
-            let highest = 0;
-            for (let i = 0; i < board.boardPieces.length; i++) {
-                if (board.boardPieces[i] !== board.currentCard) {
-                    if (board.boardPieces[i]?.piece?.group === board.currentCard?.piece?.group) {
-                        if (lowest > board.boardPieces[i].level) { lowest = board.boardPieces[i].level }
-                        if (highest < board.boardPieces[i].level) { highest = board.boardPieces[i].level }
-                        if (board.currentCard.owner !== board.boardPieces[i].owner) {
-                            ownAll = false;
-                        }
-                    }
-                }
-            }
-            if (lowest > board.currentCard.level || !board.settings.even) { lowest = board.currentCard.level }
-            if (highest < board.currentCard.level || !board.settings.even) { highest = board.currentCard.level }
+            let highest = self.getlevelinfoofgroup(self.currentCard).highest;
 
             if(board.currentCard.level === highest){
-                board.currentCard.level--;
-                board.currentCard.owner.money += board.currentCard.piece.housePrice / 2;
-                board.currentCard.owner.totalEarned += board.currentCard.piece.housePrice / 2;
-                players[turn].playerBorder.startMoneyAnimation(board.currentCard.piece.housePrice / 2)
-                players[turn].checkDebt(board.boardPieces[20]);
+                if(board.currentCard.level === 5){
+                    board.currentCard.level--;
+                    if(board.getNumberOfHousesAndHotels().numberOfHouses > this.settings.maxhouses){
+                        return board.calculateDowngrade(levelsBefore,levelsAfterInput)
+                    }else{
+                        return this.getPriceForLevelChanges(levelsBefore,self.getlevelinfoofgroup(self.currentCard).grouplevels)
+                    }
+                }else{
+                    board.currentCard.level--;
+                    if(board.getNumberOfHousesAndHotels().numberOfHouses > this.settings.maxhouses){
+                        return board.calculateDowngrade(levelsBefore,levelsAfterInput)
+                    }else{
+                        return this.getPriceForLevelChanges(levelsBefore,self.getlevelinfoofgroup(self.currentCard).grouplevels)
+                    }
+                }
             }else{
                 for (let i = 0; i < board.boardPieces.length; i++) {
                     if (board.boardPieces[i] !== board.currentCard) {
                         if (board.boardPieces[i]?.piece?.group === board.currentCard?.piece?.group) {
                             if(board.boardPieces[i].level === highest){
                                 board.boardPieces[i].level--;
-                                board.boardPieces[i].owner.money += board.boardPieces[i].piece.housePrice / 2;
-                                board.boardPieces[i].owner.totalEarned += board.boardPieces[i].piece.housePrice / 2;
-                                players[turn].playerBorder.startMoneyAnimation(board.boardPieces[i].piece.housePrice / 2)
-                                players[turn].checkDebt(board.boardPieces[20]);
-                                return;
+                                if(board.getNumberOfHousesAndHotels().numberOfHouses > this.settings.maxhouses){
+                                    return board.calculateDowngrade(levelsBefore,levelsAfterInput)
+                                }else{
+                                    return this.getPriceForLevelChanges(levelsBefore,self.getlevelinfoofgroup(self.currentCard).grouplevels)
+                                }
                             }
                         }
                     }
                 }
             }
+        }
+        this.downgradeButton = new Button([false, false], 15, 570, images.buttons.sprites[5], function () {
+            if (Api.online) {
+                Api.propertyChangedLevel(board.currentCard, board.currentCard.level - 1, false);
+                return;
+            }
+            
+            let levels = self.calculateDowngrade(self.getlevelinfoofgroup(self.currentCard).grouplevels)
+            if(levels.levelsUpgraded < -1){
+                self.currentShowingCard = new CurrentCard(0,"special",["Matchen har slut på hus och","du måste nedgradera några","gator mer än en nivå.","Detta kommer att ge dig " + -levels.levelsUpgraded * self.currentCard.piece.housePrice / 2 + "kr", "Är du säker på att du vill", "göra detta?"],true)
+                self.currentShowingCard.onContinue = function(){
+                    let pieces = board.boardPieces.filter(e => e.piece.group == self.currentCard.piece.group)
+                    pieces.forEach(function(e,i){
+                        e.level = levels.after[i]
+                    });
+                    players[turn].money -= levels.levelsUpgraded * self.currentCard.piece.housePrice / 2;
+                    players[turn].playerBorder.startMoneyAnimation(-levels.levelsUpgraded * self.currentCard.piece.housePrice / 2)
+                    players[turn].checkDebt(board.boardPieces[20]);
+                }
+            }else{
+                let pieces = board.boardPieces.filter(e => e.piece.group == self.currentCard.piece.group)
+                pieces.forEach(function(e,i){
+                    e.level = levels.after[i]
+                });
+                players[turn].money -= levels.levelsUpgraded * self.currentCard.piece.housePrice / 2;
+                players[turn].playerBorder.startMoneyAnimation(-levels.levelsUpgraded * self.currentCard.piece.housePrice / 2)
+                players[turn].checkDebt(board.boardPieces[20]);
+            }
+            
             
         }, 40, 40);
         this.buyButton = new Button([false, false], 15, 570, images.buttons.sprites[6], function () {
@@ -2004,7 +2059,57 @@ class Board {
             }
         }
 
+        this.getlevelinfoofgroup = function(bp){
+            let ownAll = true;
+            let highest = 0;
+            let lowest = 5;
+            let grouplevels = [];
+            for (let i = 0; i < this.boardPieces.length; i++) {
+                if (this.boardPieces[i].piece.group === bp.piece.group) {
+                    grouplevels.push(this.boardPieces[i].level)
+                    if (this.boardPieces[i] !== bp) {
+                        if (highest < this.boardPieces[i].level) { highest = this.boardPieces[i].level }
+                        if (lowest > this.boardPieces[i].level) { lowest = this.boardPieces[i].level }
+                        if (bp.owner !== this.boardPieces[i].owner) {
+                            ownAll = false;
+                        }
+                    }
+                    if (this.boardPieces[i].mortgaged == true) {
+                        ownAll = false;
+                    }
+                }
+                
+            }
+            if (highest < bp.level || !this.settings.even) { highest = bp.level }
+            if (lowest > bp.level || !board.settings.even) { lowest = bp.level }
+
+            return {
+                lowest:lowest,
+                highest:highest,
+                ownAll:ownAll,
+                grouplevels:grouplevels
+            }
+        } 
+
+        this.getNumberOfHousesAndHotels = function(){
+            let numberOfHotels = 0;
+            let numberOfHouses = 0;
+            board.boardPieces.forEach(e => {
+                if(e.level < 5 && e.level > 0){
+                    numberOfHouses += e.level;
+                }else if(e.level == 5){
+                    numberOfHotels++;
+                }
+            })
+            return {
+                numberOfHouses:numberOfHouses,
+                numberOfHotels:numberOfHotels
+            }
+        }
         this.update = async function () {
+            this.numberOfHotels = this.getNumberOfHousesAndHotels().numberOfHotels;
+            this.numberOfHouses = this.getNumberOfHousesAndHotels().numberOfHouses;
+            
             if(players[turn].dead){
                 turn = (turn + 1) % players.length;
                 return;
@@ -2012,27 +2117,22 @@ class Board {
             if(players.filter(e => {{return e.dead === false}}).length === 1){
                let tmp = async function(){
                 board.getToMainMenuButton.selected = false;
-                setTimeout(() => {
-                    let tmp2 = saveGame()
-                    players.forEach(e => buttons.splice(buttons.indexOf(e.playerBorder.button), 1))
-                    players = [];
-                    menus[4].current = true;
-                    menus[0].volume.percentage = musicVolume
-                    if (Api.online) Api.disconnect();
-                    timeouts.forEach(e => clearTimeout(e));
-                    intervals.forEach(e => clearInterval(e));
-                    timeouts = [];
-                    board = undefined;
-                    buttons = [];
-                    menus = [];
-    
-                    init();
-                    setTimeout(() => {
-                        menus[4].current = true;
-                        menus[4].game = tmp2;
-                    },100)
-
-                }, 100);
+                let tmp2 = await saveGame()
+                players.forEach(e => buttons.splice(buttons.indexOf(e.playerBorder.button), 1))
+                players = [];
+                menus[4].current = true;
+                menus[0].volume.percentage = musicVolume
+                if (Api.online) Api.disconnect();
+                timeouts.forEach(e => clearTimeout(e));
+                intervals.forEach(e => clearInterval(e));
+                timeouts = [];
+                board = undefined;
+                buttons = [];
+                menus = [];
+                await init();
+                menus[4].current = true;
+                menus[4].game = tmp2;
+                menus[4].startGame = false;
                } 
                await tmp();
             }
@@ -2142,13 +2242,20 @@ class Board {
             this.dice2Type = randomIntFromRange(0, 3);
         }
         this.showCard = function () {
-            if (this.currentCard !== undefined) {
-                drawRotatedImageFromSpriteSheet(canvas.width - images.card.sprites[this.currentCard.piece.card].frame.w, canvas.height - images.card.sprites[this.currentCard.piece.card].frame.h, images.card.sprites[this.currentCard.piece.card].frame.w * drawScale, images.card.sprites[this.currentCard.piece.card].frame.h * drawScale, images.card.sprites[this.currentCard.piece.card], 0, false, 0, 0, images.card.sprites[this.currentCard.piece.card].frame.w, images.card.sprites[this.currentCard.piece.card].frame.h)
-
-                c.fillStyle = "black";
+            if (this.currentCard !== undefined && this.currentShowingCard == undefined) {
+                drawRotatedImageFromSpriteSheet(canvas.width - images.card.sprites[this.currentCard.piece.card].frame.w - images.card.sprites[this.currentCard.piece.card].frame.w * this.currentcardScale + images.card.sprites[this.currentCard.piece.card].frame.w
+                , canvas.height - images.card.sprites[this.currentCard.piece.card].frame.h - images.card.sprites[this.currentCard.piece.card].frame.h * this.currentcardScale + images.card.sprites[this.currentCard.piece.card].frame.h
+                , images.card.sprites[this.currentCard.piece.card].frame.w * drawScale * this.currentcardScale, images.card.sprites[this.currentCard.piece.card].frame.h * drawScale* this.currentcardScale, images.card.sprites[this.currentCard.piece.card], 0, false, 0, 0, images.card.sprites[this.currentCard.piece.card].frame.w, images.card.sprites[this.currentCard.piece.card].frame.h)
+                if(this.currentcardScale < 1){
+                    this.currentcardScale += 0.1 * deltatime;
+                    if(this.currentcardScale > 1){
+                        this.currentcardScale = 1;
+                    }
+                }else{
+                    c.fillStyle = "black";
                 c.textAlign = "center";
                 c.font = 20 / 2 + "px Arcade";
-
+                this.cardCloseButton.visible = true;
                 if (this.currentCard.owner !== undefined) {
                     if (this.currentCard.piece.type !== "utility" && this.currentCard.piece.type !== "station") {
                         c.fillText("Ägare: " + this.currentCard.owner.name, 965 / 2, 348 / 2)
@@ -2174,29 +2281,52 @@ class Board {
                             this.downgradeButton.visible = true;
                         }
 
-                        let ownAll = true;
-                        let highest = 0;
-                        let lowest = 5;
-                        for (let i = 0; i < board.boardPieces.length; i++) {
-                            if (board.boardPieces[i] !== this.currentCard) {
-                                if (board.boardPieces[i].piece.group === this.currentCard.piece.group) {
-                                    if (highest < board.boardPieces[i].level) { highest = board.boardPieces[i].level }
-                                    if (lowest > board.boardPieces[i].level) { lowest = board.boardPieces[i].level }
-                                    if (this.currentCard.owner !== board.boardPieces[i].owner) {
-                                        ownAll = false;
+                        let ownAll = this.getlevelinfoofgroup(this.currentCard).ownAll;
+                        let highest = this.getlevelinfoofgroup(this.currentCard).highest;
+                        let lowest = this.getlevelinfoofgroup(this.currentCard).lowest;
+                        
+                        if (lowest < 5 && this.currentCard.piece.housePrice !== undefined && ownAll === true && players[turn].money >= this.currentCard.piece.housePrice) {
+                            if(this.currentCard.level == lowest){
+                                if(this.currentCard.level == 4 && this.numberOfHotels < this.settings.maxhotels){
+                                    this.upgradeButton.disabled = false;
+                                }else if(this.currentCard.level < 4 && this.numberOfHouses < this.settings.maxhouses){
+                                    this.upgradeButton.disabled = false;
+                                }else if(this.currentCard.level < 5 && this.numberOfHouses == this.settings.maxhouses){
+                                    this.upgradeButton.disabled = false;
+                                }else{
+                                    this.upgradeButton.disabled = true;
+                                }
+                            }else{
+                                for (let i = board.boardPieces.length - 1; i > 0; i--) {
+                                    if (board.boardPieces[i] !== board.currentCard) {
+                                        if (board.boardPieces[i].piece.group === board.currentCard.piece.group) {
+                                            if(board.boardPieces[i].level === lowest){
+                                                if(board.boardPieces[i].level == 4 && this.numberOfHotels < this.settings.maxhotels){
+                                                    this.upgradeButton.disabled = false;
+                                                }else if(board.boardPieces[i].level < 4 && this.numberOfHouses < this.settings.maxhouses){
+                                                    this.upgradeButton.disabled = false;
+                                                }else if(board.boardPieces[i].level < 5 && this.numberOfHouses == this.settings.maxhouses){
+                                                    this.upgradeButton.disabled = false;
+                                                }else{
+                                                    this.upgradeButton.disabled = true;
+                                                }                                         
+                                            }
+                                        }
                                     }
                                 }
                             }
-                        }
-                        if (highest < this.currentCard.level || !this.settings.even) { highest = this.currentCard.level }
-                        if (lowest > board.currentCard.level || !board.settings.even) { lowest = board.currentCard.level }
-
-                        if (lowest < 5 && this.currentCard.piece.housePrice !== undefined && ownAll === true && players[turn].money >= this.currentCard.piece.housePrice) {
-                            this.upgradeButton.disabled = false;
+                            if(this.calculateUpgrade(self.getlevelinfoofgroup(self.currentCard).grouplevels).levelsUpgraded * self.currentCard.piece.housePrice > players[turn].money){
+                                this.upgradeButton.disabled = true;
+                            }   
+                            if(this.settings.upgradething){
+                                if(self.currentCard.n !== players[turn].steps){
+                                    this.upgradeButton.disabled = true;
+                                }
+                            }
                         } else {
                             this.upgradeButton.disabled = true;
                         }
-                        if (highest > 0) {
+                        if (highest > 0 && ownAll) {
                             this.downgradeButton.disabled = false;
                         } else {
                             this.downgradeButton.disabled = true;
@@ -2209,11 +2339,10 @@ class Board {
 
 
                     }
-                    this.cardCloseButton.visible = true;
+                    
 
 
                 } else {
-                    this.cardCloseButton.visible = true;
                     if (this.currentCard === board.boardPieces[players[Api.online ? Api.currentPlayer : turn].steps] && this.auction === undefined && players[Api.online ? Api.currentPlayer : turn].bot === undefined && players[turn].hasStepped === false) {
                         if (board.settings.auctions) {
                             this.auctionButton.disabled = false;
@@ -2243,6 +2372,8 @@ class Board {
                 if (this.currentCard.mortgaged === true) {
                     drawRotatedImageFromSpriteSheet(702, 216, images.mortgageOverlay.sprites[0].frame.w * drawScale, images.mortgageOverlay.sprites[0].frame.h * drawScale, images.mortgageOverlay.sprites[0], 0, false, 0, 0, images.mortgageOverlay.sprites[0].frame.w, images.mortgageOverlay.sprites[0].frame.h)
                 }
+                }
+                
             }
             this.sellButton.draw();
             this.auctionButton.draw();
@@ -2287,12 +2418,22 @@ class Board {
                 }
 
                 if (players[turn].rolls === false) {
-                    if (players[turn].bot === undefined && this.auction === undefined && players[turn].inJail === false && !this.getToMainMenuButton.selected && this.currentShowingCard === undefined) {
+                    if (players[turn].bot === undefined && this.auction === undefined && players[turn].inJail === false && !this.getToMainMenuButton.selected && this.currentShowingCard === undefined && this.currentCard === undefined && players[turn].inPrisonAnimation === false) {
                         this.rollDiceButton.visible = true;
+                        if (players[turn].money < 0) {
+                            this.rollDiceButton.disabled = true;
+                        }else{
+                            this.rollDiceButton.disabled = false;
+                        }
                     }
                 } else {
-                    if (players[turn].bot === undefined && this.auction === undefined && !this.getToMainMenuButton.selected && this.currentShowingCard === undefined) {
+                    if (players[turn].bot === undefined && this.auction === undefined && !this.getToMainMenuButton.selected && this.currentShowingCard === undefined && this.currentCard === undefined && players[turn].inPrisonAnimation === false) {
                         this.nextPlayerButton.visible = true;
+                        if (players[turn].money < 0) {
+                            this.nextPlayerButton.disabled = true;
+                        }else{
+                            this.nextPlayerButton.disabled = false;
+                        }
                     }
                 }
 
@@ -2351,7 +2492,7 @@ class Slider {
                     this.value = this.from;
                 }
                 c.fillStyle = "black";
-                c.fillRect(this.x, this.y, this.w, this.h)
+                c.fillRect(this.x+1, this.y+1, this.w-2, this.h-2)
                 c.fillStyle = "white";
                 c.fillRect(this.x + 4, this.y + 4, this.w - 8, this.h - 8)
                 c.fillStyle = "black";
@@ -2502,6 +2643,23 @@ class Trade {
             self.p1PropertyButtons.push(but);
         });
 
+        for(let i = 0; i < this.p1.jailcardAmount; i++){
+            let tmp = 0;
+            if (self.p1PropertyButtons.length % 2 === 1) {
+                tmp = 190
+            }
+            let fontSize = 21
+            let textColor = "black";
+
+            let but = (new Button([true, false], -360 + tmp + 198 - 128, 240 + 22 * Math.floor((self.p1PropertyButtons.length + i) / 2) + 110, images.trade.sprites[2], function () {
+                self.p1ConfirmButton.selected = false;
+                self.p2ConfirmButton.selected = false;
+            }, 186, 21, false, false, false, false, false, false, "Frikort", fontSize, textColor, "ArcadeBold"))
+            
+            but.card = "jailcard"
+            self.p1PropertyButtons.push(but);
+        }
+
         this.p2.ownedPlaces.forEach(function (e, i) {
             let tmp = 0;
             if (i % 2 === 1) {
@@ -2533,6 +2691,23 @@ class Trade {
             self.p2PropertyButtons.push(but);
         });
 
+        for(let i = 0; i < this.p2.jailcardAmount; i++){
+            let tmp = 0;
+            if (self.p2PropertyButtons.length % 2 === 1) {
+                tmp = 190
+            }
+            let fontSize = 21
+            let textColor = "black";
+
+            let but = (new Button([true, false], -30 + tmp + 200, 240 + 22 * Math.floor((self.p2PropertyButtons.length + i) / 2) + 110, images.trade.sprites[2], function () {
+                self.p1ConfirmButton.selected = false;
+                self.p2ConfirmButton.selected = false;
+            }, 186, 21, false, false, false, false, false, false, "Frikort", fontSize, textColor, "ArcadeBold"))
+            
+            but.card = "jailcard"
+            self.p2PropertyButtons.push(but);
+        }
+
         this.update = function () {
             drawIsometricImage(0, 0, images.trade.sprites[0], false, 0, 0, images.trade.sprites[0].frame.w, images.trade.sprites[0].frame.h, -320 - 71, images.trade.sprites[0].frame.h / 50 - 50, 1)
 
@@ -2557,24 +2732,38 @@ class Trade {
                 let p1New = [];
                 let p2New = [];
                 this.p1PropertyButtons.forEach(function (e, i) {
-                    if (e.selected === true) {
+                    if (e.selected === true && e.card !== "jailcard") {
                         p2New.push(self.p1.ownedPlaces[i])
+                    }else if(e.selected === true){
+                        p2New.push("jailcard")
                     }
                 })
                 this.p2PropertyButtons.forEach(function (e, i) {
-                    if (e.selected === true) {
+                    if (e.selected === true && e.card !== "jailcard") {
                         p1New.push(self.p2.ownedPlaces[i])
+                    }else if(e.selected === true){
+                        p1New.push("jailcard")
                     }
                 })
                 p1New.forEach(e => {
-                    self.p2.ownedPlaces.splice(self.p2.ownedPlaces.indexOf(e), 1);
-                    self.p1.ownedPlaces.push(e);
-                    e.owner = self.p1;
+                    if(e == "jailcard"){
+                        self.p1.jailcardAmount++;
+                        self.p2.jailcardAmount--;
+                    }else{
+                        self.p2.ownedPlaces.splice(self.p2.ownedPlaces.indexOf(e), 1);
+                        self.p1.ownedPlaces.push(e);
+                        e.owner = self.p1;
+                    }
                 })
                 p2New.forEach(e => {
-                    self.p1.ownedPlaces.splice(self.p1.ownedPlaces.indexOf(e), 1);
-                    self.p2.ownedPlaces.push(e);
-                    e.owner = self.p2;
+                    if(e == "jailcard"){
+                        self.p2.jailcardAmount++;
+                        self.p1.jailcardAmount--;
+                    }else{
+                        self.p1.ownedPlaces.splice(self.p2.ownedPlaces.indexOf(e), 1);
+                        self.p2.ownedPlaces.push(e);
+                        e.owner = self.p2;
+                    }
                 })
                 this.p1.money += this.p2Slider.value;
                 this.p2.money += this.p1Slider.value;
@@ -2636,8 +2825,12 @@ class PlayerBorder {
             this.moneyTime = 1;
             this.latestTrancaction = money;
             if (!disablesound) {
-                playSound(sounds.cash, 1)
-            }
+                if(this.latestTrancaction < 0){
+                    playSound(sounds.loose, 1)
+                }else{
+                    playSound(sounds.get, 1)
+                }
+            } 
         }
         this.moneyAnimation = function () {
             if (this.latestTrancaction < 0) {
@@ -2742,7 +2935,7 @@ class PlayerBorder {
         }
 
         this.draw = function () {
-            this.moneyTime -= speeds.moneyAnimationSpeed;
+            this.moneyTime -= speeds.moneyAnimationSpeed * deltatime;
 
             if (this.index === 0) {
                 this.x = -358
@@ -2992,7 +3185,7 @@ class Auction {
                 this.playerlist.splice(this.playerlist.indexOf(this.playerlist[this.turn]), 1)
                 this.turn = (this.turn) % this.playerlist.length;
             }
-            if (this.playerlist.length === 1 && this.lastHasAdded) {
+            if (this.playerlist.length === 1 && this.lastHasAdded || this.playerlist.length === 1 && this.auctionMoney >= Math.round(card.piece.price * board.settings.auctionstartprice)) {
                 for (let i = 0; i < players.length; i++) {
                     if (this.playerlist[0].colorIndex == players[i].colorIndex) {
                         if (this.auctionMoney >= Math.round(card.piece.price * board.settings.auctionstartprice)) {
@@ -3278,6 +3471,11 @@ class BoardPiece {
             let mouseSquareY = (to_grid_coordinate(mouse.x, mouse.y).y + 720 / 2) / (64)
             if (board.currentCard !== undefined || this.piece.type === "chance" || this.piece.type === "community chest" || this.piece.type === "income tax" || this.piece.type === "tax" || this.n % 10 === 0 || board.auction !== undefined || board.trade !== undefined || players[turn].inJail === true || board.showDices || board.animateDices || players[turn].animationOffset !== 0 || board.getToMainMenuButton.selected || board.currentShowingCard !== undefined || players.map(e => e.playerBorder.button.selected).includes(true)) {
                 this.offsetY = this.currentOffsetvalue;
+                players.forEach(e => {
+                    if(board.boardPieces[e.steps] == this){
+                        this.offsetY = 1
+                    }
+                })
                 this.hover = false;
             } else if (this.x / 64 > mouseSquareX - 1 && this.x / 64 < mouseSquareX && this.side === 2 && this.n % 10 !== 0 && mouseSquareY >= 0 && mouseSquareY < 2
                 || this.x / 64 > mouseSquareX - 2 && this.x / 64 < mouseSquareX && this.side === 2 && this.n % 10 === 0 && mouseSquareY >= 0 && mouseSquareY < 2
@@ -3298,6 +3496,11 @@ class BoardPiece {
             } else {
                 this.offsetY = this.currentOffsetvalue;
                 this.hover = false;
+                players.forEach(e => {
+                    if(board.boardPieces[e.steps] == this){
+                        this.offsetY = 1
+                    }
+                })
             }
 
             this.draw();
@@ -3369,12 +3572,43 @@ class BoardPiece {
             if (this.hover === true) {
                 playSound(sounds.release, 1)
                 if (this.piece.card !== undefined) {
+                    board.currentcardScale = 0;
                     board.currentCard = this;
                 }
             }
         }
         this.playerStep = function (onlyStep, player, diceRoll) {
             this.currentPlayer.push(player);
+            if(!onlyStep){
+                if(this.n === -1){
+                    
+                }else if(this.piece.name == "Vattenledningsverket" && this?.owner !== player && this.mortgaged == false){
+
+                }else if(this.piece?.name == "Elverket" && this?.owner !== player && this.mortgaged == false){
+
+                }else if(this.piece?.type == "station" && this?.owner !== player && this.mortgaged == false){
+
+                }else if(this.piece?.type == "chance" ||this?.type == "community chest"){
+
+                }else if(this.piece?.name == "Fri parkering"){
+
+                }else if(this.piece?.name == "Gå till finkan"){
+                    playSound(sounds.siren,1)
+                }else if(this.piece?.name == "fängelse"){
+
+                }else if(this.piece?.type == "income tax"){
+
+                }else if(this.piece?.type == "tax"){
+
+                }else if(this.piece?.name == "Start"){
+
+                }else if(this.owner !== undefined && this?.owner !== player && this.mortgaged == false){
+
+                }else{
+                    
+                }
+            }
+            
             if (this.currentPlayer.length <= 2) {
                 this.currentOffsetvalue = 1;
                 let self = this;
@@ -3383,23 +3617,31 @@ class BoardPiece {
                 }, speeds.stepSpeed));
             }
 
-            if (!onlyStep && !this.mortgaged && player.laps >= board.settings.roundsBeforePurchase) {
+            if (!onlyStep && !this.mortgaged && player.laps >= board.settings.roundsBeforePurchase && this.n !== -1) {
                 if (this.piece.price < 0) {
                     board.currentShowingCard = new CurrentCard(4, "special")
                     let self = this;
                     board.currentShowingCard.onContinue = function () {
-                        board.currentShowingCard = new CurrentCard(0,"bankcheck",{to:"Banken",amount:-self.piece.price,reason:"Skatt",from:player.name})
-                        board.currentShowingCard.onContinue = function(){
-                            player.money += self.piece.price;
-                            self.totalEarned -= self.piece.price;
-                            player.totalLost -= self.piece.price;
-                            board.boardPieces[20].money -= self.piece.price;
-                            player.playerBorder.startMoneyAnimation(self.piece.price)
-                        }
+                        player.money += self.piece.price;
+                        self.totalEarned -= self.piece.price;
+                        player.totalLost -= self.piece.price;
+                        board.boardPieces[20].money -= self.piece.price;
+                        player.playerBorder.startMoneyAnimation(self.piece.price)
+                    
                     }
                 } else if (this.piece.price > 0 && this.owner === undefined) {
                     if (player.bot === undefined) {
-                        board.currentCard = this;
+                        if(players[turn].money >= this.piece.price){
+                            board.currentcardScale = 0;
+                            board.currentCard = this; 
+                        }else{
+                            if (board.settings.auctions) {
+                                if (players.filter(e => e.money - this.piece.price * board.settings.auctionstartprice >= 0).length < 2) {}else{
+                                    board.currentcardScale = 0;
+                                    board.currentCard = this; 
+                                }
+                            }
+                        }
                     }
                 } else if (this.owner !== player && this.owner !== undefined && board.settings.prisonmoney || this.owner !== player && this.owner !== undefined && !board.settings.prisonmoney && !this.owner.inJail) {
                     if (this.piece.type === "utility") {
@@ -3425,8 +3667,8 @@ class BoardPiece {
                             self.owner.money += diceRoll * multiply;
                             self.owner.totalEarned += diceRoll * multiply;
                             self.totalEarned += diceRoll * multiply;
-                            player.playerBorder.startMoneyAnimation(-diceRoll * multiply, true)
-                            self.owner.playerBorder.startMoneyAnimation(diceRoll * multiply)
+                            player.playerBorder.startMoneyAnimation(-diceRoll * multiply)
+                            self.owner.playerBorder.startMoneyAnimation(diceRoll * multiply,true)
                             player.checkDebt(self.owner);
                         }
                     } else if (this.piece.type === "station") {
@@ -3444,8 +3686,8 @@ class BoardPiece {
                             self.owner.money += 25 * Math.pow(2, tmp);
                             self.owner.totalEarned += 25 * Math.pow(2, tmp);
                             self.totalEarned += 25 * Math.pow(2, tmp);
-                            player.playerBorder.startMoneyAnimation(-25 * Math.pow(2, tmp), true)
-                            self.owner.playerBorder.startMoneyAnimation(25 * Math.pow(2, tmp))
+                            player.playerBorder.startMoneyAnimation(-25 * Math.pow(2, tmp))
+                            self.owner.playerBorder.startMoneyAnimation(25 * Math.pow(2, tmp),true)
                             player.checkDebt(self.owner);
                         }
             
@@ -3473,8 +3715,8 @@ class BoardPiece {
                             self.owner.money += self.piece.rent[self.level] * multiply;
                             self.owner.totalEarned += self.piece.rent[self.level] * multiply;
                             self.totalEarned += self.piece.rent[self.level] * multiply;
-                            player.playerBorder.startMoneyAnimation(-self.piece.rent[self.level] * multiply, true)
-                            self.owner.playerBorder.startMoneyAnimation(self.piece.rent[self.level] * multiply)
+                            player.playerBorder.startMoneyAnimation(-self.piece.rent[self.level] * multiply)
+                            self.owner.playerBorder.startMoneyAnimation(self.piece.rent[self.level] * multiply,true)
                             player.checkDebt(self.owner);
                         }
                     }
@@ -3498,17 +3740,17 @@ class BoardPiece {
                         board.currentShowingCard = new CurrentCard(0,"bankcheck",{to:"Banken",amount:player.money > 2000 ? 200 : Math.round(player.money * 0.1),reason:"Skatt",from:player.name})
                         board.currentShowingCard.onContinue = function(){
                             if (player.money > 2000) {
+                                board.boardPieces[4].totalEarned += 200;
                                 player.money -= 200;
                                 player.totalLost += 200;
-                                self.totalEarned += 200;
                                 board.boardPieces[20].money += 200;
                                 player.playerBorder.startMoneyAnimation(-200)
                             } else {
+                                board.boardPieces[4].totalEarned += (Math.round(player.money * 0.1));
                                 player.playerBorder.startMoneyAnimation(-Math.round(player.money * 0.1))
                                 player.money = Math.round(player.money * 0.9);
                                 board.boardPieces[20].money += (Math.round(player.money * 0.1));
                                 player.totalLost += (Math.round(player.money * 0.1));
-                                self.totalEarned += (Math.round(player.money * 0.1));
                             }
                         }
                     }
@@ -3569,6 +3811,7 @@ class BoardPiece {
                 board.currentShowingCard.onContinue = function () { player.teleportTo(-(player.steps - 3), false, false) }
             }
             if (random === 9) {
+                playSound(sounds.siren,1)
                 board.currentShowingCard.onContinue = function () { player.goToPrison(); }
             }
             if (random === 10) {
@@ -3613,8 +3856,8 @@ class BoardPiece {
                     board.currentShowingCard.onContinue = function(){
                         player.money += (players.length - 1) * 50
                         player.totalEarned += (players.length - 1) * 50;
-                        player.playerBorder.startMoneyAnimation(((players.length - 1) * 50), true)
-                        players.forEach(e => { if (e !== player) { e.money -= 50; e.totalLost += 50;e.playerBorder.startMoneyAnimation(-50) } })
+                        player.playerBorder.startMoneyAnimation(((players.length - 1) * 50))
+                        players.forEach(e => { if (e !== player) { e.money -= 50; e.totalLost += 50;e.playerBorder.startMoneyAnimation(-50,true) } })
                     }
                 }
             }
@@ -3662,6 +3905,7 @@ class BoardPiece {
                 }
             }
             if (random === 6) {
+                playSound(sounds.siren,1)
                 board.currentShowingCard.onContinue = function () {
                     player.goToPrison()
                 }
@@ -3788,12 +4032,19 @@ class BoardPiece {
     }
 }
 class CurrentCard {
-    constructor(card, type,info) {
+    constructor(card, type,info,ableToClose) {
         let self = this;
         this.card = card;
         this.type = type;
         this.info = info;
+        this.ableToClose = ableToClose;
+        this.xOffset = 0;
+        this.yOffset = 0;
+        this.scale = 1;
+        this.beenUp = false;
+        this.animateAway = false;
         this.continue = function () { };
+        this.close = function(){}
 
         if (this.type == "chance") {
             this.img = images.chanceCards.sprites[this.card]
@@ -3806,11 +4057,14 @@ class CurrentCard {
                 this.img = images.communityCards.sprites[0]
             }
         } else if (this.type == "special") {
+            this.scale = 0;
             this.img = images.specialCards.sprites[this.card]
             if (this.img === undefined) {
                 this.img = images.specialCards.sprites[0]
             }
         }else if (this.type == "bankcheck") {
+            this.xOffset = 1024;
+            playSound(sounds.whoosh,1)
             this.img = images.bankCheck.sprites[this.card]
             if (this.img === undefined) {
                 this.img = images.bankCheck.sprites[0]
@@ -3823,41 +4077,105 @@ class CurrentCard {
         
 
         this.draw = function () {
-            if (players[turn].bot === undefined) {
-                this.okayButton.visible = true;
-                this.cardCloseButton.visible = false;
-            } else {
-                this.cardCloseButton.visible = true;
-                this.okayButton.visible = false;
+            if(this.animateAway){
+                if(this.yOffset < 800){
+                    if(this.beenUp){
+                        this.yOffset += (3 + Math.abs(this.yOffset/15)) * deltatime;
+                    }else{
+                        this.yOffset -= 2 * deltatime;
+                    }
+                    if(this.yOffset < -10){
+                        this.beenUp = true;
+                    }
+                }else{
+                    self.card = undefined;
+                    board.currentShowingCard = undefined;
+                    self.onContinue();
+                }
+            }else{
+                if (players[turn].bot === undefined) {
+                    this.okayButton.visible = true;
+                    this.cardCloseButton.visible = false;
+                    if(this.ableToClose == true){
+                        this.cardCloseButton.visible = true;
+                        this.cardCloseButton.onClick = this.close;
+                        this.okayButton.invertedHitbox = false;
+                    }
+                } else {
+                    this.cardCloseButton.visible = true;
+                    this.okayButton.visible = false;
+                }
             }
+            
             if(this.type === "bankcheck"){
-                this.cardCloseButton.visible = true;
+                this.cardCloseButton.visible = false;
                 this.okayButton.visible = false;
             }
-            drawRotatedImageFromSpriteSheet(470, 300, 512 * 2, 256 * 2, this.img, 0, false, 0, 0, 512, 256, 0, c)
+            if(this.type === "special"){
+                let self = this;
+                this.okayButton.visible = false;
+                if(this.scale > 0.75 && this.yOffset < 800){
+                    if(this.beenUp){
+                        this.yOffset += (3 + Math.abs(this.yOffset/15)) * deltatime;
+                    }else{
+                        this.yOffset -= 2 * deltatime;
+                    }
+                    if(this.yOffset < -10){
+                        this.beenUp = true;
+                    }
+                }else if(this.scale < 0.75){
+                    this.scale += 0.006 * deltatime;
+                }else{
+                    self.card = undefined;
+                    board.currentShowingCard = undefined;
+                    self.onContinue();
+                }
+            }
+            
+            drawRotatedImageFromSpriteSheet(452 + this.xOffset*2 - 512 * this.scale + 512, 300 - 256 * this.scale + 256 + this.yOffset*2, 512 * 2 * this.scale, 256 * 2 * this.scale, this.img, 0, false, 0, 0, 512, 256, 0, c)
             this.cardCloseButton.draw();
             this.okayButton.draw();
+            if(this.type == "special" && this.info !== undefined){
+                c.fillStyle = "black"
+                c.textAlign = "left"
+                c.font = "25px Arcade"
+                this.info.forEach(function(e,i){
+                    c.fillText(e,250,i*25 + 180)
+                })
+            }
             if(this.type === "bankcheck"){
+                if(Math.round(this.xOffset) === 0){
+                    this.onContinue();
+                    playSound(sounds.whoosh,1)
+                };
+                if(Math.round(this.xOffset) < -470 + -1024){
+                    self.card = undefined;
+                    board.currentShowingCard = undefined;
+                }
+                this.xOffset-= (Math.abs(this.xOffset/30) + 1) * deltatime;
                 c.fillStyle = "black"
                 c.textAlign = "left"
                 c.font = "25px Handwritten"
-                c.fillText(new Date().getDate() + " " + monthToText(new Date().getMonth()),595,203)
-                c.font = "50px Handwritten"
-                c.fillText(info.to,400,245)
+                c.fillText(new Date().getDate() + " " + monthToText(new Date().getMonth()),595+ this.xOffset,203)
+                c.font = "45px Handwritten"
+                c.fillText(info.to,400+ this.xOffset,245)
                 c.font = "25px Handwritten"
-                c.fillText(info.amount,670,249)
+                c.fillText(info.amount,670+ this.xOffset,249)
                 c.font = "30px Handwritten"
-                c.fillText(numberToText(info.amount),270,290)
+                c.fillText(numberToText(info.amount),270+ this.xOffset,290)
                 c.font = "30px Handwritten"
-                c.fillText(info.reason,300,338)
+                c.fillText(info.reason,300+ this.xOffset,338)
                 c.font = "37px Signature"
-                c.fillText(info.from,510,338)
+                c.fillText(info.from,510+ this.xOffset,338)
+                
             }
         }
         this.continue = function () {
+            this.animateAway = true;
+        }
+        this.close = function(){
             self.card = undefined;
             board.currentShowingCard = undefined;
-            self.onContinue();
         }
 
 
@@ -3895,6 +4213,9 @@ class Player {
         this.playTime = 0;
         this.totalEarned = board.settings.startmoney;
         this.totalLost = 0;
+        this.rotation = 0;
+        this.inPrisonAnimation = false;
+        this.prisonAnimationState = 0;
 
         this.playerBorder = new PlayerBorder(this)
         if (bot == true) {
@@ -3903,7 +4224,7 @@ class Player {
 
 
         this.draw = function () {
-            drawIsometricImage(800 - this.x * 64 - 32, 700 - this.y * 64 - 32, this.img, false, 0, 0, 24, 48, 0, -this.offsetY, 1)
+            drawIsometricImage(800 - this.x * 64 - 32, 700 - this.y * 64 - 32, this.img, false, 0, 0, 24, 48, 0, this.offsetY, 1,c,this.rotation)
         }
         this.update = function () {
             if(this.dead === false){
@@ -3920,7 +4241,19 @@ class Player {
         this.checkMoney = function () {
             let mortgaged = 0;
             this.ownedPlaces.forEach(e => { if (e.mortgaged === true) { mortgaged++ } })
-            if (this.money < 0 && this.ownedPlaces.length == 0 + mortgaged || this.money < 0 && !board.settings.sellable) {
+
+            let tmp = this.money;
+
+            this.ownedPlaces.forEach(function(g,h){
+                if(g.mortgaged === false){
+                    tmp += g.piece.price / 2;
+                    if((g.piece.housePrice)){
+                        tmp += (g.level * g.piece.housePrice / 2);
+                    }
+                }
+            })
+
+            if (this.money < 0 && this.ownedPlaces.length == 0 + mortgaged || this.money < 0 && !board.settings.sellable || tmp < 0) {
                 if (Api.online) {
                     Api.changeTurn();
                 } else {
@@ -3956,16 +4289,64 @@ class Player {
                 this.lastMoneyInDebt = this.money
                 this.inDebtTo.money += (moneyToAdd);
                 if (this.money >= 0) {
-                    this.inDebtTo.playerBorder.startMoneyAnimation(moneyToAdd - this.money);
+                    this.inDebtTo.playerBorder.startMoneyAnimation(moneyToAdd - this.money,true);
                     this.inDebtTo.money -= this.money;
                     this.inDebtTo = undefined;
                     this.lastMoneyInDebt = 0;
                 } else {
-                    this.inDebtTo.playerBorder.startMoneyAnimation(moneyToAdd);
+                    this.inDebtTo.playerBorder.startMoneyAnimation(moneyToAdd,true);
                 }
             }
         }
         this.updateVisual = function () {
+            if(this.inPrisonAnimation && this.prisonAnimationState == 0){
+                this.offsetY-= (2 + Math.abs(this.offsetY/500)) * deltatime;
+                
+                if(this.offsetY < -500){
+                    this.prisonAnimationState = 1;
+                    this.stopPrisonAnimation();
+                    playSound(sounds.wind,1)
+                }
+            }
+            if(this.inPrisonAnimation && this.prisonAnimationState == 1){
+                this.offsetY+= (20 + -Math.abs(this.offsetY/50)) * deltatime;
+                if(this.offsetY > 0){
+                    this.prisonAnimationState = 2;
+                    this.offsetY = 0;
+                    if(randomIntFromRange(1,20) == 20){
+                        playSound(sounds.bam2,1);
+                    }else{
+                        playSound(sounds.bam,1);
+                    }
+
+                }
+            }
+            if(this.inPrisonAnimation && this.prisonAnimationState == 2){
+                this.rotation+=5 * deltatime;
+                if(this.rotation > 90){
+                    this.prisonAnimationState = 3;
+                    this.rotation = 90;                    
+                }
+            }
+            if(this.inPrisonAnimation && this.prisonAnimationState == 3){
+                this.rotation-= (1 + -Math.abs((this.rotation-45)/100)) * deltatime;
+                if(Math.round(this.rotation) == 75){
+                    playSound(sounds.prison,1);
+                }
+                if(this.rotation < 0){
+                    this.rotation = 0;
+                    this.inPrisonAnimation = false;
+
+                    this.rolls = false;
+                    this.numberOfRolls = 0;
+                    turn = (turn + 1) % players.length;
+                    board.textsize = measureText({ font: "Arcade", text: "Just nu: " + players[turn].name });
+                    
+                    board.animateDices = false;
+                    board.showDices = false;
+                }
+            }
+
             this.stepsWithOffset = 40 + (this.steps) - this.animationOffset
             this.stepsWithOffset = this.stepsWithOffset % 40;
 
@@ -4041,14 +4422,23 @@ class Player {
                 }
             }
         }
-        this.goToPrison = function () {
-            if (this.steps >= 30 || this.steps < 10) {
-                this.teleportTo(10, false, false);
-            } else {
-                this.teleportTo(-10, false, false);
-            }
+        this.stopPrisonAnimation = function(){
+            let self = this;
+            board.boardPieces.forEach(function (b, i2) {
+                b.currentPlayer.forEach(function (d, i3) {
+                    if (d === self) {
+                        b.currentPlayer.splice(i3, 1)
+                    }
+                })
+            })
             this.inJail = true;
             this.rolls = true;
+            this.steps = 10;
+            board.prisonExtra.playerStep(false, this);
+        }
+        this.goToPrison = function () {
+            this.inPrisonAnimation = true;
+            this.prisonAnimationState = 0;
         }
         this.getOutOfJail = function (type, sendToServer = true) {
             if (Api.online && sendToServer) {
@@ -4082,10 +4472,9 @@ class Player {
 
             this.steps = step % 40;
 
-            var dicesum = this.steps - oldStep;
-            if (this.steps < oldStep) dicesum += 40;
+            if (this.steps < oldStep) this.dicesum += 40;
 
-            this.animateSteps(oldStep, this.steps, dicesum, direction, getMoney);
+            this.animateSteps(oldStep, this.steps, this.dicesum, direction, getMoney);
         }
         this.animateSteps = function (from, to, dicesum, direction, getMoney) {
 
@@ -4120,14 +4509,15 @@ class Player {
                             board.boardPieces[0].playerStep(false, self);
                         } else {
                             if (self.inJail === true) {
-                                board.prisonExtra.playerStep(true, self);
+                                board.prisonExtra.playerStep(false, self);
                             } else {
                                 board.boardPieces[to].playerStep(false, self, dicesum);
                             }
                         }
                         if (to === 30) {
+                            playSound(sounds.siren,1)
                             board.currentShowingCard = new CurrentCard(1, "special")
-                            board.currentShowingCard.onContinue = function () { self.goToPrison() };
+                            board.currentShowingCard.onContinue = function () { self.goToPrison(); };
                         }
                         board.showDices = false;
 
@@ -4201,21 +4591,20 @@ class Player {
                         } else {
                             this.rolls = true;
                         }
-
-                        this.diceSum = dice1 + dice2;
+                        let self = this;
+                        self.dicesum = dice1 + dice2;
                         this.dice1 = dice1
                         this.dice2 = dice2
 
-                        let self = this;
                         this.animateDice(dice1, dice2, function () {
                             if (self.numberOfRolls === 3 && dice1 === dice2) {
+                                playSound(sounds.siren,1)
                                 board.currentShowingCard = new CurrentCard(2, "special")
                                 board.currentShowingCard.onContinue = function () { self.goToPrison(); }
                                 return;
                             }
                             board.animateDices = false;
                             self.teleportTo((self.steps + dice1 + dice2) % 40);
-                            board.nextPlayerButton.visible = true;
                         })
                     }
                 }
@@ -4427,6 +4816,25 @@ function timeToText(value){
 }
 
 init();
+
+var times = [];
+var fps;
+var deltatime = 0;
+
+function refreshLoop() {
+    window.requestAnimationFrame(function () {
+        const now = performance.now();
+        while (times.length > 0 && times[0] <= now - 1000) {
+            times.shift();
+        }
+        times.push(now);
+        fps = times.length;
+        deltatime = 60/fps;
+        refreshLoop();
+    });
+}
+
+refreshLoop();
 
 //Sortering och inläggning av namn
 /*

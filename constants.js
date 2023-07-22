@@ -6,13 +6,11 @@ var players = [];
 
 const drawScale = 2;
 
-const fastLoad = false;
-
 const fastSpeed = false;
 
 const disableAlert = false;
 
-const latestSaveVersion = 1;
+const latestSaveVersion = 3;
 
 var namn
 
@@ -193,6 +191,42 @@ var images = {
 };
 
 var sounds = {
+    wind: {
+        type: "single",
+        src: "./sounds/wind.mp3"
+    },
+    bam: {
+        type: "single",
+        src: "./sounds/bam.mp3"
+    },
+    bam2: {
+        type: "single",
+        src: "./sounds/bam2.mp3"
+    },
+    siren: {
+        type: "single",
+        src: "./sounds/siren.mp3"
+    },
+    whoosh: {
+        type: "single",
+        src: "./sounds/whoosh.mp3"
+    },
+    loose: {
+        type: "single",
+        src: "./sounds/loosecash.mp3"
+    },
+    get: {
+        type: "single",
+        src: "./sounds/getcash.mp3"
+    },
+    card: {
+        type: "single",
+        src: "./sounds/card.mp3"
+    },
+    prison: {
+        type: "single",
+        src: "./sounds/prison.mp3"
+    },
     dice: {
         type: "single",
         src: "./sounds/dice.mp3"
